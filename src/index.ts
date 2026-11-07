@@ -13,6 +13,7 @@ export * from '@/contexts'
  */
 export type * as APIModels from '@/models/external'
 export type { WARiskClassCode } from '@/models/WA_RISK_CODES'
+export type { NaicsCode } from '@/models/NAICSCodes'
 export {
   componentEvents,
   EmployeeOnboardingStatus,
@@ -88,6 +89,7 @@ export type {
   InputProps,
   TextInputHookFieldProps,
   SelectHookFieldProps,
+  ComboBoxHookFieldProps,
   CheckboxHookFieldProps,
   NumberInputHookFieldProps,
   DatePickerHookFieldProps,
@@ -98,6 +100,8 @@ export type {
   TextInputProps,
   SelectProps,
   SelectOption,
+  ComboBoxProps,
+  ComboBoxOption,
   CheckboxProps,
   NumberInputProps,
   DatePickerProps,
@@ -616,6 +620,24 @@ export type {
 } from '@/components/Company/PaySchedule/shared/usePayScheduleForm'
 
 export {
+  useIndustryForm,
+  IndustryErrorCodes,
+} from '@/components/Company/Industry/shared/useIndustryForm'
+export type {
+  IndustrySubmitOptions,
+  UseIndustryFormProps,
+  UseIndustryFormResult,
+  UseIndustryFormReady,
+  IndustryFieldsMetadata,
+  IndustryFormFields,
+  IndustryErrorCode,
+  IndustryFormData,
+  IndustryField,
+  IndustryRequiredValidation,
+  IndustryFieldProps,
+} from '@/components/Company/Industry/shared/useIndustryForm'
+
+export {
   useSignCompanyForm,
   SignCompanyFormErrorCodes,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
@@ -636,6 +658,29 @@ export type {
 
 // Domain data hooks - Contractor
 export { useContractorDocumentsList } from '@/components/Contractor/Documents/shared/useContractorDocumentsList'
+export { useDismissal } from '@/components/Contractor/Dismissal/useDismissal'
+export type {
+  UseDismissalProps,
+  UseDismissalReady,
+  UseDismissalResult,
+} from '@/components/Contractor/Dismissal/useDismissal'
+export {
+  useContractorRehireForm,
+  ContractorRehireErrorCodes,
+} from '@/components/Contractor/Rehire/shared/useContractorRehireForm'
+export type {
+  UseContractorRehireFormProps,
+  UseContractorRehireFormResult,
+  UseContractorRehireFormReady,
+  ContractorRehireFormFields,
+  ContractorRehireFieldsMetadata,
+  ContractorRehireErrorCode,
+  ContractorRehireFormData,
+  ContractorRehireFormField,
+  ContractorRehireStartDateValidation,
+  ContractorRehireSubmitResult,
+  StartDateFieldProps as ContractorRehireStartDateFieldProps,
+} from '@/components/Contractor/Rehire/shared/useContractorRehireForm'
 export type {
   UseContractorDocumentsListParams,
   UseContractorDocumentsListResult,

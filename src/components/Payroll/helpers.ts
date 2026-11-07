@@ -428,7 +428,14 @@ const getPrimaryHourlyRate = (employee: Employee, effectiveDate: Date): number =
   return compensation ? calculateHourlyRate(compensation) : 0
 }
 
-const getTotalOutstandingPtoHours = (compensation: EmployeeCompensationInput): number => {
+/**
+ * Sums the unused time-off hours paid out on a dismissal payroll's final paycheck.
+ *
+ * @param compensation - The employee compensation entry.
+ * @returns The total `finalPayoutUnusedHoursInput` hours, or `0` when none are recorded.
+ * @internal
+ */
+export const getTotalOutstandingPtoHours = (compensation: EmployeeCompensationInput): number => {
   if (!compensation.paidTimeOff) {
     return 0
   }

@@ -124,6 +124,8 @@ export interface Resources {
   /** */
   'Contractor.Profile': Translations.ContractorProfile
   /** */
+  'Contractor.Rehire': Translations.ContractorRehire
+  /** */
   'Contractor.SelectContractors': Translations.ContractorSelectContractors
   /** */
   'Contractor.SignatureForm': Translations.ContractorSignatureForm
@@ -532,8 +534,12 @@ export namespace Translations {
     signDocumentComplete: string
     /** @defaultValue `"Not signed"` */
     notSigned: string
+    /** @defaultValue `"View"` */
+    viewCta: string
     /** @defaultValue `"Could not load your documents, try again later."` */
     documentListError: string
+    /** @defaultValue `"Could not open this document, try again later."` */
+    viewDocumentError: string
     /** @defaultValue `"No documents found"` */
     emptyTableTitle: string
     /** @defaultValue `"Continue"` */
@@ -900,6 +906,12 @@ export namespace Translations {
     placeholder: string
     /** @defaultValue `"Continue"` */
     submitCta: string
+    /** @defaultValue `"NAICS {{code}}"` */
+    unmatchedIndustry: string
+    validations: {
+      /** @defaultValue `"Select an industry to continue"` */
+      required: string
+    }
   }
   /** Translation keys for the `Company.Locations` i18n namespace. */
   export interface CompanyLocations {
@@ -3293,6 +3305,8 @@ export namespace Translations {
     rateHourly: string
     /** @defaultValue `"Starts {{date}}"` */
     startsBadge: string
+    /** @defaultValue `"Rehire {{date}}"` */
+    rehireBadge: string
     /** @defaultValue `"Last day {{date}}"` */
     lastDayBadge: string
     /** @defaultValue `"Edit"` */
@@ -4246,6 +4260,39 @@ export namespace Translations {
       /** @defaultValue `"Saving…"` */
       updating: string
     }
+  }
+  /** Translation keys for the `Contractor.Rehire` i18n namespace. */
+  export interface ContractorRehire {
+    /** @defaultValue `"Rehire {{name}}"` */
+    title: string
+    /** @defaultValue `"Schedule a start date for this contractor."` */
+    subtitle: string
+    alert: {
+      /** @defaultValue `"This can be cancelled"` */
+      label: string
+      /** @defaultValue `"The rehire can be cancelled from the contractor list any time before the start date takes effect."` */
+      text: string
+    }
+    form: {
+      startDate: {
+        /** @defaultValue `"Start date"` */
+        label: string
+      }
+    }
+    validation: {
+      /** @defaultValue `"Enter a start date"` */
+      startDateRequired: string
+      /** @defaultValue `"Start date must be after the dismissal date"` */
+      startDateBeforeMin: string
+    }
+    actions: {
+      /** @defaultValue `"Cancel"` */
+      cancel: string
+      /** @defaultValue `"Rehire contractor"` */
+      submit: string
+    }
+    /** @defaultValue `"Rehire scheduled"` */
+    successMessage: string
   }
   /** Translation keys for the `Contractor.SelectContractors` i18n namespace. */
   export interface ContractorSelectContractors {
@@ -8081,6 +8128,8 @@ export namespace Translations {
       hours: string
       /** @defaultValue `"Time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Additional earnings"` */
       additionalEarnings: string
       /** @defaultValue `"Reimbursements"` */
@@ -8625,6 +8674,8 @@ export namespace Translations {
       doubleOT: string
       /** @defaultValue `"Paid time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Total hours"` */
       totalHours: string
       /** @defaultValue `"Payment type"` */

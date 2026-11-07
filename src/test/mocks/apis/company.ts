@@ -1,6 +1,4 @@
-import type { HttpResponseResolver, PathParams } from 'msw'
-import { http, HttpResponse } from 'msw'
-import type { GetV1CompanyIndustryRequest } from '@gusto/embedded-api/models/operations/getv1companyindustry'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { API_BASE_URL } from '@/test/constants'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
@@ -96,19 +94,43 @@ export const getCompanyOnboardingStatus = http.get(
     }),
 )
 
-export function handleGetIndustrySelection(
-  resolver: HttpResponseResolver<PathParams, GetV1CompanyIndustryRequest>,
-) {
+/**
+ * Builds the wire body for the industry selection endpoints.
+ *
+ * The industry object sits at the top level of the response (see zenpayroll's
+ * `company_industry_selections` rabl view); `@gusto/embedded-api` maps the whole
+ * body onto `response.industry`, so wrapping it in an `industry` key here would
+ * parse to an empty object.
+ */
+export function buildIndustrySelectionBody({
+  naicsCode = '541511',
+  title = 'Custom Computer Programming Services',
+  companyUuid = '123',
+  sicCodes = ['7371'],
+}: {
+  naicsCode?: string
+  title?: string | null
+  companyUuid?: string
+  sicCodes?: string[]
+} = {}) {
+  return {
+    company_uuid: companyUuid,
+    naics_code: naicsCode,
+    title,
+    sic_codes: sicCodes,
+  }
+}
+
+export function handleGetIndustrySelection(resolver: HttpResponseResolver) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/industry_selection`, resolver)
 }
 
+export function handleUpdateIndustrySelection(resolver: HttpResponseResolver) {
+  return http.put(`${API_BASE_URL}/v1/companies/:company_id/industry_selection`, resolver)
+}
+
 export const getIndustrySelection = handleGetIndustrySelection(() =>
-  HttpResponse.json({
-    company_uuid: '123',
-    naics_code: '541511',
-    title: 'Custom Computer Programming Services',
-    sic_codes: ['7371'],
-  }),
+  HttpResponse.json(buildIndustrySelectionBody()),
 )
 
 export const getPaymentConfigs = http.get(
@@ -119,18 +141,14 @@ export const getPaymentConfigs = http.get(
   },
 )
 
-export const updateIndustrySelection = http.put(
-  `${API_BASE_URL}/v1/companies/:company_id/industry_selection`,
-  async ({ request }) => {
-    const body = (await request.json()) as { naics_code?: string } | null
-    return HttpResponse.json(
-      {
-        company_uuid: '123',
-        naics_code: body?.naics_code ?? '541511',
-        title: 'Custom Computer Programming Services',
-        sic_codes: ['7371'],
-      },
-      { status: 201 },
-    )
-  },
-)
+// The update endpoint answers `201 Created`, which is what the generated client matches on.
+export const updateIndustrySelection = handleUpdateIndustrySelection(async ({ request }) => {
+  const body = (await request.json()) as { naics_code?: string; title?: string } | null
+  return HttpResponse.json(
+    buildIndustrySelectionBody({
+      naicsCode: body?.naics_code ?? '541511',
+      ...(body?.title ? { title: body.title } : {}),
+    }),
+    { status: 201 },
+  )
+})

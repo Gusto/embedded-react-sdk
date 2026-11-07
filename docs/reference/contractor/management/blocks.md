@@ -509,10 +509,15 @@ Standalone read-only "Documents" card.
 
 ### Remarks
 
-Fetches its own data via [useContractorDocumentsList](../hooks/use-contractor-documents-list.md#usecontractordocumentslist) and renders a
-table of the contractor's forms with a per-row "View" action that opens
-the document's PDF in a new tab. Read-only — signing happens during
-contractor onboarding, not from this surface.
+Lists the contractor's tax forms (1099s) and documents (W-9) in a single
+table, forms first, with a per-row "View" action that opens the row's PDF in
+a new tab. These are two distinct API resources — the documents endpoint
+serves only the W-9 — so the card composes
+[useContractorDocumentsList](../hooks/use-contractor-documents-list.md#usecontractordocumentslist) and `useContractorTaxForms`.
+
+Read-only. Document signing happens during contractor onboarding, not from
+this surface, and contractor forms cannot be signed through the API at all —
+so form rows show no signing status.
 
 <br />
 
@@ -534,8 +539,12 @@ Props for [DocumentsCard](#documentscard).
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `contractor/management/documents/card/viewRequested` | Fired when a document row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` |
-| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` |
+| `contractor/management/documents/card/viewRequested` | Fired when a row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid?: string, formId?: string }` |
+| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid?: string, formId?: string }` |
+
+Both events carry exactly one row identifier: `documentUuid` for a document
+row (the W-9) and `formId` for a tax form row (a 1099). The other key is
+absent.
 
 <br />
 
@@ -544,6 +553,8 @@ Props for [DocumentsCard](#documentscard).
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |
+| GET | [`/v1/contractors/:contractorUuid/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-forms) |
+| GET | [`/v1/contractors/:contractorUuid/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-form-pdf) |
 | GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
 
 ***
@@ -1000,6 +1011,73 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `contractor/management/profile/updated` | Fired after the contractor profile is successfully saved | [APIModels.Contractor](../../APIModels/index.md#contractor) |
 | `contractor/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
+
+***
+
+<a id="rehire"></a>
+
+## Rehire
+
+Standalone form for scheduling a dismissed contractor's rehire.
+
+### Remarks
+
+Fetches the contractor, renders a single "Start date" field bounded to the day
+after their dismissal date, and schedules the rehire on submit — creating a new
+employment record effective on that date. The contractor stays on the Dismissed
+tab until the date takes effect, and the rehire can be cancelled from the
+contractor list up until then.
+
+<br />
+
+### Example
+
+```tsx
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <ContractorManagement.Rehire
+      contractorId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+<br />
+
+### RehireProps
+
+<a id="rehireprops"></a>
+
+Props for [Rehire](#rehire).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The contractor identifier to rehire. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorRehire`](../../Translations/index.md#contractorrehire)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/rehire/scheduled` | Fired after the rehire is successfully scheduled | `{ contractorId: string, startDate: string, message: string }` |
+| `CANCEL` | Fired when the user clicks Cancel | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| POST | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire) |
 
 ***
 

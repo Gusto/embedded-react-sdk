@@ -13,7 +13,9 @@
   "signDocumentCta": "Sign document",
   "signDocumentComplete": "Complete",
   "notSigned": "Not signed",
+  "viewCta": "View",
   "documentListError": "Could not load your documents, try again later.",
+  "viewDocumentError": "Could not open this document, try again later.",
   "emptyTableTitle": "No documents found",
   "continueCta": "Continue",
   "forms": {

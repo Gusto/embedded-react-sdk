@@ -62,6 +62,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorManagement.Profile': ['contractorId'],
   'ContractorManagement.ProfileCard': ['contractorId'],
   'ContractorManagement.ProfileEditForm': ['contractorId'],
+  'ContractorManagement.Rehire': ['contractorId'],
   'ContractorManagement.ViewPaymentFlow': ['companyId'],
   'ContractorOnboarding.Address': ['contractorId'],
   'ContractorOnboarding.ContractorList': ['companyId'],

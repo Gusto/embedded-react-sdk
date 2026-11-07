@@ -51,3 +51,4 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 | [Profile](blocks.md#profile) | Management surface for viewing and editing a contractor's basic profile details after onboarding. |
 | [ProfileCard](blocks.md#profilecard) | Read-only card showing a contractor's basic profile details with an Edit action. |
 | [ProfileEditForm](blocks.md#profileeditform) | Standalone edit form for a contractor's basic profile details. |
+| [Rehire](blocks.md#rehire) | Standalone form for scheduling a dismissed contractor's rehire. |

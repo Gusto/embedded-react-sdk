@@ -138,6 +138,7 @@ import { FixedCompensations } from '@gusto/embedded-api/models/components/payrol
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype';
 import { FocusEvent as FocusEvent_2 } from 'react';
 import { Form } from '@gusto/embedded-api/models/components/form';
+import { Form1099 } from '@gusto/embedded-api/models/components/form1099';
 import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api/models/components/garnishment';
 import { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
@@ -150,6 +151,7 @@ import { HTMLAttributes } from 'react';
 import { Id } from '@gusto/embedded-api/models/components/companyonboardingstatus';
 import { IdentityVerificationStatus } from '@gusto/embedded-api/models/components/signatory';
 import { IndependenceDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
+import { Industry } from '@gusto/embedded-api/models/components/industry';
 import { InformationRequest } from '@gusto/embedded-api/models/components/informationrequest';
 import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest';
 import { InformationRequestType } from '@gusto/embedded-api/models/components/informationrequest';
@@ -580,6 +582,7 @@ declare namespace APIModels {
         FilingForm,
         FlsaStatusType,
         Form,
+        Form1099,
         GarnishmentType,
         Garnishment,
         GarnishmentChildSupport,
@@ -601,6 +604,7 @@ declare namespace APIModels {
         HolidayPayPolicy,
         DocumentType_2 as DocumentType,
         AuthorizationStatus,
+        Industry,
         InformationRequestType,
         RequiredQuestions,
         InformationRequest,
@@ -1076,6 +1080,16 @@ export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFi
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
+export interface ComboBoxHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps, Pick<ComboBoxProps, 'portalContainer'> {
+    formHookResult?: FormHookResult;
+    getOptionLabel?: (entry: TEntry) => string;
+    name: string;
+    placeholder: string;
+    portalContainer?: ComboBoxProps['portalContainer'];
+    validationMessages?: ValidationMessages<TErrorCode>;
+}
+
+// @public
 export interface ComboBoxOption {
     label: string;
     value: string;
@@ -1143,7 +1157,7 @@ declare namespace CompanyOnboarding {
         DocumentListProps_2 as DocumentListProps,
         SignatureForm_2 as SignatureForm,
         SignatureFormProps_2 as SignatureFormProps,
-        Industry,
+        Industry_2 as Industry,
         IndustryProps,
         BankAccount,
         BankAccountProps,
@@ -1486,6 +1500,7 @@ export const componentEvents: {
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
     readonly CONTRACTOR_DISMISSAL_SCHEDULED: "contractor/dismissal/scheduled";
+    readonly CONTRACTOR_REHIRE_SCHEDULED: "contractor/rehire/scheduled";
     readonly CONTRACTOR_REHIRE_CANCELLED: "contractor/rehire/cancelled";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: "contractor/management/profile/editRequested";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: "contractor/management/profile/updated";
@@ -2013,6 +2028,8 @@ declare namespace ContractorManagement {
         ContractorListFlowProps,
         Dismissal,
         DismissalProps,
+        Rehire,
+        RehireProps,
         DashboardFlow_3 as DashboardFlow,
         Dashboard_3 as Dashboard,
         DashboardFlowProps_3 as DashboardFlowProps,
@@ -2209,6 +2226,40 @@ interface ContractorProfileSelfOnboardingProps extends BaseComponentInterface<'C
     contractorId: string;
     defaultValues?: Partial<ContractorDetailsFormData>;
     isAdmin: false;
+}
+
+// @public
+export type ContractorRehireErrorCode = (typeof ContractorRehireErrorCodes)[keyof typeof ContractorRehireErrorCodes];
+
+// @public
+export const ContractorRehireErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly START_DATE_BEFORE_MIN: "START_DATE_BEFORE_MIN";
+};
+
+// @public
+export type ContractorRehireFieldsMetadata = { startDate: FieldMetadata; };
+
+// @public
+export type ContractorRehireFormData = { startDate: string; };
+
+// @public
+export type ContractorRehireFormField = "startDate";
+
+// @public
+export interface ContractorRehireFormFields {
+    StartDate: ComponentType<ContractorRehireStartDateFieldProps>;
+}
+
+// @public
+export type ContractorRehireStartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<ContractorRehireStartDateValidation>>;
+
+// @public
+export type ContractorRehireStartDateValidation = (typeof ContractorRehireErrorCodes)['REQUIRED' | 'START_DATE_BEFORE_MIN'];
+
+// @public
+export interface ContractorRehireSubmitResult {
+    startDate: string;
 }
 
 // @public
@@ -3641,7 +3692,7 @@ interface I9SignatureFormProps extends BaseComponentInterface<'Employee.I9Signat
 }
 
 // @public
-function Industry(props: IndustryProps): JSX;
+function Industry_2(input: IndustryProps): JSX;
 
 // @alpha
 function IndustryCard(props: IndustryCardProps): JSX;
@@ -3654,8 +3705,41 @@ interface IndustryCardProps {
 }
 
 // @public
+export type IndustryErrorCode = (typeof IndustryErrorCodes)[keyof typeof IndustryErrorCodes];
+
+// @public
+export const IndustryErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+};
+
+// @public
+export type IndustryField = "naicsCode";
+
+// @public
+export type IndustryFieldProps = HookFieldProps<ComboBoxHookFieldProps<IndustryRequiredValidation, NaicsCode>>;
+
+// @public
+export type IndustryFieldsMetadata = { naicsCode: FieldMetadataWithOptions<NaicsCode>; };
+
+// @public
+export type IndustryFormData = { naicsCode: string; };
+
+// @public
+export interface IndustryFormFields {
+    Industry: ComponentType<IndustryFieldProps>;
+}
+
+// @public
 interface IndustryProps extends BaseComponentInterface<'Company.Industry'> {
     companyId: string;
+}
+
+// @public
+export type IndustryRequiredValidation = typeof IndustryErrorCodes.REQUIRED;
+
+// @public
+export interface IndustrySubmitOptions {
+    companyId?: string;
 }
 
 // @public
@@ -3979,6 +4063,12 @@ export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<I
     options: MultiSelectComboBoxOption[];
     portalContainer?: HTMLElement;
     value?: string[];
+}
+
+// @public
+export interface NaicsCode {
+    code: string;
+    title: string;
 }
 
 // @public
@@ -5045,6 +5135,14 @@ interface RecoveryCasesProps extends Omit<BaseComponentInterface<never>, 'onEven
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
 
 // @public
+function Rehire(input: RehireProps): JSX;
+
+// @public
+interface RehireProps extends BaseComponentInterface<'Contractor.Rehire'> {
+    contractorId: string;
+}
+
+// @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -5178,6 +5276,8 @@ export interface Resources {
     'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
     // (undocumented)
     'Contractor.Profile': Translations.ContractorProfile
+    // (undocumented)
+    'Contractor.Rehire': Translations.ContractorRehire
     // (undocumented)
     'Contractor.SelectContractors': Translations.ContractorSelectContractors
     // (undocumented)
@@ -6442,6 +6542,34 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<C
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
 // @public
+export function useContractorRehireForm(input: UseContractorRehireFormProps): HookLoadingResult | UseContractorRehireFormReady;
+
+// @public
+export interface UseContractorRehireFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorRehireFormData>;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorRehireFormReady extends BaseFormHookReady<ContractorRehireFieldsMetadata, ContractorRehireFormData, ContractorRehireFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<ContractorRehireSubmitResult> | undefined>;
+    };
+    data: {
+        contractor: Contractor;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
+    };
+}
+
+// @public
+export type UseContractorRehireFormResult = HookLoadingResult | UseContractorRehireFormReady;
+
+// @public
 export function useContractorSignatureForm(input: UseContractorSignatureFormProps): UseContractorSignatureFormResult;
 
 // @public
@@ -6514,6 +6642,28 @@ export interface UseDeductionFormReady extends BaseFormHookReady<DeductionFormFi
 
 // @public
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
+
+// @public
+export function useDismissal(input: UseDismissalProps): UseDismissalResult;
+
+// @public
+export interface UseDismissalProps {
+    contractorId: string;
+}
+
+// @public
+export interface UseDismissalReady extends BaseHookReady<{
+    contractor: Contractor;
+}, {
+    isPending: boolean;
+}> {
+    actions: {
+        dismiss: (endDate: Date) => Promise<HookSubmitResult<unknown> | undefined>;
+    };
+}
+
+// @public
+export type UseDismissalResult = HookLoadingResult | UseDismissalReady;
 
 // @public
 export type UsedPreparerFieldProps = HookFieldProps<RadioGroupHookFieldProps<SignEmployeeFormRequiredValidation>>;
@@ -6671,6 +6821,35 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<HomeAddressFi
 
 // @public
 export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormReady;
+
+// @public
+export function useIndustryForm(input: UseIndustryFormProps): HookLoadingResult | UseIndustryFormReady;
+
+// @public
+export interface UseIndustryFormProps {
+    companyId: string;
+    defaultValues?: Partial<IndustryFormData>;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseIndustryFormReady extends BaseFormHookReady<IndustryFieldsMetadata, IndustryFormData, IndustryFormFields> {
+    actions: {
+        onSubmit: (options?: IndustrySubmitOptions) => Promise<HookSubmitResult<Industry> | undefined>;
+    };
+    data: {
+        industry: Industry | null;
+        naicsCodes: NaicsCode[];
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+    };
+}
+
+// @public
+export type UseIndustryFormResult = HookLoadingResult | UseIndustryFormReady;
 
 // @public
 export function useJobForm(input: UseJobFormProps): HookLoadingResult | UseJobFormReady;

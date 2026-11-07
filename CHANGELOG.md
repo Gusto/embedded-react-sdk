@@ -1,5 +1,110 @@
 # Changelog
 
+## [0.58.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.58.0...v0.58.1) (2026-11-06)
+
+### Features & Enhancements
+
+- Show unused PTO hours on dismissal payrolls ([#3065](https://github.com/Gusto/embedded-react-sdk/issues/3065))
+
+### Fixes
+
+- Add a view action to `Company.DocumentList` for completed forms ([#3075](https://github.com/Gusto/embedded-react-sdk/issues/3075))
+- Fix reimbursements not showing on RRoP when editing an employee without a bank account ([#3067](https://github.com/Gusto/embedded-react-sdk/issues/3067))
+- Fix `EmployeeOnboarding.OnboardingFlow` getting stuck after clicking Continue ([#3076](https://github.com/Gusto/embedded-react-sdk/issues/3076))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`vitest`, `@storybook/*`, `eslint-plugin-storybook`, `release-it`, `sass-embedded`, `@microsoft/api-extractor`, `@mswjs/interceptors`, `globals`)
+- Bump runtime dependencies (`@hookform/resolvers`, `i18next`, `react-i18next`, `react-router-dom`)
+
+## [0.58.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.3...v0.58.0) (2026-11-02)
+
+### Breaking Changes
+
+#### Removed `Payroll.TransitionFlow`, `Payroll.TransitionPayroll`, and `Payroll.TransitionCreation` ([#3030](https://github.com/Gusto/embedded-react-sdk/issues/3030))
+
+The API now creates transition payrolls, so the SDK no longer has a creation step. These components are removed along with their props types, `TransitionCreationFormData`, the `Payroll.Transition` and `Payroll.TransitionCreation` translation namespaces, and the `transition/created` event (`componentEvents.TRANSITION_CREATED`).
+
+Render `Payroll.PayrollFlow` to run transition payrolls. It routes them to `Payroll.TransitionConfiguration`, then to `PayrollConfiguration` and the rest of the execution steps.
+
+```tsx
+// Before
+<Payroll.TransitionFlow
+  companyId={companyId}
+  startDate={startDate}
+  endDate={endDate}
+  payScheduleUuid={payScheduleUuid}
+  onEvent={onEvent}
+/>
+
+// After
+<Payroll.PayrollFlow companyId={companyId} onEvent={onEvent} />
+```
+
+If you compose the payroll screens yourself, render `Payroll.TransitionConfiguration` with the transition payroll's ID:
+
+```tsx
+<Payroll.TransitionConfiguration companyId={companyId} payrollId={payrollId} onEvent={onEvent} />
+```
+
+#### `PayrollList` emits `transition/payrollSelected` for transition payrolls ([#3021](https://github.com/Gusto/embedded-react-sdk/issues/3021))
+
+Clicking a transition payroll row in `PayrollList` no longer emits `runPayroll/selected`. It now emits `transition/payrollSelected` with the same `{ payrollUuid, payPeriod }` payload.
+
+```tsx
+// Before
+if (eventType === componentEvents.RUN_PAYROLL_SELECTED) {
+  // fired for regular and transition payrolls
+}
+
+// After
+if (eventType === componentEvents.RUN_PAYROLL_SELECTED) {
+  // regular payrolls only
+}
+if (eventType === componentEvents.TRANSITION_PAYROLL_SELECTED) {
+  // render Payroll.TransitionConfiguration with data.payrollUuid
+}
+```
+
+#### Regular rate of pay graduated from `UnstableFeatures` to `Features` ([#3009](https://github.com/Gusto/embedded-react-sdk/issues/3009))
+
+`GustoProvider` has a new `features` prop for released functionality that is on by default. `UnstableFeatures.payrollRegularRateOfPay` is replaced by `Features.regularRateOfPay`, which defaults to `true`. Only an explicit `false` turns it off. The `@alpha` `disableWorkweekStartDayEditing` prop is removed from `PaySchedule` and `usePayScheduleForm`.
+
+```tsx
+// Before: opt in
+<GustoProvider config={config} unstableFeatures={{ payrollRegularRateOfPay: true }}>
+
+// After: on by default. To opt out:
+<GustoProvider config={config} features={{ regularRateOfPay: false }}>
+```
+
+### Features & Enhancements
+
+- `Payroll.TransitionConfiguration` is now public. It updates the settings of an API-created transition payroll and hands off to `PayrollConfiguration` ([#3000](https://github.com/Gusto/embedded-react-sdk/issues/3000), [#3050](https://github.com/Gusto/embedded-react-sdk/issues/3050))
+- `PayrollFlow` routes transition payrolls to `TransitionConfiguration`, then continues to `PayrollConfiguration` for the same payroll ([#3021](https://github.com/Gusto/embedded-react-sdk/issues/3021))
+- The transition payroll alert lists every open transition payroll, with its own Run and Skip buttons. Run and skip events include the payroll ID. A calculated transition payroll offers Review and submit and emits `payroll/review` ([#3008](https://github.com/Gusto/embedded-react-sdk/issues/3008), [#3021](https://github.com/Gusto/embedded-react-sdk/issues/3021))
+- The `PaySchedule` workweek start day API is now public ([#3009](https://github.com/Gusto/embedded-react-sdk/issues/3009))
+- Payroll employee editors show approved PTO request hours separately from additional hours entered during payroll. Approved hours are read only. The headless payroll form exposes approved hours so custom editors can show the same split ([#2986](https://github.com/Gusto/embedded-react-sdk/issues/2986))
+- Sort `ContractorManagement.ContractorList` by last name. `TableProps` gains optional `sortDescriptor` and `onSortChange` for sortable columns in custom component adapters ([#2997](https://github.com/Gusto/embedded-react-sdk/issues/2997))
+- Add `getOptionDescription` to `RadioGroupHookField` for per-option descriptions ([#2996](https://github.com/Gusto/embedded-react-sdk/issues/2996))
+
+### Fixes
+
+- Prevent a fast double-click from submitting a composed form twice, which could create duplicate records such as a second job ([#3028](https://github.com/Gusto/embedded-react-sdk/issues/3028))
+- Create dismissal payroll for the selected employee when two dismissed employees share a pay period ([#3024](https://github.com/Gusto/embedded-react-sdk/issues/3024))
+- Default off-cycle payroll withholding to the company's pay schedule frequency instead of always every other week ([#3040](https://github.com/Gusto/embedded-react-sdk/issues/3040))
+- Show the correct compensation type (for example "Salary/Eligible for overtime") on the single-job `Compensation` card ([#3042](https://github.com/Gusto/embedded-react-sdk/issues/3042))
+- Show the compensation type for salaried employees in the payroll overview's Hours worked table ([#3031](https://github.com/Gusto/embedded-react-sdk/issues/3031))
+- Show estimated total pay instead of $0.00 when the API leaves out gross pay ([#3025](https://github.com/Gusto/embedded-react-sdk/issues/3025))
+- Stop a pay schedule with a `null` custom name from failing the whole pay schedule list ([#3049](https://github.com/Gusto/embedded-react-sdk/issues/3049))
+- Let "View checks" submit after switching print check stock types with a cleared starting number ([#3032](https://github.com/Gusto/embedded-react-sdk/issues/3032))
+- Remove the misleading Totals row from the payroll receipt's tax table. Lines like SDI and Paid Family Leave are not part of the tax debit, which the Debited section still shows ([#3027](https://github.com/Gusto/embedded-react-sdk/issues/3027))
+
+### Chores & Maintenance
+
+- Bump runtime dependencies (`i18next`, `react-i18next`) ([#3018](https://github.com/Gusto/embedded-react-sdk/issues/3018), [#3020](https://github.com/Gusto/embedded-react-sdk/issues/3020))
+- Bump dev dependencies (`@microsoft/api-extractor`, `@mswjs/interceptors`, Storybook addons, `typescript-eslint`, `sass-embedded`, `pixelmatch`) ([#3044](https://github.com/Gusto/embedded-react-sdk/issues/3044), [#3036](https://github.com/Gusto/embedded-react-sdk/issues/3036), [#3045](https://github.com/Gusto/embedded-react-sdk/issues/3045), [#3035](https://github.com/Gusto/embedded-react-sdk/issues/3035), [#3034](https://github.com/Gusto/embedded-react-sdk/issues/3034), [#3033](https://github.com/Gusto/embedded-react-sdk/issues/3033), [#3047](https://github.com/Gusto/embedded-react-sdk/issues/3047), [#3037](https://github.com/Gusto/embedded-react-sdk/issues/3037), [#3043](https://github.com/Gusto/embedded-react-sdk/issues/3043), [#3019](https://github.com/Gusto/embedded-react-sdk/issues/3019))
+
 ## [0.57.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.2...v0.57.3) (2026-10-27)
 
 ### Features & Enhancements

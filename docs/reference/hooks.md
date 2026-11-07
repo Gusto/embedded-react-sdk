@@ -17,6 +17,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | Hook | Description |
 | --- | --- |
 | [useContractorDocumentsList](contractor/hooks/use-contractor-documents-list) | Standalone data hook for a contractor's documents. |
+| [useDismissal](contractor/hooks/use-dismissal) | Fetches a contractor and exposes an action to schedule their dismissal. |
 | [useEmployeeList](employee/hooks/use-employee-list) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
 
 ## ✍️ Form hooks
@@ -31,6 +32,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | [useContractorDetailsForm](contractor/hooks/use-contractor-details-form) | Headless hook for creating or updating a contractor's profile details — individual vs. business type, wage type, names, SSN/EIN, work state, and the self-onboarding preference. |
 | [useContractorPayForm](contractor/hooks/use-contractor-pay-form) | Headless React Hook Form hook for editing a contractor's compensation. |
 | [useContractorPaymentMethodForm](contractor/hooks/use-contractor-payment-method-form) | Headless React Hook Form hook for managing a contractor's payment method type. |
+| [useContractorRehireForm](contractor/hooks/use-contractor-rehire-form) | Headless React Hook Form hook for scheduling a dismissed contractor's rehire. |
 | [useContractorSignatureForm](contractor/hooks/use-contractor-signature-form) | Headless hook for signing a contractor document — collects the document's fields plus a typed signature and consent. |
 | [useCurrentHomeAddressForm](employee/hooks/use-current-home-address-form) | Convenience wrapper around [useHomeAddressForm](employee/hooks/use-home-address-form.md#usehomeaddressform) that auto-resolves the employee's current home address. |
 | [useCurrentWorkAddressForm](employee/hooks/use-current-work-address-form) | Convenience wrapper around [useWorkAddressForm](employee/hooks/use-work-address-form.md#useworkaddressform) that auto-resolves the employee's current work address. |
@@ -39,6 +41,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | [useEmployeeStateTaxesForm](employee/hooks/use-employee-state-taxes-form) | Headless form hook for updating an employee's state tax withholding answers. The set of questions is driven by the API response per state, so `form.Fields` is an array of state groups with discriminated, render-ready `Field` components rather than a fixed named object. |
 | [useFederalTaxesForm](employee/hooks/use-federal-taxes-form) | Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
 | [useHomeAddressForm](employee/hooks/use-home-address-form) | Form hook for creating or editing an employee's home address. |
+| [useIndustryForm](company/hooks/use-industry-form) | Form hook for selecting and saving a company's industry classification. |
 | [useJobForm](employee/hooks/use-job-form) | Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields. |
 | [usePaymentMethodForm](employee/hooks/use-payment-method-form) | Headless React Hook Form hook for updating an employee's payment method. |
 | [usePayScheduleForm](company/hooks/use-pay-schedule-form) | Form hook for creating or updating a company pay schedule. |
@@ -347,6 +350,7 @@ narrowing. `isLoading: false` discriminates this branch from
 #### Extended by
 
 - [`UseEmployeeListReady`](employee/hooks/use-employee-list.md#useemployeelistready)
+- [`UseDismissalReady`](contractor/hooks/use-dismissal.md#usedismissalready)
 
 #### Type Parameters
 
@@ -453,7 +457,9 @@ parsed values (or `undefined` if invalid).
 - [`UseFederalTaxesFormReady`](employee/hooks/use-federal-taxes-form.md#usefederaltaxesformready)
 - [`UseSignEmployeeFormReady`](employee/hooks/use-sign-employee-form.md#usesignemployeeformready)
 - [`UsePayScheduleFormReady`](company/hooks/use-pay-schedule-form.md#usepayscheduleformready)
+- [`UseIndustryFormReady`](company/hooks/use-industry-form.md#useindustryformready)
 - [`UseSignCompanyFormReady`](company/hooks/use-sign-company-form.md#usesigncompanyformready)
+- [`UseContractorRehireFormReady`](contractor/hooks/use-contractor-rehire-form.md#usecontractorrehireformready)
 - [`UseContractorSignatureFormReady`](contractor/hooks/use-contractor-signature-form.md#usecontractorsignatureformready)
 
 #### Type Parameters
@@ -578,6 +584,7 @@ Common presentation props accepted by every hook field component.
 
 - [`TextInputHookFieldProps`](#textinputhookfieldprops)
 - [`SelectHookFieldProps`](#selecthookfieldprops)
+- [`ComboBoxHookFieldProps`](#comboboxhookfieldprops)
 - [`CheckboxHookFieldProps`](#checkboxhookfieldprops)
 - [`NumberInputHookFieldProps`](#numberinputhookfieldprops)
 - [`DatePickerHookFieldProps`](#datepickerhookfieldprops)
@@ -620,6 +627,50 @@ field attributes (`label`, `description`).
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 | `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+***
+
+<a id="comboboxhookfieldprops"></a>
+
+### ComboBoxHookFieldProps
+
+Props accepted by a combo box field surfaced through a form hook.
+Exposes `getOptionLabel` to customize how option entries are rendered as labels,
+`placeholder` text, `portalContainer` for correct stacking inside modals,
+and `validationMessages` for custom error text alongside the shared base field
+attributes (`label`, `description`).
+
+#### Remarks
+
+Prefer this over `SelectHookFieldProps` when the option list is long enough that
+the user needs type-ahead filtering to find an entry. The underlying control
+matches on the option's `value`, so a stored value with no matching option
+renders as empty — hooks are responsible for supplying an option for whatever
+value they place in the form.
+
+#### Extends
+
+- [`BaseFieldProps`](#basefieldprops).`Pick`\<[`ComboBoxProps`](component-inventory.md#comboboxprops), `"portalContainer"`\>
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
+| `TEntry` | `unknown` | Shape of each option entry consumed by `getOptionLabel`. |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `getOptionLabel?` | (`entry`: `TEntry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
 ***

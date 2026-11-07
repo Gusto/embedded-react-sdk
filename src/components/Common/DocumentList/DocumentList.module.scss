@@ -15,6 +15,10 @@
 }
 
 .statusCell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: toRem(8);
   white-space: nowrap;
 }
 
