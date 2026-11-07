@@ -2114,6 +2114,18 @@
         "uuid"
       ]
     },
+    "CompanyManagement.Dashboard": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies"
+        }
+      ],
+      "variables": [
+        "companyId"
+      ]
+    },
     "ContractorOnboarding.Landing": {
       "endpoints": [
         {

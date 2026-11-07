@@ -1,0 +1,15 @@
+{
+  "card": {
+    "title": "Locations",
+    "manageCta": "Manage",
+    "listLabel": "Company locations",
+    "addressColumn": "Address",
+    "designationsColumn": "Designations",
+    "mailingAddress": "Mailing",
+    "filingAddress": "Filing",
+    "emptyState": {
+      "title": "No locations yet",
+      "description": "Add a work address so this company can run payroll and file taxes in the right jurisdictions."
+    }
+  }
+}
