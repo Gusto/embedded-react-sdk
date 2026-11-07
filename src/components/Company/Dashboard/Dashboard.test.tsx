@@ -28,6 +28,10 @@ const unstableFeaturesWithPaySchedules = {
   companySettingsDashboard: true,
   managePaySchedules: true,
 }
+const unstableFeaturesWithTaxPayments = {
+  companySettingsDashboard: true,
+  taxPayments: true,
+}
 
 const fixturePaySchedule = {
   uuid: 'schedule-1',
@@ -210,6 +214,33 @@ describe('Company Dashboard', () => {
     expect(await screen.findByRole('heading', { name: 'Federal taxes' })).toBeInTheDocument()
     expect(await screen.findByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
     expect(await screen.findByText('Wyoming')).toBeInTheDocument()
+  })
+
+  it('renders the Tax payments card on the Taxes tab when taxPayments is also on', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures: unstableFeaturesWithTaxPayments,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+
+    expect(await screen.findByRole('heading', { name: 'Tax payments' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Manage tax payments' })).toBeInTheDocument()
+  })
+
+  it('omits the Tax payments card without taxPayments, leaving the rest of the tab intact', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+
+    // The card is omitted rather than throwing: the dashboard still renders, and the
+    // rest of the Taxes tab is unaffected.
+    expect(await screen.findByRole('heading', { name: 'Federal taxes' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Tax payments' })).toBeNull()
   })
 
   it('honours a controlled selectedTab', async () => {
@@ -446,6 +477,23 @@ describe('Company DashboardFlow', () => {
       expect(screen.getByRole('button', { name: 'Manage state taxes' })).toBeEnabled()
     })
     await user.click(screen.getByRole('button', { name: 'Manage state taxes' }))
+
+    expect(
+      await screen.findByRole('button', { name: 'Back to company settings' }),
+    ).toBeInTheDocument()
+  })
+
+  it('routes the Tax payments card Manage CTA to the TaxPayments spoke', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures: unstableFeaturesWithTaxPayments,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage tax payments' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage tax payments' }))
 
     expect(
       await screen.findByRole('button', { name: 'Back to company settings' }),

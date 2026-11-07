@@ -1,0 +1,24 @@
+{
+  "card": {
+    "title": "Tax payments",
+    "manageCta": "Manage",
+    "manageAriaLabel": "Manage tax payments",
+    "overdue": "Overdue",
+    "overdueCount_one": "{{count}} payment overdue",
+    "overdueCount_other": "{{count}} payments overdue",
+    "noneOverdue": "None overdue",
+    "nextPaymentDue": "Next payment due",
+    "agency": "Agency",
+    "amount": "Amount",
+    "unknownAgency": "Unknown agency",
+    "noDueDate": "No due date on file",
+    "jurisdiction": {
+      "federal": "Federal",
+      "state": "{{jurisdiction}}"
+    },
+    "emptyState": {
+      "title": "No tax payments scheduled",
+      "description": "Tax payments appear here once this company owes payroll taxes to an agency."
+    }
+  }
+}

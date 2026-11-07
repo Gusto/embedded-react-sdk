@@ -132,8 +132,9 @@ function DashboardHeader({ companyId }: { companyId: string }) {
  * loaded the heading is omitted and the tabs and cards still render.
  *
  * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the flag
- * throws. The Pay tab's Pay schedules card additionally requires `managePaySchedules` and is
- * omitted when that flag is off, leaving the tab rendering the Bank account card alone.
+ * throws. Two cards additionally require their own flag and are omitted when it is off: the Pay
+ * tab's Pay schedules card requires `managePaySchedules`, and the Taxes tab's Tax payments card
+ * requires `taxPayments`. Both tabs still render their remaining cards.
  *
  * @components
  * - {@link IndustryCard}
@@ -142,6 +143,7 @@ function DashboardHeader({ companyId }: { companyId: string }) {
  * - {@link PaySchedulesCard}
  * - {@link FederalTaxesCard}
  * - {@link StateTaxesCard}
+ * - {@link TaxPaymentsCard}
  *
  * @param props - Component props. See {@link DashboardProps}.
  * @returns A React element rendering the company settings dashboard.

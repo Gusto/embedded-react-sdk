@@ -8,6 +8,7 @@ import {
   BankAccountContextual,
   PayScheduleContextual,
   StateTaxesContextual,
+  TaxPaymentsContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -136,6 +137,11 @@ export const dashboardStateMachine = {
       toSpoke(StateTaxesContextual),
     ),
     transition(
+      componentEvents.COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED,
+      'taxPayments',
+      toSpoke(TaxPaymentsContextual),
+    ),
+    transition(
       componentEvents.COMPANY_DASHBOARD_ALERT_DISMISSED,
       'index',
       reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -235,6 +241,14 @@ export const dashboardStateMachine = {
       'index',
       returnToIndexWithAlert('stateTaxesUpdated'),
     ),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
+  taxPayments: state<MachineTransition>(
+    // TaxPaymentsFlow is a hub in its own right and, being read-only, has neither
+    // a completion event nor anything to report a success alert about:
+    // TAX_PAYMENT_VIEW and TAX_PAYMENT_BACK move between its list and a payment's
+    // detail, both of which live inside the spoke. The back header is the only way
+    // out.
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
 }

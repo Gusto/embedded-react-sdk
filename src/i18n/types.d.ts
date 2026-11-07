@@ -54,6 +54,8 @@ export interface Resources {
   /** */
   'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
   /** */
+  'Company.Management.TaxPayments': Translations.CompanyManagementTaxPayments
+  /** */
   'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
   /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
@@ -1552,6 +1554,47 @@ export namespace Translations {
     errors: {
       /** @defaultValue `"Tax payment not found"` */
       taxPaymentNotFound: string
+    }
+  }
+  /** Translation keys for the `Company.Management.TaxPayments` i18n namespace. */
+  export interface CompanyManagementTaxPayments {
+    card: {
+      /** @defaultValue `"Tax payments"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage tax payments"` */
+      manageAriaLabel: string
+      /** @defaultValue `"Overdue"` */
+      overdue: string
+      /** @defaultValue `"{{count}} payment overdue"` */
+      overdueCount_one: string
+      /** @defaultValue `"{{count}} payments overdue"` */
+      overdueCount_other: string
+      /** @defaultValue `"None overdue"` */
+      noneOverdue: string
+      /** @defaultValue `"Next payment due"` */
+      nextPaymentDue: string
+      /** @defaultValue `"Agency"` */
+      agency: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+      /** @defaultValue `"Unknown agency"` */
+      unknownAgency: string
+      /** @defaultValue `"No due date on file"` */
+      noDueDate: string
+      jurisdiction: {
+        /** @defaultValue `"Federal"` */
+        federal: string
+        /** @defaultValue `"{{jurisdiction}}"` */
+        state: string
+      }
+      emptyState: {
+        /** @defaultValue `"No tax payments scheduled"` */
+        title: string
+        /** @defaultValue `"Tax payments appear here once this company owes payroll taxes to an agency."` */
+        description: string
+      }
     }
   }
   /** Translation keys for the `Company.Management.TaxPaymentsList` i18n namespace. */
