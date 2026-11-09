@@ -50,6 +50,6 @@ We strongly recommend forwarding `X-Gusto-SDK-Version`. It lets Gusto see which 
 
 When you contact Gusto, include:
 
-- Your SDK version (from `package.json`)
+- Your SDK version, from `package.json` or the `X-Gusto-SDK-Version` header on any SDK request. The header shows the exact installed version.
 - The failing request path and response status
 - The response body and any browser console errors
