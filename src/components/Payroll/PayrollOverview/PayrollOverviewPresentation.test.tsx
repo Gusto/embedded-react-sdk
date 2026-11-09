@@ -107,6 +107,7 @@ const defaultProps = {
 
 describe('PayrollOverviewPresentation', () => {
   it.each([false, true])('shows the dismissal pay date with processed=%s', async processed => {
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}

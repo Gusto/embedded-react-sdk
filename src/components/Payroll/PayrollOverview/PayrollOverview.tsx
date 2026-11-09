@@ -272,7 +272,7 @@ const Root = ({
     }
   }, [wireInRequest?.status, showWireDetailsConfirmation])
 
-  const checkDate = payrollData?.checkDate
+  const checkDate = payrollData && getPayrollDisplayDates(payrollData).checkDate
   useEffect(() => {
     if (checkDate && showWireDetailsConfirmation) {
       const formattedCheckDate = dateFormatter.formatShortWithYear(checkDate)
@@ -522,12 +522,12 @@ const Root = ({
 
     const displayDates = getPayrollDisplayDates(payrollData)
 
-    if (displayDates.checkDate && displayDates.payrollDeadline) {
+    if (displayDates.checkDate && displayDates.submitBy) {
       return {
         type: 'info' as const,
         title: t('alerts.directDepositDeadline', {
           payDate: dateFormatter.formatShortWithWeekday(displayDates.checkDate),
-          ...dateFormatter.formatWithTime(displayDates.payrollDeadline),
+          ...dateFormatter.formatWithTime(displayDates.submitBy),
         }),
         content: t('alerts.directDepositDeadlineText'),
       }

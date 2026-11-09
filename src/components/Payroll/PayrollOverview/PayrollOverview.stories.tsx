@@ -1573,7 +1573,7 @@ export const WithCheckPaymentEmployeeProcessed = () => {
   )
 }
 
-export const DismissalWithUpdatedPayDate = () => (
+export const OffCycleWithUpdatedPayDate = () => (
   <PayrollOverviewPresentation
     onEdit={fn().mockName('edit')}
     onSubmit={fn().mockName('submit')}
@@ -1589,7 +1589,7 @@ export const DismissalWithUpdatedPayDate = () => (
       offCycle: true,
       offCycleReason: OffCycleReasonType.DismissedEmployee,
       checkDate: '2026-10-28',
-      payrollDeadline: new Date('2026-10-29T16:00:00-07:00'),
+      payrollDeadline: new Date('2026-10-27T16:00:00-07:00'),
       payrollStatusMeta: {
         payrollLate: null,
         initialCheckDate: null,

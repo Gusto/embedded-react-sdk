@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import type { PayrollShow } from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import {
+  type PayrollShow,
+  OffCycleReasonType,
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { getPayrollDisplayDates } from './payrollDates'
 
 const payroll: PayrollShow = {
@@ -16,12 +19,15 @@ const payroll: PayrollShow = {
 }
 
 describe('getPayrollDisplayDates', () => {
-  it('uses expected dates for an unprocessed off-cycle payroll with null lateness fields', () => {
-    expect(getPayrollDisplayDates(payroll)).toEqual({
-      checkDate: '2026-11-02',
-      payrollDeadline: '2026-10-29T16:00:00-07:00',
-    })
-  })
+  it.each(Object.values(OffCycleReasonType))(
+    'uses expected dates for %s with null lateness fields',
+    offCycleReason => {
+      expect(getPayrollDisplayDates({ ...payroll, offCycleReason })).toEqual({
+        checkDate: '2026-11-02',
+        submitBy: '2026-10-29T16:00:00-07:00',
+      })
+    },
+  )
 
   it.each([
     { offCycle: false },
@@ -32,7 +38,7 @@ describe('getPayrollDisplayDates', () => {
   ])('preserves stored dates for %j', overrides => {
     expect(getPayrollDisplayDates({ ...payroll, ...overrides })).toEqual({
       checkDate: payroll.checkDate,
-      payrollDeadline: payroll.payrollDeadline,
+      submitBy: payroll.payrollDeadline,
     })
   })
 })

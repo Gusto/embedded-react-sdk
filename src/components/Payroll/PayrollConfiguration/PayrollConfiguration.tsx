@@ -531,11 +531,11 @@ const Root = ({
 
     const displayDates = payrollShow && getPayrollDisplayDates(payrollShow)
 
-    if (displayDates?.checkDate && displayDates.payrollDeadline) {
+    if (displayDates?.checkDate && displayDates.submitBy) {
       return {
         label: t('alerts.directDepositDeadline', {
           payDate: dateFormatter.formatShortWithWeekday(displayDates.checkDate),
-          ...dateFormatter.formatWithTime(displayDates.payrollDeadline),
+          ...dateFormatter.formatWithTime(displayDates.submitBy),
         }),
         content: t('alerts.directDepositDeadlineText'),
         variant: 'info' as const,
