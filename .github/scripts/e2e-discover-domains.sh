@@ -86,10 +86,9 @@ echo "$all_changed" | sed 's/^/  /'
 # of these extensions in an unfamiliar location still falls through to the
 # cross-cutting branch below, preserving the safe default.
 #
-# docs-site/ and typedoc/ are also excluded: they contain the docs website
-# and TypeDoc generation config/plugins, which only affect the published
-# docs, not the SDK runtime or e2e tests.
-changed=$(echo "$all_changed" | grep -E '\.(ts|tsx|js|jsx|cjs|mjs|json|ya?ml|s?css|html|svg|env)$' | grep -vE '^(docs-site|typedoc)/' || true)
+# typedoc/ is also excluded: it contains TypeDoc generation config/plugins,
+# which only affect the published docs, not the SDK runtime or e2e tests.
+changed=$(echo "$all_changed" | grep -E '\.(ts|tsx|js|jsx|cjs|mjs|json|ya?ml|s?css|html|svg|env)$' | grep -vE '^typedoc/' || true)
 
 if [[ -z "$changed" ]]; then
   echo "No code/config changes detected (only non-runtime files)"
