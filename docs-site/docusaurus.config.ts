@@ -363,6 +363,7 @@ const config: Config = {
             { label: 'What is the SDK?', to: '/docs/' },
             { label: 'Getting started', to: '/docs/getting-started' },
             { label: 'Authentication', to: '/docs/getting-started/authentication' },
+            { label: 'Troubleshooting', to: '/docs/getting-started/troubleshooting' },
           ],
         },
         {
