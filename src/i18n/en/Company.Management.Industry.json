@@ -1,0 +1,13 @@
+{
+  "card": {
+    "title": "Industry",
+    "editCta": "Edit",
+    "industry": "Industry",
+    "naicsCode": "NAICS code",
+    "listEmptyPlaceholder": "No value",
+    "emptyState": {
+      "title": "No industry selected",
+      "description": "Choose the industry that best represents this company's primary business activity."
+    }
+  }
+}

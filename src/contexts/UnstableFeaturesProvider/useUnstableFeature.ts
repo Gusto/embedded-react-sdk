@@ -53,6 +53,20 @@ export interface UnstableFeatures {
    * @defaultValue `false`
    */
   taxPayments?: boolean
+  /**
+   * The centralized company settings dashboard.
+   *
+   * When `true`, `CompanyManagement.Dashboard` and `CompanyManagement.DashboardFlow` can be
+   * mounted, along with the section cards they compose: `CompanyManagement.IndustryCard`,
+   * `CompanyManagement.LocationsCard` and `CompanyManagement.FederalTaxesCard`.
+   *
+   * When `false`, all five components throw when mounted. The individual company components the
+   * dashboard routes to, such as `CompanyOnboarding.Industry` and `CompanyOnboarding.Locations`,
+   * are not affected.
+   *
+   * @defaultValue `false`
+   */
+  companySettingsDashboard?: boolean
 }
 
 /**

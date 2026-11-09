@@ -344,6 +344,29 @@ Translation keys for the `Company.BankAccount` i18n namespace.
 
 ***
 
+<a id="companydashboard"></a>
+
+### CompanyDashboard
+
+Translation keys for the `Company.Dashboard` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companydashboardalerts"></a> `alerts` | |
+| `alerts.federalTaxesUpdated` | `"Federal tax settings updated"` |
+| `alerts.industryUpdated` | `"Industry updated"` |
+| `alerts.locationsUpdated` | `"Locations updated"` |
+| <a id="property-companydashboardbacktodashboardcta"></a> `backToDashboardCta` | `"Back to company settings"` |
+| <a id="property-companydashboardcompanysettingslabel"></a> `companySettingsLabel` | `"Company settings"` |
+| <a id="property-companydashboardtabs"></a> `tabs` | |
+| `tabs.companyDetails` | `"Company details"` |
+| `tabs.taxes` | `"Taxes"` |
+| <a id="property-companydashboardtabslabel"></a> `tabsLabel` | `"Company settings tabs"` |
+
+***
+
 <a id="companydocumentlist"></a>
 
 ### CompanyDocumentList
@@ -682,6 +705,79 @@ Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace.
 | `saveError.title` | `"AutoPilot settings couldn't be saved"` |
 | <a id="property-companymanagementautopilotdialogtitle"></a> `title` | `"AutoPilot — {{scheduleName}}"` |
 | <a id="property-companymanagementautopilotdialogtogglelabel"></a> `toggleLabel` | `"Enable AutoPilot"` |
+
+***
+
+<a id="companymanagementfederaltaxes"></a>
+
+### CompanyManagementFederalTaxes
+
+Translation keys for the `Company.Management.FederalTaxes` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementfederaltaxescard"></a> `card` |
+| `card.editCta` |
+| `card.ein` |
+| `card.einMissing` |
+| `card.einUnverified` |
+| `card.einVerified` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.filingForm` |
+| `card.legalName` |
+| `card.listEmptyPlaceholder` |
+| `card.taxPayerType` |
+| `card.title` |
+
+***
+
+<a id="companymanagementindustry"></a>
+
+### CompanyManagementIndustry
+
+Translation keys for the `Company.Management.Industry` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementindustrycard"></a> `card` |
+| `card.editCta` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.industry` |
+| `card.listEmptyPlaceholder` |
+| `card.naicsCode` |
+| `card.title` |
+
+***
+
+<a id="companymanagementlocations"></a>
+
+### CompanyManagementLocations
+
+Translation keys for the `Company.Management.Locations` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementlocationscard"></a> `card` |
+| `card.addressColumn` |
+| `card.designationsColumn` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.filingAddress` |
+| `card.listLabel` |
+| `card.mailingAddress` |
+| `card.manageCta` |
+| `card.title` |
 
 ***
 
@@ -6123,11 +6219,15 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyaddresses"></a> `Company.Addresses` | [`CompanyAddresses`](#companyaddresses) |
 | <a id="property-resourcescompanyassignsignatory"></a> `Company.AssignSignatory` | [`CompanyAssignSignatory`](#companyassignsignatory) |
 | <a id="property-resourcescompanybankaccount"></a> `Company.BankAccount` | [`CompanyBankAccount`](#companybankaccount) |
+| <a id="property-resourcescompanydashboard"></a> `Company.Dashboard` | [`CompanyDashboard`](#companydashboard) |
 | <a id="property-resourcescompanydocumentlist"></a> `Company.DocumentList` | [`CompanyDocumentList`](#companydocumentlist) |
 | <a id="property-resourcescompanyfederaltaxes"></a> `Company.FederalTaxes` | [`CompanyFederalTaxes`](#companyfederaltaxes) |
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
 | <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
+| <a id="property-resourcescompanymanagementfederaltaxes"></a> `Company.Management.FederalTaxes` | [`CompanyManagementFederalTaxes`](#companymanagementfederaltaxes) |
+| <a id="property-resourcescompanymanagementindustry"></a> `Company.Management.Industry` | [`CompanyManagementIndustry`](#companymanagementindustry) |
+| <a id="property-resourcescompanymanagementlocations"></a> `Company.Management.Locations` | [`CompanyManagementLocations`](#companymanagementlocations) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
 | <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |

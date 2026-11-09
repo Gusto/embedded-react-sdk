@@ -1129,7 +1129,18 @@ declare namespace CompanyManagement {
         TaxPaymentDetail,
         TaxPaymentsFlowProps,
         TaxPaymentsListProps,
-        TaxPaymentDetailProps
+        TaxPaymentDetailProps,
+        IndustryCard,
+        IndustryCardProps,
+        LocationsCard,
+        LocationsCardProps,
+        FederalTaxesCard_2 as FederalTaxesCard,
+        FederalTaxesCardProps_2 as FederalTaxesCardProps,
+        Dashboard_2 as Dashboard,
+        DashboardFlow_2 as DashboardFlow,
+        DashboardProps_2 as DashboardProps,
+        DashboardFlowProps_2 as DashboardFlowProps,
+        DashboardTab_2 as DashboardTab
     }
 }
 
@@ -1565,6 +1576,12 @@ export const componentEvents: {
     readonly COMPANY_STATE_TAX_MANAGE_RATES: "company/stateTaxes/manageRates";
     readonly COMPANY_OVERVIEW_DONE: "company/overview/done";
     readonly COMPANY_OVERVIEW_CONTINUE: "company/overview/continue";
+    readonly COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED: "company/management/industry/editRequested";
+    readonly COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED: "company/management/locations/editRequested";
+    readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED: "company/management/federalTaxes/editRequested";
+    readonly COMPANY_DASHBOARD_TAB_CHANGE: "company/dashboard/tabChange";
+    readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
+    readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -2013,11 +2030,11 @@ declare namespace ContractorManagement {
         DismissalProps,
         Rehire,
         RehireProps,
-        DashboardFlow_2 as DashboardFlow,
-        Dashboard_2 as Dashboard,
-        DashboardFlowProps_2 as DashboardFlowProps,
-        DashboardProps_2 as DashboardProps,
-        DashboardTab_2 as DashboardTab,
+        DashboardFlow_3 as DashboardFlow,
+        Dashboard_3 as Dashboard,
+        DashboardFlowProps_3 as DashboardFlowProps,
+        DashboardProps_3 as DashboardProps,
+        DashboardTab_3 as DashboardTab,
         Profile_3 as Profile,
         ProfileCard_2 as ProfileCard,
         ProfileEditForm_2 as ProfileEditForm,
@@ -2487,22 +2504,33 @@ export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldPr
 // @public
 function Dashboard(input: DashboardProps): JSX;
 
-// @public
+// @alpha
 function Dashboard_2(input: DashboardProps_2): JSX;
+
+// @public
+function Dashboard_3(input: DashboardProps_3): JSX;
 
 // @public
 const DashboardFlow: (input: DashboardFlowProps) => JSX;
 
-// @public
+// @alpha
 const DashboardFlow_2: (input: DashboardFlowProps_2) => JSX;
+
+// @public
+const DashboardFlow_3: (input: DashboardFlowProps_3) => JSX;
 
 // @public
 interface DashboardFlowProps extends BaseComponentInterface<never> {
     employeeId: string;
 }
 
-// @public
+// @alpha
 interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
+    companyId: string;
+}
+
+// @public
+interface DashboardFlowProps_3 extends BaseComponentInterface<never> {
     contractorId: string;
 }
 
@@ -2512,17 +2540,26 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
     selectedTab?: DashboardTab;
 }
 
-// @public (undocumented)
-interface DashboardProps_2 extends BaseComponentInterface<'Contractor.Dashboard'> {
-    contractorId: string;
+// @alpha
+interface DashboardProps_2 extends BaseComponentInterface<'Company.Dashboard'> {
+    companyId: string;
     selectedTab?: DashboardTab_2;
+}
+
+// @public (undocumented)
+interface DashboardProps_3 extends BaseComponentInterface<'Contractor.Dashboard'> {
+    contractorId: string;
+    selectedTab?: DashboardTab_3;
 }
 
 // @public (undocumented)
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
 
+// @alpha
+type DashboardTab_2 = 'companyDetails' | 'taxes';
+
 // @public (undocumented)
-type DashboardTab_2 = 'details' | 'pay' | 'documents';
+type DashboardTab_3 = 'details' | 'pay' | 'documents';
 
 // @public
 export type DataAttributes = {
@@ -3167,9 +3204,19 @@ function FederalTaxes_3(props: FederalTaxesProps_3): JSX;
 // @public
 function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
 
+// @alpha
+function FederalTaxesCard_2(props: FederalTaxesCardProps_2): JSX;
+
 // @public
 interface FederalTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+interface FederalTaxesCardProps_2 {
+    companyId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
@@ -3647,6 +3694,16 @@ interface I9SignatureFormProps extends BaseComponentInterface<'Employee.I9Signat
 // @public
 function Industry_2(input: IndustryProps): JSX;
 
+// @alpha
+function IndustryCard(props: IndustryCardProps): JSX;
+
+// @alpha
+interface IndustryCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 export type IndustryErrorCode = (typeof IndustryErrorCodes)[keyof typeof IndustryErrorCodes];
 
@@ -3900,6 +3957,16 @@ interface LocationFormProps extends BaseComponentInterface<'Company.Locations'> 
 
 // @public
 function Locations(input: LocationsProps): JSX;
+
+// @alpha
+function LocationsCard(props: LocationsCardProps): JSX;
+
+// @alpha
+interface LocationsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // @public
 function LocationsList(props: LocationsListProps): JSX;
@@ -5110,6 +5177,8 @@ export interface Resources {
     // (undocumented)
     'Company.BankAccount': Translations.CompanyBankAccount
     // (undocumented)
+    'Company.Dashboard': Translations.CompanyDashboard
+    // (undocumented)
     'Company.DocumentList': Translations.CompanyDocumentList
     // (undocumented)
     'Company.FederalTaxes': Translations.CompanyFederalTaxes
@@ -5119,6 +5188,12 @@ export interface Resources {
     'Company.Locations': Translations.CompanyLocations
     // (undocumented)
     'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
+    // (undocumented)
+    'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
+    // (undocumented)
+    'Company.Management.Industry': Translations.CompanyManagementIndustry
+    // (undocumented)
+    'Company.Management.Locations': Translations.CompanyManagementLocations
     // (undocumented)
     'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
     // (undocumented)
@@ -6184,6 +6259,7 @@ export interface UnorderedListProps extends BaseListProps {
 
 // @alpha
 export interface UnstableFeatures {
+    companySettingsDashboard?: boolean;
     historicalPayments?: boolean;
     managePaySchedules?: boolean;
     taxPayments?: boolean;

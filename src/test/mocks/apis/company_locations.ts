@@ -1,4 +1,5 @@
-import { http, HttpResponse, type PathParams } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver, type PathParams } from 'msw'
+import type { GetV1CompaniesCompanyIdLocationsRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidlocations'
 import type { CompanyLocationRequest } from '@gusto/embedded-api/models/components/companylocationrequest'
 import type { PutV1LocationsLocationIdRequestBody } from '@gusto/embedded-api/models/operations/putv1locationslocationid'
 import { getFixture } from '../fixtures/getFixture'
@@ -27,9 +28,14 @@ export const getCompanyLocation = http.get(
   () => HttpResponse.json(basicLocation),
 )
 
-export const getCompanyLocations = http.get(
-  `${API_BASE_URL}/v1/companies/:company_id/locations`,
-  () => HttpResponse.json([basicLocation]),
+export function handleGetCompanyLocations(
+  resolver: HttpResponseResolver<PathParams, GetV1CompaniesCompanyIdLocationsRequest>,
+) {
+  return http.get(`${API_BASE_URL}/v1/companies/:company_id/locations`, resolver)
+}
+
+export const getCompanyLocations = handleGetCompanyLocations(() =>
+  HttpResponse.json([basicLocation]),
 )
 
 export const getLocation = http.get(`${API_BASE_URL}/v1/locations/:location_id`, () =>
