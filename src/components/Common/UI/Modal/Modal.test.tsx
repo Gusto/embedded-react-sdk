@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Modal } from './Modal'
 import { ModalDefaults } from './ModalTypes'
+import { Select } from '@/components/Common/UI/Select/Select'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const defaultProps = {
@@ -133,5 +135,27 @@ describe('Modal', () => {
 
     // Verify the modal renders with the prop
     expect(screen.getByText('Content')).toBeInTheDocument()
+  })
+
+  it('portals overlays from its content into the dialog so they stack above it', async () => {
+    HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
+      this.setAttribute('open', '')
+    }
+    renderWithProviders(
+      <Modal {...defaultProps} isOpen>
+        <Select
+          label="State"
+          placeholder="Select a state"
+          options={[
+            { label: 'California', value: 'CA' },
+            { label: 'Washington', value: 'WA' },
+          ]}
+        />
+      </Modal>,
+    )
+
+    await userEvent.setup().click(screen.getByRole('button', { name: /State/ }))
+
+    expect(screen.getByRole('listbox').closest('dialog')).toBe(document.querySelector('dialog'))
   })
 })

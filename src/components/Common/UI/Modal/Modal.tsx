@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { type ModalProps, ModalDefaults } from './ModalTypes'
 import styles from './Modal.module.scss'
@@ -7,12 +7,13 @@ import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useCont
 import { useOverflowDetection } from '@/hooks/useOverflowDetection/useOverflowDetection'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 import { transitionDuration } from '@/contexts/ThemeProvider/theme'
+import { ThemeContext, useTheme } from '@/contexts/ThemeProvider/useTheme'
 
 /**
  * Native `<dialog>`-backed modal with backdrop dismissal, Escape-key support, and a fixed footer.
  *
  * @remarks
- * Used as the base primitive for higher-level surfaces like {@link DialogProps | Dialog}. Body and footer content scroll independently when the body overflows.
+ * Used as the base primitive for higher-level surfaces like {@link DialogProps | Dialog}. Body and footer content scroll independently when the body overflows. Overlays rendered inside the modal (selects, combo boxes, date pickers, menus) portal into the modal so they stack above the native dialog's top layer.
  *
  * @param rawProps - See {@link ModalProps}.
  * @returns The rendered modal element.
@@ -27,6 +28,12 @@ export function Modal(rawProps: ModalProps) {
   const internalBackdropRef = useRef<HTMLDivElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const { container: themeContainer } = useTheme()
+  const [backdropElement, setBackdropElement] = useState<HTMLDivElement | null>(null)
+  const portalContext = useMemo(
+    () => ({ container: backdropElement ? { current: backdropElement } : themeContainer }),
+    [backdropElement, themeContainer],
+  )
 
   // Use callback ref to sync both internal and external refs
   const backdropCallbackRef = useForkRef(internalBackdropRef, containerRef)
@@ -42,6 +49,10 @@ export function Modal(rawProps: ModalProps) {
   const [isExiting, setIsExiting] = useState(false)
   const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isSmallOrLarger = breakpoints.includes('small')
+
+  useLayoutEffect(() => {
+    setBackdropElement(internalBackdropRef.current)
+  }, [])
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current
@@ -120,7 +131,7 @@ export function Modal(rawProps: ModalProps) {
                 [styles.contentScrollable as string]: isOverflowing,
               })}
             >
-              {children}
+              <ThemeContext.Provider value={portalContext}>{children}</ThemeContext.Provider>
             </div>
           )}
           {footer && (
@@ -129,7 +140,7 @@ export function Modal(rawProps: ModalProps) {
                 [styles.footerFixed as string]: isOverflowing,
               })}
             >
-              {footer}
+              <ThemeContext.Provider value={portalContext}>{footer}</ThemeContext.Provider>
             </div>
           )}
         </div>

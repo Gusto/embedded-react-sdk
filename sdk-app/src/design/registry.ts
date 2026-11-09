@@ -70,19 +70,19 @@ export const categorizedRegistry: CategorizedRegistry = {
         'View agency tax payments for a company — filter, sort, and drill into tax-liability detail.',
     },
     {
-      name: 'Time Tracking',
-      path: '/design/time-tracking',
+      name: 'Time Tracking — Shifts (API-first)',
+      path: '/design/shift-review',
       description:
-        'Employer time tracking — review and approve timesheets by pay period, edit shifts and breaks, and manage overtime and break policies and who they apply to.',
+        'Time tracking built on what the API provides — a server-filtered, paginated list of individual employee shifts, each approved on its own, with break and clock-out issues.',
       children: [
         {
           name: 'Prototype',
-          path: '/design/time-tracking',
+          path: '/design/shift-review',
           description: 'Live prototype against the real API.',
         },
         {
           name: 'Component states',
-          path: '/design/time-tracking/component-states',
+          path: '/design/shift-review/component-states',
           description: 'Browse individual components and configurations with mock data.',
         },
       ],

@@ -1,0 +1,50 @@
+// Flex establishes an inline-size container, which collapses table columns to zero width.
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(2);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: toRem(4);
+  align-items: center;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: toRem(16);
+}
+
+.filters {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: toRem(8);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: toRem(8);
+}
+
+// Kept mounted so the toolbar holds its height when nothing is selected.
+.actionsHidden {
+  visibility: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: toRem(16);
+
+  > :first-child {
+    flex: 1;
+  }
+}

@@ -107,7 +107,21 @@ export function errorMessages(error: unknown): string[] {
   return ['Something went wrong. Please try again.']
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+export function loadErrorMessage(error: unknown, resource: string, scope: string): string | null {
+  if (!error) return null
+  if (error instanceof TimeTrackingApiError && error.status === 404) {
+    return `The ${resource} API isn’t enabled for this partner (404). It’s gated behind a per-partner feature flag.`
+  }
+  if (error instanceof TimeTrackingApiError && error.status === 403) {
+    return `This token is missing the ${scope} scope (403).`
+  }
+  return errorMessages(error).join(' ')
+}
+
+async function requestWithHeaders(
+  path: string,
+  init?: RequestInit,
+): Promise<{ body: unknown; headers: Headers }> {
   const res = await fetch(`/api${path}`, {
     ...init,
     headers: {
@@ -115,19 +129,27 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       ...(init?.headers as Record<string, string> | undefined),
     },
   })
-  if (res.status === 204) return undefined as T
+  if (res.status === 204) return { body: undefined, headers: res.headers }
   const body = (await res.json().catch(() => null)) as unknown
   if (!res.ok) {
     const errors = (body as { errors?: ApiError[] } | null)?.errors ?? []
     throw new TimeTrackingApiError(res.status, errors, `Request failed (${res.status})`)
   }
-  return body as T
+  return { body, headers: res.headers }
 }
 
-function toQueryString(params: Record<string, string | undefined>): string {
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  return (await requestWithHeaders(path, init)).body as T
+}
+
+function toQueryString(params: Record<string, string | string[] | undefined>): string {
   const search = new URLSearchParams()
   for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined) search.set(key, value)
+    if (Array.isArray(value)) {
+      for (const item of value) search.append(key, item)
+    } else if (value !== undefined) {
+      search.set(key, value)
+    }
   }
   const query = search.toString()
   return query ? `?${query}` : ''
@@ -135,8 +157,10 @@ function toQueryString(params: Record<string, string | undefined>): string {
 
 export const timeTrackingKeys = {
   all: ['sdk-app', 'timeTracking'] as const,
-  timeSheets: (companyId: string, after: string, before: string) =>
-    [...timeTrackingKeys.all, 'timeSheets', companyId, after, before] as const,
+  timeSheets: (companyId: string, after: string, before: string, entityType: string) =>
+    [...timeTrackingKeys.all, 'timeSheets', companyId, after, before, entityType] as const,
+  timeSheetPage: (companyId: string, params: TimeSheetPageParams) =>
+    [...timeTrackingKeys.all, 'timeSheetPage', companyId, params] as const,
   overtimePolicies: (companyId: string) =>
     [...timeTrackingKeys.all, 'overtimePolicies', companyId] as const,
   breakPolicies: (companyId: string) =>
@@ -148,24 +172,62 @@ export interface TimeSheetRange {
   shiftStartedBefore: string
 }
 
-export function useTimeSheets(companyId: string, range: TimeSheetRange | null) {
+export function useTimeSheets(
+  companyId: string,
+  range: TimeSheetRange | null,
+  entityType: 'Employee' | 'Contractor' = 'Employee',
+) {
   return useQuery({
     queryKey: timeTrackingKeys.timeSheets(
       companyId,
       range?.shiftStartedAfter ?? '',
       range?.shiftStartedBefore ?? '',
+      entityType,
     ),
     enabled: range !== null,
     queryFn: () =>
       request<ApiTimeSheet[]>(
         `/v1/companies/${companyId}/time_tracking/time_sheets${toQueryString({
-          entity_type: 'Employee',
+          entity_type: entityType,
+          per: '500',
           shift_started_after: range?.shiftStartedAfter,
           shift_started_before: range?.shiftStartedBefore,
           sort_by: 'shift_started_at',
           include: 'effective_break_policy',
         })}`,
       ),
+  })
+}
+
+export interface TimeSheetPageParams extends TimeSheetRange {
+  status: TimeSheetStatus | null
+  employeeUuids: string[]
+  page: number
+  per: number
+}
+
+/** Filtering, sorting, and paging all happen server-side; totals come from the `x-total-*` headers. */
+export function useTimeSheetPage(companyId: string, params: TimeSheetPageParams) {
+  return useQuery({
+    queryKey: timeTrackingKeys.timeSheetPage(companyId, params),
+    placeholderData: previous => previous,
+    queryFn: async () => {
+      const { body, headers } = await requestWithHeaders(
+        `/v1/companies/${companyId}/time_tracking/time_sheets${toQueryString({
+          entity_type: 'Employee',
+          shift_started_after: params.shiftStartedAfter,
+          shift_started_before: params.shiftStartedBefore,
+          status: params.status ?? undefined,
+          'entity_uuids[]': params.employeeUuids,
+          sort_by: 'shift_started_at',
+          sort_order: 'desc',
+          page: String(params.page),
+          per: String(params.per),
+          include: 'effective_break_policy',
+        })}`,
+      )
+      return { body: body as ApiTimeSheet[], headers }
+    },
   })
 }
 
@@ -203,6 +265,7 @@ export interface TimeSheetUpdateBody {
   status?: TimeSheetStatus
   shift_started_at?: string
   shift_ended_at?: string | null
+  job_uuid?: string
   entries?: Array<{
     uuid?: string
     hours_worked?: number
@@ -225,6 +288,63 @@ export function updateTimeSheet(uuid: string, body: TimeSheetUpdateBody) {
   })
 }
 
+export interface TimeSheetCreateBody {
+  entity_uuid: string
+  entity_type: 'Employee'
+  status: TimeSheetStatus
+  job_uuid: string | null
+  time_zone: string
+  shift_started_at: string
+  shift_ended_at: string | null
+  entries: Array<{ hours_worked: number; pay_classification: PayClassification }>
+  breaks: Array<{ start_time: string; end_time: string | null; break_rule_uuid: string | null }>
+}
+
+export function useCreateTimeSheet(companyId: string) {
+  return useTimeTrackingMutation((body: TimeSheetCreateBody) =>
+    request<ApiTimeSheet>(`/v1/companies/${companyId}/time_tracking/time_sheets`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  )
+}
+
+export function useDeleteTimeSheet() {
+  return useTimeTrackingMutation(({ uuid, version }: { uuid: string; version: string }) =>
+    request<unknown>(`/v1/time_tracking/time_sheets/${uuid}${toQueryString({ version })}`, {
+      method: 'DELETE',
+    }),
+  )
+}
+
+/** The batch endpoint only supports create and update, so each time sheet gets its own DELETE. */
+export function useDeleteTimeSheets() {
+  return useTimeTrackingMutation(async (targets: StatusChangeTarget[]) => {
+    const settled = await Promise.allSettled(
+      targets.map(target =>
+        request<unknown>(
+          `/v1/time_tracking/time_sheets/${target.uuid}${toQueryString({ version: target.version })}`,
+          { method: 'DELETE' },
+        ),
+      ),
+    )
+    return settled.map<StatusChangeResult>((outcome, index) => ({
+      uuid: targets[index]!.uuid,
+      ok: outcome.status === 'fulfilled',
+      messages: outcome.status === 'rejected' ? errorMessages(outcome.reason) : [],
+    }))
+  })
+}
+
+export function useDeletePolicy(kind: 'overtime' | 'break') {
+  const resource = kind === 'overtime' ? 'overtime_policies' : 'break_policies'
+  return useTimeTrackingMutation(({ uuid, version }: { uuid: string; version: string }) =>
+    request<unknown>(`/v1/time_tracking/${resource}/${uuid}${toQueryString({ version })}`, {
+      method: 'DELETE',
+    }),
+  )
+}
+
 export function useUpdateTimeSheet() {
   return useTimeTrackingMutation(({ uuid, body }: { uuid: string; body: TimeSheetUpdateBody }) =>
     updateTimeSheet(uuid, body),
@@ -242,18 +362,108 @@ export interface StatusChangeResult {
   messages: string[]
 }
 
-/** No bulk status endpoint, so this fans out per time sheet and reports each outcome. */
-export function useChangeTimeSheetStatus() {
+interface ApiBatch {
+  uuid: string
+  status: string
+  completed_at?: string | null
+  results: Array<{ external_id: string; status: string; errors?: ApiError[] }>
+}
+
+const BATCH_LIMIT = 500
+const BATCH_POLL_ATTEMPTS = 20
+const BATCH_POLL_INTERVAL_MS = 1000
+
+async function waitForBatch(batchUuid: string): Promise<ApiBatch> {
+  for (let attempt = 0; attempt < BATCH_POLL_ATTEMPTS; attempt++) {
+    const batch = await request<ApiBatch>(`/v1/time_tracking/time_sheets_batches/${batchUuid}`)
+    if (batch.completed_at) return batch
+    await new Promise(resolve => setTimeout(resolve, BATCH_POLL_INTERVAL_MS))
+  }
+  throw new Error('Approval is taking longer than expected. Refresh to see the latest status.')
+}
+
+/** Requests over the 500-item limit fail entirely, so status changes are chunked. */
+async function changeStatusInBatches(
+  companyId: string,
+  targets: StatusChangeTarget[],
+  status: TimeSheetStatus,
+): Promise<StatusChangeResult[]> {
+  const results: StatusChangeResult[] = []
+  for (let index = 0; index < targets.length; index += BATCH_LIMIT) {
+    const chunk = targets.slice(index, index + BATCH_LIMIT)
+    const created = await request<ApiBatch>(
+      `/v1/companies/${companyId}/time_tracking/time_sheets_batches`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          idempotency_key: crypto.randomUUID(),
+          batch_action: 'update',
+          time_sheets: chunk.map(target => ({
+            external_id: target.uuid,
+            uuid: target.uuid,
+            version: target.version,
+            status,
+          })),
+        }),
+      },
+    )
+    const batch = created.completed_at ? created : await waitForBatch(created.uuid)
+    for (const target of chunk) {
+      const item = batch.results.find(result => result.external_id === target.uuid)
+      const messages = item?.errors?.map(error => error.message) ?? []
+      results.push({ uuid: target.uuid, ok: item !== undefined && messages.length === 0, messages })
+    }
+  }
+  // Approving one sheet re-versions the employee's other sheets, so their items fail as stale.
+  return Promise.all(
+    results.map(async result => {
+      if (result.ok) return result
+      const current = await request<ApiTimeSheet>(`/v1/time_tracking/time_sheets/${result.uuid}`)
+      return current.status === status ? { uuid: result.uuid, ok: true, messages: [] } : result
+    }),
+  )
+}
+
+async function changeStatusIndividually(
+  targets: StatusChangeTarget[],
+  status: TimeSheetStatus,
+): Promise<StatusChangeResult[]> {
+  const settled = await Promise.allSettled(
+    targets.map(target => updateTimeSheet(target.uuid, { version: target.version, status })),
+  )
+  // Without the partner's approval-enhancements flag the API drops `status` and still returns 200.
+  return settled.map<StatusChangeResult>((outcome, index) => {
+    const uuid = targets[index]!.uuid
+    if (outcome.status === 'rejected') {
+      return { uuid, ok: false, messages: errorMessages(outcome.reason) }
+    }
+    if (outcome.value.status !== status) {
+      return {
+        uuid,
+        ok: false,
+        messages: ['Changing timesheet approval isn’t enabled for this partner.'],
+      }
+    }
+    return { uuid, ok: true, messages: [] }
+  })
+}
+
+/**
+ * Uses the batch endpoint, which is gated behind the partner's approval-enhancements flag.
+ * Falls back to one PATCH per time sheet when batch updates aren't available.
+ */
+export function useChangeTimeSheetStatus(companyId: string) {
   return useTimeTrackingMutation(
     async ({ targets, status }: { targets: StatusChangeTarget[]; status: TimeSheetStatus }) => {
-      const settled = await Promise.allSettled(
-        targets.map(target => updateTimeSheet(target.uuid, { version: target.version, status })),
-      )
-      return settled.map<StatusChangeResult>((outcome, index) => ({
-        uuid: targets[index]!.uuid,
-        ok: outcome.status === 'fulfilled',
-        messages: outcome.status === 'rejected' ? errorMessages(outcome.reason) : [],
-      }))
+      if (targets.length === 1) return changeStatusIndividually(targets, status)
+      try {
+        return await changeStatusInBatches(companyId, targets, status)
+      } catch (error) {
+        if (error instanceof TimeTrackingApiError && [404, 422].includes(error.status)) {
+          return changeStatusIndividually(targets, status)
+        }
+        throw error
+      }
     },
   )
 }

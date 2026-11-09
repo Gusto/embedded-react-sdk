@@ -1,0 +1,15 @@
+// Plain flex instead of Flex/ActionsLayout: their inline-size containers collapse as flex items,
+// which forces the actions into their stacked single-column layout.
+.footer {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: toRem(12);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: toRem(12);
+}

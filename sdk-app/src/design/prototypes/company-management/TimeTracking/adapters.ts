@@ -1,14 +1,16 @@
 import type {
-  AssignableEmployee,
   BreakPolicy,
   BreakRule,
+  EmployeeJob,
   EmployeeTimesheetRow,
   HoursBreakdown,
   OvertimePolicy,
+  PayPeriodPhase,
   PayPeriodSummary,
   Shift,
   StatusCounts,
-  TimesheetStatus,
+  TimesheetDay,
+  TimeTrackingPerson,
 } from '../../../components/company/management/TimeTracking/types'
 import {
   EMPTY_HOURS,
@@ -19,10 +21,14 @@ import {
   addDaysToDateString,
   resolveShiftTime,
   toZonedParts,
+  zonedToUtcIso,
 } from '../../../components/company/management/TimeTracking/timeZones'
+import { shiftCompliance } from '../../../components/company/management/TimeTracking/compliance'
 import {
+  addMinutesToTime,
   ruleIdFromFormValue,
   type ShiftFormValues,
+  type ShiftSubmitValues,
 } from '../../../components/company/management/TimeTracking/shiftForm'
 import type {
   ApiBreakPolicy,
@@ -30,6 +36,7 @@ import type {
   ApiOvertimePolicy,
   ApiTimeSheet,
   ApiTimeSheetEntry,
+  TimeSheetCreateBody,
   TimeSheetUpdateBody,
 } from './timeTrackingApi'
 import { FlsaStatus } from '@/shared/constants'
@@ -64,6 +71,14 @@ function primaryJob(employee: TimeTrackingEmployee) {
   return employee.jobs?.find(job => job.primary) ?? employee.jobs?.[0]
 }
 
+export function jobsOf(employee: TimeTrackingEmployee | undefined): EmployeeJob[] {
+  return (employee?.jobs ?? []).map(job => ({ id: job.uuid, title: job.title ?? 'Untitled job' }))
+}
+
+export function primaryJobId(employee: TimeTrackingEmployee | undefined): string | null {
+  return employee ? (primaryJob(employee)?.uuid ?? null) : null
+}
+
 function currentCompensation(employee: TimeTrackingEmployee) {
   const job = primaryJob(employee)
   return (
@@ -71,48 +86,30 @@ function currentCompensation(employee: TimeTrackingEmployee) {
   )
 }
 
-export function jobTitle(employee: TimeTrackingEmployee): string | null {
-  return primaryJob(employee)?.title ?? null
-}
-
 function compensationDetails(employee: TimeTrackingEmployee): {
-  label: string
+  employmentType: string
   ineligibleReason: string | null
 } {
   const compensation = currentCompensation(employee)
-  const flsa = compensation?.flsaStatus
   const isHourly = compensation?.paymentUnit === 'Hour'
-  switch (flsa) {
+  switch (compensation?.flsaStatus) {
     case FlsaStatus.NONEXEMPT:
-      return { label: isHourly ? 'Hourly' : 'Salaried, non-exempt', ineligibleReason: null }
+      return {
+        employmentType: isHourly ? 'Hourly, overtime eligible' : 'Salaried, overtime eligible',
+        ineligibleReason: null,
+      }
     case FlsaStatus.SALARIED_NONEXEMPT:
-      return { label: 'Salaried, non-exempt', ineligibleReason: null }
+      return { employmentType: 'Salaried, overtime eligible', ineligibleReason: null }
     case FlsaStatus.EXEMPT:
-      return {
-        label: 'Salaried, exempt',
-        ineligibleReason: 'Exempt employees aren’t eligible for overtime or break rules.',
-      }
+      return { employmentType: 'Salaried, exempt', ineligibleReason: 'Ineligible pay type' }
     case FlsaStatus.OWNER:
-      return {
-        label: 'Owner',
-        ineligibleReason: 'Owners aren’t eligible for overtime or break rules.',
-      }
+      return { employmentType: 'Owner', ineligibleReason: 'Ineligible pay type' }
     case FlsaStatus.COMMISSION_ONLY_EXEMPT:
     case FlsaStatus.COMMISSION_ONLY_NONEXEMPT:
-      return {
-        label: 'Commission only',
-        ineligibleReason: 'Commission-only employees aren’t eligible for overtime or break rules.',
-      }
+      return { employmentType: 'Commission only', ineligibleReason: 'Ineligible pay type' }
     default:
-      return {
-        label: 'Not set up',
-        ineligibleReason: 'Add a job and compensation before assigning a policy.',
-      }
+      return { employmentType: 'Not set up', ineligibleReason: 'Missing job or compensation' }
   }
-}
-
-export function isEligibleForPolicies(employee: TimeTrackingEmployee): boolean {
-  return !employee.terminated && compensationDetails(employee).ineligibleReason === null
 }
 
 const CLASSIFICATION_KEY = {
@@ -154,6 +151,7 @@ export function toShift(sheet: ApiTimeSheet): Shift {
     timeZone: sheet.time_zone,
     startTime: sheet.shift_started_at,
     endTime: sheet.shift_ended_at,
+    jobId: sheet.job_uuid,
     breaks: (sheet.breaks ?? []).map(shiftBreak => {
       const rule = rules.find(r => r.id === shiftBreak.break_rule_uuid)
       return {
@@ -220,6 +218,16 @@ function countStatuses(sheets: ApiTimeSheet[]): StatusCounts {
   )
 }
 
+function latestSync(sheets: ApiTimeSheet[]): string | null {
+  return sheets.reduce<string | null>(
+    (latest, sheet) =>
+      sheet.synced_to_payroll_at && (!latest || sheet.synced_to_payroll_at > latest)
+        ? sheet.synced_to_payroll_at
+        : latest,
+    null,
+  )
+}
+
 export function sheetsInPeriod(
   sheets: ApiTimeSheet[],
   period: { startDate: string; endDate: string },
@@ -230,10 +238,19 @@ export function sheetsInPeriod(
   })
 }
 
+function phaseFor(period: TimeTrackingPayPeriod, today: string): PayPeriodPhase {
+  if (period.payroll?.processed) return 'payrollRun'
+  return period.endDate! >= today ? 'active' : 'readyToReview'
+}
+
+const PHASE_ORDER: Record<PayPeriodPhase, number> = { readyToReview: 0, active: 1, payrollRun: 2 }
+
+/** Ordered like Gusto's dropdown: ready to review, then active, then payroll already run. */
 export function toPayPeriodSummaries(
   periods: TimeTrackingPayPeriod[],
   sheets: ApiTimeSheet[],
   today: string,
+  scheduleNames: Record<string, string>,
 ): PayPeriodSummary[] {
   return periods
     .filter(period => period.startDate && period.endDate && period.startDate <= today)
@@ -241,108 +258,152 @@ export function toPayPeriodSummaries(
       const startDate = period.startDate!
       const endDate = period.endDate!
       const periodSheets = sheetsInPeriod(sheets, { startDate, endDate })
+      const isAllApproved = periodSheets.every(sheet => sheet.status === 'approved')
       return {
         id: payPeriodId(period),
         startDate,
         endDate,
         checkDate: period.payroll?.checkDate ?? null,
-        isCurrent: startDate <= today && today <= endDate,
+        payScheduleName: scheduleNames[period.payScheduleUuid ?? ''] ?? 'Pay schedule',
+        phase: phaseFor(period, today),
         isPayrollProcessed: period.payroll?.processed ?? false,
         employeeCount: new Set(periodSheets.map(sheet => sheet.entity_uuid)).size,
         timesheetCount: periodSheets.length,
         statusCounts: countStatuses(periodSheets),
+        isAllApproved,
         hours: hoursFromEntries(periodSheets.flatMap(sheet => sheet.entries)),
+        lastSyncedAt: latestSync(periodSheets),
       }
     })
-    .sort((a, b) => b.startDate.localeCompare(a.startDate))
+    .sort(
+      (a, b) =>
+        PHASE_ORDER[a.phase] - PHASE_ORDER[b.phase] || b.startDate.localeCompare(a.startDate),
+    )
 }
 
-export function aggregateStatus(counts: StatusCounts): TimesheetStatus | null {
-  if (counts.pending > 0) return 'pending'
-  if (counts.rejected > 0) return 'rejected'
-  if (counts.approved > 0) return 'approved'
-  return null
+function groupByEmployee(sheets: ApiTimeSheet[]): Map<string, ApiTimeSheet[]> {
+  const grouped = new Map<string, ApiTimeSheet[]>()
+  for (const sheet of sheets) {
+    grouped.set(sheet.entity_uuid, [...(grouped.get(sheet.entity_uuid) ?? []), sheet])
+  }
+  return grouped
 }
 
-function overtimePolicyNameFor(employeeUuid: string, policies: OvertimePolicy[]): string | null {
-  return policies.find(policy => policy.employeeUuids.includes(employeeUuid))?.name ?? null
+export function isSheetApprovable(sheet: ApiTimeSheet): boolean {
+  return !sheet.synced_to_payroll_at
 }
 
-/** Includes eligible employees with no hours so a missing timesheet is visible during review. */
+/** People on time tracking are those assigned to an overtime policy, plus anyone with hours. */
 export function toEmployeeRows(
   periodSheets: ApiTimeSheet[],
   employees: TimeTrackingEmployee[],
   overtimePolicies: OvertimePolicy[],
+  today: string,
 ): EmployeeTimesheetRow[] {
-  const sheetsByEmployee = new Map<string, ApiTimeSheet[]>()
-  for (const sheet of periodSheets) {
-    sheetsByEmployee.set(sheet.entity_uuid, [
-      ...(sheetsByEmployee.get(sheet.entity_uuid) ?? []),
-      sheet,
-    ])
-  }
+  const sheetsByEmployee = groupByEmployee(periodSheets)
   const employeesByUuid = new Map(employees.map(employee => [employee.uuid, employee]))
   const uuids = new Set([
     ...sheetsByEmployee.keys(),
-    ...employees.filter(isEligibleForPolicies).map(employee => employee.uuid),
+    ...overtimePolicies.flatMap(policy => policy.employeeUuids),
   ])
 
   return [...uuids]
     .map(uuid => {
       const employee = employeesByUuid.get(uuid)
-      const employeeSheets = sheetsByEmployee.get(uuid) ?? []
-      const statusCounts = countStatuses(employeeSheets)
+      const sheets = sheetsByEmployee.get(uuid) ?? []
+      const statusCounts = countStatuses(sheets)
       return {
         employeeUuid: uuid,
         name: employee ? employeeName(employee) : 'Unknown employee',
-        jobTitle: employee ? jobTitle(employee) : null,
-        status: aggregateStatus(statusCounts),
+        jobTitle: employee ? (primaryJob(employee)?.title ?? null) : null,
+        isApproved: sheets.length > 0 && statusCounts.approved === sheets.length,
+        hasHours: sheets.length > 0,
+        isLocked: sheets.length > 0 && sheets.every(sheet => !isSheetApprovable(sheet)),
         statusCounts,
-        shiftCount: employeeSheets.length,
-        hours: sumHours(employeeSheets.map(sheet => hoursFromEntries(sheet.entries))),
-        overtimePolicyName: overtimePolicyNameFor(uuid, overtimePolicies),
-      }
-    })
-    .sort((a, b) => {
-      if ((a.shiftCount === 0) !== (b.shiftCount === 0)) return a.shiftCount === 0 ? 1 : -1
-      return a.name.localeCompare(b.name)
-    })
-}
-
-export function toAssignableEmployees(
-  employees: TimeTrackingEmployee[],
-  policies: Array<{ id: string; name: string; employeeUuids: string[] }>,
-): AssignableEmployee[] {
-  return employees
-    .filter(employee => !employee.terminated)
-    .map(employee => {
-      const details = compensationDetails(employee)
-      const current = policies.find(policy => policy.employeeUuids.includes(employee.uuid))
-      return {
-        uuid: employee.uuid,
-        name: employeeName(employee),
-        jobTitle: jobTitle(employee),
-        compensationLabel: details.label,
-        ineligibleReason: details.ineligibleReason,
-        currentPolicyId: current?.id ?? null,
-        currentPolicyName: current?.name ?? null,
+        hours: sumHours(sheets.map(sheet => hoursFromEntries(sheet.entries))),
+        flags: [
+          ...(sheets.some(sheet => sheet.shift_ended_at === null && shiftDate(sheet) < today)
+            ? (['missedClockOut'] as const)
+            : []),
+          ...(sheets.some(sheet => {
+            const { missingBreaks, shortenedBreaks } = shiftCompliance(toShift(sheet))
+            return missingBreaks.length + shortenedBreaks.length > 0
+          })
+            ? (['breakViolation'] as const)
+            : []),
+        ],
       }
     })
     .sort((a, b) => a.name.localeCompare(b.name))
 }
 
-export function countUnassignedForOvertime(
-  employees: TimeTrackingEmployee[],
-  overtimePolicies: OvertimePolicy[],
-): number {
-  const assigned = new Set(overtimePolicies.flatMap(policy => policy.employeeUuids))
-  return employees.filter(
-    employee => isEligibleForPolicies(employee) && !assigned.has(employee.uuid),
-  ).length
+export function toTimesheetDays(
+  period: { startDate: string; endDate: string },
+  shifts: Shift[],
+  today: string,
+  overtimePolicy: OvertimePolicy | null,
+): TimesheetDay[] {
+  const days: TimesheetDay[] = []
+  for (let date = period.startDate; date <= period.endDate; date = addDaysToDateString(date, 1)) {
+    const dayShifts = shifts
+      .filter(shift => shift.date === date)
+      .sort((a, b) => a.startTime.localeCompare(b.startTime))
+    const hours = sumHours(dayShifts.map(shift => shift.hours))
+    days.push({
+      date,
+      shifts: dayShifts,
+      hours,
+      isFuture: date > today,
+      isPast: date < today,
+      isLocked: dayShifts.length > 0 && dayShifts.every(shift => shift.syncedToPayrollAt !== null),
+      isOverDailyThreshold:
+        overtimePolicy?.dailyThreshold != null && hours.total > overtimePolicy.dailyThreshold,
+    })
+  }
+  return days
 }
 
-/** Pads the pay-period window by a day on each side so shifts in any US time zone are fetched. */
-export function timeSheetRangeFor(periods: PayPeriodSummary[]) {
+export function toPeople(
+  employees: TimeTrackingEmployee[],
+  overtimePolicies: OvertimePolicy[],
+  breakPolicies: BreakPolicy[],
+  workStates: Record<string, string> = {},
+): TimeTrackingPerson[] {
+  return employees
+    .filter(employee => !employee.terminated)
+    .map(employee => {
+      const details = compensationDetails(employee)
+      return {
+        uuid: employee.uuid,
+        name: employeeName(employee),
+        jobTitle: primaryJob(employee)?.title ?? null,
+        employmentType: details.employmentType,
+        workState: workStates[employee.uuid] ?? null,
+        ineligibleReason: details.ineligibleReason,
+        overtimePolicyId:
+          overtimePolicies.find(policy => policy.employeeUuids.includes(employee.uuid))?.id ?? null,
+        breakPolicyId:
+          breakPolicies.find(policy => policy.employeeUuids.includes(employee.uuid))?.id ?? null,
+      }
+    })
+    .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+export function currentWorkweekStart(
+  today: string,
+  workweekStartDay: string | null,
+): string | null {
+  const startIndex = workweekStartDay ? WEEKDAYS.indexOf(workweekStartDay) : -1
+  if (startIndex < 0) return null
+  const [year, month, day] = today.split('-').map(Number)
+  const todayIndex = new Date(Date.UTC(year!, month! - 1, day!)).getUTCDay()
+  return addDaysToDateString(today, -((todayIndex - startIndex + 7) % 7))
+}
+
+/** Pads the window by a day on each side so shifts in any US time zone are fetched. */
+export function timeSheetRangeFor(periods: Array<{ startDate: string; endDate: string }>) {
   if (periods.length === 0) return null
   const start = periods.reduce(
     (min, p) => (p.startDate < min ? p.startDate : min),
@@ -355,37 +416,80 @@ export function timeSheetRangeFor(periods: PayPeriodSummary[]) {
   }
 }
 
+function breakTimes(
+  date: string,
+  values: ShiftFormValues,
+  shiftBreak: ShiftFormValues['breaks'][number],
+  timeZone: string,
+) {
+  const resolve = (time: string) => resolveShiftTime(date, values.startTime, time, timeZone)
+  return {
+    start_time: resolve(shiftBreak.start),
+    end_time:
+      shiftBreak.lengthMinutes !== undefined
+        ? resolve(addMinutesToTime(shiftBreak.start, shiftBreak.lengthMinutes))
+        : null,
+    break_rule_uuid: ruleIdFromFormValue(shiftBreak.ruleId),
+  }
+}
+
+/** Unclassified partners send one entry per shift; Gusto applies overtime rules on sync. */
+function unclassifiedEntry(hoursWorked: number) {
+  return { hours_worked: hoursWorked, pay_classification: 'Unclassified' as const }
+}
+
 /** Nested-attributes PATCH: omitted entries/breaks are kept by the API, so removals need `_destroy`. */
-export function toShiftUpdateBody(shift: Shift, values: ShiftFormValues): TimeSheetUpdateBody {
+export function toShiftUpdateBody(shift: Shift, values: ShiftSubmitValues): TimeSheetUpdateBody {
   const resolve = (time: string) =>
-    resolveShiftTime(shift.date, values.clockIn, time, shift.timeZone)
+    resolveShiftTime(shift.date, values.startTime, time, shift.timeZone)
   const keptBreakIds = new Set(values.breaks.map(b => b.id).filter(Boolean))
-  const keptEntryIds = new Set(values.entries.map(e => e.id).filter(Boolean))
+  const [keptEntry, ...extraEntries] = shift.entries
 
   return {
     version: shift.version,
-    shift_started_at: resolve(values.clockIn),
-    ...(values.isOngoing ? {} : { shift_ended_at: resolve(values.clockOut) }),
+    shift_started_at: zonedToUtcIso(shift.date, values.startTime, shift.timeZone),
+    ...(values.isOngoing ? {} : { shift_ended_at: resolve(values.endTime) }),
+    ...(values.jobId ? { job_uuid: values.jobId } : {}),
     breaks: [
       ...values.breaks.map(shiftBreak => ({
         ...(shiftBreak.id ? { uuid: shiftBreak.id } : {}),
-        start_time: resolve(shiftBreak.start),
-        end_time: shiftBreak.end ? resolve(shiftBreak.end) : null,
-        break_rule_uuid: ruleIdFromFormValue(shiftBreak.ruleId),
+        ...breakTimes(shift.date, values, shiftBreak, shift.timeZone),
       })),
       ...shift.breaks
         .filter(shiftBreak => !keptBreakIds.has(shiftBreak.id))
         .map(shiftBreak => ({ uuid: shiftBreak.id, _destroy: true })),
     ],
-    entries: [
-      ...values.entries.map(entry => ({
-        ...(entry.id ? { uuid: entry.id } : {}),
-        hours_worked: entry.hours,
-        pay_classification: entry.classification,
-      })),
-      ...shift.entries
-        .filter(entry => !keptEntryIds.has(entry.id))
-        .map(entry => ({ uuid: entry.id, _destroy: true })),
-    ],
+    ...(values.hoursWorked === null
+      ? {}
+      : {
+          entries: [
+            {
+              ...(keptEntry ? { uuid: keptEntry.id } : {}),
+              ...unclassifiedEntry(values.hoursWorked),
+            },
+            ...extraEntries.map(entry => ({ uuid: entry.id, _destroy: true })),
+          ],
+        }),
+  }
+}
+
+export function toShiftCreateBody(
+  employeeUuid: string,
+  date: string,
+  timeZone: string,
+  values: ShiftSubmitValues,
+): TimeSheetCreateBody {
+  return {
+    entity_uuid: employeeUuid,
+    entity_type: 'Employee',
+    status: 'pending',
+    job_uuid: values.jobId || null,
+    time_zone: timeZone,
+    shift_started_at: zonedToUtcIso(date, values.startTime, timeZone),
+    shift_ended_at: values.isOngoing
+      ? null
+      : resolveShiftTime(date, values.startTime, values.endTime, timeZone),
+    entries: values.hoursWorked === null ? [] : [unclassifiedEntry(values.hoursWorked)],
+    breaks: values.breaks.map(shiftBreak => breakTimes(date, values, shiftBreak, timeZone)),
   }
 }

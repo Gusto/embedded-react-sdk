@@ -103,6 +103,7 @@ function DeductionsCardContent({ employeeId, onEvent, LoaderComponent }: Deducti
     {
       key: 'description',
       title: t('columns.deduction'),
+      wrap: true,
       render: (garnishment: Garnishment) => garnishment.description || '-',
     },
     {

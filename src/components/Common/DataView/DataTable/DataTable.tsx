@@ -120,11 +120,13 @@ export const DataTable = <T,>({
         ? {
             key: column.key,
             content: withJustify(column.title, column.justify),
+            wrap: column.wrap,
             ...getSortControls(column.key, sortDescriptor, onSortChange),
           }
         : {
             key: typeof column.key === 'string' ? column.key : `header-${index}`,
             content: withJustify(column.title, column.justify),
+            wrap: column.wrap,
           },
     ),
     ...(itemMenu
@@ -188,6 +190,7 @@ export const DataTable = <T,>({
         return {
           key: typeof column.key === 'string' ? column.key : `cell-${colIndex}`,
           content: withJustify(getCellContent(item, column), column.justify),
+          wrap: column.wrap,
         }
       }),
       ...(itemMenu

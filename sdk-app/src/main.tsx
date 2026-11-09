@@ -45,9 +45,9 @@ import {
   ManagePaySchedulesStates,
 } from './design/prototypes/company-management/ManagePaySchedules'
 import {
-  TimeTrackingPrototype,
-  TimeTrackingStates,
-} from './design/prototypes/company-management/TimeTracking'
+  ShiftReviewPrototype,
+  ShiftReviewStates,
+} from './design/prototypes/company-management/ShiftReview'
 import { TaxFilings } from './design/prototypes/tax-filings'
 import { AgentPayments } from './design/prototypes/agent-payments'
 import './app.scss'
@@ -189,16 +189,16 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: 'time-tracking',
+            path: 'shift-review',
             children: [
-              { index: true, element: <TimeTrackingPrototype /> },
+              { index: true, element: <ShiftReviewPrototype /> },
               {
                 path: 'component-states',
                 children: [
-                  { index: true, element: <TimeTrackingStates /> },
+                  { index: true, element: <ShiftReviewStates /> },
                   {
                     path: ':componentSlug/:configSlug',
-                    element: <TimeTrackingStates />,
+                    element: <ShiftReviewStates />,
                   },
                 ],
               },

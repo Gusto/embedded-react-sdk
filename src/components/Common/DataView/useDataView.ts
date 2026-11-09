@@ -13,6 +13,7 @@ type DataViewColumn<T> =
       title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
+      wrap?: boolean
       isSortable?: false
     }
   | {
@@ -20,6 +21,7 @@ type DataViewColumn<T> =
       title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
+      wrap?: boolean
       isSortable: true
     }
   | {
@@ -27,6 +29,7 @@ type DataViewColumn<T> =
       title: string | React.ReactNode
       render: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
+      wrap?: boolean
       isSortable?: false
     }
 

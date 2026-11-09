@@ -16,28 +16,38 @@ export interface StatusCounts {
   rejected: number
 }
 
+/** Mirrors the grouping of Gusto's pay period dropdown. */
+export type PayPeriodPhase = 'readyToReview' | 'active' | 'payrollRun'
+
 export interface PayPeriodSummary {
   id: string
   startDate: string
   endDate: string
   checkDate: string | null
-  isCurrent: boolean
+  payScheduleName: string
+  phase: PayPeriodPhase
   isPayrollProcessed: boolean
   employeeCount: number
   timesheetCount: number
   statusCounts: StatusCounts
+  /** Every timesheet in the period is approved; employees with no hours have nothing to approve. */
+  isAllApproved: boolean
   hours: HoursBreakdown
+  lastSyncedAt: string | null
 }
+
+export type TimesheetFlag = 'missedClockOut' | 'breakViolation'
 
 export interface EmployeeTimesheetRow {
   employeeUuid: string
   name: string
   jobTitle: string | null
-  status: TimesheetStatus | null
+  isApproved: boolean
+  hasHours: boolean
+  isLocked: boolean
   statusCounts: StatusCounts
-  shiftCount: number
   hours: HoursBreakdown
-  overtimePolicyName: string | null
+  flags: TimesheetFlag[]
 }
 
 export interface ShiftBreak {
@@ -62,6 +72,7 @@ export interface Shift {
   timeZone: string
   startTime: string
   endTime: string | null
+  jobId: string | null
   breaks: ShiftBreak[]
   entries: ShiftEntry[]
   hours: HoursBreakdown
@@ -75,6 +86,21 @@ export interface AppliedBreakPolicy {
   jurisdiction: string | null
   payPremium: boolean
   rules: BreakRule[]
+}
+
+export interface TimesheetDay {
+  date: string
+  shifts: Shift[]
+  hours: HoursBreakdown
+  isFuture: boolean
+  isPast: boolean
+  isLocked: boolean
+  isOverDailyThreshold: boolean
+}
+
+export interface EmployeeJob {
+  id: string
+  title: string
 }
 
 export interface OvertimePolicy {
@@ -108,18 +134,19 @@ export interface BreakPolicy {
 
 export type PolicyKind = 'overtime' | 'break'
 
-export interface AssignableEmployee {
+export interface TimeTrackingPerson {
   uuid: string
   name: string
   jobTitle: string | null
-  compensationLabel: string
+  employmentType: string
+  workState: string | null
   ineligibleReason: string | null
-  currentPolicyId: string | null
-  currentPolicyName: string | null
+  overtimePolicyId: string | null
+  breakPolicyId: string | null
 }
 
 export interface BulkActionResult {
-  action: 'approved' | 'rejected' | 'pending'
+  action: 'approved' | 'rejected' | 'pending' | 'deleted'
   succeeded: Array<{ id: string; label: string }>
   failed: Array<{ id: string; label: string; messages: string[] }>
 }

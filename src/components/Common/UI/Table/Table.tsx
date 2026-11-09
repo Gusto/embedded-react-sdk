@@ -32,12 +32,33 @@ function getAriaSortDescriptor(headers: TableProps['headers']) {
  */
 export function Table(rawProps: TableProps) {
   const resolvedProps = applyMissingDefaults(rawProps, TableDefaults)
-  const { className, headers, rows, footer, emptyState, isWithinBox, hasCheckboxColumn, ...props } =
-    resolvedProps
+  const {
+    className,
+    headers,
+    rows,
+    footer,
+    emptyState,
+    isWithinBox,
+    hasCheckboxColumn,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    ...props
+  } = resolvedProps
   return (
-    <div className={styles.root} data-within-box={isWithinBox || undefined}>
+    <div
+      className={styles.root}
+      data-within-box={isWithinBox || undefined}
+      role="region"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      // Keyboard users must be able to scroll the table horizontally when it overflows (WCAG 2.1.1)
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={0}
+    >
       <AriaTable
         {...props}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledby}
         className={classnames('react-aria-Table', className)}
         sortDescriptor={getAriaSortDescriptor(headers)}
         onSortChange={descriptor => {
@@ -56,6 +77,7 @@ export function Table(rawProps: TableProps) {
                 id={header.key}
                 isRowHeader={index === 0}
                 allowsSorting={header.isSortable}
+                data-wrap={header.wrap || undefined}
               >
                 <Text as="span" weight="semibold" size="xs">
                   {header.content}
@@ -83,7 +105,7 @@ export function Table(rawProps: TableProps) {
             rows.map(row => (
               <Row key={row.key}>
                 {row.data.map((cell, index) => (
-                  <Cell key={cell.key}>
+                  <Cell key={cell.key} data-wrap={cell.wrap || undefined}>
                     <Text
                       as="span"
                       variant={

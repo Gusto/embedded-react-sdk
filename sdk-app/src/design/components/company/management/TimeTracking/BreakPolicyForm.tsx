@@ -1,10 +1,9 @@
-import { FormProvider, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { DescriptionList } from '../../../common/DescriptionList'
-import type { BreakPolicy, BreakRule } from './types'
+import { useFieldArray, useFormContext } from 'react-hook-form'
+import type { BreakPolicy, TimeTrackingPerson } from './types'
+import type { BreakPolicyFormInput } from './useBreakPolicyForm'
+import { PolicyPeoplePicker } from './PolicyPeoplePicker'
+import { useStateName } from './useStateName'
 import {
-  ActionsLayout,
   CheckboxField,
   Flex,
   Grid,
@@ -12,286 +11,201 @@ import {
   SelectField,
   TextInputField,
 } from '@/components/Common'
-import { STATES_ABBR } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-const STATE_OPTIONS = STATES_ABBR.map(state => ({ value: state, label: state }))
+const COMPENSATION_OPTIONS = [
+  { value: 'unpaid', label: 'Unpaid (off-duty)' },
+  { value: 'paid', label: 'Paid (on-duty)' },
+]
 
-const optionalNumber = z.preprocess(
-  value => (typeof value === 'number' && !Number.isNaN(value) ? value : undefined),
-  z.number().optional(),
-)
-
-const ruleSchema = z.object({
-  id: z.string().optional(),
-  isEnabled: z.boolean(),
-  durationMinutes: optionalNumber,
-  afterHoursWorked: optionalNumber,
-  isPaid: z.boolean(),
-})
-
-const schema = z
-  .object({
-    name: z.string().trim().min(1, 'Name is required'),
-    jurisdiction: z.string().min(1, 'State is required'),
-    payPremium: z.boolean(),
-    meal: ruleSchema,
-    rest: ruleSchema,
-  })
-  .superRefine((data, ctx) => {
-    if (!data.meal.isEnabled && !data.rest.isEnabled) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['meal', 'isEnabled'],
-        message: 'Add a meal break, a rest break, or both',
-      })
-    }
-    for (const key of ['meal', 'rest'] as const) {
-      const rule = data[key]
-      if (!rule.isEnabled) continue
-      if (
-        rule.durationMinutes === undefined ||
-        rule.durationMinutes < 1 ||
-        !Number.isInteger(rule.durationMinutes)
-      ) {
-        ctx.addIssue({
-          code: 'custom',
-          path: [key, 'durationMinutes'],
-          message: 'Enter a whole number of minutes',
-        })
-      }
-      if (rule.afterHoursWorked === undefined || rule.afterHoursWorked <= 0) {
-        ctx.addIssue({
-          code: 'custom',
-          path: [key, 'afterHoursWorked'],
-          message: 'Enter the hours worked before this break is required',
-        })
-      }
-    }
-  })
-
-type FormInput = z.input<typeof schema>
-type FormOutput = z.output<typeof schema>
-
-export interface BreakPolicyFormValues {
-  name: string
-  jurisdiction: string
-  payPremium: boolean
-  rules: BreakRule[]
-}
-
-function ruleDefaults(
-  rule: BreakRule | undefined,
-  fallbackDuration: number,
-  fallbackAfter: number,
-) {
-  return {
-    id: rule?.id,
-    isEnabled: rule !== undefined,
-    durationMinutes: rule?.durationMinutes ?? fallbackDuration,
-    afterHoursWorked: rule ? rule.afterHoursWorkedMinutes / 60 : fallbackAfter,
-    isPaid: rule?.isPaid ?? false,
-  }
-}
-
-function toDefaults(policy: BreakPolicy | undefined): FormInput {
-  const meal = policy?.rules.find(rule => rule.breakType === 'meal')
-  const rest = policy?.rules.find(rule => rule.breakType === 'rest')
-  return {
-    name: policy?.name ?? '',
-    jurisdiction: policy?.jurisdiction ?? '',
-    payPremium: policy?.payPremium ?? false,
-    meal: policy
-      ? ruleDefaults(meal, 30, 5)
-      : { ...ruleDefaults(undefined, 30, 5), isEnabled: true },
-    rest: { ...ruleDefaults(rest, 10, 4), isPaid: rest?.isPaid ?? true },
-  }
-}
-
-function toValues(data: FormOutput): BreakPolicyFormValues {
-  const rules: BreakRule[] = []
-  for (const breakType of ['meal', 'rest'] as const) {
-    const rule = data[breakType]
-    if (!rule.isEnabled) continue
-    rules.push({
-      id: rule.id,
-      breakType,
-      durationMinutes: rule.durationMinutes ?? 0,
-      afterHoursWorkedMinutes: Math.round((rule.afterHoursWorked ?? 0) * 60),
-      isPaid: rule.isPaid,
-    })
-  }
-  return { name: data.name, jurisdiction: data.jurisdiction, payPremium: data.payPremium, rules }
-}
-
-export interface BreakPolicyFormProps {
+export interface BreakPolicyFieldsProps {
   policy?: BreakPolicy
+  jurisdiction: string | null
+  people: TimeTrackingPerson[]
+  policyNames: Record<string, string>
   serverErrors?: string[]
-  isSubmitting?: boolean
-  onSubmit: (values: BreakPolicyFormValues) => void
-  onCancel: () => void
 }
 
-export function BreakPolicyForm({
+export function BreakPolicyFields({
   policy,
+  jurisdiction,
+  people,
+  policyNames,
   serverErrors,
-  isSubmitting,
-  onSubmit,
-  onCancel,
-}: BreakPolicyFormProps) {
+}: BreakPolicyFieldsProps) {
   const Components = useComponentContext()
-  const isEdit = policy !== undefined
+  const stateName = useStateName()
+  const { control, watch } = useFormContext<BreakPolicyFormInput>()
+  const meals = useFieldArray({ control, name: 'meals' })
+  const rests = useFieldArray({ control, name: 'rests' })
+  const values = watch()
 
-  const formMethods = useForm<FormInput, unknown, FormOutput>({
-    resolver: zodResolver(schema),
-    defaultValues: toDefaults(policy),
-  })
-  const isMealEnabled = formMethods.watch('meal.isEnabled')
-  const isRestEnabled = formMethods.watch('rest.isEnabled')
+  const outOfStateCount = jurisdiction
+    ? values.employeeUuids.filter(uuid => {
+        const workState = people.find(person => person.uuid === uuid)?.workState
+        return workState !== undefined && workState !== null && workState !== jurisdiction
+      }).length
+    : 0
+  const hasShortMeal =
+    values.providesMeal &&
+    values.meals.some(rule => typeof rule.durationMinutes === 'number' && rule.durationMinutes < 30)
 
   return (
-    <FormProvider {...formMethods}>
-      <Flex flexDirection="column" gap={24} alignItems="stretch">
-        <Flex flexDirection="column" gap={4}>
-          <Components.Heading as="h2">
-            {isEdit ? `Edit ${policy.name}` : 'Add break policy'}
-          </Components.Heading>
-          <Components.Text variant="supporting">
-            Set the meal and rest breaks required in a state. Break rules are used to check each
-            shift and calculate unpaid time.
-          </Components.Text>
-        </Flex>
-
-        {isEdit ? (
-          <Components.Alert status="warning" label="Changes take effect today">
-            <Components.Text>
-              If someone on this policy has already taken a break today, changes to its rules can’t
-              be saved until tomorrow. You can also remove that break from their timesheet and try
-              again.
-            </Components.Text>
-          </Components.Alert>
-        ) : null}
-
-        {serverErrors && serverErrors.length > 0 ? (
-          <Components.Alert status="error" label="This policy couldn’t be saved">
-            <Flex flexDirection="column" gap={4}>
-              {serverErrors.map(message => (
-                <Components.Text key={message}>{message}</Components.Text>
-              ))}
-            </Flex>
-          </Components.Alert>
-        ) : null}
-
-        <Components.Box
-          withPadding
-          header={<Components.Heading as="h3">Policy</Components.Heading>}
-        >
-          <Flex flexDirection="column" gap={20} alignItems="stretch">
-            <TextInputField
-              name="name"
-              label="Policy name"
-              placeholder="California breaks"
-              isRequired
-            />
-            {isEdit ? (
-              <DescriptionList
-                showSeparators={false}
-                items={[{ term: 'State', description: policy.jurisdiction ?? 'All states' }]}
-              />
-            ) : (
-              <SelectField
-                name="jurisdiction"
-                label="State"
-                placeholder="Select a state"
-                description="The state this policy applies to. This can’t be changed later."
-                options={STATE_OPTIONS}
-                isRequired
-              />
-            )}
-            <CheckboxField
-              name="payPremium"
-              label="Pay a premium for missed breaks"
-              description="Adds an extra hour of pay when a required break isn’t taken, as some states require."
-            />
+    <Flex flexDirection="column" gap={20} alignItems="stretch">
+      {serverErrors && serverErrors.length > 0 ? (
+        <Components.Alert status="error" label="Break policy could not be saved">
+          <Flex flexDirection="column" gap={4}>
+            {serverErrors.map(message => (
+              <Components.Text key={message}>{message}</Components.Text>
+            ))}
           </Flex>
-        </Components.Box>
+        </Components.Alert>
+      ) : null}
 
-        <BreakRuleSection
-          title="Meal break"
-          ruleKey="meal"
-          isEnabled={isMealEnabled}
-          durationLabel="Meal break length"
-        />
-        <BreakRuleSection
-          title="Rest break"
-          ruleKey="rest"
-          isEnabled={isRestEnabled}
-          durationLabel="Rest break length"
-        />
+      <TextInputField name="name" label="Policy name" isRequired />
 
-        <ActionsLayout>
-          <Components.Button variant="secondary" onClick={onCancel} isDisabled={isSubmitting}>
-            Cancel
-          </Components.Button>
-          <Components.Button
-            isLoading={isSubmitting}
-            onClick={() => {
-              void formMethods.handleSubmit(data => {
-                onSubmit(toValues(data))
-              })()
-            }}
-          >
-            {isEdit ? 'Save changes' : 'Add policy'}
-          </Components.Button>
-        </ActionsLayout>
-      </Flex>
-    </FormProvider>
+      {outOfStateCount > 0 && jurisdiction ? (
+        <Components.Alert
+          status="warning"
+          label={`Some employees don’t work in ${stateName(jurisdiction)}`}
+          disableScrollIntoView
+        >
+          <Components.Text>
+            {`${outOfStateCount} selected ${outOfStateCount === 1 ? 'employee works' : 'employees work'} in a different state. Break laws vary by state, so make sure this policy fits where they work.`}
+          </Components.Text>
+        </Components.Alert>
+      ) : null}
+
+      <BreakRulesSection
+        title="Provide a meal break"
+        toggleName="providesMeal"
+        arrayName="meals"
+        isEnabled={values.providesMeal}
+        fields={meals.fields}
+        onAdd={() => {
+          meals.append({ durationMinutes: 30, everyHours: 5, compensation: 'unpaid' })
+        }}
+        onRemove={meals.remove}
+        addLabel="Add another meal break"
+      />
+      {hasShortMeal ? (
+        <Components.Alert
+          status="warning"
+          label="Meal breaks are typically at least 30 minutes long"
+          disableScrollIntoView
+        />
+      ) : null}
+
+      <BreakRulesSection
+        title="Provide a rest break"
+        toggleName="providesRest"
+        arrayName="rests"
+        isEnabled={values.providesRest}
+        fields={rests.fields}
+        onAdd={() => {
+          rests.append({ durationMinutes: 10, everyHours: 4, compensation: 'paid' })
+        }}
+        onRemove={rests.remove}
+        addLabel="Add another rest break"
+      />
+
+      <CheckboxField
+        name="payPremium"
+        label="Add break premium hours to timesheets"
+        description="A premium of 1 hour will be added for each flagged timesheet violation, capped at a maximum of 2 premiums per workday (1 meal and 1 rest)."
+      />
+      {!values.payPremium && policy?.payPremium ? (
+        <Components.Alert
+          status="warning"
+          label="You’ll need to manually calculate premiums"
+          disableScrollIntoView
+        />
+      ) : null}
+
+      <PolicyPeoplePicker
+        name="employeeUuids"
+        kind="break"
+        policyId={policy?.id ?? null}
+        people={people}
+        policyNames={policyNames}
+      />
+      <Components.Text size="sm" variant="supporting">
+        You can’t change someone’s break policy assignment if they’ve already taken a break today.
+      </Components.Text>
+    </Flex>
   )
 }
 
-function BreakRuleSection({
+function BreakRulesSection({
   title,
-  ruleKey,
+  toggleName,
+  arrayName,
   isEnabled,
-  durationLabel,
+  fields,
+  onAdd,
+  onRemove,
+  addLabel,
 }: {
   title: string
-  ruleKey: 'meal' | 'rest'
+  toggleName: 'providesMeal' | 'providesRest'
+  arrayName: 'meals' | 'rests'
   isEnabled: boolean
-  durationLabel: string
+  fields: Array<{ id: string }>
+  onAdd: () => void
+  onRemove: (index: number) => void
+  addLabel: string
 }) {
   const Components = useComponentContext()
   return (
-    <Components.Box withPadding header={<Components.Heading as="h3">{title}</Components.Heading>}>
-      <Flex flexDirection="column" gap={20} alignItems="stretch">
-        <CheckboxField name={`${ruleKey}.isEnabled`} label={`Require a ${ruleKey} break`} />
-        {isEnabled ? (
-          <>
-            <Grid gap={16} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
+    <Flex flexDirection="column" gap={12} alignItems="stretch">
+      <CheckboxField name={toggleName} label={title} />
+      {isEnabled ? (
+        <>
+          {fields.map((field, index) => (
+            <Grid
+              key={field.id}
+              gap={12}
+              gridTemplateColumns={{ base: '1fr', small: '1fr 1fr 1.3fr auto' }}
+              alignItems="end"
+            >
               <NumberInputField
-                name={`${ruleKey}.durationMinutes`}
-                label={durationLabel}
-                isRequired
+                name={`${arrayName}.${index}.durationMinutes`}
+                label="Minimum length"
                 min={1}
-                adornmentEnd="minutes"
+                adornmentEnd="min"
               />
               <NumberInputField
-                name={`${ruleKey}.afterHoursWorked`}
-                label="Required after working"
-                isRequired
+                name={`${arrayName}.${index}.everyHours`}
+                label="Provided every"
                 min={0}
                 maximumFractionDigits={2}
-                adornmentEnd="hours"
+                adornmentEnd="hrs"
               />
+              <SelectField
+                name={`${arrayName}.${index}.compensation`}
+                label="Compensation"
+                placeholder="Select"
+                options={COMPENSATION_OPTIONS}
+              />
+              {fields.length > 1 ? (
+                <Components.Button
+                  variant="tertiary"
+                  onClick={() => {
+                    onRemove(index)
+                  }}
+                >
+                  Remove
+                </Components.Button>
+              ) : null}
             </Grid>
-            <CheckboxField
-              name={`${ruleKey}.isPaid`}
-              label="Paid break"
-              description="Paid breaks count toward hours worked."
-            />
-          </>
-        ) : null}
-      </Flex>
-    </Components.Box>
+          ))}
+          <Flex flexDirection="row">
+            <Components.Button variant="tertiary" onClick={onAdd}>
+              {addLabel}
+            </Components.Button>
+          </Flex>
+        </>
+      ) : null}
+    </Flex>
   )
 }

@@ -153,6 +153,7 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
     columns: [
       {
         title: t('blockerSectionLabel'),
+        wrap: true,
         render: blocker => (
           <FlexItem flexGrow={1}>
             <Flex flexDirection="column" gap={8}>

@@ -1,0 +1,6 @@
+// Flex establishes an inline-size container, which collapses table columns to zero width.
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(2);
+}

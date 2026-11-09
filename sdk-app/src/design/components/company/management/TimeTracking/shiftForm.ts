@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { BreakRule, Shift } from './types'
-import { formatHours } from './formatters'
+import { durationMinutes } from './formatters'
 import { toZonedParts } from './timeZones'
 
 export const NO_RULE = 'none'
@@ -11,122 +11,141 @@ function toMinutes(time: string): number {
   return (hours ?? 0) * 60 + (minutes ?? 0)
 }
 
-/** Minutes since clock-in, rolling times before clock-in onto the next day. */
+/** Minutes since the shift started, rolling times before the start onto the next day. */
 function minutesFromStart(time: string, startTime: string): number {
   const offset = toMinutes(time) - toMinutes(startTime)
   return offset < 0 ? offset + MINUTES_PER_DAY : offset
 }
 
-export const shiftFormSchema = z
-  .object({
-    clockIn: z.string().min(1, 'Clock-in time is required'),
-    clockOut: z.string(),
-    isOngoing: z.boolean(),
-    breaks: z.array(
-      z.object({
-        id: z.string().optional(),
-        ruleId: z.string(),
-        start: z.string().min(1, 'Start time is required'),
-        end: z.string(),
-      }),
-    ),
-    entries: z.array(
-      z.object({
-        id: z.string().optional(),
-        classification: z.enum(['Regular', 'Overtime', 'Double overtime', 'Unclassified']),
-        hours: z.number({ error: 'Hours are required' }).min(0.001, 'Hours must be greater than 0'),
-      }),
-    ),
-  })
-  .superRefine((data, ctx) => {
-    if (!data.isOngoing && !data.clockOut) {
-      ctx.addIssue({ code: 'custom', path: ['clockOut'], message: 'Clock-out time is required' })
-      return
-    }
-    const shiftLength = data.isOngoing ? null : minutesFromStart(data.clockOut, data.clockIn)
-    if (shiftLength === 0) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['clockOut'],
-        message: 'Clock-out must be after clock-in',
-      })
-      return
-    }
+export function addMinutesToTime(time: string, minutes: number): string {
+  const total =
+    (((toMinutes(time) + minutes) % MINUTES_PER_DAY) + MINUTES_PER_DAY) % MINUTES_PER_DAY
+  const hours = Math.floor(total / 60)
+  const remainder = total % 60
+  return `${String(hours).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`
+}
 
-    const ranges = data.breaks.map((shiftBreak, index) => {
-      const start = minutesFromStart(shiftBreak.start, data.clockIn)
-      const end = shiftBreak.end ? minutesFromStart(shiftBreak.end, data.clockIn) : null
-      if (!shiftBreak.end && !data.isOngoing) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['breaks', index, 'end'],
-          message: 'End time is required once the shift has ended',
-        })
-      }
-      if (shiftLength !== null && start >= shiftLength) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['breaks', index, 'start'],
-          message: 'You cannot start a break after your shift',
-        })
-      }
-      if (end !== null && end <= start) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['breaks', index, 'end'],
-          message: 'You cannot end a break before it starts',
-        })
-      } else if (end !== null && shiftLength !== null && end > shiftLength) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['breaks', index, 'end'],
-          message: 'You cannot end a break after your shift',
-        })
-      }
-      return { start, end: end ?? Number.POSITIVE_INFINITY, index }
+const optionalNumber = z.preprocess(
+  value => (typeof value === 'number' && !Number.isNaN(value) ? value : undefined),
+  z.number().optional(),
+)
+
+/** Validation copy matches Gusto's shift drawer. */
+export function createShiftFormSchema({ requiresBreakType }: { requiresBreakType: boolean }) {
+  return z
+    .object({
+      startTime: z.string(),
+      endTime: z.string(),
+      isOngoing: z.boolean(),
+      jobId: z.string(),
+      breaks: z.array(
+        z.object({
+          id: z.string().optional(),
+          ruleId: z.string(),
+          start: z.string(),
+          lengthMinutes: optionalNumber,
+        }),
+      ),
     })
-
-    const sorted = [...ranges].sort((a, b) => a.start - b.start)
-    for (let i = 1; i < sorted.length; i++) {
-      if (sorted[i]!.start < sorted[i - 1]!.end) {
+    .superRefine((data, ctx) => {
+      if (!data.startTime || (!data.isOngoing && !data.endTime)) {
         ctx.addIssue({
           code: 'custom',
-          path: ['breaks', sorted[i]!.index, 'start'],
-          message: 'Breaks cannot overlap',
+          path: [data.startTime ? 'endTime' : 'startTime'],
+          message: 'Enter both a start time and end time.',
         })
+        return
       }
-    }
-
-    if (shiftLength !== null) {
-      const enteredMinutes = data.entries.reduce((sum, entry) => sum + entry.hours * 60, 0)
-      if (enteredMinutes > shiftLength + 1) {
+      const shiftLength = data.isOngoing ? null : minutesFromStart(data.endTime, data.startTime)
+      if (shiftLength === 0) {
         ctx.addIssue({
           code: 'custom',
-          path: ['entries'],
-          message: `Hours don’t fit in the time entered. The shift is ${formatHours(shiftLength / 60)} long.`,
+          path: ['endTime'],
+          message: 'Hours must be entered in the order they occurred.',
         })
+        return
       }
-    }
-  })
 
-export type ShiftFormValues = z.infer<typeof shiftFormSchema>
+      const ranges: Array<{ start: number; end: number; index: number }> = []
+      data.breaks.forEach((shiftBreak, index) => {
+        const issue = (field: 'ruleId' | 'start' | 'lengthMinutes', message: string) => {
+          ctx.addIssue({ code: 'custom', path: ['breaks', index, field], message })
+        }
+        if (requiresBreakType && shiftBreak.ruleId === NO_RULE) {
+          issue('ruleId', 'Break type is required.')
+        }
+        if (!shiftBreak.start) {
+          issue('start', 'Start time is required.')
+          return
+        }
+        const length = shiftBreak.lengthMinutes
+        if (length === undefined) {
+          issue('lengthMinutes', 'Length is required.')
+          return
+        }
+        if (!Number.isInteger(length)) {
+          issue('lengthMinutes', 'Must be a whole number.')
+          return
+        }
+        if (length < 1) {
+          issue('lengthMinutes', 'Must be at least 1 minute.')
+          return
+        }
+        if (shiftLength !== null && length > shiftLength) {
+          issue('lengthMinutes', 'Cannot be longer than the shift.')
+          return
+        }
+        const start = minutesFromStart(shiftBreak.start, data.startTime)
+        if (shiftLength !== null && start + length > shiftLength) {
+          issue('start', 'Must occur within the shift.')
+          return
+        }
+        ranges.push({ start, end: start + length, index })
+      })
 
-export function toShiftFormValues(shift: Shift): ShiftFormValues {
+      const sorted = [...ranges].sort((a, b) => a.start - b.start)
+      for (let i = 1; i < sorted.length; i++) {
+        if (sorted[i]!.start < sorted[i - 1]!.end) {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['breaks', sorted[i]!.index, 'start'],
+            message: 'Overlaps with another break.',
+          })
+        }
+      }
+    })
+}
+
+export type ShiftFormInput = z.input<ReturnType<typeof createShiftFormSchema>>
+export type ShiftFormValues = z.output<ReturnType<typeof createShiftFormSchema>>
+
+/** Hours are derived from the shift times and unpaid breaks, as in Gusto's shift drawer. */
+export type ShiftSubmitValues = ShiftFormValues & { hoursWorked: number | null }
+
+export function toShiftFormValues(shift: Shift): ShiftFormInput {
   return {
-    clockIn: toZonedParts(shift.startTime, shift.timeZone).time,
-    clockOut: shift.endTime ? toZonedParts(shift.endTime, shift.timeZone).time : '',
+    startTime: toZonedParts(shift.startTime, shift.timeZone).time,
+    endTime: shift.endTime ? toZonedParts(shift.endTime, shift.timeZone).time : '',
     isOngoing: shift.endTime === null,
+    jobId: shift.jobId ?? '',
     breaks: shift.breaks.map(shiftBreak => ({
       id: shiftBreak.id,
       ruleId: shiftBreak.ruleId ?? NO_RULE,
       start: toZonedParts(shiftBreak.startTime, shift.timeZone).time,
-      end: shiftBreak.endTime ? toZonedParts(shiftBreak.endTime, shift.timeZone).time : '',
+      lengthMinutes: shiftBreak.endTime
+        ? durationMinutes(shiftBreak.startTime, shiftBreak.endTime)
+        : undefined,
     })),
-    entries: shift.entries.map(entry => ({
-      id: entry.id,
-      classification: entry.classification,
-      hours: entry.hours,
-    })),
+  }
+}
+
+export function newShiftFormValues({ jobId }: { jobId: string | null }): ShiftFormInput {
+  return {
+    startTime: '09:00',
+    endTime: '17:00',
+    isOngoing: false,
+    jobId: jobId ?? '',
+    breaks: [],
   }
 }
 
@@ -134,18 +153,22 @@ export function ruleIdFromFormValue(value: string): string | null {
   return value === NO_RULE ? null : value
 }
 
-/** Shift length minus unpaid breaks, in hours — what a single "hours worked" entry should be. */
-export function calculateWorkedHours(values: ShiftFormValues, rules: BreakRule[]): number | null {
-  if (values.isOngoing || !values.clockIn || !values.clockOut) return null
-  const shiftMinutes = minutesFromStart(values.clockOut, values.clockIn)
+export function calculateWorkedHours(
+  values: ShiftFormInput | ShiftFormValues,
+  rules: BreakRule[],
+): number | null {
+  if (values.isOngoing || !values.startTime || !values.endTime) return null
+  const shiftMinutes = minutesFromStart(values.endTime, values.startTime)
   const unpaidBreakMinutes = values.breaks.reduce((sum, shiftBreak) => {
-    if (!shiftBreak.start || !shiftBreak.end) return sum
     const rule = rules.find(r => r.id === shiftBreak.ruleId)
     if (rule?.isPaid) return sum
-    const length =
-      minutesFromStart(shiftBreak.end, values.clockIn) -
-      minutesFromStart(shiftBreak.start, values.clockIn)
+    const length = typeof shiftBreak.lengthMinutes === 'number' ? shiftBreak.lengthMinutes : 0
     return sum + Math.max(0, length)
   }, 0)
   return Math.max(0, (shiftMinutes - unpaidBreakMinutes) / 60)
+}
+
+export function calculateShiftHours(values: ShiftFormInput): number | null {
+  if (values.isOngoing || !values.startTime || !values.endTime) return null
+  return minutesFromStart(values.endTime, values.startTime) / 60
 }
