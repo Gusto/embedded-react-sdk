@@ -1,15 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { useDocumentList } from './useDocumentList'
 import styles from './ManageSignatories.module.scss'
+import { isValidSignatoryTitle } from '@/components/Company/AssignSignatory/shared/signatoryTitle'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { SIGNATORY_TITLES } from '@/shared/constants'
-
-function isValidSignatoryTitle(
-  title: string | null | undefined,
-): title is keyof typeof SIGNATORY_TITLES {
-  return !!title && title in SIGNATORY_TITLES
-}
 
 /** @internal */
 export function ManageSignatories() {

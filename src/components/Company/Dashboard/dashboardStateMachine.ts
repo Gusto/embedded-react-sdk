@@ -9,6 +9,7 @@ import {
   PayScheduleContextual,
   StateTaxesContextual,
   TaxPaymentsContextual,
+  AssignSignatoryContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -17,6 +18,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.COMPANY_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
+  [componentEvents.COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED]: { signatoryId?: string }
 }
 
 /**
@@ -29,9 +31,9 @@ type EventPayloads = {
  * would fire whenever a user cancelled an *inner* screen (a location form, say),
  * ejecting them from the whole spoke instead of returning them to that spoke's
  * own list. Several spokes also have no cancel affordance of their own at all
- * (`Industry` and `FederalTaxes` are submit-only; `Locations` opens straight
- * into a form when the company has no addresses), so this header is the only
- * reliable way back to the dashboard.
+ * (`Industry`, `FederalTaxes` and `AssignSignatory` are submit-only; `Locations`
+ * opens straight into a form when the company has no addresses), so this header
+ * is the only reliable way back to the dashboard.
  *
  * @internal
  */
@@ -84,6 +86,30 @@ const returnToIndexWithPendingAlert = reduce(
     header: null,
     successAlert: ctx.pendingAlert ?? null,
     pendingAlert: null,
+  }),
+)
+
+/**
+ * Opens the signatory spoke, carrying the identifier the Signatory card reported
+ * alongside the usual spoke setup — see {@link DashboardContextInterface.signatoryId}
+ * for why `AssignSignatory` cannot be handed the company alone.
+ *
+ * @internal
+ */
+const toSignatorySpoke = reduce(
+  (
+    ctx: DashboardContextInterface,
+    ev: MachineEventType<
+      EventPayloads,
+      typeof componentEvents.COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED
+    >,
+  ): DashboardContextInterface => ({
+    ...ctx,
+    component: AssignSignatoryContextual,
+    header: spokeHeader,
+    successAlert: null,
+    pendingAlert: null,
+    signatoryId: ev.payload.signatoryId,
   }),
 )
 
@@ -140,6 +166,11 @@ export const dashboardStateMachine = {
       componentEvents.COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED,
       'taxPayments',
       toSpoke(TaxPaymentsContextual),
+    ),
+    transition(
+      componentEvents.COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED,
+      'signatory',
+      toSignatorySpoke,
     ),
     transition(
       componentEvents.COMPANY_DASHBOARD_ALERT_DISMISSED,
@@ -249,6 +280,21 @@ export const dashboardStateMachine = {
     // TAX_PAYMENT_VIEW and TAX_PAYMENT_BACK move between its list and a payment's
     // detail, both of which live inside the spoke. The back header is the only way
     // out.
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
+  signatory: state<MachineTransition>(
+    // COMPANY_SIGNATORY_CREATED / _UPDATED / _INVITED and
+    // COMPANY_ASSIGN_SIGNATORY_MODE_UPDATED are intentionally absent: the first
+    // three fire on save, immediately before COMPANY_ASSIGN_SIGNATORY_DONE, and
+    // the last fires as the user switches between the create and invite forms
+    // inside the spoke. Transitioning on the single completion event keeps the
+    // alert tied to one unambiguous signal, whichever way the signatory was
+    // assigned.
+    transition(
+      componentEvents.COMPANY_ASSIGN_SIGNATORY_DONE,
+      'index',
+      returnToIndexWithAlert('signatoryUpdated'),
+    ),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
 }

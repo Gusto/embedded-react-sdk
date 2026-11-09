@@ -24,7 +24,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * Hub for viewing and managing a company's settings.
  *
  * @remarks
- * Renders a tabbed view of a company's settings (Company details, Pay, Taxes), wires each card's
+ * Renders a tabbed view of a company's settings (Company details, Pay, Taxes, Documents), wires each card's
  * Edit or Manage CTA to the matching company component, and surfaces success alerts at the top of
  * the dashboard after a successful edit. Wraps the dashboard in error and suspense boundaries.
  *
@@ -32,7 +32,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * spoke renders an existing company component — `CompanyOnboarding.Industry`,
  * `CompanyOnboarding.Locations`, `CompanyOnboarding.FederalTaxes`, `CompanyOnboarding.BankAccount`,
  * `CompanyManagement.PaySchedule`, `CompanyOnboarding.StateTaxes`,
- * `CompanyManagement.TaxPaymentsFlow` — beneath a "Back to company
+ * `CompanyManagement.TaxPaymentsFlow`, `CompanyOnboarding.AssignSignatory` — beneath a "Back to company
  * settings" header, which is the reliable way back: those components are submit-only or open
  * directly into a form, and their own Cancel affordances belong to screens inside them.
  *
@@ -82,7 +82,13 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/management/taxPayments/editRequested` | Fired when "Manage" is clicked on the Tax payments card | `{ companyId: string }` |
  * | `company/taxPayments/view` | Fired when a tax payment is selected on the manage screen; the manage screen stays open | `{ taxPaymentId: string }` |
  * | `company/taxPayments/back` | Fired when the user returns from a tax payment to the manage screen; the manage screen stays open | — |
- * | `company/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'companyDetails' \| 'pay' \| 'taxes' }` |
+ * | `company/management/signatory/editRequested` | Fired when "Edit" or "Assign signatory" is clicked on the Signatory card | `{ companyId: string, signatoryId?: string }` |
+ * | `company/signatory/assignSignatory/modeUpdated` | Fired when the user switches between assigning a signatory directly and inviting one; the assign screen stays open | The selected mode (`'createSignatory'` or `'inviteSignatory'`) |
+ * | `company/signatory/created` | Fired after a signatory is created; the assign screen stays open | Created `Signatory` entity |
+ * | `company/signatory/updated` | Fired after a signatory is updated; the assign screen stays open | Updated `Signatory` entity |
+ * | `company/signatory/invited` | Fired after a signatory invitation is sent; the assign screen stays open | The invited `Signatory` |
+ * | `company/signatory/assignSignatory/done` | Fired once a signatory is assigned either way; the dashboard returns to the cards and surfaces the "Signatory updated" alert | — |
+ * | `company/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'companyDetails' \| 'pay' \| 'taxes' \| 'documents' }` |
  * | `company/dashboard/back` | Fired when the user clicks "Back to company settings" on a spoke; the dashboard returns to the cards | — |
  * | `company/dashboard/alertDismissed` | Fired when the user dismisses a top-of-dashboard success alert | — |
  *
@@ -95,6 +101,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * - {@link FederalTaxesCard}
  * - {@link StateTaxesCard}
  * - {@link TaxPaymentsCard}
+ * - {@link SignatoryCard}
  *
  * @param props - See {@link DashboardFlowProps}.
  * @returns The tabbed dashboard with internal navigation between cards and edit screens.

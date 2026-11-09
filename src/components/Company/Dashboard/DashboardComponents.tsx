@@ -7,6 +7,7 @@ import { BankAccount } from '@/components/Company/BankAccount/BankAccount'
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/StateTaxes'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
+import { AssignSignatory } from '@/components/Company/AssignSignatory'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -20,6 +21,7 @@ type DashboardSuccessAlert =
   | 'locationsUpdated'
   | 'bankAccountUpdated'
   | 'stateTaxesUpdated'
+  | 'signatoryUpdated'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -39,6 +41,13 @@ export interface DashboardContextInterface extends FlowContextInterface {
   /** Persists the active Dashboard tab across spokes so Back returns to the
    *  originating tab instead of resetting to company details. */
   selectedTab?: DashboardTab
+  /**
+   * Identifier of the company's current signatory, recorded when the Signatory
+   * card requests an edit. `AssignSignatory` needs it to amend that record:
+   * without one its create form treats the submit as a fresh assignment and
+   * deletes the existing signatory before creating a replacement.
+   */
+  signatoryId?: string
   /** Forwarded to the pay schedule spoke to show the AutoPilot row and its Edit action. */
   enableAutoPilot?: boolean
   /** Forwarded to the pay schedule spoke to show its Manage action. */
@@ -58,6 +67,7 @@ export function DashboardViewContextual() {
     locationsUpdated: t('alerts.locationsUpdated'),
     bankAccountUpdated: t('alerts.bankAccountUpdated'),
     stateTaxesUpdated: t('alerts.stateTaxesUpdated'),
+    signatoryUpdated: t('alerts.signatoryUpdated'),
   }
 
   return (
@@ -129,4 +139,16 @@ export function StateTaxesContextual() {
 export function TaxPaymentsContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
   return <TaxPaymentsFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function AssignSignatoryContextual() {
+  const { companyId, signatoryId, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <AssignSignatory
+      companyId={ensureRequired(companyId)}
+      signatoryId={signatoryId}
+      onEvent={onEvent}
+    />
+  )
 }

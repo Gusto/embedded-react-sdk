@@ -50,6 +50,8 @@ export interface Resources {
   /** */
   'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
   /** */
+  'Company.Management.Signatory': Translations.CompanyManagementSignatory
+  /** */
   'Company.Management.StateTaxes': Translations.CompanyManagementStateTaxes
   /** */
   'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
@@ -504,6 +506,8 @@ export namespace Translations {
       pay: string
       /** @defaultValue `"Taxes"` */
       taxes: string
+      /** @defaultValue `"Documents"` */
+      documents: string
     }
     /** @defaultValue `"Back to company settings"` */
     backToDashboardCta: string
@@ -518,6 +522,8 @@ export namespace Translations {
       bankAccountUpdated: string
       /** @defaultValue `"State tax settings updated"` */
       stateTaxesUpdated: string
+      /** @defaultValue `"Signatory updated"` */
+      signatoryUpdated: string
     }
   }
   /** Translation keys for the `Company.DocumentList` i18n namespace. */
@@ -1452,6 +1458,45 @@ export namespace Translations {
         /** @defaultValue `"No pay schedule yet"` */
         title: string
         /** @defaultValue `"Add a pay schedule to set when this company's employees are paid."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.Signatory` i18n namespace. */
+  export interface CompanyManagementSignatory {
+    card: {
+      /** @defaultValue `"Signatory"` */
+      title: string
+      /** @defaultValue `"Edit"` */
+      editCta: string
+      /** @defaultValue `"Edit signatory"` */
+      editAriaLabel: string
+      /** @defaultValue `"Assign signatory"` */
+      assignCta: string
+      /** @defaultValue `"Name"` */
+      name: string
+      /** @defaultValue `"Title"` */
+      jobTitle: string
+      /** @defaultValue `"Email"` */
+      email: string
+      /** @defaultValue `"Identity verification"` */
+      identityVerification: string
+      /** @defaultValue `"No value"` */
+      listEmptyPlaceholder: string
+      identityVerificationStatus: {
+        /** @defaultValue `"Verified"` */
+        Pass: string
+        /** @defaultValue `"Verification failed"` */
+        Fail: string
+        /** @defaultValue `"Wet signature required"` */
+        Skipped: string
+        /** @defaultValue `"Verification pending"` */
+        pending: string
+      }
+      emptyState: {
+        /** @defaultValue `"No signatory assigned"` */
+        title: string
+        /** @defaultValue `"Assign a signatory so this company's tax and payroll forms can be signed."` */
         description: string
       }
     }

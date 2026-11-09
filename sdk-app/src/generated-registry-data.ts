@@ -14,6 +14,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.PaySchedule': ['companyId'],
   'CompanyManagement.PayScheduleAssignment': ['companyId'],
   'CompanyManagement.PaySchedulesCard': ['companyId'],
+  'CompanyManagement.SignatoryCard': ['companyId'],
   'CompanyManagement.StateTaxesCard': ['companyId'],
   'CompanyManagement.TaxPaymentDetail': ['companyId'],
   'CompanyManagement.TaxPaymentsCard': ['companyId'],

@@ -4,7 +4,8 @@
   "tabs": {
     "companyDetails": "Company details",
     "pay": "Pay",
-    "taxes": "Taxes"
+    "taxes": "Taxes",
+    "documents": "Documents"
   },
   "backToDashboardCta": "Back to company settings",
   "alerts": {
@@ -12,6 +13,7 @@
     "federalTaxesUpdated": "Federal tax settings updated",
     "locationsUpdated": "Locations updated",
     "bankAccountUpdated": "Bank account updated",
-    "stateTaxesUpdated": "State tax settings updated"
+    "stateTaxesUpdated": "State tax settings updated",
+    "signatoryUpdated": "Signatory updated"
   }
 }

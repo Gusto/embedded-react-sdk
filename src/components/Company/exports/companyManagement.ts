@@ -32,6 +32,7 @@ export {
   TaxPaymentsCard,
   type TaxPaymentsCardProps,
 } from '../TaxPayments/management/TaxPaymentsCard'
+export { SignatoryCard, type SignatoryCardProps } from '../AssignSignatory/management/SignatoryCard'
 export {
   Dashboard,
   DashboardFlow,
