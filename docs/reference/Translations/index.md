@@ -344,6 +344,29 @@ Translation keys for the `Company.BankAccount` i18n namespace.
 
 ***
 
+<a id="companydashboard"></a>
+
+### CompanyDashboard
+
+Translation keys for the `Company.Dashboard` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companydashboardalerts"></a> `alerts` | |
+| `alerts.federalTaxesUpdated` | `"Federal tax settings updated"` |
+| `alerts.industryUpdated` | `"Industry updated"` |
+| `alerts.locationsUpdated` | `"Locations updated"` |
+| <a id="property-companydashboardbacktodashboardcta"></a> `backToDashboardCta` | `"Back to company settings"` |
+| <a id="property-companydashboardcompanysettingslabel"></a> `companySettingsLabel` | `"Company settings"` |
+| <a id="property-companydashboardtabs"></a> `tabs` | |
+| `tabs.companyDetails` | `"Company details"` |
+| `tabs.taxes` | `"Taxes"` |
+| <a id="property-companydashboardtabslabel"></a> `tabsLabel` | `"Company settings tabs"` |
+
+***
+
 <a id="companydocumentlist"></a>
 
 ### CompanyDocumentList
@@ -514,6 +537,8 @@ Translation keys for the `Company.DocumentList` i18n namespace.
 | <a id="property-companydocumentlistselfsignatorytitle"></a> `selfSignatoryTitle` | `"Please note, only the signatory can sign documents."` |
 | <a id="property-companydocumentlistsigndocumentcomplete"></a> `signDocumentComplete` | `"Complete"` |
 | <a id="property-companydocumentlistsigndocumentcta"></a> `signDocumentCta` | `"Sign document"` |
+| <a id="property-companydocumentlistviewcta"></a> `viewCta` | `"View"` |
+| <a id="property-companydocumentlistviewdocumenterror"></a> `viewDocumentError` | `"Could not open this document, try again later."` |
 
 ***
 
@@ -575,6 +600,9 @@ Translation keys for the `Company.Industry` i18n namespace.
 | <a id="property-companyindustryplaceholder"></a> `placeholder` | `"Type a few letters to search for your industry"` |
 | <a id="property-companyindustrysubmitcta"></a> `submitCta` | `"Continue"` |
 | <a id="property-companyindustrytitle"></a> `title` | `"Industry"` |
+| <a id="property-companyindustryunmatchedindustry"></a> `unmatchedIndustry` | `"NAICS {{code}}"` |
+| <a id="property-companyindustryvalidations"></a> `validations` | |
+| `validations.required` | `"Select an industry to continue"` |
 
 ***
 
@@ -677,6 +705,79 @@ Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace.
 | `saveError.title` | `"AutoPilot settings couldn't be saved"` |
 | <a id="property-companymanagementautopilotdialogtitle"></a> `title` | `"AutoPilot — {{scheduleName}}"` |
 | <a id="property-companymanagementautopilotdialogtogglelabel"></a> `toggleLabel` | `"Enable AutoPilot"` |
+
+***
+
+<a id="companymanagementfederaltaxes"></a>
+
+### CompanyManagementFederalTaxes
+
+Translation keys for the `Company.Management.FederalTaxes` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementfederaltaxescard"></a> `card` |
+| `card.editCta` |
+| `card.ein` |
+| `card.einMissing` |
+| `card.einUnverified` |
+| `card.einVerified` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.filingForm` |
+| `card.legalName` |
+| `card.listEmptyPlaceholder` |
+| `card.taxPayerType` |
+| `card.title` |
+
+***
+
+<a id="companymanagementindustry"></a>
+
+### CompanyManagementIndustry
+
+Translation keys for the `Company.Management.Industry` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementindustrycard"></a> `card` |
+| `card.editCta` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.industry` |
+| `card.listEmptyPlaceholder` |
+| `card.naicsCode` |
+| `card.title` |
+
+***
+
+<a id="companymanagementlocations"></a>
+
+### CompanyManagementLocations
+
+Translation keys for the `Company.Management.Locations` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementlocationscard"></a> `card` |
+| `card.addressColumn` |
+| `card.designationsColumn` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.filingAddress` |
+| `card.listLabel` |
+| `card.mailingAddress` |
+| `card.manageCta` |
+| `card.title` |
 
 ***
 
@@ -2001,6 +2102,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | <a id="property-contractormanagementcontractorlistonboardingstatuslabel"></a> `onboardingStatusLabel` | `"Onboarding status"` |
 | <a id="property-contractormanagementcontractorlistratehourly"></a> `rateHourly` | `"Hourly — {{rate}}/hr"` |
 | <a id="property-contractormanagementcontractorlistratelabel"></a> `rateLabel` | `"Rate"` |
+| <a id="property-contractormanagementcontractorlistrehirebadge"></a> `rehireBadge` | `"Rehire {{date}}"` |
 | <a id="property-contractormanagementcontractorlistrehirecta"></a> `rehireCta` | `"Rehire contractor"` |
 | <a id="property-contractormanagementcontractorlistremovecta"></a> `removeCta` | `"Remove"` |
 | <a id="property-contractormanagementcontractorlistremovedialog"></a> `removeDialog` | |
@@ -2734,6 +2836,34 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | <a id="property-contractorprofilew9editwarning"></a> `w9EditWarning` | |
 | `w9EditWarning.body` | `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` |
 | `w9EditWarning.label` | `"Changes will require an updated Form W-9"` |
+
+***
+
+<a id="contractorrehire"></a>
+
+### ContractorRehire
+
+Translation keys for the `Contractor.Rehire` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorrehireactions"></a> `actions` | |
+| `actions.cancel` | `"Cancel"` |
+| `actions.submit` | `"Rehire contractor"` |
+| <a id="property-contractorrehirealert"></a> `alert` | |
+| `alert.label` | `"This can be cancelled"` |
+| `alert.text` | `"The rehire can be cancelled from the contractor list any time before the start date takes effect."` |
+| <a id="property-contractorrehireform"></a> `form` | |
+| `form.startDate` | |
+| `form.startDate.label` | `"Start date"` |
+| <a id="property-contractorrehiresubtitle"></a> `subtitle` | `"Schedule a start date for this contractor."` |
+| <a id="property-contractorrehiresuccessmessage"></a> `successMessage` | `"Rehire scheduled"` |
+| <a id="property-contractorrehiretitle"></a> `title` | `"Rehire {{name}}"` |
+| <a id="property-contractorrehirevalidation"></a> `validation` | |
+| `validation.startDateBeforeMin` | `"Start date must be after the dismissal date"` |
+| `validation.startDateRequired` | `"Enter a start date"` |
 
 ***
 
@@ -5374,6 +5504,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `tableColumns.reimbursements` | `"Reimbursements"` |
 | `tableColumns.timeOff` | `"Time off"` |
 | `tableColumns.totalPay` | `"Total pay"` |
+| `tableColumns.unusedHours` | `"Unused hours"` |
 | <a id="property-payrollpayrollconfigurationunknownemployeefallback"></a> `unknownEmployeeFallback` | `"Unknown employee"` |
 
 ***
@@ -5717,6 +5848,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `tableHeaders.timeOff` | `"Paid time off"` |
 | `tableHeaders.totalHours` | `"Total hours"` |
 | `tableHeaders.totalPayroll` | `"Total payroll"` |
+| `tableHeaders.unusedHours` | `"Unused hours"` |
 | `tableHeaders.wireAmount` | `"Wire amount"` |
 | `tableHeaders.wireTransferDeadline` | `"Wire transfer deadline"` |
 | <a id="property-payrollpayrolloverviewtaxeslabel"></a> `taxesLabel` | `"Taxes (Employees and Employers)"` |
@@ -6117,11 +6249,15 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyaddresses"></a> `Company.Addresses` | [`CompanyAddresses`](#companyaddresses) |
 | <a id="property-resourcescompanyassignsignatory"></a> `Company.AssignSignatory` | [`CompanyAssignSignatory`](#companyassignsignatory) |
 | <a id="property-resourcescompanybankaccount"></a> `Company.BankAccount` | [`CompanyBankAccount`](#companybankaccount) |
+| <a id="property-resourcescompanydashboard"></a> `Company.Dashboard` | [`CompanyDashboard`](#companydashboard) |
 | <a id="property-resourcescompanydocumentlist"></a> `Company.DocumentList` | [`CompanyDocumentList`](#companydocumentlist) |
 | <a id="property-resourcescompanyfederaltaxes"></a> `Company.FederalTaxes` | [`CompanyFederalTaxes`](#companyfederaltaxes) |
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
 | <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
+| <a id="property-resourcescompanymanagementfederaltaxes"></a> `Company.Management.FederalTaxes` | [`CompanyManagementFederalTaxes`](#companymanagementfederaltaxes) |
+| <a id="property-resourcescompanymanagementindustry"></a> `Company.Management.Industry` | [`CompanyManagementIndustry`](#companymanagementindustry) |
+| <a id="property-resourcescompanymanagementlocations"></a> `Company.Management.Locations` | [`CompanyManagementLocations`](#companymanagementlocations) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
 | <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |
@@ -6164,6 +6300,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
 | <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
 | <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
+| <a id="property-resourcescontractorrehire"></a> `Contractor.Rehire` | [`ContractorRehire`](#contractorrehire) |
 | <a id="property-resourcescontractorselectcontractors"></a> `Contractor.SelectContractors` | [`ContractorSelectContractors`](#contractorselectcontractors) |
 | <a id="property-resourcescontractorsignatureform"></a> `Contractor.SignatureForm` | [`ContractorSignatureForm`](#contractorsignatureform) |
 | <a id="property-resourcescontractorsubmit"></a> `Contractor.Submit` | [`ContractorSubmit`](#contractorsubmit) |

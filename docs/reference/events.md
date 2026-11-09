@@ -60,6 +60,9 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `COMPANY_BANK_ACCOUNT_VERIFIED` | `"company/bankAccount/verified"` |
 | `COMPANY_BANK_ACCOUNT_VERIFY` | `"company/bankAccount/verify"` |
 | `COMPANY_CREATE_SIGNATORY_DONE` | `"company/signatory/createSignatory/done"` |
+| `COMPANY_DASHBOARD_ALERT_DISMISSED` | `"company/dashboard/alertDismissed"` |
+| `COMPANY_DASHBOARD_BACK` | `"company/dashboard/back"` |
+| `COMPANY_DASHBOARD_TAB_CHANGE` | `"company/dashboard/tabChange"` |
 | `COMPANY_FEDERAL_TAXES_DONE` | `"company/federalTaxes/done"` |
 | `COMPANY_FEDERAL_TAXES_UPDATED` | `"company/federalTaxes/updated"` |
 | `COMPANY_FORM_EDIT_SIGNATORY` | `"company/forms/editSignatory"` |
@@ -72,6 +75,9 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `COMPANY_LOCATION_DONE` | `"company/location/done"` |
 | `COMPANY_LOCATION_EDIT` | `"company/location/edit"` |
 | `COMPANY_LOCATION_UPDATED` | `"company/location/edit/done"` |
+| `COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED` | `"company/management/federalTaxes/editRequested"` |
+| `COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED` | `"company/management/industry/editRequested"` |
+| `COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED` | `"company/management/locations/editRequested"` |
 | `COMPANY_OVERVIEW_CONTINUE` | `"company/overview/continue"` |
 | `COMPANY_OVERVIEW_DONE` | `"company/overview/done"` |
 | `COMPANY_SIGN_FORM` | `"company/forms/sign/signForm"` |
@@ -148,6 +154,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_PROFILE_DONE` | `"contractor/profile/done"` |
 | `CONTRACTOR_REHIRE` | `"contractor/rehire"` |
 | `CONTRACTOR_REHIRE_CANCELLED` | `"contractor/rehire/cancelled"` |
+| `CONTRACTOR_REHIRE_SCHEDULED` | `"contractor/rehire/scheduled"` |
 | `CONTRACTOR_RETURN_TO_LIST` | `"contractor/returnToList"` |
 | `CONTRACTOR_SELF_ONBOARDING_CANCELLED` | `"contractor/selfOnboarding/cancelled"` |
 | `CONTRACTOR_SELF_ONBOARDING_DONE` | `"contractor/selfOnboarding/done"` |

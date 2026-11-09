@@ -5,6 +5,11 @@ import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUn
 import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
+  'CompanyManagement.Dashboard': ['companyId'],
+  'CompanyManagement.DashboardFlow': ['companyId'],
+  'CompanyManagement.FederalTaxesCard': ['companyId'],
+  'CompanyManagement.IndustryCard': ['companyId'],
+  'CompanyManagement.LocationsCard': ['companyId'],
   'CompanyManagement.PaySchedule': ['companyId'],
   'CompanyManagement.PayScheduleAssignment': ['companyId'],
   'CompanyManagement.TaxPaymentDetail': ['companyId'],
@@ -58,6 +63,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorManagement.Profile': ['contractorId'],
   'ContractorManagement.ProfileCard': ['contractorId'],
   'ContractorManagement.ProfileEditForm': ['contractorId'],
+  'ContractorManagement.Rehire': ['contractorId'],
   'ContractorManagement.ViewPaymentFlow': ['companyId'],
   'ContractorOnboarding.Address': ['contractorId'],
   'ContractorOnboarding.ContractorList': ['companyId'],
@@ -203,6 +209,7 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 }
 
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
+  companySettingsDashboard: false,
   historicalPayments: false,
   managePaySchedules: false,
   taxPayments: false,

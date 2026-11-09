@@ -217,6 +217,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | --- | --- |
 | GET | [`/v1/companies/:companyId/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-forms) |
 | GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
+| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf) |
 
 ***
 
@@ -330,7 +331,12 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 
 Selects and saves the company's industry classification (NAICS code).
 
-Presents a searchable list of industry options and persists the selection for the given company.
+### Remarks
+
+Presents a searchable list of industry options and persists the selection for the given
+company. Valid NAICS codes are four to six digits; when the company's saved classification
+is shorter than the six-digit options in the list, it is still displayed and preserved by
+a submit that does not change it.
 
 <br />
 
@@ -354,7 +360,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |
+| `company/industry/selected` | Fired when an industry is selected and saved | The updated [APIModels.Industry](../../APIModels/index.md#industry) returned by the industry selection endpoint |
 
 <br />
 

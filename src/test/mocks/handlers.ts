@@ -20,6 +20,7 @@ import ContractorPaymentMethodHandlers from './apis/contractor_payment_method'
 import contractorAddressHandlers from './apis/contractor_address'
 import ContractorHandlers from './apis/contractors'
 import ContractorDocumentsHandlers from './apis/contractor_documents'
+import ContractorFormsHandlers from './apis/contractor_forms'
 import ContractorPaymentGroupsHandlers from './apis/contractor_payment_groups'
 import ContractorPaymentsHandlers from './apis/contractor_payments'
 import TaxPaymentsHandlers from './apis/tax_payments'
@@ -75,6 +76,7 @@ export const handlers = [
   ...contractorAddressHandlers,
   ...ContractorHandlers,
   ...ContractorDocumentsHandlers,
+  ...ContractorFormsHandlers,
   ...ContractorPaymentGroupsHandlers,
   ...ContractorPaymentsHandlers,
   ...TaxPaymentsHandlers,

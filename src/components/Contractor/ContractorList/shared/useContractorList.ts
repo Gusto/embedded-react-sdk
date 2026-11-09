@@ -143,7 +143,13 @@ function deriveAllowedActions(
   if (contractorType === 'active') {
     actions.push('view')
 
-    if (contractor.upcomingEmployment && contractor.rehireCancellationEligible) {
+    // Keyed on eligibility alone, not on `upcomingEmployment`. The moment a rehire takes
+    // effect the employment stops being "upcoming", but the API keeps reporting
+    // `rehireCancellationEligible` for the rest of its grace period — so gating on both
+    // dropped the action exactly when a just-effective rehire still needed undoing, and
+    // offered "Dismiss" in its place. The two eligibility flags derive from a single
+    // server-side employment state and are never true together, so order is immaterial.
+    if (contractor.rehireCancellationEligible) {
       actions.push('cancel_rehire')
     } else if (contractor.dismissalDate && contractor.dismissalCancellationEligible) {
       actions.push('cancel_dismissal')
@@ -201,7 +207,9 @@ function deriveAllowedActions(
  * `'active'` exposes `view` plus `dismiss`/`cancel_dismissal`/`cancel_rehire`, `'terminated'`
  * exposes `view` plus `rehire`/`cancel_dismissal`/`cancel_rehire`, `'onboarding'` and the
  * unfiltered default expose `edit`/`cancel_self_onboarding`/`delete`. Omit `contractorType` to
- * list every contractor.
+ * list every contractor. `'active'` and `'terminated'` are complementary server-side filters, so
+ * every onboarded contractor appears under exactly one of them — including one whose scheduled
+ * rehire has yet to take effect, who stays under `'terminated'` until their start date.
  *
  * Page changes use placeholder data: the previous page stays rendered while the next one loads,
  * and `status.isFetching` flips to `true` during the request.
@@ -242,7 +250,14 @@ export function useContractorList({
       case 'onboarding':
         return { ...baseParams, onboarded: false }
       case 'terminated':
-        return { ...baseParams, terminated: true }
+        // `terminated_today`, not `terminated`. The latter scopes on the *latest* member
+        // employment having an `end_date`, and scheduling a rehire inserts a new employment row
+        // with a null `end_date` — so a contractor with a pending rehire drops out of
+        // `terminated` while still failing `onboarded_active` (their new employment hasn't
+        // started yet), vanishing from every tab and stranding the "Cancel rehire" action.
+        // `terminated_today` is defined as the exact complement of `onboarded_active`, so the
+        // Active and Dismissed tabs always partition the onboarded population between them.
+        return { ...baseParams, terminatedToday: true }
       default:
         return baseParams
     }

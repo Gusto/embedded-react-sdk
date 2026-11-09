@@ -138,12 +138,12 @@ import { FixedCompensations } from '@gusto/embedded-api/models/components/payrol
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype';
 import { FocusEvent as FocusEvent_2 } from 'react';
 import { Form } from '@gusto/embedded-api/models/components/form';
+import { Form1099 } from '@gusto/embedded-api/models/components/form1099';
 import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api/models/components/garnishment';
 import { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment';
 import { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument';
-import { GetV1ContractorsContractorUuidPaymentsResponse } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidpayments';
 import { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HolidayPayPolicyEmployees } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HourlyCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -151,6 +151,7 @@ import { HTMLAttributes } from 'react';
 import { Id } from '@gusto/embedded-api/models/components/companyonboardingstatus';
 import { IdentityVerificationStatus } from '@gusto/embedded-api/models/components/signatory';
 import { IndependenceDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
+import { Industry } from '@gusto/embedded-api/models/components/industry';
 import { InformationRequest } from '@gusto/embedded-api/models/components/informationrequest';
 import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest';
 import { InformationRequestType } from '@gusto/embedded-api/models/components/informationrequest';
@@ -581,6 +582,7 @@ declare namespace APIModels {
         FilingForm,
         FlsaStatusType,
         Form,
+        Form1099,
         GarnishmentType,
         Garnishment,
         GarnishmentChildSupport,
@@ -602,6 +604,7 @@ declare namespace APIModels {
         HolidayPayPolicy,
         DocumentType_2 as DocumentType,
         AuthorizationStatus,
+        Industry,
         InformationRequestType,
         RequiredQuestions,
         InformationRequest,
@@ -1077,6 +1080,16 @@ export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFi
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
+export interface ComboBoxHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps, Pick<ComboBoxProps, 'portalContainer'> {
+    formHookResult?: FormHookResult;
+    getOptionLabel?: (entry: TEntry) => string;
+    name: string;
+    placeholder: string;
+    portalContainer?: ComboBoxProps['portalContainer'];
+    validationMessages?: ValidationMessages<TErrorCode>;
+}
+
+// @public
 export interface ComboBoxOption {
     label: string;
     value: string;
@@ -1116,7 +1129,18 @@ declare namespace CompanyManagement {
         TaxPaymentDetail,
         TaxPaymentsFlowProps,
         TaxPaymentsListProps,
-        TaxPaymentDetailProps
+        TaxPaymentDetailProps,
+        IndustryCard,
+        IndustryCardProps,
+        LocationsCard,
+        LocationsCardProps,
+        FederalTaxesCard_2 as FederalTaxesCard,
+        FederalTaxesCardProps_2 as FederalTaxesCardProps,
+        Dashboard_2 as Dashboard,
+        DashboardFlow_2 as DashboardFlow,
+        DashboardProps_2 as DashboardProps,
+        DashboardFlowProps_2 as DashboardFlowProps,
+        DashboardTab_2 as DashboardTab
     }
 }
 
@@ -1133,7 +1157,7 @@ declare namespace CompanyOnboarding {
         DocumentListProps_2 as DocumentListProps,
         SignatureForm_2 as SignatureForm,
         SignatureFormProps_2 as SignatureFormProps,
-        Industry,
+        Industry_2 as Industry,
         IndustryProps,
         BankAccount,
         BankAccountProps,
@@ -1476,6 +1500,7 @@ export const componentEvents: {
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
     readonly CONTRACTOR_DISMISSAL_SCHEDULED: "contractor/dismissal/scheduled";
+    readonly CONTRACTOR_REHIRE_SCHEDULED: "contractor/rehire/scheduled";
     readonly CONTRACTOR_REHIRE_CANCELLED: "contractor/rehire/cancelled";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: "contractor/management/profile/editRequested";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: "contractor/management/profile/updated";
@@ -1497,8 +1522,6 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "contractor/management/compensation/alertDismissed";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED: "contractor/management/documents/card/viewRequested";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: "contractor/management/documents/card/viewed";
-    readonly CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED: "contractor/management/payments/card/paymentSelected";
-    readonly CONTRACTOR_MANAGEMENT_PAYMENTS_STATEMENT_CLOSED: "contractor/management/payments/statement/closed";
     readonly CONTRACTOR_DASHBOARD_TAB_CHANGE: "contractor/dashboard/tabChange";
     readonly CONTRACTOR_DASHBOARD_ALERT_DISMISSED: "contractor/dashboard/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
@@ -1553,6 +1576,12 @@ export const componentEvents: {
     readonly COMPANY_STATE_TAX_MANAGE_RATES: "company/stateTaxes/manageRates";
     readonly COMPANY_OVERVIEW_DONE: "company/overview/done";
     readonly COMPANY_OVERVIEW_CONTINUE: "company/overview/continue";
+    readonly COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED: "company/management/industry/editRequested";
+    readonly COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED: "company/management/locations/editRequested";
+    readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED: "company/management/federalTaxes/editRequested";
+    readonly COMPANY_DASHBOARD_TAB_CHANGE: "company/dashboard/tabChange";
+    readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
+    readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -1999,11 +2028,13 @@ declare namespace ContractorManagement {
         ContractorListFlowProps,
         Dismissal,
         DismissalProps,
-        DashboardFlow_2 as DashboardFlow,
-        Dashboard_2 as Dashboard,
-        DashboardFlowProps_2 as DashboardFlowProps,
-        DashboardProps_2 as DashboardProps,
-        DashboardTab_2 as DashboardTab,
+        Rehire,
+        RehireProps,
+        DashboardFlow_3 as DashboardFlow,
+        Dashboard_3 as Dashboard,
+        DashboardFlowProps_3 as DashboardFlowProps,
+        DashboardProps_3 as DashboardProps,
+        DashboardTab_3 as DashboardTab,
         Profile_3 as Profile,
         ProfileCard_2 as ProfileCard,
         ProfileEditForm_2 as ProfileEditForm,
@@ -2030,8 +2061,6 @@ declare namespace ContractorManagement {
         CompensationEditFormProps_2 as CompensationEditFormProps,
         DocumentsCard_2 as DocumentsCard,
         DocumentsCardProps_2 as DocumentsCardProps,
-        PaymentsCard,
-        PaymentsCardProps,
         PaymentFlow,
         PaymentFlowProps,
         CreatePaymentFlow,
@@ -2138,9 +2167,6 @@ export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFi
 export type ContractorPayMaxHourlyRateValidation = typeof ContractorPayErrorCodes.MAX_HOURLY_RATE;
 
 // @public
-export type ContractorPaymentHistoryEntry = NonNullable<GetV1ContractorsContractorUuidPaymentsResponse['contractorPaymentListings']>[number];
-
-// @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
 
 // @public
@@ -2200,6 +2226,40 @@ interface ContractorProfileSelfOnboardingProps extends BaseComponentInterface<'C
     contractorId: string;
     defaultValues?: Partial<ContractorDetailsFormData>;
     isAdmin: false;
+}
+
+// @public
+export type ContractorRehireErrorCode = (typeof ContractorRehireErrorCodes)[keyof typeof ContractorRehireErrorCodes];
+
+// @public
+export const ContractorRehireErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly START_DATE_BEFORE_MIN: "START_DATE_BEFORE_MIN";
+};
+
+// @public
+export type ContractorRehireFieldsMetadata = { startDate: FieldMetadata; };
+
+// @public
+export type ContractorRehireFormData = { startDate: string; };
+
+// @public
+export type ContractorRehireFormField = "startDate";
+
+// @public
+export interface ContractorRehireFormFields {
+    StartDate: ComponentType<ContractorRehireStartDateFieldProps>;
+}
+
+// @public
+export type ContractorRehireStartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<ContractorRehireStartDateValidation>>;
+
+// @public
+export type ContractorRehireStartDateValidation = (typeof ContractorRehireErrorCodes)['REQUIRED' | 'START_DATE_BEFORE_MIN'];
+
+// @public
+export interface ContractorRehireSubmitResult {
+    startDate: string;
 }
 
 // @public
@@ -2444,22 +2504,33 @@ export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldPr
 // @public
 function Dashboard(input: DashboardProps): JSX;
 
-// @public
+// @alpha
 function Dashboard_2(input: DashboardProps_2): JSX;
+
+// @public
+function Dashboard_3(input: DashboardProps_3): JSX;
 
 // @public
 const DashboardFlow: (input: DashboardFlowProps) => JSX;
 
-// @public
+// @alpha
 const DashboardFlow_2: (input: DashboardFlowProps_2) => JSX;
+
+// @public
+const DashboardFlow_3: (input: DashboardFlowProps_3) => JSX;
 
 // @public
 interface DashboardFlowProps extends BaseComponentInterface<never> {
     employeeId: string;
 }
 
-// @public
+// @alpha
 interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
+    companyId: string;
+}
+
+// @public
+interface DashboardFlowProps_3 extends BaseComponentInterface<never> {
     contractorId: string;
 }
 
@@ -2469,17 +2540,26 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
     selectedTab?: DashboardTab;
 }
 
-// @public (undocumented)
-interface DashboardProps_2 extends BaseComponentInterface<'Contractor.Dashboard'> {
-    contractorId: string;
+// @alpha
+interface DashboardProps_2 extends BaseComponentInterface<'Company.Dashboard'> {
+    companyId: string;
     selectedTab?: DashboardTab_2;
+}
+
+// @public (undocumented)
+interface DashboardProps_3 extends BaseComponentInterface<'Contractor.Dashboard'> {
+    contractorId: string;
+    selectedTab?: DashboardTab_3;
 }
 
 // @public (undocumented)
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
 
+// @alpha
+type DashboardTab_2 = 'companyDetails' | 'taxes';
+
 // @public (undocumented)
-type DashboardTab_2 = 'details' | 'pay' | 'documents';
+type DashboardTab_3 = 'details' | 'pay' | 'documents';
 
 // @public
 export type DataAttributes = {
@@ -3124,9 +3204,19 @@ function FederalTaxes_3(props: FederalTaxesProps_3): JSX;
 // @public
 function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
 
+// @alpha
+function FederalTaxesCard_2(props: FederalTaxesCardProps_2): JSX;
+
 // @public
 interface FederalTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+interface FederalTaxesCardProps_2 {
+    companyId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
@@ -3602,11 +3692,54 @@ interface I9SignatureFormProps extends BaseComponentInterface<'Employee.I9Signat
 }
 
 // @public
-function Industry(props: IndustryProps): JSX;
+function Industry_2(input: IndustryProps): JSX;
+
+// @alpha
+function IndustryCard(props: IndustryCardProps): JSX;
+
+// @alpha
+interface IndustryCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+export type IndustryErrorCode = (typeof IndustryErrorCodes)[keyof typeof IndustryErrorCodes];
+
+// @public
+export const IndustryErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+};
+
+// @public
+export type IndustryField = "naicsCode";
+
+// @public
+export type IndustryFieldProps = HookFieldProps<ComboBoxHookFieldProps<IndustryRequiredValidation, NaicsCode>>;
+
+// @public
+export type IndustryFieldsMetadata = { naicsCode: FieldMetadataWithOptions<NaicsCode>; };
+
+// @public
+export type IndustryFormData = { naicsCode: string; };
+
+// @public
+export interface IndustryFormFields {
+    Industry: ComponentType<IndustryFieldProps>;
+}
 
 // @public
 interface IndustryProps extends BaseComponentInterface<'Company.Industry'> {
     companyId: string;
+}
+
+// @public
+export type IndustryRequiredValidation = typeof IndustryErrorCodes.REQUIRED;
+
+// @public
+export interface IndustrySubmitOptions {
+    companyId?: string;
 }
 
 // @public
@@ -3825,6 +3958,16 @@ interface LocationFormProps extends BaseComponentInterface<'Company.Locations'> 
 // @public
 function Locations(input: LocationsProps): JSX;
 
+// @alpha
+function LocationsCard(props: LocationsCardProps): JSX;
+
+// @alpha
+interface LocationsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 function LocationsList(props: LocationsListProps): JSX;
 
@@ -3920,6 +4063,12 @@ export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<I
     options: MultiSelectComboBoxOption[];
     portalContainer?: HTMLElement;
     value?: string[];
+}
+
+// @public
+export interface NaicsCode {
+    code: string;
+    title: string;
 }
 
 // @public
@@ -4339,16 +4488,6 @@ export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
 
 // @public
 export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, PaymentPeriod>>;
-
-// @public
-function PaymentsCard(input: PaymentsCardProps): JSX;
-
-// @public
-interface PaymentsCardProps {
-    contractorId: string;
-    LoaderComponent?: LoaderComponentType;
-    onEvent: OnEventType<EventType, unknown>;
-}
 
 // @public
 function PaymentsList(props: PaymentsListProps): JSX;
@@ -4996,6 +5135,14 @@ interface RecoveryCasesProps extends Omit<BaseComponentInterface<never>, 'onEven
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
 
 // @public
+function Rehire(input: RehireProps): JSX;
+
+// @public
+interface RehireProps extends BaseComponentInterface<'Contractor.Rehire'> {
+    contractorId: string;
+}
+
+// @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -5030,6 +5177,8 @@ export interface Resources {
     // (undocumented)
     'Company.BankAccount': Translations.CompanyBankAccount
     // (undocumented)
+    'Company.Dashboard': Translations.CompanyDashboard
+    // (undocumented)
     'Company.DocumentList': Translations.CompanyDocumentList
     // (undocumented)
     'Company.FederalTaxes': Translations.CompanyFederalTaxes
@@ -5039,6 +5188,12 @@ export interface Resources {
     'Company.Locations': Translations.CompanyLocations
     // (undocumented)
     'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
+    // (undocumented)
+    'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
+    // (undocumented)
+    'Company.Management.Industry': Translations.CompanyManagementIndustry
+    // (undocumented)
+    'Company.Management.Locations': Translations.CompanyManagementLocations
     // (undocumented)
     'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
     // (undocumented)
@@ -5096,8 +5251,6 @@ export interface Resources {
     // (undocumented)
     'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
     // (undocumented)
-    'Contractor.Management.Payments': Translations.ContractorManagementPayments
-    // (undocumented)
     'Contractor.Management.Profile': Translations.ContractorManagementProfile
     // (undocumented)
     'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
@@ -5123,6 +5276,8 @@ export interface Resources {
     'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
     // (undocumented)
     'Contractor.Profile': Translations.ContractorProfile
+    // (undocumented)
+    'Contractor.Rehire': Translations.ContractorRehire
     // (undocumented)
     'Contractor.SelectContractors': Translations.ContractorSelectContractors
     // (undocumented)
@@ -6104,6 +6259,7 @@ export interface UnorderedListProps extends BaseListProps {
 
 // @alpha
 export interface UnstableFeatures {
+    companySettingsDashboard?: boolean;
     historicalPayments?: boolean;
     managePaySchedules?: boolean;
     taxPayments?: boolean;
@@ -6386,27 +6542,32 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<C
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
 // @public
-export function useContractorPaymentsList(input: UseContractorPaymentsListParams): UseContractorPaymentsListResult;
+export function useContractorRehireForm(input: UseContractorRehireFormProps): HookLoadingResult | UseContractorRehireFormReady;
 
 // @public
-export interface UseContractorPaymentsListParams {
+export interface UseContractorRehireFormProps {
     contractorId: string;
-    defaultItemsPerPage?: PaginationItemsPerPage;
+    defaultValues?: Partial<ContractorRehireFormData>;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
 }
 
 // @public
-export interface UseContractorPaymentsListReady extends BaseHookReady<{
-    payments: ContractorPaymentHistoryEntry[];
-}, {
-    isFetching: boolean;
-}> {
-    pagination: {
-        payments?: PaginationControlProps;
+export interface UseContractorRehireFormReady extends BaseFormHookReady<ContractorRehireFieldsMetadata, ContractorRehireFormData, ContractorRehireFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<ContractorRehireSubmitResult> | undefined>;
+    };
+    data: {
+        contractor: Contractor;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
     };
 }
 
 // @public
-export type UseContractorPaymentsListResult = HookLoadingResult | UseContractorPaymentsListReady;
+export type UseContractorRehireFormResult = HookLoadingResult | UseContractorRehireFormReady;
 
 // @public
 export function useContractorSignatureForm(input: UseContractorSignatureFormProps): UseContractorSignatureFormResult;
@@ -6481,6 +6642,28 @@ export interface UseDeductionFormReady extends BaseFormHookReady<DeductionFormFi
 
 // @public
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
+
+// @public
+export function useDismissal(input: UseDismissalProps): UseDismissalResult;
+
+// @public
+export interface UseDismissalProps {
+    contractorId: string;
+}
+
+// @public
+export interface UseDismissalReady extends BaseHookReady<{
+    contractor: Contractor;
+}, {
+    isPending: boolean;
+}> {
+    actions: {
+        dismiss: (endDate: Date) => Promise<HookSubmitResult<unknown> | undefined>;
+    };
+}
+
+// @public
+export type UseDismissalResult = HookLoadingResult | UseDismissalReady;
 
 // @public
 export type UsedPreparerFieldProps = HookFieldProps<RadioGroupHookFieldProps<SignEmployeeFormRequiredValidation>>;
@@ -6638,6 +6821,35 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<HomeAddressFi
 
 // @public
 export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormReady;
+
+// @public
+export function useIndustryForm(input: UseIndustryFormProps): HookLoadingResult | UseIndustryFormReady;
+
+// @public
+export interface UseIndustryFormProps {
+    companyId: string;
+    defaultValues?: Partial<IndustryFormData>;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseIndustryFormReady extends BaseFormHookReady<IndustryFieldsMetadata, IndustryFormData, IndustryFormFields> {
+    actions: {
+        onSubmit: (options?: IndustrySubmitOptions) => Promise<HookSubmitResult<Industry> | undefined>;
+    };
+    data: {
+        industry: Industry | null;
+        naicsCodes: NaicsCode[];
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+    };
+}
+
+// @public
+export type UseIndustryFormResult = HookLoadingResult | UseIndustryFormReady;
 
 // @public
 export function useJobForm(input: UseJobFormProps): HookLoadingResult | UseJobFormReady;

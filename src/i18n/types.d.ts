@@ -24,6 +24,8 @@ export interface Resources {
   /** */
   'Company.BankAccount': Translations.CompanyBankAccount
   /** */
+  'Company.Dashboard': Translations.CompanyDashboard
+  /** */
   'Company.DocumentList': Translations.CompanyDocumentList
   /** */
   'Company.FederalTaxes': Translations.CompanyFederalTaxes
@@ -33,6 +35,12 @@ export interface Resources {
   'Company.Locations': Translations.CompanyLocations
   /** */
   'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
+  /** */
+  'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
+  /** */
+  'Company.Management.Industry': Translations.CompanyManagementIndustry
+  /** */
+  'Company.Management.Locations': Translations.CompanyManagementLocations
   /** */
   'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
   /** */
@@ -117,6 +125,8 @@ export interface Resources {
   'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
   /** */
   'Contractor.Profile': Translations.ContractorProfile
+  /** */
+  'Contractor.Rehire': Translations.ContractorRehire
   /** */
   'Contractor.SelectContractors': Translations.ContractorSelectContractors
   /** */
@@ -473,6 +483,29 @@ export namespace Translations {
     /** @defaultValue `"Verify deposits"` */
     verifyCta: string
   }
+  /** Translation keys for the `Company.Dashboard` i18n namespace. */
+  export interface CompanyDashboard {
+    /** @defaultValue `"Company settings"` */
+    companySettingsLabel: string
+    /** @defaultValue `"Company settings tabs"` */
+    tabsLabel: string
+    tabs: {
+      /** @defaultValue `"Company details"` */
+      companyDetails: string
+      /** @defaultValue `"Taxes"` */
+      taxes: string
+    }
+    /** @defaultValue `"Back to company settings"` */
+    backToDashboardCta: string
+    alerts: {
+      /** @defaultValue `"Industry updated"` */
+      industryUpdated: string
+      /** @defaultValue `"Federal tax settings updated"` */
+      federalTaxesUpdated: string
+      /** @defaultValue `"Locations updated"` */
+      locationsUpdated: string
+    }
+  }
   /** Translation keys for the `Company.DocumentList` i18n namespace. */
   export interface CompanyDocumentList {
     /** @defaultValue `"Documents"` */
@@ -503,8 +536,12 @@ export namespace Translations {
     signDocumentComplete: string
     /** @defaultValue `"Not signed"` */
     notSigned: string
+    /** @defaultValue `"View"` */
+    viewCta: string
     /** @defaultValue `"Could not load your documents, try again later."` */
     documentListError: string
+    /** @defaultValue `"Could not open this document, try again later."` */
+    viewDocumentError: string
     /** @defaultValue `"No documents found"` */
     emptyTableTitle: string
     /** @defaultValue `"Continue"` */
@@ -871,6 +908,12 @@ export namespace Translations {
     placeholder: string
     /** @defaultValue `"Continue"` */
     submitCta: string
+    /** @defaultValue `"NAICS {{code}}"` */
+    unmatchedIndustry: string
+    validations: {
+      /** @defaultValue `"Select an industry to continue"` */
+      required: string
+    }
   }
   /** Translation keys for the `Company.Locations` i18n namespace. */
   export interface CompanyLocations {
@@ -1026,6 +1069,83 @@ export namespace Translations {
         /** @defaultValue `"AutoPilot can't be enabled right now"` */
         title: string
         /** @defaultValue `"Something is preventing AutoPilot from being enabled for this schedule. Contact support if this continues."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.FederalTaxes` i18n namespace. */
+  export interface CompanyManagementFederalTaxes {
+    card: {
+      /** @defaultValue `"Federal taxes"` */
+      title: string
+      /** @defaultValue `"Edit"` */
+      editCta: string
+      /** @defaultValue `"Legal name"` */
+      legalName: string
+      /** @defaultValue `"EIN"` */
+      ein: string
+      /** @defaultValue `"Tax payer type"` */
+      taxPayerType: string
+      /** @defaultValue `"Federal filing form"` */
+      filingForm: string
+      /** @defaultValue `"No value"` */
+      listEmptyPlaceholder: string
+      /** @defaultValue `"Verified"` */
+      einVerified: string
+      /** @defaultValue `"Awaiting verification"` */
+      einUnverified: string
+      /** @defaultValue `"Not provided"` */
+      einMissing: string
+      emptyState: {
+        /** @defaultValue `"No federal tax details yet"` */
+        title: string
+        /** @defaultValue `"Add this company's legal name, EIN, and filing form so payroll taxes can be filed."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.Industry` i18n namespace. */
+  export interface CompanyManagementIndustry {
+    card: {
+      /** @defaultValue `"Industry"` */
+      title: string
+      /** @defaultValue `"Edit"` */
+      editCta: string
+      /** @defaultValue `"Industry"` */
+      industry: string
+      /** @defaultValue `"NAICS code"` */
+      naicsCode: string
+      /** @defaultValue `"No value"` */
+      listEmptyPlaceholder: string
+      emptyState: {
+        /** @defaultValue `"No industry selected"` */
+        title: string
+        /** @defaultValue `"Choose the industry that best represents this company's primary business activity."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.Locations` i18n namespace. */
+  export interface CompanyManagementLocations {
+    card: {
+      /** @defaultValue `"Locations"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Company locations"` */
+      listLabel: string
+      /** @defaultValue `"Address"` */
+      addressColumn: string
+      /** @defaultValue `"Designations"` */
+      designationsColumn: string
+      /** @defaultValue `"Mailing"` */
+      mailingAddress: string
+      /** @defaultValue `"Filing"` */
+      filingAddress: string
+      emptyState: {
+        /** @defaultValue `"No locations yet"` */
+        title: string
+        /** @defaultValue `"Add a work address so this company can run payroll and file taxes in the right jurisdictions."` */
         description: string
       }
     }
@@ -3224,6 +3344,8 @@ export namespace Translations {
     rateHourly: string
     /** @defaultValue `"Starts {{date}}"` */
     startsBadge: string
+    /** @defaultValue `"Rehire {{date}}"` */
+    rehireBadge: string
     /** @defaultValue `"Last day {{date}}"` */
     lastDayBadge: string
     /** @defaultValue `"Edit"` */
@@ -4177,6 +4299,39 @@ export namespace Translations {
       /** @defaultValue `"Saving…"` */
       updating: string
     }
+  }
+  /** Translation keys for the `Contractor.Rehire` i18n namespace. */
+  export interface ContractorRehire {
+    /** @defaultValue `"Rehire {{name}}"` */
+    title: string
+    /** @defaultValue `"Schedule a start date for this contractor."` */
+    subtitle: string
+    alert: {
+      /** @defaultValue `"This can be cancelled"` */
+      label: string
+      /** @defaultValue `"The rehire can be cancelled from the contractor list any time before the start date takes effect."` */
+      text: string
+    }
+    form: {
+      startDate: {
+        /** @defaultValue `"Start date"` */
+        label: string
+      }
+    }
+    validation: {
+      /** @defaultValue `"Enter a start date"` */
+      startDateRequired: string
+      /** @defaultValue `"Start date must be after the dismissal date"` */
+      startDateBeforeMin: string
+    }
+    actions: {
+      /** @defaultValue `"Cancel"` */
+      cancel: string
+      /** @defaultValue `"Rehire contractor"` */
+      submit: string
+    }
+    /** @defaultValue `"Rehire scheduled"` */
+    successMessage: string
   }
   /** Translation keys for the `Contractor.SelectContractors` i18n namespace. */
   export interface ContractorSelectContractors {
@@ -8012,6 +8167,8 @@ export namespace Translations {
       hours: string
       /** @defaultValue `"Time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Additional earnings"` */
       additionalEarnings: string
       /** @defaultValue `"Reimbursements"` */
@@ -8556,6 +8713,8 @@ export namespace Translations {
       doubleOT: string
       /** @defaultValue `"Paid time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Total hours"` */
       totalHours: string
       /** @defaultValue `"Payment type"` */

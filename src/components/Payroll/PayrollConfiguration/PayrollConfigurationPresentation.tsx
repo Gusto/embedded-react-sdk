@@ -11,6 +11,7 @@ import {
   getRegularHours,
   getOvertimeHours,
   getTotalPtoHours,
+  getTotalOutstandingPtoHours,
   getAdditionalEarnings,
   getReimbursements,
   formatHoursDisplay,
@@ -241,6 +242,16 @@ export const PayrollConfigurationPresentation = ({
                       return formatHoursDisplay(additionalHours + approvedHours)
                     },
                   },
+                  ...(payrollCategory === PayrollCategory.Dismissal
+                    ? [
+                        {
+                          title: t('tableColumns.unusedHours'),
+                          justify: 'end' as const,
+                          render: (item: PayrollEmployeeCompensationsType) =>
+                            formatHoursDisplay(getTotalOutstandingPtoHours(item)),
+                        },
+                      ]
+                    : []),
                   {
                     title: t('tableColumns.additionalEarnings'),
                     justify: 'end',

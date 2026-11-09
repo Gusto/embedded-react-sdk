@@ -17,6 +17,10 @@ const defaultMockValues = {
   documentListError: null,
   handleRequestFormToSign: () => {},
   handleContinue: () => {},
+  handleViewForm: () => {},
+  viewingFormUuid: null,
+  viewFormError: false,
+  dismissViewFormError: () => {},
 }
 
 describe('ManageSignatories', () => {

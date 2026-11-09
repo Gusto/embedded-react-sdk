@@ -206,6 +206,12 @@ export const companyEvents = {
   COMPANY_STATE_TAX_MANAGE_RATES: 'company/stateTaxes/manageRates',
   COMPANY_OVERVIEW_DONE: 'company/overview/done',
   COMPANY_OVERVIEW_CONTINUE: 'company/overview/continue',
+  COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED: 'company/management/industry/editRequested',
+  COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED: 'company/management/locations/editRequested',
+  COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED: 'company/management/federalTaxes/editRequested',
+  COMPANY_DASHBOARD_TAB_CHANGE: 'company/dashboard/tabChange',
+  COMPANY_DASHBOARD_ALERT_DISMISSED: 'company/dashboard/alertDismissed',
+  COMPANY_DASHBOARD_BACK: 'company/dashboard/back',
 } as const
 
 /**
@@ -248,6 +254,7 @@ export const contractorEvents = {
   CONTRACTOR_REHIRE: 'contractor/rehire',
   CONTRACTOR_DISMISSAL_CANCELLED: 'contractor/dismissal/cancelled',
   CONTRACTOR_DISMISSAL_SCHEDULED: 'contractor/dismissal/scheduled',
+  CONTRACTOR_REHIRE_SCHEDULED: 'contractor/rehire/scheduled',
   CONTRACTOR_REHIRE_CANCELLED: 'contractor/rehire/cancelled',
   CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: 'contractor/management/profile/editRequested',
   CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: 'contractor/management/profile/updated',

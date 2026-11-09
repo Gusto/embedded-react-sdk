@@ -4,7 +4,7 @@ import { contractorListStateMachine } from './contractorListStateMachine'
 import type { ContractorListFlowContextInterface } from './ContractorListFlowComponents'
 import { componentEvents } from '@/shared/constants'
 
-type ContractorListState = 'list' | 'dashboard' | 'dismiss'
+type ContractorListState = 'list' | 'dashboard' | 'dismiss' | 'rehire'
 
 function createTestMachine(initialState: ContractorListState = 'list') {
   return createMachine(
@@ -57,6 +57,43 @@ describe('contractorListStateMachine', () => {
 
   it('transitions from dismiss back to list with no success message on CANCEL', () => {
     const service = createService('dismiss')
+    service.context.contractorId = 'contractor-123'
+
+    send(service, componentEvents.CANCEL)
+
+    expect(service.machine.current).toBe('list')
+    expect(service.context.successMessage).toBeUndefined()
+    expect(service.context.contractorId).toBeUndefined()
+  })
+
+  it('transitions from list to rehire on CONTRACTOR_REHIRE, clearing any stale successMessage', () => {
+    const service = createService('list')
+    service.context.successMessage = 'stale message'
+
+    send(service, componentEvents.CONTRACTOR_REHIRE, { contractorId: 'contractor-123' })
+
+    expect(service.machine.current).toBe('rehire')
+    expect(service.context.contractorId).toBe('contractor-123')
+    expect(service.context.successMessage).toBeUndefined()
+  })
+
+  it('transitions from rehire back to list with the success message on CONTRACTOR_REHIRE_SCHEDULED', () => {
+    const service = createService('rehire')
+    service.context.contractorId = 'contractor-123'
+
+    send(service, componentEvents.CONTRACTOR_REHIRE_SCHEDULED, {
+      contractorId: 'contractor-123',
+      startDate: '2026-09-01',
+      message: 'Rehire scheduled',
+    })
+
+    expect(service.machine.current).toBe('list')
+    expect(service.context.successMessage).toBe('Rehire scheduled')
+    expect(service.context.contractorId).toBeUndefined()
+  })
+
+  it('transitions from rehire back to list with no success message on CANCEL', () => {
+    const service = createService('rehire')
     service.context.contractorId = 'contractor-123'
 
     send(service, componentEvents.CANCEL)

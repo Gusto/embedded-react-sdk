@@ -1645,11 +1645,17 @@
           "method": "GET",
           "path": "/v1/companies/:companyUuid/signatories",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/forms/:formId/pdf",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid"
+        "companyUuid",
+        "formId"
       ]
     },
     "CompanyOnboarding.Industry": {
@@ -2108,6 +2114,18 @@
         "uuid"
       ]
     },
+    "CompanyManagement.Dashboard": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies"
+        }
+      ],
+      "variables": [
+        "companyId"
+      ]
+    },
     "ContractorOnboarding.Landing": {
       "endpoints": [
         {
@@ -2359,6 +2377,23 @@
         "contractorUuid"
       ]
     },
+    "ContractorManagement.Rehire": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/rehire",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "ContractorManagement.DashboardFlow": {
       "endpoints": [
         {
@@ -2469,36 +2504,24 @@
         },
         {
           "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/forms",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-forms"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/forms/:formId/pdf",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-form-pdf"
+        },
+        {
+          "method": "GET",
           "path": "/v1/documents/:documentUuid/pdf",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf"
         }
       ],
       "variables": [
         "contractorUuid",
-        "documentUuid"
-      ]
-    },
-    "ContractorManagement.PaymentsCard": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/contractor_payments/:contractorPaymentUuid/receipt",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payments-contractor_payment_uuid-receipt"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid/payments",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payments"
-        }
-      ],
-      "variables": [
-        "contractorPaymentUuid",
-        "contractorUuid"
+        "documentUuid",
+        "formId"
       ]
     },
     "ContractorManagement.PaymentsList": {
@@ -2689,6 +2712,7 @@
         "ContractorManagement.ContractorList",
         "ContractorManagement.DashboardFlow",
         "ContractorManagement.Dismissal",
+        "ContractorManagement.Rehire",
         "ContractorOnboarding.OnboardingFlow"
       ]
     },
@@ -2704,7 +2728,6 @@
         "ContractorManagement.Compensation",
         "ContractorManagement.DocumentsCard",
         "ContractorManagement.PaymentMethod",
-        "ContractorManagement.PaymentsCard",
         "ContractorManagement.Profile"
       ]
     },
@@ -3052,12 +3075,17 @@
         "contractorUuid"
       ]
     },
-    "useContractorPaymentsList": {
+    "useContractorRehireForm": {
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/contractors/:contractorUuid/payments",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payments"
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/rehire",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire"
         }
       ],
       "variables": [
@@ -3171,6 +3199,23 @@
         "garnishmentId"
       ]
     },
+    "useDismissal": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/termination",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-termination"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "useEmployeeDetailsForm": {
       "endpoints": [
         {
@@ -3277,6 +3322,23 @@
       "variables": [
         "employeeId",
         "homeAddressUuid"
+      ]
+    },
+    "useIndustryForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/industry_selection",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-industry"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/industry_selection",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-industry"
+        }
+      ],
+      "variables": [
+        "companyId"
       ]
     },
     "useJobForm": {

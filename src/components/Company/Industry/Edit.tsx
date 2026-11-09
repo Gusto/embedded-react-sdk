@@ -1,25 +1,21 @@
 import { useTranslation } from 'react-i18next'
-import { useIndustryItems } from './Context'
-import { ComboBoxField } from '@/components/Common'
-
-/** @internal */
-export interface IndustryFormFields {
-  /** The selected NAICS industry code. */
-  naics_code: string
-}
+import { useIndustryFormContext } from './Context'
+import type { NaicsCode } from '@/models/NAICSCodes'
 
 /** @internal */
 export const Edit = () => {
   const { t } = useTranslation('Company.Industry')
-  const { items } = useIndustryItems()
+  const { form } = useIndustryFormContext()
 
   return (
-    <ComboBoxField
-      isRequired
-      options={items}
+    <form.Fields.Industry
       label={t('label')}
-      name="naics_code"
       placeholder={t('placeholder')}
+      validationMessages={{ REQUIRED: t('validations.required') }}
+      // A classification saved against a code outside the bundled list carries
+      // whatever title the API returned. When it returned none, fall back to the
+      // code itself so the field still reads as classified rather than empty.
+      getOptionLabel={({ code, title }: NaicsCode) => title || t('unmatchedIndustry', { code })}
     />
   )
 }
