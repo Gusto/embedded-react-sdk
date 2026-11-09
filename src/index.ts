@@ -590,6 +590,18 @@ export type {
   EmployeeWithActions,
 } from '@/components/Employee/EmployeeList/shared'
 
+export { useCompensationHistory } from '@/components/Employee/Compensation/shared/useCompensationHistory'
+export type {
+  UseCompensationHistoryProps,
+  UseCompensationHistoryResult,
+  UseCompensationHistoryReady,
+} from '@/components/Employee/Compensation/shared/useCompensationHistory'
+export type {
+  CompensationHistoryEntry,
+  CompensationHistoryStatus,
+  JobCompensationHistory,
+} from '@/components/Employee/Compensation/shared/getCompensationHistory'
+
 // Domain hooks - Company
 export {
   usePayScheduleForm,

@@ -44,7 +44,9 @@ function CompensationFlow({ employeeId, onEvent, LoaderComponent }: Compensation
  * @remarks
  * Renders a read-only card showing the employee's job(s), pay type, wage, and effective date, along with affordances to edit a job's compensation, add a first job from the empty state, add another job (when the primary job is Nonexempt), delete a non-primary job, and cancel a scheduled future-dated change. Choosing to edit or add a job swaps the card for the corresponding form; a successful add returns to the card with a dismissible "Job successfully added." alert, an edit returns to the card without an alert, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
  *
- * The card and form surfaces ({@link CompensationCard}, {@link CompensationEditForm}, {@link CompensationAddJobForm}, {@link CompensationAddAnotherJobForm}) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
+ * When the `compensationHistory` unstable feature flag is enabled, the card also offers a "View history" CTA that swaps in {@link CompensationHistory} — a read-only table of every past, current, and upcoming pay rate per job — with a "Back" action that returns to the card.
+ *
+ * The card and form surfaces ({@link CompensationCard}, {@link CompensationEditForm}, {@link CompensationAddJobForm}, {@link CompensationAddAnotherJobForm}, {@link CompensationHistory}) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
  *
  * @events
  * | Event | Description | Data |
@@ -54,6 +56,8 @@ function CompensationFlow({ employeeId, onEvent, LoaderComponent }: Compensation
  * | `employee/management/compensation/card/addAnotherRequested` | Fired when the "Add another job" CTA is clicked; the block opens the add-another-job form | `{ employeeId: string }` |
  * | `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog; the block stays on the card | `{ employeeId: string, jobId: string }` |
  * | `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card; the block stays on the card | `{ employeeId: string, compensationId: string }` |
+ * | `employee/management/compensation/card/historyRequested` | Fired when the "View history" CTA is clicked; the block opens the compensation history view. Requires the `compensationHistory` unstable feature flag | `{ employeeId: string }` |
+ * | `employee/management/compensation/history/closed` | Fired when the user clicks "Back" from the compensation history view; the block returns to the card view | `{ employeeId: string }` |
  * | `employee/management/compensation/editForm/submitted` | Fired after an edit-compensation save completes; the block returns to the card view | Updated `Compensation` entity |
  * | `employee/management/compensation/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
  * | `employee/management/compensation/addJobForm/submitted` | Fired after the first job + compensation are saved; the block returns to the card and surfaces the "Job added" alert | Updated `Compensation` entity |

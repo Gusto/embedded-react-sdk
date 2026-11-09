@@ -135,6 +135,7 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
  * - {@link HomeAddressCard}
  * - {@link WorkAddressCard}
  * - {@link CompensationCard}
+ * - {@link CompensationHistory} (behind the `compensationHistory` unstable feature flag)
  * - {@link PaymentMethodCard}
  * - {@link DeductionsCard}
  * - {@link PaystubsCard}

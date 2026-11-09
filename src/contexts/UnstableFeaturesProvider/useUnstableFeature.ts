@@ -67,6 +67,18 @@ export interface UnstableFeatures {
    * @defaultValue `false`
    */
   companySettingsDashboard?: boolean
+  /**
+   * Viewing an employee's past compensation alongside their current and upcoming pay.
+   *
+   * When `true`, `EmployeeManagement.CompensationHistory` can be mounted, and
+   * `EmployeeManagement.CompensationCard` shows a "View history" call to action that opens it.
+   *
+   * When `false`, the call to action is hidden and the component throws when mounted. Every other
+   * aspect of `EmployeeManagement.CompensationCard` is unaffected.
+   *
+   * @defaultValue `false`
+   */
+  compensationHistory?: boolean
 }
 
 /**

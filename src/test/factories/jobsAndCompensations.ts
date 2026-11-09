@@ -141,6 +141,7 @@ export type EmployeeJobsScenario =
   | 'newPrimaryJob'
   | 'newPrimaryJobWithSecondaries'
   | 'newSecondaryJob'
+  | 'compensationHistory'
 
 export interface BuildEmployeeWithJobsOptions {
   scenario: EmployeeJobsScenario
@@ -358,6 +359,101 @@ export function buildEmployeeWithJobs({
               payment_unit: 'Hour',
               rate: '50.00',
               effective_date: '2099-06-01',
+            }),
+          ],
+        }),
+      ]
+
+    case 'compensationHistory':
+      // A primary job with a real multi-row history (two past raises, one
+      // current rate, one scheduled future raise) plus a secondary job with
+      // its own shorter history. Exercises the past/current/upcoming split
+      // that single-compensation scenarios never reach.
+      return [
+        buildJob({
+          uuid: 'job-uuid',
+          employeeUuid,
+          primary: true,
+          title: 'Software engineer',
+          flsaStatus: 'Nonexempt',
+          paymentUnit: 'Hour',
+          rate: '85.00',
+          hireDate: '2023-02-01',
+          currentCompensationUuid: 'compensation-current',
+          compensations: [
+            buildCompensation({
+              uuid: 'compensation-oldest',
+              version: 'compensation-version-oldest',
+              job_uuid: 'job-uuid',
+              title: 'Junior engineer',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '60.00',
+              effective_date: '2023-02-01',
+            }),
+            buildCompensation({
+              uuid: 'compensation-older',
+              version: 'compensation-version-older',
+              job_uuid: 'job-uuid',
+              title: 'Software engineer',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '72.00',
+              effective_date: '2024-06-01',
+            }),
+            buildCompensation({
+              uuid: 'compensation-current',
+              version: 'compensation-version-current',
+              job_uuid: 'job-uuid',
+              title: 'Software engineer',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '85.00',
+              effective_date: '2025-01-01',
+            }),
+            buildCompensation({
+              uuid: 'compensation-upcoming',
+              version: 'compensation-version-upcoming',
+              job_uuid: 'job-uuid',
+              title: 'Senior engineer',
+              flsa_status: 'Exempt',
+              payment_unit: 'Year',
+              rate: '140000.00',
+              effective_date: '2099-03-01',
+            }),
+          ],
+        }),
+        buildJob({
+          uuid: 'job-uuid-2',
+          version: 'job-version-secondary',
+          employeeUuid,
+          primary: false,
+          title: 'Team lead',
+          flsaStatus: 'Nonexempt',
+          paymentUnit: 'Hour',
+          rate: '110.00',
+          hireDate: '2024-09-01',
+          currentCompensationUuid: 'compensation-secondary-current',
+          compensations: [
+            buildCompensation({
+              uuid: 'compensation-secondary-past',
+              version: 'compensation-version-secondary-past',
+              job_uuid: 'job-uuid-2',
+              title: 'Team lead',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '100.00',
+              effective_date: '2024-09-01',
+            }),
+            buildCompensation({
+              uuid: 'compensation-secondary-current',
+              version: 'compensation-version-secondary-current',
+              job_uuid: 'job-uuid-2',
+              title: 'Team lead',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '110.00',
+              effective_date: '2025-04-01',
             }),
           ],
         }),

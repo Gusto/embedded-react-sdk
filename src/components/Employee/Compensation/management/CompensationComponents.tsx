@@ -3,6 +3,7 @@ import { CompensationCard } from './CompensationCard'
 import { CompensationEditForm } from './CompensationEditForm'
 import { CompensationAddJobForm } from './CompensationAddJobForm'
 import { CompensationAddAnotherJobForm } from './CompensationAddAnotherJobForm/CompensationAddAnotherJobForm'
+import { CompensationHistory } from './CompensationHistory'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -65,6 +66,18 @@ export function CompensationAddJobFormContextual() {
   const { employeeId, onEvent, LoaderComponent } = useFlow<CompensationContextInterface>()
   return (
     <CompensationAddJobForm
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
+}
+
+/** @internal */
+export function CompensationHistoryContextual() {
+  const { employeeId, onEvent, LoaderComponent } = useFlow<CompensationContextInterface>()
+  return (
+    <CompensationHistory
       employeeId={ensureRequired(employeeId)}
       onEvent={onEvent}
       LoaderComponent={LoaderComponent}

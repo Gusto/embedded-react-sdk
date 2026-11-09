@@ -63,6 +63,7 @@ export {
   CompensationEditForm,
   CompensationAddJobForm,
   CompensationAddAnotherJobForm,
+  CompensationHistory,
 } from '../Compensation/management'
 export type {
   CompensationProps,
@@ -70,6 +71,7 @@ export type {
   CompensationEditFormProps,
   CompensationAddJobFormProps,
   CompensationAddAnotherJobFormProps,
+  CompensationHistoryProps,
 } from '../Compensation/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export type { TerminateEmployeeProps } from '../Terminations/TerminateEmployee/TerminateEmployee'

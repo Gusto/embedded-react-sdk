@@ -142,7 +142,7 @@ export const compensationHistoryConfigurations: PrototypeConfiguration[] = [
   {
     slug: 'multiple-jobs',
     name: 'Multiple jobs',
-    description: 'Two jobs — combined view with a job filter.',
+    description: 'Two jobs — each rendered as its own stacked section.',
     render: () => <CompensationHistoryDemo jobs={multipleJobs} />,
   },
   {

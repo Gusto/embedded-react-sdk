@@ -22,6 +22,7 @@
     "effectiveDate": "Effective date",
     "addJobCta": "Add job",
     "addAnotherJobCta": "Add another job",
+    "viewHistoryCta": "View history",
     "tableLabel": "List of jobs",
     "hamburgerTitle": "Job actions",
     "editJobCta": "Edit",
@@ -143,5 +144,25 @@
     "effectiveDate": "Effective date is a required field",
     "effectiveDateBeforeHire": "Effective date cannot be before the employee's hire date.",
     "effectiveDateBeforeMin": "Effective date must be in the future"
+  },
+  "history": {
+    "title": "Compensation history",
+    "tableLabel": "Compensation history for {{jobTitle}}",
+    "backCta": "Back",
+    "columns": {
+      "effectiveDate": "Effective date",
+      "jobTitle": "Job title",
+      "employeeType": "Employee type",
+      "wage": "Wage",
+      "status": "Status"
+    },
+    "statusLabels": {
+      "current": "Current",
+      "upcoming": "Upcoming"
+    },
+    "emptyState": {
+      "title": "No compensation history",
+      "description": "Compensation history will appear here once compensation is added"
+    }
   }
 }
