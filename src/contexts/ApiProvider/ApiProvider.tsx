@@ -5,11 +5,14 @@ import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
 import { apiVersionMismatchHook } from './apiVersionMismatchHook'
-import { informationRequestEnumHook } from './informationRequestEnumHook'
-import { payrollDeductionAmountHook } from './payrollDeductionAmountHook'
-import { payrollOffCycleReasonEnumHook } from './payrollOffCycleReasonEnumHook'
-import { payScheduleCustomNameHook } from './payScheduleCustomNameHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
+import {
+  informationRequestEnumHook,
+  payrollDeductionAmountHook,
+  payrollOffCycleReasonEnumHook,
+  payScheduleAssignmentPreviewHook,
+  payScheduleCustomNameHook,
+} from './compatibilityHooks'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
 /**
@@ -71,6 +74,7 @@ export function ApiProvider({
     sdkHooks.registerAfterSuccessHook(payrollDeductionAmountHook)
     sdkHooks.registerAfterSuccessHook(payrollOffCycleReasonEnumHook)
     sdkHooks.registerAfterSuccessHook(payScheduleCustomNameHook)
+    sdkHooks.registerAfterSuccessHook(payScheduleAssignmentPreviewHook)
 
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {
