@@ -177,7 +177,7 @@ export function ShiftList({
             row.hours.doubleOvertime > 0 ? `${formatHours(row.hours.doubleOvertime)} DOT` : null,
           ].filter(Boolean)
           return (
-            <div className={styles.stack}>
+            <div className={classNames(styles.stack, styles.stackEnd)}>
               <Components.Text>{formatHours(row.hours.total)}</Components.Text>
               {premium.length > 0 ? (
                 <Components.Text size="sm" variant="supporting">

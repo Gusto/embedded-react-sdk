@@ -5,6 +5,11 @@
   gap: toRem(2);
 }
 
+.stackEnd {
+  align-items: flex-end;
+  text-align: end;
+}
+
 .badges {
   display: flex;
   flex-wrap: nowrap;
