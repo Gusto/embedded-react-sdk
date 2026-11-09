@@ -78,10 +78,29 @@ describe('DeductionsCard (standalone)', () => {
     renderWithProviders(<Component employeeId="employee-123" onEvent={onEvent} />)
 
     const description = await screen.findByText('Child Support')
-    const row = within(description.closest('tr')!)
+    const tableRow = description.closest('tr')
+    if (!tableRow) throw new Error('Deduction row not found')
+    const row = within(tableRow)
     expect(row.getByText('$150.00')).toBeInTheDocument()
     expect(row.getByText('Monthly')).toBeInTheDocument()
     expect(row.queryByText(/50.*%|per paycheck/)).not.toBeInTheDocument()
+  })
+
+  it('shows percentage-only child support without a per-paycheck suffix', async () => {
+    stubGarnishmentsList([
+      buildGarnishment({
+        uuid: 'percentage-child-support',
+        description: 'Percentage-only Child Support',
+        amount: '50',
+        deduct_as_percentage: true,
+        garnishment_type: 'child_support',
+        child_support: { payment_period: 'Monthly' },
+      }),
+    ])
+    renderWithProviders(<DeductionsCard employeeId="employee-123" onEvent={onEvent} />)
+
+    expect(await screen.findByText('50%')).toBeInTheDocument()
+    expect(screen.getByText('Monthly')).toBeInTheDocument()
   })
 
   it('renders the empty state when the employee has no active deductions', async () => {

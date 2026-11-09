@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import type { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { useDeductionsList } from '../../shared/useDeductionsList'
 import { useDeleteDeduction } from '../../shared/useDeleteDeduction'
 import { DeleteDeductionDialog } from '../../shared/DeleteDeductionDialog'
 import { formatDeductionAmount } from '../../shared/formatDeductionAmount'
+import { formatDeductionFrequency } from '../../shared/formatDeductionFrequency'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
@@ -66,12 +66,6 @@ function DeductionsCardContent({ employeeId, onEvent, LoaderComponent }: Deducti
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
-  const paymentPeriodLabels: Record<PaymentPeriod, string> = {
-    'Every week': t('form.childSupport.paymentPeriod.everyWeek'),
-    'Every other week': t('form.childSupport.paymentPeriod.everyOtherWeek'),
-    'Twice per month': t('form.childSupport.paymentPeriod.twicePerMonth'),
-    Monthly: t('form.childSupport.paymentPeriod.monthly'),
-  }
 
   const deductionsList = useDeductionsList({ employeeId })
 
@@ -115,13 +109,12 @@ function DeductionsCardContent({ employeeId, onEvent, LoaderComponent }: Deducti
     {
       key: 'frequency',
       title: t('columns.frequency'),
-      render: (garnishment: Garnishment) => {
-        if (garnishment.garnishmentType === 'child_support' || garnishment.childSupport) {
-          const paymentPeriod = garnishment.childSupport?.paymentPeriod
-          return paymentPeriod ? paymentPeriodLabels[paymentPeriod] : '-'
-        }
-        return garnishment.recurring ? t('recurring') : t('oneTime')
-      },
+      render: (garnishment: Garnishment) =>
+        formatDeductionFrequency(garnishment, {
+          recurring: t('recurring'),
+          oneTime: t('oneTime'),
+          paymentPeriods: t('form.childSupport.paymentPeriod', { returnObjects: true }),
+        }),
     },
     {
       key: 'amount',

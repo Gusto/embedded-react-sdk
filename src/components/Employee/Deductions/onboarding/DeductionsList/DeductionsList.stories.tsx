@@ -50,6 +50,12 @@ export const ChildSupport: Story = {
           childSupport,
           {
             ...childSupport,
+            uuid: 'percentage-child-support',
+            description: 'Percentage-only Child Support',
+            payPeriodMaximum: null,
+          },
+          {
+            ...childSupport,
             uuid: 'custom-1',
             description: 'Custom percentage deduction',
             amount: '5',
@@ -67,7 +73,8 @@ export const ChildSupport: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.findByText('$150.00')).resolves.toBeVisible()
-    await expect(canvas.findByText('Monthly')).resolves.toBeVisible()
+    await expect(canvas.findAllByText('Monthly')).resolves.toHaveLength(2)
+    await expect(canvas.findByText('50%')).resolves.toBeVisible()
     await expect(canvas.findByText('5% per paycheck')).resolves.toBeVisible()
   },
 }

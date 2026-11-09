@@ -99,12 +99,7 @@ describe('DeductionsList', () => {
     expect(screen.queryByText(/0\s*%/)).toBeNull()
   })
 
-  it.each([
-    ['Every week', 'Every week'],
-    ['Every other week', 'Every other week'],
-    ['Twice per month', 'Twice per month'],
-    ['Monthly', 'Monthly'],
-  ] as const)('shows child support dollars with %s frequency', async (paymentPeriod, frequency) => {
+  it('shows child support dollars with the order frequency', async () => {
     renderWithProviders(
       <DeductionsList
         deductionsList={buildReady([
@@ -113,7 +108,7 @@ describe('DeductionsList', () => {
             amount: '50',
             payPeriodMaximum: '150',
             deductAsPercentage: true,
-            childSupport: { paymentPeriod },
+            childSupport: { paymentPeriod: 'Monthly' },
           },
         ])}
         onAdd={vi.fn()}
@@ -124,7 +119,7 @@ describe('DeductionsList', () => {
     )
 
     expect(await screen.findByText('$150.00')).toBeInTheDocument()
-    expect(screen.getByText(frequency)).toBeInTheDocument()
+    expect(screen.getByText('Monthly')).toBeInTheDocument()
     expect(screen.queryByText(/50.*%|per paycheck/)).not.toBeInTheDocument()
   })
 

@@ -49,14 +49,23 @@ describe('formatDeductionAmount', () => {
     ).toBe('$150.00')
   })
 
-  it.each([null, '', 'invalid'])(
-    'does not substitute the percentage for missing child support dollars (%s)',
+  it.each([null, '0', 'invalid'])(
+    'shows the percentage for child support without valid dollars (%s)',
     payPeriodMaximum => {
       expect(
         formatDeductionAmount({ ...baseDeduction, childSupport: {}, payPeriodMaximum }, formatters),
-      ).toBe('-')
+      ).toBe('50%')
     },
   )
+
+  it('shows a placeholder when child support has neither dollars nor a percentage', () => {
+    expect(
+      formatDeductionAmount(
+        { ...baseDeduction, childSupport: {}, amount: '0', payPeriodMaximum: null },
+        formatters,
+      ),
+    ).toBe('-')
+  })
 
   it('formats a one-time fixed-dollar deduction as currency without suffix', () => {
     expect(formatDeductionAmount(baseDeduction, formatters)).toBe('$50.00')
@@ -96,9 +105,6 @@ describe('formatDeductionAmount', () => {
     )
   })
 
-  // SDK-945: child-support garnishments are stored as deductAsPercentage:true
-  // even when the user only set a fixed dollar cap (payPeriodMaximum) and no
-  // percentage. The amount is then "0", which must not render as "0%".
   it('shows the dollar cap (not "0%") for a percentage deduction with no percentage but a payPeriodMaximum', () => {
     expect(
       formatDeductionAmount(

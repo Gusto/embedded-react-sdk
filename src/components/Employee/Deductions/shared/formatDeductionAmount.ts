@@ -1,4 +1,5 @@
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import { isChildSupport } from './isChildSupport'
 
 /** @internal */
 export interface DeductionAmountFormatters {
@@ -20,21 +21,17 @@ export function formatDeductionAmount(
   >,
   { formatCurrency, formatPercent, formatPerPaycheck }: DeductionAmountFormatters,
 ): string {
-  if (deduction.garnishmentType === 'child_support' || deduction.childSupport) {
+  if (isChildSupport(deduction)) {
     const dollarAmount = Number(deduction.payPeriodMaximum)
-    return deduction.payPeriodMaximum?.trim() && Number.isFinite(dollarAmount)
-      ? formatCurrency(dollarAmount)
-      : '-'
+    if (Number.isFinite(dollarAmount) && dollarAmount > 0) return formatCurrency(dollarAmount)
+
+    const percentage = Number(deduction.amount)
+    return Number.isFinite(percentage) && percentage > 0 ? formatPercent(percentage) : '-'
   }
 
   const numericAmount = Number(deduction.amount)
   if (Number.isNaN(numericAmount)) return '-'
 
-  // Child-support garnishments are always stored as `deductAsPercentage: true`,
-  // but the percentage is optional — a user may withhold only a fixed dollar
-  // amount (`payPeriodMaximum`). Rendering that as "0% per paycheck" is
-  // misleading (SDK-945). When there's no percentage, show the dollar cap the
-  // user actually entered, or "-" when neither is set.
   if (deduction.deductAsPercentage && numericAmount === 0) {
     const cap = Number(deduction.payPeriodMaximum ?? 0)
     if (!Number.isNaN(cap) && cap > 0) {
