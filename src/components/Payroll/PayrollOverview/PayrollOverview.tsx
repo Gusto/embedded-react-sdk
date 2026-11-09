@@ -23,6 +23,7 @@ import {
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { canCancelPayroll } from '../helpers'
+import { getPayrollDisplayDates } from '../payrollDates'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -519,12 +520,14 @@ const Root = ({
   const deadlineAlert: PayrollFlowAlert | undefined = (() => {
     if (hasSubmittedInSession || isPolling || isProcessed) return undefined
 
-    if (payrollData.checkDate && payrollData.payrollDeadline) {
+    const displayDates = getPayrollDisplayDates(payrollData)
+
+    if (displayDates.checkDate && displayDates.payrollDeadline) {
       return {
         type: 'info' as const,
         title: t('alerts.directDepositDeadline', {
-          payDate: dateFormatter.formatShortWithWeekday(payrollData.checkDate),
-          ...dateFormatter.formatWithTime(payrollData.payrollDeadline),
+          payDate: dateFormatter.formatShortWithWeekday(displayDates.checkDate),
+          ...dateFormatter.formatWithTime(displayDates.payrollDeadline),
         }),
         content: t('alerts.directDepositDeadlineText'),
       }

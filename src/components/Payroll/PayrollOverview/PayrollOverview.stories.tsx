@@ -1,4 +1,5 @@
 import { fn } from 'storybook/test'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 
@@ -1571,3 +1572,30 @@ export const WithCheckPaymentEmployeeProcessed = () => {
     />
   )
 }
+
+export const DismissalWithUpdatedPayDate = () => (
+  <PayrollOverviewPresentation
+    onEdit={fn().mockName('edit')}
+    onSubmit={fn().mockName('submit')}
+    taxes={{ 'Federal Income Tax': { employee: 80, employer: 160 } }}
+    isProcessed={false}
+    status={PayrollOverviewStatus.Viewing}
+    onCancel={fn().mockName('cancel')}
+    onPayrollReceipt={fn().mockName('payrollReceipt')}
+    onPaystubDownload={fn().mockName('paystubDownload')}
+    payrollData={{
+      ...checkPaymentPayrollData,
+      processed: false,
+      offCycle: true,
+      offCycleReason: OffCycleReasonType.DismissedEmployee,
+      checkDate: '2026-10-28',
+      payrollDeadline: new Date('2026-10-29T16:00:00-07:00'),
+      payrollStatusMeta: {
+        payrollLate: null,
+        initialCheckDate: null,
+        expectedCheckDate: '2026-11-02',
+        expectedDebitTime: '2026-10-29T16:00:00-07:00',
+      },
+    }}
+  />
+)

@@ -199,6 +199,30 @@ describe('PayrollOverview polling', () => {
     vi.useRealTimers()
   })
 
+  it('pairs expected pay and debit dates in the dismissal payroll deadline banner', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      checkDate: '2026-10-28',
+      payrollDeadline: new Date('2026-10-27T16:00:00-07:00'),
+      payrollStatusMeta: {
+        payrollLate: null,
+        initialCheckDate: null,
+        expectedCheckDate: '2026-11-02',
+        expectedDebitTime: '2026-10-29T16:00:00-07:00',
+      },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+    expect(
+      await screen.findByText(
+        /To pay your employees with direct deposit by Mon, Nov 2,.*Thu, Oct 29/,
+      ),
+    ).toBeInTheDocument()
+  })
+
   it('stops polling and emits RUN_PAYROLL_PROCESSED when processed is true even without submit_success status', async () => {
     mockPayrollData = {
       ...basePayrollData,

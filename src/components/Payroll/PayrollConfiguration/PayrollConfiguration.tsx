@@ -15,6 +15,7 @@ import { GrossUpModal } from '../GrossUpModal'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { derivePayrollCategory, PayrollCategory } from '../payrollTypes'
+import { getPayrollDisplayDates } from '../payrollDates'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
 import { getGrossUpTargetCompensationName, isGrossUpEligible } from './grossUpHelpers'
@@ -528,11 +529,13 @@ const Root = ({
 
     const { payrollShow } = payrollData
 
-    if (payrollShow?.checkDate && payrollShow.payrollDeadline) {
+    const displayDates = payrollShow && getPayrollDisplayDates(payrollShow)
+
+    if (displayDates?.checkDate && displayDates.payrollDeadline) {
       return {
         label: t('alerts.directDepositDeadline', {
-          payDate: dateFormatter.formatShortWithWeekday(payrollShow.checkDate),
-          ...dateFormatter.formatWithTime(payrollShow.payrollDeadline),
+          payDate: dateFormatter.formatShortWithWeekday(displayDates.checkDate),
+          ...dateFormatter.formatWithTime(displayDates.payrollDeadline),
         }),
         content: t('alerts.directDepositDeadlineText'),
         variant: 'info' as const,

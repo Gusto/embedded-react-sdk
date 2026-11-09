@@ -106,6 +106,31 @@ const defaultProps = {
 }
 
 describe('PayrollOverviewPresentation', () => {
+  it.each([false, true])('shows the dismissal pay date with processed=%s', async processed => {
+    renderWithProviders(
+      <PayrollOverviewPresentation
+        {...defaultProps}
+        isProcessed={processed}
+        payrollData={{
+          ...mockPayrollData,
+          offCycle: true,
+          offCycleReason: OffCycleReasonType.DismissedEmployee,
+          processed,
+          checkDate: '2026-10-28',
+          payrollStatusMeta: {
+            payrollLate: null,
+            initialCheckDate: null,
+            expectedCheckDate: '2026-11-02',
+            expectedDebitTime: '2026-10-29T16:00:00-07:00',
+          },
+        }}
+      />,
+    )
+
+    expect(await screen.findByText(processed ? 'Oct 28, 2026' : 'Nov 2, 2026')).toBeInTheDocument()
+    expect(screen.getByText('Oct 29, 2026')).toBeInTheDocument()
+  })
+
   describe('base layout', () => {
     beforeEach(() => {
       mockUseContainerBreakpoints.mockReturnValue(['base'])
