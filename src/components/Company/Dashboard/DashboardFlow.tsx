@@ -14,6 +14,13 @@ import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnsta
 export interface DashboardFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
+  /**
+   * Identifier of the signatory viewing the dashboard. When it matches the company's saved
+   * signatory, that user is treated as the signatory on the company forms screen and may sign.
+   * Leave unset when the viewer's identity is not known: the forms screen is then review-only,
+   * where documents can be read and the signatory changed but not signed.
+   */
+  viewerSignatoryId?: string
   /** Shows the AutoPilot row and its Edit action on the pay schedule screen. */
   enableAutoPilot?: boolean
   /** Shows the Manage action on the pay schedule screen, which opens employee assignment. */
@@ -32,7 +39,8 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * spoke renders an existing company component — `CompanyOnboarding.Industry`,
  * `CompanyOnboarding.Locations`, `CompanyOnboarding.FederalTaxes`, `CompanyOnboarding.BankAccount`,
  * `CompanyManagement.PaySchedule`, `CompanyOnboarding.StateTaxes`,
- * `CompanyManagement.TaxPaymentsFlow`, `CompanyOnboarding.AssignSignatory` — beneath a "Back to company
+ * `CompanyManagement.TaxPaymentsFlow`, `CompanyOnboarding.AssignSignatory`,
+ * `CompanyOnboarding.DocumentSigner` — beneath a "Back to company
  * settings" header, which is the reliable way back: those components are submit-only or open
  * directly into a form, and their own Cancel affordances belong to screens inside them.
  *
@@ -88,6 +96,13 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/signatory/updated` | Fired after a signatory is updated; the assign screen stays open | Updated `Signatory` entity |
  * | `company/signatory/invited` | Fired after a signatory invitation is sent; the assign screen stays open | The invited `Signatory` |
  * | `company/signatory/assignSignatory/done` | Fired once a signatory is assigned either way; the dashboard returns to the cards and surfaces the "Signatory updated" alert | — |
+ * | `company/management/companyForms/editRequested` | Fired when "Manage" is clicked on the Documents card | `{ companyId: string }` |
+ * | `company/forms/view` | Fired when a form is selected for signing on the manage screen; the manage screen stays open | The selected `Form` |
+ * | `company/forms/editSignatory` | Fired when the signatory is changed from the manage screen; the manage screen stays open | The current `Signatory` |
+ * | `company/forms/sign/signForm` | Fired after a form is signed; the manage screen stays open | The signed `Form` |
+ * | `company/forms/sign/done` | Fired when the signature step closes; the manage screen stays open | — |
+ * | `company/forms/sign/back` | Fired when the user leaves the signature form; the manage screen stays open | — |
+ * | `company/forms/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards and surfaces the "Documents signed" alert if anything was signed | — |
  * | `company/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'companyDetails' \| 'pay' \| 'taxes' \| 'documents' }` |
  * | `company/dashboard/back` | Fired when the user clicks "Back to company settings" on a spoke; the dashboard returns to the cards | — |
  * | `company/dashboard/alertDismissed` | Fired when the user dismisses a top-of-dashboard success alert | — |
@@ -102,6 +117,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * - {@link StateTaxesCard}
  * - {@link TaxPaymentsCard}
  * - {@link SignatoryCard}
+ * - {@link CompanyFormsCard}
  *
  * @param props - See {@link DashboardFlowProps}.
  * @returns The tabbed dashboard with internal navigation between cards and edit screens.
@@ -125,6 +141,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
 export const DashboardFlow = ({
   companyId,
   onEvent,
+  viewerSignatoryId,
   enableAutoPilot,
   enableMultipleSchedules,
 }: DashboardFlowProps) => {
@@ -139,11 +156,12 @@ export const DashboardFlow = ({
           ...initialContext,
           component: DashboardViewContextual,
           companyId,
+          viewerSignatoryId,
           enableAutoPilot,
           enableMultipleSchedules,
         }),
       ),
-    [companyId, enableAutoPilot, enableMultipleSchedules],
+    [companyId, viewerSignatoryId, enableAutoPilot, enableMultipleSchedules],
   )
 
   return <Flow machine={dashboardMachine} onEvent={onEvent} />

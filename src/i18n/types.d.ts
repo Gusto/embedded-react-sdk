@@ -38,6 +38,8 @@ export interface Resources {
   /** */
   'Company.Management.BankAccount': Translations.CompanyManagementBankAccount
   /** */
+  'Company.Management.CompanyForms': Translations.CompanyManagementCompanyForms
+  /** */
   'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
   /** */
   'Company.Management.Industry': Translations.CompanyManagementIndustry
@@ -524,6 +526,8 @@ export namespace Translations {
       stateTaxesUpdated: string
       /** @defaultValue `"Signatory updated"` */
       signatoryUpdated: string
+      /** @defaultValue `"Documents signed"` */
+      formsSigned: string
     }
   }
   /** Translation keys for the `Company.DocumentList` i18n namespace. */
@@ -1128,6 +1132,41 @@ export namespace Translations {
         /** @defaultValue `"No bank account yet"` */
         title: string
         /** @defaultValue `"Add a checking account so this company can be debited for wages and taxes."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.CompanyForms` i18n namespace. */
+  export interface CompanyManagementCompanyForms {
+    card: {
+      /** @defaultValue `"Documents"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage company documents"` */
+      manageAriaLabel: string
+      /** @defaultValue `"Signatures"` */
+      signatures: string
+      /** @defaultValue `"Awaiting signature"` */
+      awaitingSignature: string
+      /** @defaultValue `"Documents"` */
+      documents: string
+      /** @defaultValue `"Untitled form"` */
+      untitledForm: string
+      /** @defaultValue `"{{count}} form awaiting signature"` */
+      awaitingCount_one: string
+      /** @defaultValue `"{{count}} forms awaiting signature"` */
+      awaitingCount_other: string
+      /** @defaultValue `"All forms signed"` */
+      allSigned: string
+      /** @defaultValue `"{{count}} document"` */
+      documentCount_one: string
+      /** @defaultValue `"{{count}} documents"` */
+      documentCount_other: string
+      emptyState: {
+        /** @defaultValue `"No company documents yet"` */
+        title: string
+        /** @defaultValue `"Documents appear here once this company's tax and authorization forms are generated."` */
         description: string
       }
     }

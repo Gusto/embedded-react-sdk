@@ -1,5 +1,6 @@
 import { Flex } from '@/components/Common/Flex/Flex'
 import { SignatoryCard } from '@/components/Company/AssignSignatory/management/SignatoryCard'
+import { CompanyFormsCard } from '@/components/Company/DocumentSigner/management/CompanyFormsCard'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import type { LoaderComponentType } from '@/components/Base'
@@ -22,8 +23,9 @@ export interface DocumentsViewProps {
  * Layout container for the Documents tab of the company settings dashboard.
  *
  * @remarks
- * Renders the company's document-related cards stacked vertically, starting with
- * who is authorized to sign for the company. Each card is a self-fetching
+ * Renders the company's document-related cards stacked vertically: who is
+ * authorized to sign for the company, then the forms themselves, since the
+ * signatory is what makes signing possible at all. Each card is a self-fetching
  * surface that owns its own data fetch and event emission; this container only
  * forwards `companyId` and `onEvent`.
  *
@@ -35,6 +37,7 @@ export function DocumentsView({ companyId, onEvent, LoaderComponent }: Documents
   return (
     <Flex flexDirection="column" gap={24}>
       <SignatoryCard companyId={companyId} onEvent={onEvent} LoaderComponent={LoaderComponent} />
+      <CompanyFormsCard companyId={companyId} onEvent={onEvent} LoaderComponent={LoaderComponent} />
     </Flex>
   )
 }

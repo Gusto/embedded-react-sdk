@@ -159,6 +159,7 @@ function DashboardHeader({ companyId }: { companyId: string }) {
  * - {@link StateTaxesCard}
  * - {@link TaxPaymentsCard}
  * - {@link SignatoryCard}
+ * - {@link CompanyFormsCard}
  *
  * @param props - Component props. See {@link DashboardProps}.
  * @returns A React element rendering the company settings dashboard.

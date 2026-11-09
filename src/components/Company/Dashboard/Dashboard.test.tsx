@@ -20,6 +20,7 @@ import {
 } from '@/test/mocks/apis/payschedule'
 import { getAllStateTaxRequirementsWithStatus } from '@/test/mocks/apis/company_state_taxes'
 import { handleGetAllSignatories } from '@/test/mocks/apis/company_signatories'
+import { handleGetAllCompanyForms } from '@/test/mocks/apis/company_forms'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -42,6 +43,13 @@ const fixtureSignatory = {
   title: 'PRESIDENT',
   identity_verification_status: 'Pass',
   version: 'signatory-version',
+}
+
+const fixtureUnsignedForm = {
+  uuid: 'form-8655',
+  name: 'US_8655',
+  title: 'Form 8655 Reporting Agent Authorization',
+  requires_signing: true,
 }
 
 const fixturePaySchedule = {
@@ -103,6 +111,7 @@ describe('Company Dashboard', () => {
       handleGetPaySchedules(() => HttpResponse.json([fixturePaySchedule])),
       getAllStateTaxRequirementsWithStatus,
       handleGetAllSignatories(() => HttpResponse.json([fixtureSignatory])),
+      handleGetAllCompanyForms(() => HttpResponse.json([fixtureUnsignedForm])),
     )
   })
 
@@ -269,6 +278,8 @@ describe('Company Dashboard', () => {
     })
     expect(await screen.findByRole('heading', { name: 'Signatory' })).toBeInTheDocument()
     expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Documents' })).toBeInTheDocument()
+    expect(await screen.findByText('1 form awaiting signature')).toBeInTheDocument()
   })
 
   it('honours a controlled selectedTab', async () => {
@@ -346,6 +357,7 @@ describe('Company DashboardFlow', () => {
       handleGetPaySchedules(() => HttpResponse.json([fixturePaySchedule])),
       getAllStateTaxRequirementsWithStatus,
       handleGetAllSignatories(() => HttpResponse.json([fixtureSignatory])),
+      handleGetAllCompanyForms(() => HttpResponse.json([fixtureUnsignedForm])),
     )
   })
 
@@ -569,5 +581,41 @@ describe('Company DashboardFlow', () => {
     // Back lands on the Documents tab rather than resetting to company details,
     // so the card that opened the spoke is what comes into view.
     expect(await screen.findByRole('heading', { name: 'Signatory' })).toBeInTheDocument()
+  })
+
+  it('opens the Documents card into a review-only forms spoke when the viewer is unknown', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Documents' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage company documents' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage company documents' }))
+
+    expect(await screen.findByText('Form 8655 Reporting Agent Authorization')).toBeInTheDocument()
+
+    // Signing is withheld rather than offered to whoever opened the dashboard:
+    // without a declared viewer the form reads as outstanding and nothing more.
+    expect(screen.getByText('Not signed')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Sign document' })).toBeNull()
+  })
+
+  it('lets the declared viewer sign when they are the company signatory', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <DashboardFlow companyId="company-123" onEvent={onEvent} viewerSignatoryId="signatory-1" />,
+      { unstableFeatures },
+    )
+
+    await user.click(await screen.findByRole('tab', { name: 'Documents' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage company documents' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage company documents' }))
+
+    expect(await screen.findByRole('button', { name: 'Sign document' })).toBeInTheDocument()
   })
 })

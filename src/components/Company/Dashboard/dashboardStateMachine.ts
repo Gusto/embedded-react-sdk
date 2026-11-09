@@ -10,6 +10,7 @@ import {
   StateTaxesContextual,
   TaxPaymentsContextual,
   AssignSignatoryContextual,
+  CompanyFormsContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -173,6 +174,11 @@ export const dashboardStateMachine = {
       toSignatorySpoke,
     ),
     transition(
+      componentEvents.COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED,
+      'companyForms',
+      toSpoke(CompanyFormsContextual),
+    ),
+    transition(
       componentEvents.COMPANY_DASHBOARD_ALERT_DISMISSED,
       'index',
       reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -296,5 +302,26 @@ export const dashboardStateMachine = {
       returnToIndexWithAlert('signatoryUpdated'),
     ),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
+  companyForms: state<MachineTransition>(
+    // DocumentSigner is a hub in its own right, and one that contains an
+    // assign-signatory screen of its own: COMPANY_VIEW_FORM_TO_SIGN,
+    // COMPANY_SIGN_FORM_DONE, COMPANY_SIGN_FORM_BACK, COMPANY_FORM_EDIT_SIGNATORY
+    // and — note — COMPANY_ASSIGN_SIGNATORY_DONE all move between its own
+    // screens. That last one is the subtle hazard: it is the very event the
+    // `signatory` spoke above returns to the dashboard on, so declaring it here
+    // too would eject a user who merely changed the signatory from inside the
+    // document list.
+    //
+    // A company signs its forms one at a time, so a signature must not end the
+    // visit either. The self-transition records that something was signed and
+    // the alert surfaces when the user actually leaves, via either exit below.
+    transition(
+      componentEvents.COMPANY_SIGN_FORM,
+      'companyForms',
+      recordPendingAlert('formsSigned'),
+    ),
+    transition(componentEvents.COMPANY_FORMS_DONE, 'index', returnToIndexWithPendingAlert),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
 }

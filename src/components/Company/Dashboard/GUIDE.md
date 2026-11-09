@@ -9,7 +9,7 @@ The dashboard organizes a company's settings into tabs. Switching tabs emits `co
 - **Company details** — the industry classification (title and NAICS code) and the company's work addresses, with their mailing and filing designations.
 - **Pay** — the company's pay schedules and its funding bank account. The bank account card shows the name, masked account number, routing number, account type, and micro-deposit verification status; Gusto supports one default company bank account, so this is a single account rather than a list. The pay schedules card lists each schedule with its frequency and names how employees are assigned to them.
 - **Taxes** — federal tax details (legal name, tax payer type, federal filing form, and whether an EIN is on file and verified), above one row per state the company has tax requirements in, each with its setup status, and what the company currently owes its tax agencies.
-- **Documents** — who is authorized to sign the company's forms.
+- **Documents** — who is authorized to sign the company's forms, and the forms themselves.
 
 The EIN itself is never returned by the API, so the Federal taxes card reports verification status rather than the number.
 
@@ -20,6 +20,10 @@ The tax payments card requires the `taxPayments` unstable feature flag in additi
 A tax payment has no status field in the API, so overdue is derived from each payment's amounts and dates. The card derives it over two date-bounded windows around today rather than the company's whole history: the 100 most recently due payments and the next 25 coming due. Because the endpoint cannot filter on a status it does not store, those windows hold the most recently due payments whatever their status — already-settled ones included. The overdue count is therefore a floor rather than a total for a company with more past-due payments than the window holds, and an overdue payment sitting behind a full window of more recent settled ones is not reported at all. The full ledger is always available through Manage. Payments the API returns no due date for are not reported on the card.
 
 The signatory card names the person authorized to sign for the company — their name, title, email, and identity verification status. A company has at most one signatory, so this is a single person rather than a list. Identity verification is what determines whether they can sign: a verified signatory can sign every form, a failed one cannot sign at all, and a skipped one cannot sign Form 8655 until a wet-signed copy is uploaded. A signatory who has not finished verification reads as pending.
+
+The documents card reports how many forms are awaiting signature and names them, above the size of the company's document set. It does not list that set, which grows with every tax filing — the full list is behind its Manage action. A form carries no signed-on date: the API models signing state as a `requires_signing` flag that flips once the form is signed, so the card reports what is outstanding rather than a signing history.
+
+Signing a company form requires knowing who is looking at the dashboard. Pass `viewerSignatoryId` with the identifier of the signatory using it, and the documents screen offers a Sign action for each outstanding form. Leave it unset and that screen is review-only: every form can be opened and the signatory can be changed, but outstanding forms read as "Not signed" with no Sign action. The dashboard never infers this from the company's saved signatory — doing so would treat anyone who opens the dashboard as the signatory and let them sign the company's federal tax forms.
 
 ## Step flow <!-- slot: appendix -->
 
@@ -36,10 +40,13 @@ flowchart LR
   Dashboard <--> StateTaxes
   Dashboard <--> TaxPayments
   Dashboard <--> AssignSignatory
-  linkStyle 1,2,3,4,5,6,7,8 stroke-width:2.5px
+  Dashboard <--> DocumentSigner
+  linkStyle 1,2,3,4,5,6,7,8,9 stroke-width:2.5px
 ```
 
 Each spoke is a complete component rather than a single form, so it may have screens of its own — `Locations`, for example, has its own address list with add and edit screens. Events raised inside a spoke (`company/location/add/done`, `company/bankAccount/created`, `company/bankAccount/verified`, `company/federalTaxes/updated`, `company/stateTaxes/edit`, `company/stateTaxes/updated`, `company/signatory/created`, `company/signatory/updated`, `company/signatory/invited`) keep the spoke open; only the spoke's own completion event (`company/location/done`, `company/bankAccount/done`, `company/federalTaxes/done`, `company/industry/selected`, `company/stateTaxes/done`, `company/signatory/assignSignatory/done`) or the back header returns to the dashboard.
+
+`DocumentSigner` is a hub too, and the one case where a spoke contains a screen the dashboard also reaches directly: changing the signatory from the document list opens `DocumentSigner`'s own assign-signatory screen, which raises the same `company/signatory/assignSignatory/done` the Signatory card's spoke returns on. The dashboard stays put for it, so changing the signatory mid-review returns you to the document list rather than to the cards. Signing is the same: a company signs its forms one at a time, so each `company/forms/sign/signForm` keeps the screen open and the "Documents signed" alert surfaces only once you leave, whether by Continue or the back header.
 
 `AssignSignatory` offers two routes to the same outcome — fill in the signatory's details directly, or invite them to supply their own — and `company/signatory/assignSignatory/done` fires for both, which is why the dashboard returns on that event rather than on the create and invite events behind it. The signatory card's `company/management/signatory/editRequested` carries the current `signatoryId` so the spoke amends that record; assigning someone new from the empty state carries no identifier and creates one.
 
@@ -64,3 +71,5 @@ The State taxes card is empty until the company has a work address in a state, s
 The Tax payments card shows "No tax payments scheduled" when nothing is outstanding — which covers both a company that has never owed payroll taxes and one that has settled everything it owes.
 
 The Signatory card shows "No signatory assigned" and swaps its Edit CTA for "Assign signatory" until someone is named. Opening it from that state lands on the assign screen, which starts on the direct-entry form.
+
+The Documents card shows "No company documents yet" until Gusto generates the company's first forms. Opening the documents screen before a signatory exists lands on its own assign-signatory screen first, since nothing can be signed without one.

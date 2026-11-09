@@ -8,6 +8,7 @@ import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/StateTaxes'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
 import { AssignSignatory } from '@/components/Company/AssignSignatory'
+import { DocumentSigner } from '@/components/Company/DocumentSigner'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -22,6 +23,7 @@ type DashboardSuccessAlert =
   | 'bankAccountUpdated'
   | 'stateTaxesUpdated'
   | 'signatoryUpdated'
+  | 'formsSigned'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -48,6 +50,18 @@ export interface DashboardContextInterface extends FlowContextInterface {
    * deletes the existing signatory before creating a replacement.
    */
   signatoryId?: string
+  /**
+   * Identifier of the signatory *viewing* the dashboard, supplied by the host
+   * through `DashboardFlow`'s `viewerSignatoryId` prop and forwarded to the
+   * company forms spoke as its `signatoryId`. It unlocks signing only when it
+   * matches the company's saved signatory.
+   *
+   * Deliberately never derived from the signatory list: doing so would assert
+   * that whoever opened the dashboard *is* the signatory, letting anyone with
+   * access sign the company's federal tax forms. Without it the spoke is
+   * review-only — forms can be read and the signatory changed, but not signed.
+   */
+  viewerSignatoryId?: string
   /** Forwarded to the pay schedule spoke to show the AutoPilot row and its Edit action. */
   enableAutoPilot?: boolean
   /** Forwarded to the pay schedule spoke to show its Manage action. */
@@ -68,6 +82,7 @@ export function DashboardViewContextual() {
     bankAccountUpdated: t('alerts.bankAccountUpdated'),
     stateTaxesUpdated: t('alerts.stateTaxesUpdated'),
     signatoryUpdated: t('alerts.signatoryUpdated'),
+    formsSigned: t('alerts.formsSigned'),
   }
 
   return (
@@ -139,6 +154,18 @@ export function StateTaxesContextual() {
 export function TaxPaymentsContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
   return <TaxPaymentsFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function CompanyFormsContextual() {
+  const { companyId, viewerSignatoryId, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <DocumentSigner
+      companyId={ensureRequired(companyId)}
+      signatoryId={viewerSignatoryId}
+      onEvent={onEvent}
+    />
+  )
 }
 
 /** @internal */
