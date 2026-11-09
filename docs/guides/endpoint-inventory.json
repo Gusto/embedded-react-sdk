@@ -2962,6 +2962,18 @@
         "locationUuid"
       ]
     },
+    "useCompensationHistory": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/jobs",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs"
+        }
+      ],
+      "variables": [
+        "employeeId"
+      ]
+    },
     "useContractorAddressForm": {
       "endpoints": [
         {

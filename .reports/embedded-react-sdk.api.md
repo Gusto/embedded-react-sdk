@@ -1316,6 +1316,30 @@ export interface CompensationFormFields {
     Title: ComponentType<CompensationTitleFieldProps>;
 }
 
+// @alpha
+function CompensationHistory(input: CompensationHistoryProps): JSX;
+
+// @alpha
+export interface CompensationHistoryEntry {
+    compensationId: string;
+    effectiveDate: string;
+    flsaStatus?: FlsaStatusType;
+    paymentUnit?: string;
+    rate?: string;
+    status: CompensationHistoryStatus;
+    title: string | null;
+}
+
+// @alpha
+interface CompensationHistoryProps {
+    employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+export type CompensationHistoryStatus = 'past' | 'current' | 'upcoming';
+
 // @public
 export type CompensationOptionalFieldsToRequire = { create?: ("minimumWageId" | "title")[] | undefined; update?: ("effectiveDate" | "flsaStatus" | "minimumWageId" | "paymentUnit" | "rate" | "title")[] | undefined; };
 
@@ -1691,6 +1715,8 @@ export const componentEvents: {
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED: "employee/management/compensation/card/addAnotherRequested";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED: "employee/management/compensation/card/jobDeleted";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED: "employee/management/compensation/card/changeCancelled";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_HISTORY_REQUESTED: "employee/management/compensation/card/historyRequested";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_HISTORY_CLOSED: "employee/management/compensation/history/closed";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED: "employee/management/compensation/editForm/submitted";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED: "employee/management/compensation/editForm/cancelled";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED: "employee/management/compensation/addJobForm/submitted";
@@ -3054,11 +3080,13 @@ declare namespace EmployeeManagement {
         CompensationEditForm,
         CompensationAddJobForm,
         CompensationAddAnotherJobForm,
+        CompensationHistory,
         CompensationProps_2 as CompensationProps,
         CompensationCardProps,
         CompensationEditFormProps,
         CompensationAddJobFormProps,
         CompensationAddAnotherJobFormProps,
+        CompensationHistoryProps,
         TerminateEmployee,
         TerminateEmployeeProps,
         TerminationSummary,
@@ -3802,6 +3830,14 @@ type InviteSignatoryDefaultValues = RequireAtLeastOne<Pick<Signatory, 'firstName
 interface InviteSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
     companyId: string;
     defaultValues?: InviteSignatoryDefaultValues;
+}
+
+// @alpha
+export interface JobCompensationHistory {
+    entries: CompensationHistoryEntry[];
+    isPrimary: boolean;
+    jobId: string;
+    jobTitle: string;
 }
 
 // @public
@@ -6260,6 +6296,7 @@ export interface UnorderedListProps extends BaseListProps {
 // @alpha
 export interface UnstableFeatures {
     companySettingsDashboard?: boolean;
+    compensationHistory?: boolean;
     historicalPayments?: boolean;
     managePaySchedules?: boolean;
     taxPayments?: boolean;
@@ -6366,6 +6403,25 @@ export interface UseCompensationFormReady extends BaseFormHookReady<Compensation
 
 // @public
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady;
+
+// @alpha
+export function useCompensationHistory(input: UseCompensationHistoryProps): UseCompensationHistoryResult;
+
+// @alpha
+export interface UseCompensationHistoryProps {
+    employeeId: string;
+}
+
+// @alpha
+export type UseCompensationHistoryReady = BaseHookReady<{
+    jobs: JobCompensationHistory[];
+    hasMultipleJobs: boolean;
+}, {
+    isFetching: boolean;
+}>;
+
+// @alpha
+export type UseCompensationHistoryResult = HookLoadingResult | UseCompensationHistoryReady;
 
 // @public
 export function useContractorAddressForm(input: UseContractorAddressFormProps): HookLoadingResult | UseContractorAddressFormReady;

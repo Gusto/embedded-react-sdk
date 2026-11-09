@@ -5770,6 +5770,8 @@ export namespace Translations {
       addJobCta: string
       /** @defaultValue `"Add another job"` */
       addAnotherJobCta: string
+      /** @defaultValue `"View history"` */
+      viewHistoryCta: string
       /** @defaultValue `"List of jobs"` */
       tableLabel: string
       /** @defaultValue `"Job actions"` */
@@ -5982,6 +5984,38 @@ export namespace Translations {
       effectiveDateBeforeHire: string
       /** @defaultValue `"Effective date must be in the future"` */
       effectiveDateBeforeMin: string
+    }
+    history: {
+      /** @defaultValue `"Compensation history"` */
+      title: string
+      /** @defaultValue `"Compensation history for {{jobTitle}}"` */
+      tableLabel: string
+      /** @defaultValue `"Back"` */
+      backCta: string
+      columns: {
+        /** @defaultValue `"Effective date"` */
+        effectiveDate: string
+        /** @defaultValue `"Job title"` */
+        jobTitle: string
+        /** @defaultValue `"Employee type"` */
+        employeeType: string
+        /** @defaultValue `"Wage"` */
+        wage: string
+        /** @defaultValue `"Status"` */
+        status: string
+      }
+      statusLabels: {
+        /** @defaultValue `"Current"` */
+        current: string
+        /** @defaultValue `"Upcoming"` */
+        upcoming: string
+      }
+      emptyState: {
+        /** @defaultValue `"No compensation history"` */
+        title: string
+        /** @defaultValue `"Compensation history will appear here once compensation is added"` */
+        description: string
+      }
     }
   }
   /** Translation keys for the `Employee.Management.Deductions` i18n namespace. */
