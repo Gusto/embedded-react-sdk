@@ -10,7 +10,12 @@ const formatters = {
 
 const baseDeduction: Pick<
   Garnishment,
-  'amount' | 'deductAsPercentage' | 'recurring' | 'payPeriodMaximum'
+  | 'amount'
+  | 'deductAsPercentage'
+  | 'recurring'
+  | 'payPeriodMaximum'
+  | 'childSupport'
+  | 'garnishmentType'
 > = {
   amount: '50',
   deductAsPercentage: false,
@@ -19,6 +24,40 @@ const baseDeduction: Pick<
 }
 
 describe('formatDeductionAmount', () => {
+  it.each(['0', '50'])('shows child support dollars when the percentage limit is %s', amount => {
+    expect(
+      formatDeductionAmount(
+        {
+          ...baseDeduction,
+          amount,
+          deductAsPercentage: true,
+          recurring: true,
+          payPeriodMaximum: '150',
+          childSupport: { paymentPeriod: 'Monthly' },
+        },
+        formatters,
+      ),
+    ).toBe('$150.00')
+  })
+
+  it('recognizes child support by type when order details are absent', () => {
+    expect(
+      formatDeductionAmount(
+        { ...baseDeduction, garnishmentType: 'child_support', payPeriodMaximum: '150' },
+        formatters,
+      ),
+    ).toBe('$150.00')
+  })
+
+  it.each([null, '', 'invalid'])(
+    'does not substitute the percentage for missing child support dollars (%s)',
+    payPeriodMaximum => {
+      expect(
+        formatDeductionAmount({ ...baseDeduction, childSupport: {}, payPeriodMaximum }, formatters),
+      ).toBe('-')
+    },
+  )
+
   it('formats a one-time fixed-dollar deduction as currency without suffix', () => {
     expect(formatDeductionAmount(baseDeduction, formatters)).toBe('$50.00')
   })

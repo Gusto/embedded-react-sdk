@@ -9,9 +9,24 @@ export interface DeductionAmountFormatters {
 
 /** @internal */
 export function formatDeductionAmount(
-  deduction: Pick<Garnishment, 'amount' | 'deductAsPercentage' | 'recurring' | 'payPeriodMaximum'>,
+  deduction: Pick<
+    Garnishment,
+    | 'amount'
+    | 'deductAsPercentage'
+    | 'recurring'
+    | 'payPeriodMaximum'
+    | 'childSupport'
+    | 'garnishmentType'
+  >,
   { formatCurrency, formatPercent, formatPerPaycheck }: DeductionAmountFormatters,
 ): string {
+  if (deduction.garnishmentType === 'child_support' || deduction.childSupport) {
+    const dollarAmount = Number(deduction.payPeriodMaximum)
+    return deduction.payPeriodMaximum?.trim() && Number.isFinite(dollarAmount)
+      ? formatCurrency(dollarAmount)
+      : '-'
+  }
+
   const numericAmount = Number(deduction.amount)
   if (Number.isNaN(numericAmount)) return '-'
 

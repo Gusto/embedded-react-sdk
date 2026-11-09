@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import type { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { UseDeductionsListReady } from '../../shared/useDeductionsList'
 import { formatDeductionAmount } from '../../shared/formatDeductionAmount'
@@ -38,6 +39,12 @@ export function DeductionsList({
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
+  const paymentPeriodLabels: Record<PaymentPeriod, string> = {
+    'Every week': t('everyWeek'),
+    'Every other week': t('everyOtherWeek'),
+    'Twice per month': t('twicePerMonth'),
+    Monthly: t('monthly'),
+  }
 
   const { deductions } = deductionsList.data
   const isPendingAny = deductionsList.status.isPending
@@ -54,6 +61,10 @@ export function DeductionsList({
         key: 'recurring',
         title: t('frequencyColumn'),
         render: deduction => {
+          if (deduction.garnishmentType === 'child_support' || deduction.childSupport) {
+            const paymentPeriod = deduction.childSupport?.paymentPeriod
+            return paymentPeriod ? paymentPeriodLabels[paymentPeriod] : '-'
+          }
           return deduction.recurring ? t('recurringText') : t('nonRecurringText')
         },
       },

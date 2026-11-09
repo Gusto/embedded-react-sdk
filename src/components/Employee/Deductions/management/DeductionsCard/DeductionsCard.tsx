@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import type { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { useDeductionsList } from '../../shared/useDeductionsList'
 import { useDeleteDeduction } from '../../shared/useDeleteDeduction'
@@ -65,6 +66,12 @@ function DeductionsCardContent({ employeeId, onEvent, LoaderComponent }: Deducti
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
+  const paymentPeriodLabels: Record<PaymentPeriod, string> = {
+    'Every week': t('form.childSupport.paymentPeriod.everyWeek'),
+    'Every other week': t('form.childSupport.paymentPeriod.everyOtherWeek'),
+    'Twice per month': t('form.childSupport.paymentPeriod.twicePerMonth'),
+    Monthly: t('form.childSupport.paymentPeriod.monthly'),
+  }
 
   const deductionsList = useDeductionsList({ employeeId })
 
@@ -108,7 +115,13 @@ function DeductionsCardContent({ employeeId, onEvent, LoaderComponent }: Deducti
     {
       key: 'frequency',
       title: t('columns.frequency'),
-      render: (garnishment: Garnishment) => (garnishment.recurring ? t('recurring') : t('oneTime')),
+      render: (garnishment: Garnishment) => {
+        if (garnishment.garnishmentType === 'child_support' || garnishment.childSupport) {
+          const paymentPeriod = garnishment.childSupport?.paymentPeriod
+          return paymentPeriod ? paymentPeriodLabels[paymentPeriod] : '-'
+        }
+        return garnishment.recurring ? t('recurring') : t('oneTime')
+      },
     },
     {
       key: 'amount',

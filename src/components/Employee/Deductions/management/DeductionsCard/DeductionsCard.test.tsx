@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
+import { Deductions } from '../Deductions'
 import { DeductionsCard } from './DeductionsCard'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -22,6 +23,8 @@ type GarnishmentFixture = {
   pay_period_maximum: string | null
   total_amount: string | null
   version: string
+  garnishment_type?: 'child_support'
+  child_support?: { payment_period: 'Monthly' }
 }
 
 const buildGarnishment = (
@@ -55,6 +58,30 @@ describe('DeductionsCard (standalone)', () => {
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
+  })
+
+  it.each([
+    ['DeductionsCard', DeductionsCard],
+    ['Deductions', Deductions],
+  ] as const)('shows child support dollars and order frequency in %s', async (_name, Component) => {
+    stubGarnishmentsList([
+      buildGarnishment({
+        uuid: 'child-support-1',
+        description: 'Child Support',
+        amount: '50',
+        pay_period_maximum: '150',
+        deduct_as_percentage: true,
+        garnishment_type: 'child_support',
+        child_support: { payment_period: 'Monthly' },
+      }),
+    ])
+    renderWithProviders(<Component employeeId="employee-123" onEvent={onEvent} />)
+
+    const description = await screen.findByText('Child Support')
+    const row = within(description.closest('tr')!)
+    expect(row.getByText('$150.00')).toBeInTheDocument()
+    expect(row.getByText('Monthly')).toBeInTheDocument()
+    expect(row.queryByText(/50.*%|per paycheck/)).not.toBeInTheDocument()
   })
 
   it('renders the empty state when the employee has no active deductions', async () => {
