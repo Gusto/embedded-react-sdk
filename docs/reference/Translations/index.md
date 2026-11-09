@@ -359,11 +359,13 @@ Translation keys for the `Company.Dashboard` i18n namespace.
 | `alerts.federalTaxesUpdated` | `"Federal tax settings updated"` |
 | `alerts.industryUpdated` | `"Industry updated"` |
 | `alerts.locationsUpdated` | `"Locations updated"` |
+| `alerts.signatoryUpdated` | `"Signatory updated"` |
 | `alerts.stateTaxesUpdated` | `"State tax settings updated"` |
 | <a id="property-companydashboardbacktodashboardcta"></a> `backToDashboardCta` | `"Back to company settings"` |
 | <a id="property-companydashboardcompanysettingslabel"></a> `companySettingsLabel` | `"Company settings"` |
 | <a id="property-companydashboardtabs"></a> `tabs` | |
 | `tabs.companyDetails` | `"Company details"` |
+| `tabs.documents` | `"Documents"` |
 | `tabs.pay` | `"Pay"` |
 | `tabs.taxes` | `"Taxes"` |
 | <a id="property-companydashboardtabslabel"></a> `tabsLabel` | `"Company settings tabs"` |
@@ -973,6 +975,37 @@ Translation keys for the `Company.Management.PaySchedules` i18n namespace.
 | `card.scheduleColumn` |
 | `card.title` |
 | `card.unnamedSchedule` |
+
+***
+
+<a id="companymanagementsignatory"></a>
+
+### CompanyManagementSignatory
+
+Translation keys for the `Company.Management.Signatory` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementsignatorycard"></a> `card` |
+| `card.assignCta` |
+| `card.editAriaLabel` |
+| `card.editCta` |
+| `card.email` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.identityVerification` |
+| `card.identityVerificationStatus` |
+| `card.identityVerificationStatus.Fail` |
+| `card.identityVerificationStatus.Pass` |
+| `card.identityVerificationStatus.pending` |
+| `card.identityVerificationStatus.Skipped` |
+| `card.jobTitle` |
+| `card.listEmptyPlaceholder` |
+| `card.name` |
+| `card.title` |
 
 ***
 
@@ -6392,6 +6425,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
 | <a id="property-resourcescompanymanagementpayschedules"></a> `Company.Management.PaySchedules` | [`CompanyManagementPaySchedules`](#companymanagementpayschedules) |
+| <a id="property-resourcescompanymanagementsignatory"></a> `Company.Management.Signatory` | [`CompanyManagementSignatory`](#companymanagementsignatory) |
 | <a id="property-resourcescompanymanagementstatetaxes"></a> `Company.Management.StateTaxes` | [`CompanyManagementStateTaxes`](#companymanagementstatetaxes) |
 | <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |
 | <a id="property-resourcescompanymanagementtaxpayments"></a> `Company.Management.TaxPayments` | [`CompanyManagementTaxPayments`](#companymanagementtaxpayments) |
