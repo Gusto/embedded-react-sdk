@@ -35,9 +35,12 @@ describe('PaymentsCard', () => {
   })
 
   it('requests the contractor payments sorted most recent first', async () => {
-    let requestUrl: URL | null = null
+    let requestPath = ''
+    let requestSortBy = ''
     const resolver = vi.fn<HttpResponseResolver>(({ request }) => {
-      requestUrl = new URL(request.url)
+      const url = new URL(request.url)
+      requestPath = url.pathname
+      requestSortBy = url.searchParams.get('sort_by') ?? ''
       return HttpResponse.json([], { headers: { 'x-total-pages': '1', 'x-total-count': '0' } })
     })
     server.use(handleGetContractorPayments(resolver))
@@ -47,8 +50,8 @@ describe('PaymentsCard', () => {
     await screen.findByText('No payments yet')
 
     expect(resolver).toHaveBeenCalledTimes(1)
-    expect(requestUrl!.pathname).toBe('/v1/contractors/contractor-123/payments')
-    expect(requestUrl!.searchParams.get('sort_by')).toBe('check_date:desc')
+    expect(requestPath).toBe('/v1/contractors/contractor-123/payments')
+    expect(requestSortBy).toBe('check_date:desc')
   })
 
   it('shows the empty state and hides View all when there are no payments', async () => {
@@ -72,7 +75,8 @@ describe('PaymentsCard', () => {
 
     await screen.findByText('December 15, 2025')
     const [viewDetails] = screen.getAllByRole('button', { name: 'View details' })
-    await user.click(viewDetails!)
+    if (!viewDetails) throw new Error('No "View details" button found')
+    await user.click(viewDetails)
 
     expect(onEvent).toHaveBeenCalledWith(
       componentEvents.CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED,

@@ -272,7 +272,8 @@ describe('DashboardFlow', () => {
     await user.click(screen.getByRole('tab', { name: 'Pay' }))
 
     const [viewDetails] = await screen.findAllByRole('button', { name: 'View details' })
-    await user.click(viewDetails!)
+    if (!viewDetails) throw new Error('No "View details" button found')
+    await user.click(viewDetails)
 
     expect(
       await screen.findByRole('heading', { name: 'Payment statement for Ada Lovelace' }),
