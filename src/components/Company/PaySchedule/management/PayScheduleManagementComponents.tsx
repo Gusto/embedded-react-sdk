@@ -74,8 +74,7 @@ export function PayScheduleAssignmentContextual() {
   return <PayScheduleAssignment companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
-/** @internal */
-export function PayScheduleEditFormContextual() {
+function PayScheduleFormContextual({ showCancel }: { showCancel: boolean }) {
   const { t } = useTranslation('Company.Management.PaySchedule')
   const { companyId, payScheduleId, defaultValues, onEvent } =
     useFlow<PayScheduleManagementContextInterface>()
@@ -90,7 +89,25 @@ export function PayScheduleEditFormContextual() {
       companyId={ensureRequired(companyId)}
       payScheduleId={payScheduleId}
       defaultValues={defaultValues}
+      showCancel={showCancel}
       onEvent={onEvent}
     />
   )
+}
+
+/** @internal */
+export function PayScheduleEditFormContextual() {
+  return <PayScheduleFormContextual showCancel />
+}
+
+/**
+ * The form shown when the company has no pay schedules yet. It is the flow's first screen,
+ * so there is no overview for Cancel to return to — and a host embedding this flow (such as
+ * the company settings dashboard) cannot act on the generic `CANCEL` without also catching
+ * the edit form's. Omitting the action leaves the host's own navigation as the way out.
+ *
+ * @internal
+ */
+export function PayScheduleCreateFormContextual() {
+  return <PayScheduleFormContextual showCancel={false} />
 }
