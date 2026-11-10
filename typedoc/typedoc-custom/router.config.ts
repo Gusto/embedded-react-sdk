@@ -40,9 +40,10 @@ export const DOMAINS: DomainConfig[] = [
     label: 'Companies',
     path: 'company',
     description:
-      'Enroll a business with Gusto — company setup, pay schedules, and required form signing — and respond to ongoing compliance information requests.',
+      'Enroll a business with Gusto and manage it afterward — company details, locations, pay schedules, bank account, tax setup, and required form signing — and respond to ongoing compliance information requests.',
     namespaces: [
       { id: 'CompanyOnboarding', subpath: 'onboarding' },
+      { id: 'CompanyManagement', subpath: 'management' },
       { id: 'InformationRequests', subpath: 'information-requests' },
     ],
   },
