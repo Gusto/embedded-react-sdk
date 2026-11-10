@@ -1,3 +1,4 @@
+export { earningTypeCategoryHook } from './earningTypeCategoryHook'
 export { informationRequestEnumHook } from './informationRequestEnumHook'
 export { payrollDeductionAmountHook } from './payrollDeductionAmountHook'
 export { payrollOffCycleReasonEnumHook } from './payrollOffCycleReasonEnumHook'
