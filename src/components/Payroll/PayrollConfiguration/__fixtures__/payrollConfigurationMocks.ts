@@ -128,8 +128,8 @@ export const mockPaySchedule = {
 
 interface PayrollStatusMetaFixture {
   cancellable?: boolean
-  payroll_late?: boolean
-  initial_check_date?: string
+  payroll_late?: boolean | null
+  initial_check_date?: string | null
   expected_check_date?: string
   expected_debit_time?: string
   initial_debit_cutoff_time?: string

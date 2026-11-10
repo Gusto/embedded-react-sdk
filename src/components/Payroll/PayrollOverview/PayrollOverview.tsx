@@ -23,6 +23,7 @@ import {
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { canCancelPayroll } from '../helpers'
+import { getPayrollDisplayDates } from '../payrollDates'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -271,7 +272,7 @@ const Root = ({
     }
   }, [wireInRequest?.status, showWireDetailsConfirmation])
 
-  const checkDate = payrollData?.checkDate
+  const checkDate = payrollData && getPayrollDisplayDates(payrollData).checkDate
   useEffect(() => {
     if (checkDate && showWireDetailsConfirmation) {
       const formattedCheckDate = dateFormatter.formatShortWithYear(checkDate)
@@ -519,12 +520,14 @@ const Root = ({
   const deadlineAlert: PayrollFlowAlert | undefined = (() => {
     if (hasSubmittedInSession || isPolling || isProcessed) return undefined
 
-    if (payrollData.checkDate && payrollData.payrollDeadline) {
+    const displayDates = getPayrollDisplayDates(payrollData)
+
+    if (displayDates.checkDate && displayDates.submitBy) {
       return {
         type: 'info' as const,
         title: t('alerts.directDepositDeadline', {
-          payDate: dateFormatter.formatShortWithWeekday(payrollData.checkDate),
-          ...dateFormatter.formatWithTime(payrollData.payrollDeadline),
+          payDate: dateFormatter.formatShortWithWeekday(displayDates.checkDate),
+          ...dateFormatter.formatWithTime(displayDates.submitBy),
         }),
         content: t('alerts.directDepositDeadlineText'),
       }

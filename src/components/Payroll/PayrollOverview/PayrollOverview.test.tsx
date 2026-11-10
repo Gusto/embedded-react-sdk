@@ -88,6 +88,7 @@ let mockStaleDataPresent = false
 // When set, the poll's own `refetch` (reused from this query) rejects with this error instead of
 // resolving, independent of the render-driving `mockIsError`/`mockError` above.
 let mockRefetchError: unknown = null
+let mockWireInRequestStatus: 'pending_review' | undefined
 let mockShowEmployees: Pick<Employee, 'uuid' | 'jobs'>[] = []
 const { mockPayrollsGetRequest, mockEmployeesListRequest } = vi.hoisted(() => ({
   mockPayrollsGetRequest:
@@ -144,7 +145,11 @@ vi.mock('@gusto/embedded-api/react-query/bankAccountsGet', () => ({
 }))
 
 vi.mock('@gusto/embedded-api/react-query/wireInRequestsGet', () => ({
-  useWireInRequestsGet: () => ({ data: undefined }),
+  useWireInRequestsGet: () => ({
+    data: mockWireInRequestStatus
+      ? { wireInRequest: { status: mockWireInRequestStatus } }
+      : undefined,
+  }),
 }))
 
 vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
@@ -193,10 +198,61 @@ describe('PayrollOverview polling', () => {
     mockError = null
     mockStaleDataPresent = false
     mockRefetchError = null
+    mockWireInRequestStatus = undefined
   })
 
   afterEach(() => {
+    mockWireInRequestStatus = undefined
     vi.useRealTimers()
+  })
+
+  it('uses the expected off-cycle pay date in the wire confirmation', async () => {
+    mockWireInRequestStatus = 'pending_review'
+    mockPayrollData = {
+      ...basePayrollData,
+      checkDate: '2026-10-28',
+      payrollStatusMeta: {
+        payrollLate: null,
+        initialCheckDate: null,
+        expectedCheckDate: '2026-11-02',
+        expectedDebitTime: '2026-10-29T16:00:00-07:00',
+      },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+    expect(
+      await screen.findByText(
+        /Once we receive the funds from your bank we'll pay your team on Nov 2, 2026/,
+      ),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/we'll pay your team on Oct 28, 2026/)).not.toBeInTheDocument()
+  })
+
+  it('pairs expected pay and debit dates in the dismissal payroll deadline banner', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      checkDate: '2026-10-28',
+      payrollDeadline: new Date('2026-10-27T16:00:00-07:00'),
+      payrollStatusMeta: {
+        payrollLate: null,
+        initialCheckDate: null,
+        expectedCheckDate: '2026-11-02',
+        expectedDebitTime: '2026-10-29T16:00:00-07:00',
+      },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+    expect(
+      await screen.findByText(
+        /To pay your employees with direct deposit by Mon, Nov 2,.*Thu, Oct 29/,
+      ),
+    ).toBeInTheDocument()
   })
 
   it('stops polling and emits RUN_PAYROLL_PROCESSED when processed is true even without submit_success status', async () => {

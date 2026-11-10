@@ -106,6 +106,47 @@ const defaultProps = {
 }
 
 describe('PayrollOverviewPresentation', () => {
+  describe('off-cycle pay dates', () => {
+    const dismissalPayroll: PayrollShow = {
+      ...mockPayrollData,
+      offCycle: true,
+      offCycleReason: OffCycleReasonType.DismissedEmployee,
+      processed: false,
+      checkDate: '2026-10-28',
+      payrollStatusMeta: {
+        payrollLate: null,
+        initialCheckDate: null,
+        expectedCheckDate: '2026-11-02',
+        expectedDebitTime: '2026-10-29T16:00:00-07:00',
+      },
+    }
+
+    beforeEach(() => {
+      mockUseContainerBreakpoints.mockReturnValue(['base'])
+    })
+
+    it('shows the expected pay date before submission', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} payrollData={dismissalPayroll} />,
+      )
+
+      expect(await screen.findByText('Nov 2, 2026')).toBeInTheDocument()
+      expect(screen.getByText('Oct 29, 2026')).toBeInTheDocument()
+    })
+
+    it('preserves the stored pay date after processing', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          isProcessed
+          payrollData={{ ...dismissalPayroll, processed: true }}
+        />,
+      )
+
+      expect(await screen.findByText('Oct 28, 2026')).toBeInTheDocument()
+    })
+  })
+
   describe('base layout', () => {
     beforeEach(() => {
       mockUseContainerBreakpoints.mockReturnValue(['base'])

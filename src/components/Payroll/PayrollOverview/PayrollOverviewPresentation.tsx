@@ -12,6 +12,7 @@ import type {
 } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
+import { getPayrollDisplayDates } from '../payrollDates'
 import {
   calculateTotalPayroll,
   getCancelDeadlineValues,
@@ -146,6 +147,7 @@ export const PayrollOverviewPresentation = ({
 
   const expectedDebitDate =
     payrollData.payrollStatusMeta?.expectedDebitTime ?? payrollData.payrollDeadline
+  const { checkDate: displayCheckDate } = getPayrollDisplayDates(payrollData)
 
   const getCompanyTaxes = (employeeCompensation: EmployeeCompensations) => {
     return (
@@ -810,7 +812,7 @@ export const PayrollOverviewPresentation = ({
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
-                    render: () => dateFormatter.formatShortWithYear(payrollData.checkDate),
+                    render: () => dateFormatter.formatShortWithYear(displayCheckDate),
                   },
                 ]}
                 data={[{}]}

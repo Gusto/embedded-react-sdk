@@ -405,6 +405,31 @@ describe('PayrollConfiguration', () => {
   })
 
   describe('deadline banner', () => {
+    it('pairs expected pay and debit dates for dismissal payrolls with null lateness fields', async () => {
+      currentPayrollData = {
+        ...mockPayrollData,
+        off_cycle: true,
+        off_cycle_reason: 'Dismissed employee',
+        check_date: '2026-10-28',
+        payroll_deadline: '2026-10-27T16:00:00-07:00',
+        payroll_status_meta: {
+          payroll_late: null,
+          initial_check_date: null,
+          expected_check_date: '2026-11-02',
+          expected_debit_time: '2026-10-29T16:00:00-07:00',
+        },
+      }
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      expect(
+        await screen.findByText(
+          /To pay your employees with direct deposit by Mon, Nov 2,.*Thu, Oct 29/,
+        ),
+      ).toBeInTheDocument()
+      expect(screen.queryByText(/direct deposit by Wed, Oct 28/)).not.toBeInTheDocument()
+    })
+
     it('shows deadline banner regardless of payment method', async () => {
       currentPayrollData = {
         ...mockPayrollData,
