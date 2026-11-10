@@ -5,6 +5,7 @@ import { Locations } from '@/components/Company/Locations/Locations'
 import { FederalTaxes } from '@/components/Company/FederalTaxes'
 import { BankAccount } from '@/components/Company/BankAccount/BankAccount'
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
+import { StateTaxes } from '@/components/Company/StateTaxes/StateTaxes'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -13,7 +14,11 @@ import { componentEvents } from '@/shared/constants'
 
 /** @internal */
 type DashboardSuccessAlert =
-  'industryUpdated' | 'federalTaxesUpdated' | 'locationsUpdated' | 'bankAccountUpdated'
+  | 'industryUpdated'
+  | 'federalTaxesUpdated'
+  | 'locationsUpdated'
+  | 'bankAccountUpdated'
+  | 'stateTaxesUpdated'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -49,6 +54,7 @@ export function DashboardViewContextual() {
     federalTaxesUpdated: t('alerts.federalTaxesUpdated'),
     locationsUpdated: t('alerts.locationsUpdated'),
     bankAccountUpdated: t('alerts.bankAccountUpdated'),
+    stateTaxesUpdated: t('alerts.stateTaxesUpdated'),
   }
 
   return (
@@ -108,4 +114,10 @@ export function PayScheduleContextual() {
       enableMultipleSchedules={enableMultipleSchedules}
     />
   )
+}
+
+/** @internal */
+export function StateTaxesContextual() {
+  const { companyId, onEvent } = useFlow<DashboardContextInterface>()
+  return <StateTaxes companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }

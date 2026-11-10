@@ -1136,6 +1136,8 @@ declare namespace CompanyManagement {
         BankAccountCardProps,
         PaySchedulesCard,
         PaySchedulesCardProps,
+        StateTaxesCard_2 as StateTaxesCard,
+        StateTaxesCardProps_2 as StateTaxesCardProps,
         Dashboard_2 as Dashboard,
         DashboardFlow_2 as DashboardFlow,
         DashboardProps_2 as DashboardProps,
@@ -1583,6 +1585,7 @@ export const componentEvents: {
     readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: "company/management/bankAccount/editRequested";
     readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -5133,6 +5136,8 @@ export interface Resources {
     // (undocumented)
     'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
     // (undocumented)
+    'Company.Management.StateTaxes': Translations.CompanyManagementStateTaxes
+    // (undocumented)
     'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
     // (undocumented)
     'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
@@ -5753,9 +5758,19 @@ function StateTaxes_3(input: StateTaxesProps_3): JSX;
 // @public
 function StateTaxesCard(input: StateTaxesCardProps): JSX;
 
+// @alpha
+function StateTaxesCard_2(props: StateTaxesCardProps_2): JSX;
+
 // @public
 interface StateTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+interface StateTaxesCardProps_2 {
+    companyId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }

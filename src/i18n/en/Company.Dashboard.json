@@ -11,6 +11,7 @@
     "industryUpdated": "Industry updated",
     "federalTaxesUpdated": "Federal tax settings updated",
     "locationsUpdated": "Locations updated",
-    "bankAccountUpdated": "Bank account updated"
+    "bankAccountUpdated": "Bank account updated",
+    "stateTaxesUpdated": "State tax settings updated"
   }
 }
