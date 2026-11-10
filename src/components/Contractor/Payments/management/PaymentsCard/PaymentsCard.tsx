@@ -10,6 +10,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { LoaderComponentType } from '@/components/Base'
@@ -17,7 +18,7 @@ import type { LoaderComponentType } from '@/components/Base'
 /**
  * Props for {@link PaymentsCard}.
  *
- * @public
+ * @alpha
  */
 export interface PaymentsCardProps {
   /** The associated contractor identifier. */
@@ -32,16 +33,20 @@ export interface PaymentsCardProps {
  * Standalone read-only "Recent payments" card for a single contractor.
  *
  * @remarks
+ * Requires the `contractorPaymentHistory` flag in {@link UnstableFeatures}.
+ *
  * Fetches its own data via {@link useContractorPaymentsList} and renders the
  * contractor's payment history — most recent first — with the payment date,
  * total, payment method, and funding status. Read-only: creating and cancelling
  * payments happen elsewhere, so each row's "View details" action only emits an
  * event for the host to route on.
  *
- * The underlying endpoint returns **cancelled payments alongside active ones**
- * and exposes no field distinguishing them (`status` is only `Funded` or
- * `Unfunded`), so cancelled payments appear in this list. Note that fetching a
- * cancelled payment by UUID responds `404`, so a handler that routes
+ * The flag exists because the underlying endpoint returns **cancelled payments
+ * alongside active ones** and exposes no field distinguishing them (`status` is
+ * only `Funded` or `Unfunded`). A payment cancelled after funding is therefore
+ * reported as `Funded`, asserting the contractor was paid when they were not.
+ * The flag is removed once the endpoint reports cancellation. Note also that
+ * fetching a cancelled payment by UUID responds `404`, so a handler that routes
  * `paymentSelected` to a payment-detail surface should expect that case.
  *
  * @events
@@ -51,7 +56,7 @@ export interface PaymentsCardProps {
  *
  * @param props - See {@link PaymentsCardProps}.
  * @returns The contractor recent-payments card.
- * @public
+ * @alpha
  *
  * @example
  * ```tsx
@@ -61,6 +66,8 @@ export interface PaymentsCardProps {
  * ```
  */
 export function PaymentsCard({ LoaderComponent, ...props }: PaymentsCardProps) {
+  useUnstableFeature('contractorPaymentHistory', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Contractor.Management.Payments"

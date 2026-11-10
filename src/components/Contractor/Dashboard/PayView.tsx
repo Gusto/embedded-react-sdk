@@ -2,6 +2,7 @@ import { PaymentMethodCard } from '@/components/Contractor/PaymentMethod/managem
 import { CompensationCard } from '@/components/Contractor/Compensation/management/CompensationCard'
 import { PaymentsCard } from '@/components/Contractor/Payments/management/PaymentsCard'
 import { Flex } from '@/components/Common/Flex/Flex'
+import { WithUnstableFeature } from '@/contexts/UnstableFeaturesProvider/WithUnstableFeature'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import type { LoaderComponentType } from '@/components/Base'
@@ -27,7 +28,8 @@ export interface PayViewProps {
  * Renders the Payment method, Compensation, and Recent payments cards stacked
  * vertically. Each card is a self-fetching surface that owns its own data fetch
  * and event emission; this container only forwards `contractorId`, `onEvent`,
- * and `LoaderComponent`.
+ * and `LoaderComponent`. The Recent payments card renders only when the
+ * `contractorPaymentHistory` flag is enabled in {@link UnstableFeatures}.
  *
  * @param props - See {@link PayViewProps}.
  * @returns The stacked card layout for the Pay tab.
@@ -46,11 +48,13 @@ export function PayView({ contractorId, onEvent, LoaderComponent }: PayViewProps
         onEvent={onEvent}
         LoaderComponent={LoaderComponent}
       />
-      <PaymentsCard
-        contractorId={contractorId}
-        onEvent={onEvent}
-        LoaderComponent={LoaderComponent}
-      />
+      <WithUnstableFeature feature="contractorPaymentHistory">
+        <PaymentsCard
+          contractorId={contractorId}
+          onEvent={onEvent}
+          LoaderComponent={LoaderComponent}
+        />
+      </WithUnstableFeature>
     </Flex>
   )
 }

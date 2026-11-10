@@ -12,13 +12,18 @@ import { componentEvents } from '@/shared/constants'
 describe('PaymentsCard', () => {
   const onEvent = vi.fn()
 
+  const renderCard = () =>
+    renderWithProviders(<PaymentsCard contractorId="contractor-123" onEvent={onEvent} />, {
+      unstableFeatures: { contractorPaymentHistory: true },
+    })
+
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
   })
 
   it('renders each payment with its date, total, method, and status', async () => {
-    renderWithProviders(<PaymentsCard contractorId="contractor-123" onEvent={onEvent} />)
+    renderCard()
 
     expect(await screen.findByText('December 15, 2025')).toBeInTheDocument()
     expect(screen.getByText('December 1, 2025')).toBeInTheDocument()
@@ -45,7 +50,7 @@ describe('PaymentsCard', () => {
     })
     server.use(handleGetContractorPayments(resolver))
 
-    renderWithProviders(<PaymentsCard contractorId="contractor-123" onEvent={onEvent} />)
+    renderCard()
 
     await screen.findByText('No payments yet')
 
@@ -61,7 +66,7 @@ describe('PaymentsCard', () => {
       ),
     )
 
-    renderWithProviders(<PaymentsCard contractorId="contractor-123" onEvent={onEvent} />)
+    renderCard()
 
     expect(await screen.findByText('No payments yet')).toBeInTheDocument()
     expect(
@@ -71,7 +76,7 @@ describe('PaymentsCard', () => {
 
   it('emits the selected payment when a row action is used', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<PaymentsCard contractorId="contractor-123" onEvent={onEvent} />)
+    renderCard()
 
     await screen.findByText('December 15, 2025')
     const [viewDetails] = screen.getAllByRole('button', { name: 'View details' })
@@ -94,7 +99,7 @@ describe('PaymentsCard', () => {
   it('surfaces an error when the payments request fails', async () => {
     server.use(handleGetContractorPayments(() => new HttpResponse(null, { status: 500 })))
 
-    renderWithProviders(<PaymentsCard contractorId="contractor-123" onEvent={onEvent} />)
+    renderCard()
 
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })

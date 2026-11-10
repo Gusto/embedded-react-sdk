@@ -12,7 +12,7 @@ import type {
 /**
  * A single payment entry returned by {@link useContractorPaymentsList}.
  *
- * @public
+ * @alpha
  */
 export type ContractorPaymentHistoryEntry = NonNullable<
   GetV1ContractorsContractorUuidPaymentsResponse['contractorPaymentListings']
@@ -21,7 +21,7 @@ export type ContractorPaymentHistoryEntry = NonNullable<
 /**
  * Parameters for {@link useContractorPaymentsList}.
  *
- * @public
+ * @alpha
  */
 export interface UseContractorPaymentsListParams {
   /** The associated contractor identifier. */
@@ -33,7 +33,7 @@ export interface UseContractorPaymentsListParams {
 /**
  * Ready-state shape returned by {@link useContractorPaymentsList} once the payments have loaded.
  *
- * @public
+ * @alpha
  */
 export interface UseContractorPaymentsListReady extends BaseHookReady<
   { payments: ContractorPaymentHistoryEntry[] },
@@ -46,7 +46,7 @@ export interface UseContractorPaymentsListReady extends BaseHookReady<
 /**
  * Result of {@link useContractorPaymentsList} — a discriminated union of loading and ready states.
  *
- * @public
+ * @alpha
  */
 export type UseContractorPaymentsListResult = HookLoadingResult | UseContractorPaymentsListReady
 
@@ -54,18 +54,22 @@ export type UseContractorPaymentsListResult = HookLoadingResult | UseContractorP
  * Standalone data hook for a single contractor's payment history, most recent first.
  *
  * @remarks
+ * Requires the `contractorPaymentHistory` flag in {@link UnstableFeatures}.
+ *
  * Wraps the `get-v1-contractors-contractor_uuid-payments` query in the standard
  * {@link BaseHookReady} shape, sorted by `check_date:desc` and paginated via the
  * API's `x-total-pages` / `x-total-count` response headers. Read-only — this
  * hook exposes no actions.
  *
- * Note that this endpoint returns **cancelled payments alongside active ones**,
- * and its response carries no field distinguishing them (`status` is only
- * `Funded` or `Unfunded`), so cancelled payments cannot be filtered out here.
+ * The flag exists because this endpoint returns **cancelled payments alongside
+ * active ones** and its response carries no field distinguishing them (`status`
+ * is only `Funded` or `Unfunded`), so cancelled payments can neither be
+ * filtered out nor labelled correctly here. A payment cancelled after funding
+ * is reported as `Funded`.
  *
  * @param params - See {@link UseContractorPaymentsListParams}.
  * @returns A {@link HookLoadingResult} while loading, or the ready state with `data.payments` once loaded.
- * @public
+ * @alpha
  *
  * @example
  * ```tsx

@@ -80,6 +80,8 @@ describe('Dashboard', () => {
 
     expect(await screen.findByText('Payment')).toBeInTheDocument()
     expect(await screen.findByText('Compensation')).toBeInTheDocument()
+    // Recent payments is gated on the `contractorPaymentHistory` flag, left off here.
+    expect(screen.queryByText('Recent payments')).toBeNull()
     expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_DASHBOARD_TAB_CHANGE, {
       tab: 'pay',
     })
@@ -266,7 +268,9 @@ describe('DashboardFlow', () => {
 
   it('opens a payment statement from the Pay tab and returns to the dashboard', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<DashboardFlow contractorId="contractor-123" onEvent={onEvent} />)
+    renderWithProviders(<DashboardFlow contractorId="contractor-123" onEvent={onEvent} />, {
+      unstableFeatures: { contractorPaymentHistory: true },
+    })
 
     await screen.findByRole('heading', { name: 'Ada Lovelace' })
     await user.click(screen.getByRole('tab', { name: 'Pay' }))

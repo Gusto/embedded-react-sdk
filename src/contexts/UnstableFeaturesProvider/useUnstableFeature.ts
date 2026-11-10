@@ -31,6 +31,19 @@ export interface UnstableFeatures {
    */
   historicalPayments?: boolean
   /**
+   * Reviewing a single contractor's payment history.
+   *
+   * When `true`, `ContractorManagement.PaymentsCard` can be mounted, and the contractor
+   * dashboard's Pay tab shows a "Recent payments" card.
+   *
+   * When `false`, the card is hidden on the Pay tab and throws when mounted directly. Gated
+   * because the underlying endpoint reports a cancelled payment's status as `Funded` or
+   * `Unfunded` with no field distinguishing it, so a cancelled payment can be shown as paid.
+   *
+   * @defaultValue `false`
+   */
+  contractorPaymentHistory?: boolean
+  /**
    * Managing pay schedules and their employee assignments after onboarding.
    *
    * When `true`, `CompanyManagement.PaySchedule` and `CompanyManagement.PayScheduleAssignment` can
