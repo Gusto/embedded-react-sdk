@@ -23,6 +23,11 @@ on:
         default: false
 jobs:
   validate:
+    # Belt-and-suspenders: workflow_dispatch runs whatever copy of this file
+    # lives on the ref the dispatcher picked. Refuse to do anything
+    # privileged unless that ref is main, so a modified copy on another
+    # branch can't run with this workflow's permissions.
+    if: github.ref == 'refs/heads/main'
     runs-on:
       group: gusto-ubuntu-default
     permissions:
@@ -107,6 +112,18 @@ jobs:
         id: resolve-ref
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      # The working tree right now is the untrusted RC source (checked out
+      # above), so the guard script itself must come from elsewhere — same
+      # isolation the publish job below uses for its helpers.
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          path: .release-workflow
+          persist-credentials: false
+
+      - name: Reject source-controlled npm configuration
+        run: bash .release-workflow/.github/scripts/guard-npm-config.sh .
+
       - name: Summarize RC source for approval
         run: |
           {
@@ -143,6 +160,17 @@ jobs:
       INPUT_DRY_RUN: ${{ needs.validate.outputs.dry_run }}
       REF_TYPE: ${{ needs.validate.outputs.ref_type }}
       REF_NAME: ${{ needs.validate.outputs.ref_name }}
+      # Best-effort second layer for the config keys npm lets an env var
+      # fully override — npm rejects an empty string as an invalid proxy
+      # value and silently falls through to the RC source's .npmrc, so use
+      # the literal string 'null' (quoted, so YAML doesn't flatten it to
+      # empty) to actually clear it. publishConfig and a bare ca=/cafile=
+      # can't be covered this way at all; rejecting the .npmrc/publishConfig
+      # outright above is the real control this backs up.
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+      NPM_CONFIG_PROXY: 'null'
+      NPM_CONFIG_HTTPS_PROXY: 'null'
+      NPM_CONFIG_STRICT_SSL: 'true'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -155,6 +183,12 @@ jobs:
           ref: ${{ github.sha }}
           path: .release-workflow
           persist-credentials: false
+
+      # Must run before any step that touches npm, including the artifact
+      # download below — a credential-relevant .npmrc or publishConfig key
+      # in the RC source has to be caught before anything reads it.
+      - name: Reject source-controlled npm configuration
+        run: bash .release-workflow/.github/scripts/guard-npm-config.sh .
 
       - uses: actions/setup-node@v6
         with:
@@ -170,6 +204,13 @@ jobs:
         with:
           name: dist
           path: dist
+
+      # The artifact above extracts into this tree, not .release-workflow,
+      # so it can't touch root .npmrc or package.json — but re-check anyway,
+      # since the only thing standing between here and the credentialed
+      # npm calls below is that assumption.
+      - name: Re-check npm configuration after artifact extraction
+        run: bash .release-workflow/.github/scripts/guard-npm-config.sh .
 
       - name: Show release info
         run: |

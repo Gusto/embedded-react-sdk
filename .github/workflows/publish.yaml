@@ -30,10 +30,28 @@ jobs:
     # No actions/cache or npm ci here — this job can request npm OIDC credentials, and
     # build-sdk.yaml already built dist/ on a separate, secret-less runner.
     # See validate-release-workflows.test.sh.
+    env:
+      # Best-effort second layer for the config keys npm lets an env var
+      # fully override — npm rejects an empty string as an invalid proxy
+      # value and silently falls through to a project .npmrc, so use the
+      # literal string 'null' (quoted, so YAML doesn't flatten it to empty)
+      # to actually clear it. publishConfig and a bare ca=/cafile= can't be
+      # covered this way at all; rejecting the .npmrc/publishConfig outright
+      # in the guard step below is the real control this backs up.
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+      NPM_CONFIG_PROXY: 'null'
+      NPM_CONFIG_HTTPS_PROXY: 'null'
+      NPM_CONFIG_STRICT_SSL: 'true'
     steps:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      # Stable publishing is gated to a CI-green main-branch release commit,
+      # so this isn't the arbitrary-branch exposure the RC workflow has —
+      # still rejected before npm runs, as a consistent second layer.
+      - name: Reject source-controlled npm configuration
+        run: bash .github/scripts/guard-npm-config.sh .
 
       - uses: actions/setup-node@v6
         with:
