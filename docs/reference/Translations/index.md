@@ -3842,6 +3842,7 @@ Translation keys for the `Employee.Management.Compensation` i18n namespace.
 | `card.types` | |
 | `card.types.hourly` | `"Hourly/Overtime eligible"` |
 | `card.types.salary` | `"Salary/No overtime"` |
+| `card.viewHistoryCta` | `"View history"` |
 | `card.wage` | `"Wage"` |
 | <a id="property-employeemanagementcompensationclassificationlink"></a> `classificationLink` | `"<ClassificationLink href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</ClassificationLink>"` |
 | <a id="property-employeemanagementcompensationcommissionalerts"></a> `commissionAlerts` | |
@@ -3867,6 +3868,22 @@ Translation keys for the `Employee.Management.Compensation` i18n namespace.
 | <a id="property-employeemanagementcompensationflsastatusplaceholder"></a> `flsaStatusPlaceholder` | `"Select classification..."` |
 | <a id="property-employeemanagementcompensationhiredate"></a> `hireDate` | `"Start date"` |
 | <a id="property-employeemanagementcompensationhiredatelabel"></a> `hireDateLabel` | `"Hire date"` |
+| <a id="property-employeemanagementcompensationhistory"></a> `history` | |
+| `history.backCta` | `"Back"` |
+| `history.columns` | |
+| `history.columns.effectiveDate` | `"Effective date"` |
+| `history.columns.employeeType` | `"Employee type"` |
+| `history.columns.jobTitle` | `"Job title"` |
+| `history.columns.status` | `"Status"` |
+| `history.columns.wage` | `"Wage"` |
+| `history.emptyState` | |
+| `history.emptyState.description` | `"Compensation history will appear here once compensation is added"` |
+| `history.emptyState.title` | `"No compensation history"` |
+| `history.statusLabels` | |
+| `history.statusLabels.current` | `"Current"` |
+| `history.statusLabels.upcoming` | `"Upcoming"` |
+| `history.tableLabel` | `"Compensation history for {{jobTitle}}"` |
+| `history.title` | `"Compensation history"` |
 | <a id="property-employeemanagementcompensationjobtitle"></a> `jobTitle` | `"Job Title"` |
 | <a id="property-employeemanagementcompensationjobtitlelabel"></a> `jobTitleLabel` | `"Job title"` |
 | <a id="property-employeemanagementcompensationminimumwagedescription"></a> `minimumWageDescription` | `"What minimum wage requirement should compensation be adjusted to"` |
