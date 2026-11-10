@@ -1,4 +1,5 @@
 import { useContractorPaymentsGetV1ContractorsContractorUuidPayments } from '@gusto/embedded-api/react-query/contractorPaymentsGetV1ContractorsContractorUuidPayments'
+import { keepPreviousData } from '@tanstack/react-query'
 import type { GetV1ContractorsContractorUuidPaymentsResponse } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidpayments'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { usePagination } from '@/hooks/usePagination/usePagination'
@@ -93,6 +94,8 @@ export function useContractorPaymentsList({
 
   // staleTime: Infinity — the SDK QueryClient invalidates on any mutation
   // success, so a long stale time avoids redundant refetches on remount.
+  // placeholderData — keeps the current page rendered while the next one loads,
+  // so paging does not blank the table and unmount the pagination control.
   const paymentsQuery = useContractorPaymentsGetV1ContractorsContractorUuidPayments(
     {
       contractorUuid: contractorId,
@@ -100,7 +103,7 @@ export function useContractorPaymentsList({
       page: currentPage,
       per: itemsPerPage,
     },
-    { staleTime: Infinity },
+    { staleTime: Infinity, placeholderData: keepPreviousData },
   )
 
   const paymentsHeaders = paymentsQuery.data?.httpMeta.response.headers
