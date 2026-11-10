@@ -3,7 +3,7 @@ import {
   InformationRequestStatus,
   ResponseType,
 } from '@gusto/embedded-api/models/components/informationrequest'
-import type { AfterSuccessHook } from '@/types/hooks'
+import { createResponseBodyHook, isRecord } from './createResponseBodyHook'
 
 const GET_INFORMATION_REQUESTS_OPERATION_ID = 'get-information-requests'
 
@@ -18,13 +18,10 @@ const KNOWN_RESPONSE_TYPES: ReadonlySet<string> = new Set(Object.values(Response
 const FALLBACK_STATUS = InformationRequestStatus.PendingResponse
 const FALLBACK_RESPONSE_TYPE = ResponseType.Text
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  Boolean(value) && typeof value === 'object'
-
 const hasUnknownEnum = (value: unknown, known: ReadonlySet<string>): value is string =>
   typeof value === 'string' && !known.has(value)
 
-const questionHasUnknownResponseType = (question: unknown): boolean =>
+const questionHasUnknownResponseType = (question: unknown): question is Record<string, unknown> =>
   isRecord(question) && hasUnknownEnum(question.response_type, KNOWN_RESPONSE_TYPES)
 
 const requestNeedsRemap = (request: unknown): request is Record<string, unknown> =>
@@ -48,7 +45,7 @@ const remapRequest = (request: Record<string, unknown>): Record<string, unknown>
   if (Array.isArray(request.required_questions)) {
     next.required_questions = request.required_questions.map(question =>
       questionHasUnknownResponseType(question)
-        ? { ...(question as Record<string, unknown>), response_type: FALLBACK_RESPONSE_TYPE }
+        ? { ...question, response_type: FALLBACK_RESPONSE_TYPE }
         : question,
     )
   }
@@ -68,31 +65,12 @@ const remapRequest = (request: Record<string, unknown>): Record<string, unknown>
  *
  * @internal
  */
-export const informationRequestEnumHook: AfterSuccessHook = {
-  afterSuccess: async (context, response) => {
-    if (context.operationID !== GET_INFORMATION_REQUESTS_OPERATION_ID) {
-      return response
-    }
-
-    // The endpoint's body is a bare array of information requests (Speakeasy wraps it under
-    // `Information-Requests` before parsing), so read and rewrite that array directly.
-    let body: unknown
-    try {
-      body = await response.clone().json()
-    } catch {
-      return response
-    }
-
-    if (!Array.isArray(body) || !body.some(requestNeedsRemap)) {
-      return response
-    }
-
-    const remapped = body.map(request => (isRecord(request) ? remapRequest(request) : request))
-
-    return new Response(JSON.stringify(remapped), {
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers,
-    })
+export const informationRequestEnumHook = createResponseBodyHook(
+  [GET_INFORMATION_REQUESTS_OPERATION_ID],
+  // The endpoint's body is a bare array of information requests (Speakeasy wraps it under
+  // `Information-Requests` before parsing), so read and rewrite that array directly.
+  body => {
+    if (!Array.isArray(body) || !body.some(requestNeedsRemap)) return undefined
+    return body.map(request => (isRecord(request) ? remapRequest(request) : request))
   },
-}
+)

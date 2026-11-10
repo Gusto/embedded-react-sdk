@@ -1,0 +1,40 @@
+import { createResponseBodyHook, isRecord } from './createResponseBodyHook'
+
+const PAY_SCHEDULE_LIST_OPERATION_ID = 'get-v1-companies-company_id-pay_schedules'
+const PAY_SCHEDULE_OBJECT_OPERATION_IDS = [
+  'get-v1-companies-company_id-pay_schedules-pay_schedule_id',
+  'post-v1-companies-company_id-pay_schedules',
+  'put-v1-companies-company_id-pay_schedules-pay_schedule_id',
+]
+
+const hasNullCustomName = (value: unknown): value is Record<string, unknown> =>
+  isRecord(value) && value.custom_name === null
+
+const stripNullCustomName = (paySchedule: Record<string, unknown>): Record<string, unknown> => {
+  const { custom_name: _customName, ...rest } = paySchedule
+  return rest
+}
+
+/**
+ * Temporary workaround for a pay-schedule response compatibility gap: `custom_name` is generated as
+ * a non-nullable optional string (`z.string().optional()`) in `@gusto/embedded-api`, so a response
+ * with `custom_name: null` throws an `SDKValidationError` -- rejecting the whole pay schedule list
+ * response, not just the one affected item. This afterSuccess hook deletes an explicit
+ * `custom_name: null` before the SDK's zod parse, collapsing it to the same "omitted" shape the
+ * schema already accepts and that pay schedule display and form initialization already default to
+ * an empty string for. Omission, valid strings, and unrelated fields are left untouched. Remove once
+ * the generated client accepts `custom_name: null` directly.
+ *
+ * @internal
+ */
+export const payScheduleCustomNameHook = createResponseBodyHook(
+  [PAY_SCHEDULE_LIST_OPERATION_ID, ...PAY_SCHEDULE_OBJECT_OPERATION_IDS],
+  (body, operationID) => {
+    if (operationID === PAY_SCHEDULE_LIST_OPERATION_ID) {
+      if (!Array.isArray(body) || !body.some(hasNullCustomName)) return undefined
+      return body.map(item => (hasNullCustomName(item) ? stripNullCustomName(item) : item))
+    }
+
+    return hasNullCustomName(body) ? stripNullCustomName(body) : undefined
+  },
+)

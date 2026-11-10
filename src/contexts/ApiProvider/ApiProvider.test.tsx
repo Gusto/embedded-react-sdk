@@ -2,10 +2,13 @@ import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
 import { ApiProvider } from './ApiProvider'
 import { apiVersionMismatchHook } from './apiVersionMismatchHook'
-import { informationRequestEnumHook } from './informationRequestEnumHook'
-import { payrollDeductionAmountHook } from './payrollDeductionAmountHook'
-import { payrollOffCycleReasonEnumHook } from './payrollOffCycleReasonEnumHook'
-import { payScheduleCustomNameHook } from './payScheduleCustomNameHook'
+import {
+  informationRequestEnumHook,
+  payrollDeductionAmountHook,
+  payrollOffCycleReasonEnumHook,
+  payScheduleAssignmentPreviewHook,
+  payScheduleCustomNameHook,
+} from './compatibilityHooks'
 import type { SDKHooks } from '@/types/hooks'
 
 const mockSDKHooksInstance = {
@@ -191,6 +194,7 @@ describe('ApiProvider', () => {
       [payrollDeductionAmountHook],
       [payrollOffCycleReasonEnumHook],
       [payScheduleCustomNameHook],
+      [payScheduleAssignmentPreviewHook],
     ])
     expect(mockSDKHooksInstance.registerAfterErrorHook.mock.calls).toEqual([
       [apiVersionMismatchHook],
