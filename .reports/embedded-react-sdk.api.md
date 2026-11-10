@@ -1153,6 +1153,8 @@ declare namespace CompanyManagement {
         PaySchedulesCardProps,
         StateTaxesCard_2 as StateTaxesCard,
         StateTaxesCardProps_2 as StateTaxesCardProps,
+        TaxPaymentsCard,
+        TaxPaymentsCardProps,
         Dashboard_2 as Dashboard,
         DashboardFlow_2 as DashboardFlow,
         DashboardProps_2 as DashboardProps,
@@ -1604,6 +1606,7 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: "company/management/bankAccount/editRequested";
     readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
+    readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -5256,6 +5259,8 @@ export interface Resources {
     // (undocumented)
     'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
     // (undocumented)
+    'Company.Management.TaxPayments': Translations.CompanyManagementTaxPayments
+    // (undocumented)
     'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
     // (undocumented)
     'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
@@ -6071,6 +6076,16 @@ function TaxPaymentDetail(props: TaxPaymentDetailProps): JSX;
 interface TaxPaymentDetailProps extends BaseComponentInterface<'Company.Management.TaxPaymentDetail'> {
     companyId: string;
     taxPaymentId: string;
+}
+
+// @alpha
+function TaxPaymentsCard(props: TaxPaymentsCardProps): JSX;
+
+// @alpha
+interface TaxPaymentsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @alpha
