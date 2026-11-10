@@ -8,6 +8,7 @@ import { DataView, useDataView, EmptyData, Loading, VisuallyHidden } from '@/com
 import { Flex } from '@/components/Common/Flex/Flex'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType, type STATES_ABBR } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -54,6 +55,9 @@ const SETUP_STATUS_LABEL = {
  * field: which fields a state asks for varies by state, and a company is not
  * finished until every one of them is answered.
  *
+ * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the
+ * flag throws.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -64,6 +68,8 @@ const SETUP_STATUS_LABEL = {
  * @alpha
  */
 export function StateTaxesCard(props: StateTaxesCardProps) {
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Company.Management.StateTaxes"

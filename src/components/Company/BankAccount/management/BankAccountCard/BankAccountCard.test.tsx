@@ -20,6 +20,8 @@ const fixtureBankAccount = {
   name: 'Employer Funding Account',
 }
 
+const unstableFeatures = { companySettingsDashboard: true }
+
 describe('BankAccountCard', () => {
   const onEvent = vi.fn()
 
@@ -30,8 +32,23 @@ describe('BankAccountCard', () => {
     server.use(handleGetCompanyBankAccounts(() => HttpResponse.json([fixtureBankAccount])))
   })
 
-  it('renders the masked account details and verification status once loaded', async () => {
+  it('renders the SDK error card instead of the card without the companySettingsDashboard flag', async () => {
+    // The flag check throws; GustoProvider's top-level ErrorBoundary catches it
+    // and renders InternalError in place of the card.
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />)
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Manage bank account' })).toBeNull()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('renders the masked account details and verification status once loaded', async () => {
+    renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage bank account' })).toBeEnabled()
@@ -46,7 +63,9 @@ describe('BankAccountCard', () => {
 
   it('emits the edit-requested event with the company id when Manage is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage bank account' })).toBeEnabled()
@@ -63,7 +82,9 @@ describe('BankAccountCard', () => {
   it('renders the empty state with an Add CTA when no account is on file', async () => {
     server.use(handleGetCompanyBankAccounts(() => HttpResponse.json([])))
 
-    renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('No bank account yet')).toBeInTheDocument()
@@ -78,7 +99,9 @@ describe('BankAccountCard', () => {
       ),
     )
 
-    renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('Verification pending')).toBeInTheDocument()

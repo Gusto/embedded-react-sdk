@@ -5,6 +5,7 @@ import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -46,6 +47,9 @@ const ASSIGNMENT_MODE_KEY = {
  * is deliberately absent: it is only meaningful when the surrounding
  * integration has enabled it, which this card cannot see.
  *
+ * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the
+ * flag throws.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -56,6 +60,8 @@ const ASSIGNMENT_MODE_KEY = {
  * @alpha
  */
 export function PaySchedulesCard(props: PaySchedulesCardProps) {
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Company.Management.PaySchedules"

@@ -24,6 +24,8 @@ const fixtureSchedule = {
   auto_payroll: false,
 }
 
+const unstableFeatures = { companySettingsDashboard: true }
+
 describe('PaySchedulesCard', () => {
   const onEvent = vi.fn()
 
@@ -39,8 +41,23 @@ describe('PaySchedulesCard', () => {
     )
   })
 
-  it('lists each schedule with its frequency and names the assignment mode', async () => {
+  it('renders the SDK error card instead of the card without the companySettingsDashboard flag', async () => {
+    // The flag check throws; GustoProvider's top-level ErrorBoundary catches it
+    // and renders InternalError in place of the card.
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />)
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Manage pay schedules' })).toBeNull()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('lists each schedule with its frequency and names the assignment mode', async () => {
+    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage pay schedules' })).toBeEnabled()
@@ -71,7 +88,9 @@ describe('PaySchedulesCard', () => {
       ),
     )
 
-    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('Assigned per department')).toBeInTheDocument()
@@ -97,7 +116,9 @@ describe('PaySchedulesCard', () => {
       ),
     )
 
-    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('One schedule for all employees')).toBeInTheDocument()
@@ -123,7 +144,9 @@ describe('PaySchedulesCard', () => {
       ),
     )
 
-    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('Biweekly')).toBeInTheDocument()
@@ -133,7 +156,9 @@ describe('PaySchedulesCard', () => {
 
   it('emits the edit-requested event with the company id when Manage is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage pay schedules' })).toBeEnabled()
@@ -153,7 +178,9 @@ describe('PaySchedulesCard', () => {
       handleGetPaySchedules(() => HttpResponse.json([])),
     )
 
-    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<PaySchedulesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('No pay schedule yet')).toBeInTheDocument()
