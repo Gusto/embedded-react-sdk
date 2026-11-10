@@ -12,9 +12,15 @@ import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/type
  * The API has no "not yet sent" filter, so overdue has to be derived client-side
  * from a window of payments whose due date has passed. One page of the server's
  * maximum size covers that window without the multi-page fan-out
- * `useAllTaxPayments` needs: a company with more unpaid history than this reads
- * as having at least this many overdue payments, and the full ledger is one
- * click away in `TaxPaymentsFlow`.
+ * `useAllTaxPayments` needs.
+ *
+ * The endpoint cannot filter on a status it does not store, so this window holds
+ * the most recently due payments *whatever their status* — settled ones consume it
+ * too. For a company with more past-due payments than this, the count is therefore
+ * a floor rather than a total, and an overdue payment sitting behind a full window
+ * of more recent settled ones is not seen at all. Both cases read as fewer overdue
+ * payments than there are, never more, and the full ledger is one click away in
+ * `TaxPaymentsFlow`.
  *
  * @internal
  */
@@ -130,13 +136,16 @@ export function useCompanyTaxPaymentsSummary({
 
   // Both windows are bounded inclusively at today, so a payment due today
   // appears in each. The status filters keep it in one: it is never `overdue`,
-  // and it is the next payment due only while it remains unsettled.
+  // and it is the next payment due only while it remains `scheduled`.
   const overduePayments = (overdueQuery.data?.taxPaymentList ?? []).filter(
     payment => deriveTaxPaymentStatus(payment, today) === 'overdue',
   )
 
+  // `scheduled` rather than merely unsettled: an outstanding refund is also
+  // unsettled, but it is money owed *to* the company, so reporting it as the next
+  // payment due would show a negative amount and suppress the empty state.
   const nextPayment = (upcomingQuery.data?.taxPaymentList ?? []).find(
-    payment => deriveTaxPaymentStatus(payment, today) !== 'paid',
+    payment => deriveTaxPaymentStatus(payment, today) === 'scheduled',
   )
 
   return {

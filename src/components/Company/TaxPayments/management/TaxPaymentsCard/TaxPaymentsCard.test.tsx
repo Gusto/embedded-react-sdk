@@ -71,6 +71,16 @@ const upcomingZeroAmountPayment = {
   amount: '0.00',
 }
 
+/** An unsettled refund: money owed *to* the company, never a payment it owes. */
+const upcomingRefund = {
+  ...baseTaxPayment,
+  uuid: 'tax-payment-upcoming-refund',
+  agency_name: 'Internal Revenue Service',
+  jurisdiction: 'US',
+  due_date: daysFromToday(2),
+  amount: '-42.00',
+}
+
 /**
  * Serves each of the card's two date-bounded windows its own fixture list. The
  * card asks for past-due payments with `due_date_to` and upcoming ones with
@@ -91,6 +101,8 @@ function serveWindows({
   return resolver
 }
 
+const unstableFeatures = { companySettingsDashboard: true }
+
 describe('TaxPaymentsCard', () => {
   const onEvent = vi.fn()
 
@@ -99,13 +111,28 @@ describe('TaxPaymentsCard', () => {
     onEvent.mockClear()
   })
 
+  it('renders the SDK error card instead of the card without the companySettingsDashboard flag', async () => {
+    // The flag check throws; GustoProvider's top-level ErrorBoundary catches it
+    // and renders InternalError in place of the card.
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />)
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Manage tax payments' })).toBeNull()
+
+    consoleErrorSpy.mockRestore()
+  })
+
   it('reports how much is overdue and names the next payment still owing', async () => {
     serveWindows({
       pastDue: [overdueStatePayment, overdueFederalPayment],
       upcoming: [upcomingFederalPayment, upcomingStatePayment],
     })
 
-    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage tax payments' })).toBeEnabled()
@@ -123,13 +150,15 @@ describe('TaxPaymentsCard', () => {
     expect(screen.getByText('$14,661.36')).toBeInTheDocument()
   })
 
-  it('skips settled payments when picking the next one due', async () => {
+  it('skips settled payments and refunds when picking the next one due', async () => {
     serveWindows({
       pastDue: [],
-      upcoming: [upcomingZeroAmountPayment, upcomingStatePayment],
+      upcoming: [upcomingZeroAmountPayment, upcomingRefund, upcomingStatePayment],
     })
 
-    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     expect(await screen.findByText('None overdue')).toBeInTheDocument()
     expect(screen.getByText('Employment Development Department')).toBeInTheDocument()
@@ -140,16 +169,48 @@ describe('TaxPaymentsCard', () => {
   it('renders the empty state when nothing is outstanding', async () => {
     serveWindows({ pastDue: [], upcoming: [] })
 
-    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     expect(await screen.findByText('No tax payments scheduled')).toBeInTheDocument()
+  })
+
+  it('renders the empty state when the only upcoming payment is a refund', async () => {
+    serveWindows({ pastDue: [], upcoming: [upcomingRefund] })
+
+    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    // A refund is outstanding but owes nothing, so the company has no payment due
+    // and the card must say so rather than reporting the refund's negative amount.
+    expect(await screen.findByText('No tax payments scheduled')).toBeInTheDocument()
+  })
+
+  it('replaces the summary with an error rather than reporting nothing is owed', async () => {
+    server.use(handleGetTaxPayments(() => new HttpResponse(null, { status: 500 })))
+
+    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    expect(
+      await screen.findByText('Could not load tax payments, try again later.'),
+    ).toBeInTheDocument()
+    // A failed read is not evidence that the company owes nothing, so neither
+    // positive claim may appear beneath the error.
+    expect(screen.queryByText('None overdue')).toBeNull()
+    expect(screen.queryByText('No tax payments scheduled')).toBeNull()
   })
 
   it('emits the edit-requested event with the company id when Manage is clicked', async () => {
     serveWindows({ pastDue: [overdueFederalPayment], upcoming: [upcomingFederalPayment] })
     const user = userEvent.setup()
 
-    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<TaxPaymentsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage tax payments' })).toBeEnabled()

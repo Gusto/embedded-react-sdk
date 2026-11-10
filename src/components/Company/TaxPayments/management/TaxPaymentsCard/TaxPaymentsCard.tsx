@@ -7,6 +7,7 @@ import { Loading } from '@/components/Common'
 import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
@@ -49,6 +50,9 @@ const JURISDICTION_LABEL = {
  * each payment's amounts and dates; see `useCompanyTaxPaymentsSummary` for the
  * windows that derivation reads.
  *
+ * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the
+ * flag throws.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -59,6 +63,8 @@ const JURISDICTION_LABEL = {
  * @alpha
  */
 export function TaxPaymentsCard(props: TaxPaymentsCardProps) {
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Company.Management.TaxPayments"
@@ -133,6 +139,12 @@ function TaxPaymentsCardContent({ companyId, onEvent, LoaderComponent }: TaxPaym
       ]
     : []
 
+  // A failed read leaves both windows empty, which every branch below would otherwise
+  // state as fact — a green "None overdue", or an empty state asserting the company
+  // owes nothing. Neither is known, so the error replaces them rather than sitting
+  // above them. The box header stays either way, so the card is still legible as the
+  // tax payments card while erroring.
+  const hasError = summary.errorHandling.errors.length > 0
   const hasOutstandingPayments = overduePayments.length > 0 || Boolean(nextPayment)
 
   return (
@@ -157,6 +169,8 @@ function TaxPaymentsCardContent({ companyId, onEvent, LoaderComponent }: TaxPaym
         <Flex flexDirection="column" gap={16}>
           {isLoading ? (
             <Loading />
+          ) : hasError ? (
+            <EmptyData title={t('card.errorState.title')} />
           ) : hasOutstandingPayments ? (
             <Components.DescriptionList
               items={[

@@ -16,6 +16,9 @@
       "federal": "Federal",
       "state": "{{jurisdiction}}"
     },
+    "errorState": {
+      "title": "Could not load tax payments, try again later."
+    },
     "emptyState": {
       "title": "No tax payments scheduled",
       "description": "Tax payments appear here once this company owes payroll taxes to an agency."

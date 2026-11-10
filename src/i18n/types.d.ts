@@ -1589,6 +1589,10 @@ export namespace Translations {
         /** @defaultValue `"{{jurisdiction}}"` */
         state: string
       }
+      errorState: {
+        /** @defaultValue `"Could not load tax payments, try again later."` */
+        title: string
+      }
       emptyState: {
         /** @defaultValue `"No tax payments scheduled"` */
         title: string
