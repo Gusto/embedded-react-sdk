@@ -114,7 +114,6 @@ export default defineConfig(({ mode }) => {
       exclude: [
         '**/node_modules/**',
         '**/e2e/**',
-        '**/docs-site/**',
         '**/typedoc/**',
         '**/.claude/worktrees/**',
         '**/.github/scripts/**',
