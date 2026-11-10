@@ -26,6 +26,12 @@ function result(conclusion, title, summary) {
   return { conclusion, title, summary }
 }
 
+// GitHub rejects a check-run summary over 65535 characters. A PR controls headVersion via its
+// own package.json, so an oversized value must not reach the summary verbatim.
+function truncate(value, max = 200) {
+  return value.length > max ? `${value.slice(0, max)}… (${value.length} characters)` : value
+}
+
 function stableVersion(version) {
   if (typeof version !== 'string' || !/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(version)) {
     throw new Error(`Expected a stable release version, received ${version}`)
@@ -115,7 +121,7 @@ async function evaluatePullRequest(
     return result(
       'failure',
       'Release version does not match release-it',
-      `release-it recommends ${recommendedVersion}. Set package.json to one of: ${allowed.join(', ')}. Received ${headVersion}.`,
+      `release-it recommends ${recommendedVersion}. Set package.json to one of: ${allowed.join(', ')}. Received ${truncate(headVersion)}.`,
     )
   }
   const changelog = await contentAt(github, repo, headSha, 'CHANGELOG.md')
@@ -249,66 +255,92 @@ async function run({ github, context, core, recommendVersion = recommendedVersio
   })
   const outcomes = new Map()
   let recommendation
+  let failed = false
   const cachedRecommendation = () => (recommendation ??= recommendVersion(mainSha))
   for (const pull of pulls) {
-    const outcome = await report(github, repo, pull.head.sha, async () => {
-      if (!isReleaseBranch(pull)) {
-        return result('success', 'Not a release branch', 'Release-specific review is not required.')
-      }
-      const evaluated = await evaluatePullRequest(github, repo, pull, mainSha, cachedRecommendation)
-      if (evaluated.title === noVersionChangeTitle) {
-        return evaluated
-      }
-      if (!(await stillCurrent(github, repo, [pull], mainSha))) {
-        return result(
-          'failure',
-          'PR or main changed during evaluation',
-          'Run Release Readiness again.',
+    try {
+      const outcome = await report(github, repo, pull.head.sha, async () => {
+        if (!isReleaseBranch(pull)) {
+          return result(
+            'success',
+            'Not a release branch',
+            'Release-specific review is not required.',
+          )
+        }
+        const evaluated = await evaluatePullRequest(
+          github,
+          repo,
+          pull,
+          mainSha,
+          cachedRecommendation,
         )
-      }
-      return evaluated
-    })
-    outcomes.set(pull.number, { pull, outcome })
-    core.info(`#${pull.number}: ${outcome.title}`)
+        if (evaluated.title === noVersionChangeTitle) {
+          return evaluated
+        }
+        if (!(await stillCurrent(github, repo, [pull], mainSha))) {
+          return result(
+            'failure',
+            'PR or main changed during evaluation',
+            'Run Release Readiness again.',
+          )
+        }
+        return evaluated
+      })
+      outcomes.set(pull.number, { pull, outcome })
+      core.info(`#${pull.number}: ${outcome.title}`)
+    } catch (error) {
+      // Reporting one PR's check run must not stop every other PR and merge group from
+      // getting a result too — a missing outcome just fails that PR's merge-queue checks.
+      failed = true
+      core.error(`#${pull.number}: ${error.message}`)
+    }
   }
 
   const entries = await queueEntries(github, repo)
   const groupShas = new Set(entries.map(entry => entry.headCommit?.oid).filter(Boolean))
   for (const sha of groupShas) {
-    await report(github, repo, sha, async () => {
-      const members = queueMembers(entries, sha)
-      const memberPulls = []
-      for (const entry of members) {
-        const evaluated = outcomes.get(entry.pullRequest.number)
-        if (!evaluated || evaluated.pull.head.sha !== entry.pullRequest.headRefOid) {
-          return result(
-            'failure',
-            'Merge queue changed during evaluation',
-            'Run Release Readiness again.',
-          )
+    try {
+      await report(github, repo, sha, async () => {
+        const members = queueMembers(entries, sha)
+        const memberPulls = []
+        for (const entry of members) {
+          const evaluated = outcomes.get(entry.pullRequest.number)
+          if (!evaluated || evaluated.pull.head.sha !== entry.pullRequest.headRefOid) {
+            return result(
+              'failure',
+              'Merge queue changed during evaluation',
+              'Run Release Readiness again.',
+            )
+          }
+          if (evaluated.outcome.conclusion !== 'success') return evaluated.outcome
+          memberPulls.push(evaluated.pull)
         }
-        if (evaluated.outcome.conclusion !== 'success') return evaluated.outcome
-        memberPulls.push(evaluated.pull)
-      }
-      if (memberPulls.some(isReleaseBranch)) {
-        const currentMembers = queueMembers(await queueEntries(github, repo), sha)
-        if (
-          JSON.stringify(currentMembers) !== JSON.stringify(members) ||
-          !(await stillCurrent(github, repo, memberPulls, mainSha))
-        ) {
-          return result(
-            'failure',
-            'Merge queue changed during evaluation',
-            'Run Release Readiness again.',
-          )
+        if (memberPulls.some(isReleaseBranch)) {
+          const currentMembers = queueMembers(await queueEntries(github, repo), sha)
+          if (
+            JSON.stringify(currentMembers) !== JSON.stringify(members) ||
+            !(await stillCurrent(github, repo, memberPulls, mainSha))
+          ) {
+            return result(
+              'failure',
+              'Merge queue changed during evaluation',
+              'Run Release Readiness again.',
+            )
+          }
         }
-      }
-      return result(
-        'success',
-        'Queued PRs are ready',
-        'Approval was checked against each original PR head.',
-      )
-    })
+        return result(
+          'success',
+          'Queued PRs are ready',
+          'Approval was checked against each original PR head.',
+        )
+      })
+    } catch (error) {
+      failed = true
+      core.error(`${sha}: ${error.message}`)
+    }
+  }
+  if (failed) {
+    core.setFailed('One or more release-readiness checks failed to report. See the errors above.')
   }
 }
 

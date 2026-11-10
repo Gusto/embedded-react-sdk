@@ -34,6 +34,7 @@ function fixture(options = {}) {
   const reports = []
   let refReads = 0
   let queueReads = 0
+  let remainingUpdateFailures = options.updateErrorCount ?? Infinity
   const github = {
     recommendVersion: async () => {
       if (options.recommendationError) throw new Error('release-it failed')
@@ -79,7 +80,10 @@ function fixture(options = {}) {
           return { data: { id: reports.length } }
         },
         update: async parameters => {
-          if (options.updateError) throw options.updateError
+          if (options.updateError && remainingUpdateFailures > 0) {
+            remainingUpdateFailures--
+            throw options.updateError
+          }
           return Object.assign(reports[parameters.check_run_id - 1], parameters)
         },
       },
@@ -187,12 +191,25 @@ test('any version change triggers the check, including a downgrade', async () =>
 
 async function execute(options) {
   const state = fixture(options)
+  const errors = []
+  let failedMessage = null
+  const core = {
+    info() {},
+    error(message) {
+      errors.push(message)
+    },
+    setFailed(message) {
+      failedMessage = message
+    },
+  }
   await run({
     github: state.github,
     context: { repo },
-    core: { info() {} },
+    core,
     recommendVersion: state.github.recommendVersion,
   })
+  state.reports.errors = errors
+  state.reports.failedMessage = failedMessage
   return state.reports
 }
 
@@ -212,10 +229,38 @@ test('a check run superseded before its conclusion posts does not crash the job'
   assert.equal(reports[0].conclusion, undefined)
 })
 
-test('a non-404 failure while posting the conclusion still fails the job', async () => {
+test('a non-404 failure while posting one check still fails the job, but does not stop the run', async () => {
   const outage = new Error('Service unavailable')
   outage.status = 503
-  await assert.rejects(execute({ reviews: [review(1, 'APPROVED')], updateError: outage }), outage)
+  const reports = await execute({ reviews: [review(1, 'APPROVED')], updateError: outage })
+  assert.equal(reports.length, 1)
+  assert.equal(reports[0].conclusion, undefined)
+  assert.equal(reports.errors.length, 1)
+  assert.match(reports.errors[0], /Service unavailable/)
+  assert.ok(reports.failedMessage)
+})
+
+test('a failure reporting one PR does not block the merge-group report', async () => {
+  const outage = new Error('Service unavailable')
+  outage.status = 503
+  const groupEntry = {
+    position: 1,
+    headCommit: { oid: 'group' },
+    pullRequest: { number: 12, headRefOid: 'head' },
+  }
+  const reports = await execute({
+    reviews: [review(1, 'APPROVED')],
+    entries: [groupEntry],
+    updateError: outage,
+    updateErrorCount: 1,
+  })
+  assert.equal(reports.length, 2)
+  assert.equal(reports[0].conclusion, undefined)
+  assert.equal(reports[1].head_sha, 'group')
+  assert.equal(reports[1].conclusion, 'failure')
+  assert.equal(reports[1].output.title, 'Merge queue changed during evaluation')
+  assert.equal(reports.errors.length, 1)
+  assert.ok(reports.failedMessage)
 })
 
 test('main advancing during evaluation fails the check', async () => {
@@ -349,6 +394,16 @@ test('approved release PRs must use a permitted release-it version', async () =>
   const { github } = fixture({ recommendedVersion: '1.3.0', reviews: [review(1, 'APPROVED')] })
   const outcome = await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)
   assert.equal(outcome.title, 'Release version does not match release-it')
+})
+
+test('an oversized head version is truncated before it reaches the check summary', async () => {
+  const oversized = '9'.repeat(70_000)
+  const { github } = fixture({ versions: { base: '1.2.3', head: oversized } })
+  const outcome = await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)
+  assert.equal(outcome.conclusion, 'failure')
+  assert.equal(outcome.title, 'Release version does not match release-it')
+  assert.ok(outcome.summary.length < 500)
+  assert.ok(!outcome.summary.includes(oversized))
 })
 
 test('the first changelog entry must match the package version', async () => {
