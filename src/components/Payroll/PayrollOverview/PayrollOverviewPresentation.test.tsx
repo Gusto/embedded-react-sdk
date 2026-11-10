@@ -106,30 +106,45 @@ const defaultProps = {
 }
 
 describe('PayrollOverviewPresentation', () => {
-  it.each([false, true])('shows the dismissal pay date with processed=%s', async processed => {
-    mockUseContainerBreakpoints.mockReturnValue(['base'])
-    renderWithProviders(
-      <PayrollOverviewPresentation
-        {...defaultProps}
-        isProcessed={processed}
-        payrollData={{
-          ...mockPayrollData,
-          offCycle: true,
-          offCycleReason: OffCycleReasonType.DismissedEmployee,
-          processed,
-          checkDate: '2026-10-28',
-          payrollStatusMeta: {
-            payrollLate: null,
-            initialCheckDate: null,
-            expectedCheckDate: '2026-11-02',
-            expectedDebitTime: '2026-10-29T16:00:00-07:00',
-          },
-        }}
-      />,
-    )
+  describe('off-cycle pay dates', () => {
+    const dismissalPayroll: PayrollShow = {
+      ...mockPayrollData,
+      offCycle: true,
+      offCycleReason: OffCycleReasonType.DismissedEmployee,
+      processed: false,
+      checkDate: '2026-10-28',
+      payrollStatusMeta: {
+        payrollLate: null,
+        initialCheckDate: null,
+        expectedCheckDate: '2026-11-02',
+        expectedDebitTime: '2026-10-29T16:00:00-07:00',
+      },
+    }
 
-    expect(await screen.findByText(processed ? 'Oct 28, 2026' : 'Nov 2, 2026')).toBeInTheDocument()
-    expect(screen.getByText('Oct 29, 2026')).toBeInTheDocument()
+    beforeEach(() => {
+      mockUseContainerBreakpoints.mockReturnValue(['base'])
+    })
+
+    it('shows the expected pay date before submission', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} payrollData={dismissalPayroll} />,
+      )
+
+      expect(await screen.findByText('Nov 2, 2026')).toBeInTheDocument()
+      expect(screen.getByText('Oct 29, 2026')).toBeInTheDocument()
+    })
+
+    it('preserves the stored pay date after processing', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          isProcessed
+          payrollData={{ ...dismissalPayroll, processed: true }}
+        />,
+      )
+
+      expect(await screen.findByText('Oct 28, 2026')).toBeInTheDocument()
+    })
   })
 
   describe('base layout', () => {
