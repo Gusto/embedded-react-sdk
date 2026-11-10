@@ -373,6 +373,51 @@ describe('Company DashboardFlow', () => {
     expect(screen.queryByText('Locations updated')).toBeNull()
   })
 
+  it('leaves the Bank account spoke without an alert when nothing was saved', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage bank account' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage bank account' }))
+
+    // Continue fires COMPANY_BANK_ACCOUNT_DONE whether or not the account changed, so
+    // a look-and-leave visit must not announce an update that never happened.
+    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+    expect(await screen.findByRole('tab', { name: 'Pay' })).toBeInTheDocument()
+    expect(screen.queryByText('Bank account updated')).toBeNull()
+  })
+
+  it('surfaces the Bank account alert when the user leaves the spoke after a save', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage bank account' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage bank account' }))
+
+    // Replacing the account keeps the spoke open rather than returning to the dashboard...
+    await user.click(await screen.findByRole('button', { name: 'Change bank account' }))
+    await user.type(await screen.findByLabelText('Routing number'), '851070439')
+    await user.type(screen.getByLabelText('Account number'), '1234567890')
+    await user.click(screen.getByTestId('bank-account-submit'))
+
+    // ...so the alert only surfaces once the user actually leaves, including via the
+    // back header, which announced nothing before.
+    await user.click(await screen.findByRole('button', { name: 'Back to company settings' }))
+
+    expect(await screen.findByText('Bank account updated')).toBeInTheDocument()
+  })
+
   it('routes the Pay schedules card Manage CTA to the PaySchedule spoke', async () => {
     const user = userEvent.setup()
     renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {

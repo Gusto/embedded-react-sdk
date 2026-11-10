@@ -62,7 +62,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/bankAccount/created` | Fired after a bank account is created; the manage screen stays open | Created `CompanyBankAccount` entity |
  * | `company/bankAccount/verify` | Fired when "Verify bank account" is clicked; the manage screen stays open | The `CompanyBankAccount` being verified |
  * | `company/bankAccount/verified` | Fired after micro-deposits are verified; the manage screen stays open | Verified `CompanyBankAccount` entity |
- * | `company/bankAccount/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards and surfaces the "Bank account updated" alert | — |
+ * | `company/bankAccount/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards, surfacing the "Bank account updated" alert only if an account was created or verified during the visit | — |
  * | `company/management/federalTaxes/editRequested` | Fired when "Edit" is clicked on the Federal taxes card | `{ companyId: string }` |
  * | `company/federalTaxes/updated` | Fired after a federal-taxes save succeeds, immediately before `company/federalTaxes/done` | Updated `FederalTaxDetails` entity |
  * | `company/federalTaxes/done` | Fired after a federal-taxes save succeeds; the dashboard returns to the cards and surfaces the "Federal tax settings updated" alert | — |

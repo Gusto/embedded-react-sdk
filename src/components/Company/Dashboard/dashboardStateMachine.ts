@@ -184,16 +184,27 @@ export const dashboardStateMachine = {
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
   bankAccount: state<MachineTransition>(
-    // COMPANY_BANK_ACCOUNT_CREATED / _VERIFIED and the component's own
-    // COMPANY_BANK_ACCOUNT_CANCEL are intentionally absent: they fire on screens
-    // *inside* the BankAccount sub-flow (add, then micro-deposit verify) and must
-    // not eject the user from it.
+    // Adding an account and verifying its micro-deposits are separate steps of one
+    // visit, so a save must not eject the user from the sub-flow. These
+    // self-transitions keep the spoke open and only record that something changed;
+    // the alert surfaces when the user actually leaves, via either exit below.
+    // Announcing on COMPANY_BANK_ACCOUNT_DONE instead would claim the account was
+    // updated even when the user opened the spoke and continued without touching
+    // anything, and would stay silent when they left via the back header after a
+    // real change. The component's own COMPANY_BANK_ACCOUNT_CANCEL stays absent: it
+    // fires on screens inside the sub-flow and must not eject the user either.
     transition(
-      componentEvents.COMPANY_BANK_ACCOUNT_DONE,
-      'index',
-      returnToIndexWithAlert('bankAccountUpdated'),
+      componentEvents.COMPANY_BANK_ACCOUNT_CREATED,
+      'bankAccount',
+      recordPendingAlert('bankAccountUpdated'),
     ),
-    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+    transition(
+      componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED,
+      'bankAccount',
+      recordPendingAlert('bankAccountUpdated'),
+    ),
+    transition(componentEvents.COMPANY_BANK_ACCOUNT_DONE, 'index', returnToIndexWithPendingAlert),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
   paySchedule: state<MachineTransition>(
     // PaySchedule is a hub in its own right: its edit form, assignment wizard and

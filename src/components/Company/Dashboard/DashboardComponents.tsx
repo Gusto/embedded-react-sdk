@@ -29,8 +29,10 @@ export interface DashboardContextInterface extends FlowContextInterface {
   /**
    * Alert to surface once the user leaves the current spoke. Spokes whose saves
    * happen mid-flow — `Locations`, where a company usually adds several addresses
-   * in one visit — record the alert here instead of returning to the dashboard on
-   * each save, since transitioning would eject the user from the spoke.
+   * in one visit, or `BankAccount`, where adding an account and verifying its
+   * micro-deposits are separate steps — record the alert here instead of returning
+   * to the dashboard on each save, since transitioning would eject the user from
+   * the spoke.
    */
   pendingAlert?: DashboardSuccessAlert | null
   /** Persists the active Dashboard tab across spokes so Back returns to the
