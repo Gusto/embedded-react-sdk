@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { useContractorDetailsForm } from './useContractorDetailsForm'
 import type { UseContractorDetailsFormResult } from './useContractorDetailsForm'
@@ -31,6 +31,33 @@ describe('useContractorDetailsForm', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     setupApiTestMocks()
+  })
+
+  describe.each([
+    ['America/Los_Angeles', '2027-01-01T02:00:00Z', '2026-12-31'],
+    ['Asia/Kolkata', '2026-12-31T20:00:00Z', '2027-01-01'],
+  ])('calendar defaults in %s', (timezone, now, expectedDate) => {
+    beforeEach(() => {
+      vi.stubEnv('TZ', timezone)
+      vi.useFakeTimers({ toFake: ['Date'] })
+      vi.setSystemTime(new Date(now))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+      vi.unstubAllEnvs()
+    })
+
+    it('defaults the start date to the local calendar day', async () => {
+      const { result } = renderForm({ companyId: 'company-1' })
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.hookFormInternals.formMethods.getValues('startDate')).toBe(
+        expectedDate,
+      )
+    })
   })
 
   describe('create mode', () => {
