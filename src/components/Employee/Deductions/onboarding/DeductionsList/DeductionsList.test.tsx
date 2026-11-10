@@ -99,6 +99,30 @@ describe('DeductionsList', () => {
     expect(screen.queryByText(/0\s*%/)).toBeNull()
   })
 
+  it('shows child support dollars with the order frequency', async () => {
+    renderWithProviders(
+      <DeductionsList
+        deductionsList={buildReady([
+          {
+            ...buildDeduction('cs-1', 'Child Support'),
+            amount: '50',
+            payPeriodMaximum: '150',
+            deductAsPercentage: true,
+            childSupport: { paymentPeriod: 'Monthly' },
+          },
+        ])}
+        onAdd={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onContinue={vi.fn()}
+      />,
+    )
+
+    expect(await screen.findByText('$150.00')).toBeInTheDocument()
+    expect(screen.getByText('Monthly')).toBeInTheDocument()
+    expect(screen.queryByText(/50.*%|per paycheck/)).not.toBeInTheDocument()
+  })
+
   it('invokes onContinue when "Continue" is clicked', async () => {
     const onContinue = vi.fn()
     renderWithProviders(

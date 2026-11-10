@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { UseDeductionsListReady } from '../../shared/useDeductionsList'
 import { formatDeductionAmount } from '../../shared/formatDeductionAmount'
+import { formatDeductionFrequency } from '../../shared/formatDeductionFrequency'
 import { useDataView, DataView } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common'
 import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
@@ -53,9 +54,17 @@ export function DeductionsList({
       {
         key: 'recurring',
         title: t('frequencyColumn'),
-        render: deduction => {
-          return deduction.recurring ? t('recurringText') : t('nonRecurringText')
-        },
+        render: deduction =>
+          formatDeductionFrequency(deduction, {
+            recurring: t('recurringText'),
+            oneTime: t('nonRecurringText'),
+            paymentPeriods: {
+              everyWeek: t('everyWeek'),
+              everyOtherWeek: t('everyOtherWeek'),
+              twicePerMonth: t('twicePerMonth'),
+              monthly: t('monthly'),
+            },
+          }),
       },
       {
         key: 'amount',
