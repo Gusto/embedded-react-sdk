@@ -1,9 +1,9 @@
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
+import { useCompaniesGet } from '@gusto/embedded-api/react-query/companiesGet'
 import { CompanyDetailsView } from './CompanyDetailsView'
 import { PayView } from './PayView'
-import { FederalTaxesCard } from '@/components/Company/FederalTaxes/management/FederalTaxesCard'
+import { TaxesView } from './TaxesView'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base/Base'
@@ -65,9 +65,7 @@ function DashboardRoot({
 
   return (
     <Flex className={className} flexDirection="column" gap={32}>
-      <Suspense fallback={null}>
-        <DashboardHeader companyId={companyId} />
-      </Suspense>
+      <DashboardHeader companyId={companyId} />
 
       <Flex flexDirection="column" gap={8}>
         <Components.Tabs
@@ -95,11 +93,7 @@ function DashboardRoot({
           )}
 
           {selectedTab === 'taxes' && (
-            <FederalTaxesCard
-              companyId={companyId}
-              onEvent={onEvent}
-              LoaderComponent={LoaderComponent}
-            />
+            <TaxesView companyId={companyId} onEvent={onEvent} LoaderComponent={LoaderComponent} />
           )}
         </Flex>
       </Flex>
@@ -110,13 +104,16 @@ function DashboardRoot({
 function DashboardHeader({ companyId }: { companyId: string }) {
   const { t } = useTranslation('Company.Dashboard')
   const Components = useComponentContext()
-  const {
-    data: { company },
-  } = useCompaniesGetSuspense({ companyId })
+  const { data } = useCompaniesGet({ companyId })
+  const companyName = data?.company?.tradeName || data?.company?.name
+
+  if (!companyName) {
+    return null
+  }
 
   return (
     <Flex flexDirection="column" gap={4}>
-      <Components.Heading as="h2">{company?.tradeName || company?.name}</Components.Heading>
+      <Components.Heading as="h2">{companyName}</Components.Heading>
       <Components.Text variant="supporting">{t('companySettingsLabel')}</Components.Text>
     </Flex>
   )
@@ -130,14 +127,21 @@ function DashboardHeader({ companyId }: { companyId: string }) {
  * boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
  * case it defaults to company details. Each tab composes the read-only section cards listed below.
  *
+ * Every section card loads its own data and reports its own failures, so one card erroring leaves
+ * the rest of the dashboard usable. The company name heading behaves the same way: if it cannot be
+ * loaded the heading is omitted and the tabs and cards still render.
+ *
  * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the flag
- * throws.
+ * throws. The Pay tab's Pay schedules card additionally requires `managePaySchedules` and is
+ * omitted when that flag is off, leaving the tab rendering the Bank account card alone.
  *
  * @components
  * - {@link IndustryCard}
  * - {@link LocationsCard}
  * - {@link BankAccountCard}
+ * - {@link PaySchedulesCard}
  * - {@link FederalTaxesCard}
+ * - {@link StateTaxesCard}
  *
  * @param props - Component props. See {@link DashboardProps}.
  * @returns A React element rendering the company settings dashboard.

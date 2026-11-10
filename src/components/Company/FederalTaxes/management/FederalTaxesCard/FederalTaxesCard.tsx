@@ -113,7 +113,12 @@ function FederalTaxesCardContent({ companyId, onEvent, LoaderComponent }: Federa
           <Components.BoxHeader
             title={t('card.title')}
             action={
-              <Components.Button variant="secondary" onClick={handleEdit} isDisabled={isLoading}>
+              <Components.Button
+                variant="secondary"
+                onClick={handleEdit}
+                isDisabled={isLoading}
+                aria-label={t('card.editAriaLabel')}
+              >
                 {t('card.editCta')}
               </Components.Button>
             }

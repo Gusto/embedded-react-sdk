@@ -6,6 +6,8 @@ import {
   LocationsContextual,
   FederalTaxesContextual,
   BankAccountContextual,
+  PayScheduleContextual,
+  StateTaxesContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -124,6 +126,16 @@ export const dashboardStateMachine = {
       toSpoke(BankAccountContextual),
     ),
     transition(
+      componentEvents.COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED,
+      'paySchedule',
+      toSpoke(PayScheduleContextual),
+    ),
+    transition(
+      componentEvents.COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
+      'stateTaxes',
+      toSpoke(StateTaxesContextual),
+    ),
+    transition(
       componentEvents.COMPANY_DASHBOARD_ALERT_DISMISSED,
       'index',
       reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -183,6 +195,14 @@ export const dashboardStateMachine = {
     ),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
+  paySchedule: state<MachineTransition>(
+    // PaySchedule is a hub in its own right: its edit form, assignment wizard and
+    // AutoPilot dialog all return to its own overview, so it has no completion
+    // event to exit on, and its editSchedule state transitions on the generic
+    // CANCEL. The back header is the only way out, and the spoke surfaces its own
+    // success alerts internally — hence no dashboard-level alert here.
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
   federalTaxes: state<MachineTransition>(
     // COMPANY_FEDERAL_TAXES_UPDATED also fires on save, immediately before
     // COMPANY_FEDERAL_TAXES_DONE; transitioning on the latter alone keeps the
@@ -191,6 +211,18 @@ export const dashboardStateMachine = {
       componentEvents.COMPANY_FEDERAL_TAXES_DONE,
       'index',
       returnToIndexWithAlert('federalTaxesUpdated'),
+    ),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
+  stateTaxes: state<MachineTransition>(
+    // COMPANY_STATE_TAX_EDIT, _MANAGE_RATES and _UPDATED are intentionally absent:
+    // they fire as the user moves between the state list, a state's requirement
+    // form and its tax-rate history, all of which live *inside* the StateTaxes
+    // sub-flow. Only the list's own Continue returns to the dashboard.
+    transition(
+      componentEvents.COMPANY_STATE_TAX_DONE,
+      'index',
+      returnToIndexWithAlert('stateTaxesUpdated'),
     ),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),

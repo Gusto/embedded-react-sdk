@@ -1,4 +1,4 @@
-import type { PathParams } from 'msw'
+import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
 import type { GetV1CompaniesCompanyIdPaySchedulesRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedules'
 import type { PayScheduleCreateRequest } from '@gusto/embedded-api/models/components/payschedulecreaterequest'
@@ -7,13 +7,16 @@ import type { GetV1CompaniesCompanyIdPaySchedulesPreviewRequest } from '@gusto/e
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
-export const getPaySchedules = http.get<PathParams, GetV1CompaniesCompanyIdPaySchedulesRequest>(
-  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
-    return HttpResponse.json(responseFixture.paySchedules)
-  },
-)
+export function handleGetPaySchedules(
+  resolver: HttpResponseResolver<PathParams, GetV1CompaniesCompanyIdPaySchedulesRequest>,
+) {
+  return http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, resolver)
+}
+
+export const getPaySchedules = handleGetPaySchedules(async () => {
+  const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+  return HttpResponse.json(responseFixture.paySchedules)
+})
 
 export const getPaySchedule = http.get(
   `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`,
@@ -82,13 +85,15 @@ export const assignPaySchedules = http.post(
   () => new HttpResponse(null, { status: 200, headers: { 'content-length': '0' } }),
 )
 
-export const getPayScheduleAssignments = http.get(
-  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignments`,
-  () =>
-    HttpResponse.json({
-      type: 'single',
-      default_pay_schedule_uuid: 'schedule-1',
-    }),
+export function handleGetPayScheduleAssignments(resolver: HttpResponseResolver) {
+  return http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignments`, resolver)
+}
+
+export const getPayScheduleAssignments = handleGetPayScheduleAssignments(() =>
+  HttpResponse.json({
+    type: 'single',
+    default_pay_schedule_uuid: 'schedule-1',
+  }),
 )
 
 export default [
