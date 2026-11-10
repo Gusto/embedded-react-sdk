@@ -50,6 +50,17 @@ const isAlreadyProcessedError = (error: unknown): boolean => {
   return error.errors.some(e => e.category === 'invalid_operation')
 }
 
+const getRejectedEmployeeUuids = (error: unknown): Set<string> => {
+  if (!(error instanceof UnprocessableEntityError)) return new Set()
+  const rejectedUuids = error.errors
+    .filter(e => e.errorKey === 'employee_uuids' && e.category === 'invalid_attribute_value')
+    .flatMap(e => (e.metadata && 'entities' in e.metadata ? e.metadata.entities : []))
+    .filter(entity => entity.entityType === 'Employee')
+    .map(entity => entity.entityUuid)
+    .filter((uuid): uuid is string => uuid !== undefined)
+  return new Set(rejectedUuids)
+}
+
 /** @internal */
 export function usePayrollConfigurationData({
   companyId,
@@ -91,12 +102,17 @@ export function usePayrollConfigurationData({
     return excludedEmployeeUuids.filter(uuid => !listedSet.has(uuid))
   }, [excludedEmployeeUuids, listedEmployeeUuids])
 
+  const isEmployeeListLoaded = employeeData !== undefined
+
   const employeeUuids = useMemo(() => {
+    if (!isEmployeeListLoaded) {
+      return []
+    }
     if (currentPage === 1) {
       return [...listedEmployeeUuids, ...missingExcludedUuids]
     }
     return listedEmployeeUuids
-  }, [listedEmployeeUuids, missingExcludedUuids, currentPage])
+  }, [isEmployeeListLoaded, listedEmployeeUuids, missingExcludedUuids, currentPage])
 
   const employeeUuidsKey = useMemo(() => employeeUuids.join(','), [employeeUuids])
 
@@ -108,18 +124,27 @@ export function usePayrollConfigurationData({
   } = useQuery({
     queryKey: [PREPARE_QUERY_KEY, payrollId, employeeUuidsKey],
     queryFn: async ({ signal }) => {
-      const result = await payrollsPrepare(
-        gustoClient,
-        {
-          companyId,
-          payrollId,
-          sortBy: 'last_name',
-          requestBody: {
-            employeeUuids: isTransitionPayroll ? undefined : employeeUuids,
+      const prepare = (uuids: string[]) =>
+        payrollsPrepare(
+          gustoClient,
+          {
+            companyId,
+            payrollId,
+            sortBy: 'last_name',
+            requestBody: {
+              employeeUuids: isTransitionPayroll ? undefined : uuids,
+            },
           },
-        },
-        { signal },
-      )
+          { signal },
+        )
+
+      let result = await prepare(employeeUuids)
+      if (!result.ok) {
+        const rejectedUuids = getRejectedEmployeeUuids(result.error)
+        if (rejectedUuids.size > 0) {
+          result = await prepare(employeeUuids.filter(uuid => !rejectedUuids.has(uuid)))
+        }
+      }
 
       if (!result.ok) {
         throw result.error
