@@ -4,6 +4,7 @@ import { useDeductionsList } from '../../shared/useDeductionsList'
 import { useDeleteDeduction } from '../../shared/useDeleteDeduction'
 import { DeleteDeductionDialog } from '../../shared/DeleteDeductionDialog'
 import { formatDeductionAmount } from '../../shared/formatDeductionAmount'
+import { formatDeductionFrequency } from '../../shared/formatDeductionFrequency'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
@@ -108,7 +109,12 @@ function DeductionsCardContent({ employeeId, onEvent, LoaderComponent }: Deducti
     {
       key: 'frequency',
       title: t('columns.frequency'),
-      render: (garnishment: Garnishment) => (garnishment.recurring ? t('recurring') : t('oneTime')),
+      render: (garnishment: Garnishment) =>
+        formatDeductionFrequency(garnishment, {
+          recurring: t('recurring'),
+          oneTime: t('oneTime'),
+          paymentPeriods: t('form.childSupport.paymentPeriod', { returnObjects: true }),
+        }),
     },
     {
       key: 'amount',
