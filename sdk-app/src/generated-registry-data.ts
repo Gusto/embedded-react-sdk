@@ -58,6 +58,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorManagement.PaymentMethodEditForm': ['contractorId'],
   'ContractorManagement.PaymentStatement': ['paymentGroupId'],
   'ContractorManagement.PaymentSummary': ['paymentGroupId', 'companyId'],
+  'ContractorManagement.PaymentsCard': ['contractorId'],
   'ContractorManagement.PaymentsList': ['companyId'],
   'ContractorManagement.Profile': ['contractorId'],
   'ContractorManagement.ProfileCard': ['contractorId'],
@@ -209,6 +210,7 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   companySettingsDashboard: false,
+  contractorPaymentHistory: false,
   historicalPayments: false,
   managePaySchedules: false,
   taxPayments: false,
