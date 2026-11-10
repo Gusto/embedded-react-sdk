@@ -78,7 +78,10 @@ function fixture(options = {}) {
           reports.push({ ...parameters, id: reports.length + 1 })
           return { data: { id: reports.length } }
         },
-        update: async parameters => Object.assign(reports[parameters.check_run_id - 1], parameters),
+        update: async parameters => {
+          if (options.updateError) throw options.updateError
+          return Object.assign(reports[parameters.check_run_id - 1], parameters)
+        },
       },
     },
     paginate: async endpoint => (endpoint === github.rest.pulls.list ? [evaluatedPull] : reviews),
@@ -199,6 +202,20 @@ test('the reported check is attached to the original PR head', async () => {
   assert.equal(reports[0].head_sha, 'head')
   assert.equal(reports[0].name, 'release-readiness')
   assert.equal(reports[0].conclusion, 'success')
+})
+
+test('a check run superseded before its conclusion posts does not crash the job', async () => {
+  const notFound = new Error('Not Found')
+  notFound.status = 404
+  const reports = await execute({ reviews: [review(1, 'APPROVED')], updateError: notFound })
+  assert.equal(reports.length, 1)
+  assert.equal(reports[0].conclusion, undefined)
+})
+
+test('a non-404 failure while posting the conclusion still fails the job', async () => {
+  const outage = new Error('Service unavailable')
+  outage.status = 503
+  await assert.rejects(execute({ reviews: [review(1, 'APPROVED')], updateError: outage }), outage)
 })
 
 test('main advancing during evaluation fails the check', async () => {

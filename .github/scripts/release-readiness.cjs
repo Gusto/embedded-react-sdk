@@ -222,13 +222,19 @@ async function report(github, repo, sha, evaluate) {
   } catch (error) {
     outcome = result('failure', 'Unable to verify release readiness', error.message)
   }
-  await github.rest.checks.update({
-    ...repo,
-    check_run_id: check.id,
-    status: 'completed',
-    conclusion: outcome.conclusion,
-    output: { title: outcome.title, summary: outcome.summary },
-  })
+  try {
+    await github.rest.checks.update({
+      ...repo,
+      check_run_id: check.id,
+      status: 'completed',
+      conclusion: outcome.conclusion,
+      output: { title: outcome.title, summary: outcome.summary },
+    })
+  } catch (error) {
+    // A 404 here means this check run was superseded by a later evaluation for the
+    // same commit before we could post our conclusion — nothing left to update.
+    if (error.status !== 404) throw error
+  }
   return outcome
 }
 
