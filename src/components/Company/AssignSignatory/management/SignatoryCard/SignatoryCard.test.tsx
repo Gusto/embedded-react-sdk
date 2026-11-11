@@ -19,6 +19,8 @@ const fixtureSignatory = {
   version: 'signatory-version',
 }
 
+const unstableFeatures = { companySettingsDashboard: true }
+
 describe('SignatoryCard', () => {
   const onEvent = vi.fn()
 
@@ -29,8 +31,23 @@ describe('SignatoryCard', () => {
     server.use(handleGetAllSignatories(() => HttpResponse.json([fixtureSignatory])))
   })
 
-  it('renders the signatory with a translated title and their verification status', async () => {
+  it('renders the SDK error card instead of the card without the companySettingsDashboard flag', async () => {
+    // The flag check throws; GustoProvider's top-level ErrorBoundary catches it
+    // and renders InternalError in place of the card.
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     renderWithProviders(<SignatoryCard companyId="company-123" onEvent={onEvent} />)
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Edit signatory' })).toBeNull()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('renders the signatory with a translated title and their verification status', async () => {
+    renderWithProviders(<SignatoryCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit signatory' })).toBeEnabled()
@@ -45,7 +62,9 @@ describe('SignatoryCard', () => {
 
   it('emits the edit-requested event with the signatory id when Edit is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<SignatoryCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<SignatoryCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit signatory' })).toBeEnabled()
@@ -65,7 +84,9 @@ describe('SignatoryCard', () => {
     const user = userEvent.setup()
     server.use(handleGetAllSignatories(() => HttpResponse.json([])))
 
-    renderWithProviders(<SignatoryCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<SignatoryCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('No signatory assigned')).toBeInTheDocument()
@@ -92,7 +113,9 @@ describe('SignatoryCard', () => {
       ),
     )
 
-    renderWithProviders(<SignatoryCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<SignatoryCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('Verification pending')).toBeInTheDocument()

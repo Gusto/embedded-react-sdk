@@ -6,6 +6,7 @@ import { Loading } from '@/components/Common'
 import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { componentEvents, SIGNATORY_TITLES, type EventType } from '@/shared/constants'
@@ -48,6 +49,9 @@ const IDENTITY_VERIFICATION_BADGE_STATUS = {
  * all, so the card reports it: verified, failed, awaiting completion, or
  * requiring a wet signature on Form 8655.
  *
+ * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the
+ * flag throws.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -58,6 +62,8 @@ const IDENTITY_VERIFICATION_BADGE_STATUS = {
  * @alpha
  */
 export function SignatoryCard(props: SignatoryCardProps) {
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Company.Management.Signatory"

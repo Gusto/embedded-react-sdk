@@ -74,10 +74,10 @@ export interface UnstableFeatures {
    * mounted, along with the section cards they compose: `CompanyManagement.IndustryCard`,
    * `CompanyManagement.LocationsCard`, `CompanyManagement.FederalTaxesCard`,
    * `CompanyManagement.BankAccountCard`, `CompanyManagement.PaySchedulesCard`,
-   * `CompanyManagement.StateTaxesCard` and `CompanyManagement.TaxPaymentsCard`. The Pay schedules
-   * and Tax payments cards additionally require `managePaySchedules` and `taxPayments`
-   * respectively, and are omitted from the dashboard when their flag is off; every other card
-   * renders regardless.
+   * `CompanyManagement.StateTaxesCard`, `CompanyManagement.TaxPaymentsCard` and
+   * `CompanyManagement.SignatoryCard`. The Pay schedules and Tax payments cards additionally
+   * require `managePaySchedules` and `taxPayments` respectively, and are omitted from the
+   * dashboard when their flag is off; every other card renders regardless.
    *
    * When `false`, each of them throws when mounted. The individual company components the
    * dashboard routes to, such as `CompanyOnboarding.Industry` and `CompanyOnboarding.Locations`,
