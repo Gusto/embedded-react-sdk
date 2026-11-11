@@ -227,6 +227,8 @@ test('a check run superseded before its conclusion posts does not crash the job'
   const reports = await execute({ reviews: [review(1, 'APPROVED')], updateError: notFound })
   assert.equal(reports.length, 1)
   assert.equal(reports[0].conclusion, undefined)
+  assert.deepEqual(reports.errors, [])
+  assert.equal(reports.failedMessage, null)
 })
 
 test('a non-404 failure while posting one check still fails the job, but does not stop the run', async () => {
