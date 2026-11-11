@@ -6,6 +6,7 @@ import { FederalTaxes } from '@/components/Company/FederalTaxes'
 import { BankAccount } from '@/components/Company/BankAccount/BankAccount'
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/StateTaxes'
+import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -122,4 +123,10 @@ export function PayScheduleContextual() {
 export function StateTaxesContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
   return <StateTaxes companyId={ensureRequired(companyId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function TaxPaymentsContextual() {
+  const { companyId, onEvent } = useFlow<DashboardContextInterface>()
+  return <TaxPaymentsFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }

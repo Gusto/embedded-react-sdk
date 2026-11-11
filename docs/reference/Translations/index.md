@@ -1049,6 +1049,40 @@ Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace.
 
 ***
 
+<a id="companymanagementtaxpayments"></a>
+
+### CompanyManagementTaxPayments
+
+Translation keys for the `Company.Management.TaxPayments` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementtaxpaymentscard"></a> `card` |
+| `card.agency` |
+| `card.amount` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.errorState` |
+| `card.errorState.title` |
+| `card.jurisdiction` |
+| `card.jurisdiction.federal` |
+| `card.jurisdiction.state` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.nextPaymentDue` |
+| `card.noDueDate` |
+| `card.noneOverdue` |
+| `card.overdue` |
+| `card.overdueCount_one` |
+| `card.overdueCount_other` |
+| `card.title` |
+| `card.unknownAgency` |
+
+***
+
 <a id="companymanagementtaxpaymentslist"></a>
 
 ### CompanyManagementTaxPaymentsList
@@ -6360,6 +6394,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanymanagementpayschedules"></a> `Company.Management.PaySchedules` | [`CompanyManagementPaySchedules`](#companymanagementpayschedules) |
 | <a id="property-resourcescompanymanagementstatetaxes"></a> `Company.Management.StateTaxes` | [`CompanyManagementStateTaxes`](#companymanagementstatetaxes) |
 | <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |
+| <a id="property-resourcescompanymanagementtaxpayments"></a> `Company.Management.TaxPayments` | [`CompanyManagementTaxPayments`](#companymanagementtaxpayments) |
 | <a id="property-resourcescompanymanagementtaxpaymentslist"></a> `Company.Management.TaxPaymentsList` | [`CompanyManagementTaxPaymentsList`](#companymanagementtaxpaymentslist) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
 | <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |

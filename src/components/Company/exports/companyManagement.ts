@@ -29,6 +29,10 @@ export {
 } from '../PaySchedule/management/PaySchedulesCard'
 export { StateTaxesCard, type StateTaxesCardProps } from '../StateTaxes/management/StateTaxesCard'
 export {
+  TaxPaymentsCard,
+  type TaxPaymentsCardProps,
+} from '../TaxPayments/management/TaxPaymentsCard'
+export {
   Dashboard,
   DashboardFlow,
   type DashboardProps,
