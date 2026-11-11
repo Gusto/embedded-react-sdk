@@ -23,12 +23,27 @@ const unsignedForm = {
   requires_signing: true,
 }
 
+const unstableFeatures = { companySettingsDashboard: true }
+
 describe('CompanyFormsCard', () => {
   const onEvent = vi.fn()
 
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
+  })
+
+  it('renders the SDK error card instead of the card without the companySettingsDashboard flag', async () => {
+    // The flag check throws; GustoProvider's top-level ErrorBoundary catches it
+    // and renders InternalError in place of the card.
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />)
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Manage company documents' })).toBeNull()
+
+    consoleErrorSpy.mockRestore()
   })
 
   it('counts and names the forms awaiting signature alongside the document total', async () => {
@@ -42,7 +57,9 @@ describe('CompanyFormsCard', () => {
       ),
     )
 
-    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage company documents' })).toBeEnabled()
@@ -58,7 +75,9 @@ describe('CompanyFormsCard', () => {
   it('reports that nothing is outstanding when every form is signed', async () => {
     server.use(handleGetAllCompanyForms(() => HttpResponse.json([signedForm])))
 
-    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('All forms signed')).toBeInTheDocument()
@@ -74,7 +93,9 @@ describe('CompanyFormsCard', () => {
     const user = userEvent.setup()
     server.use(handleGetAllCompanyForms(() => HttpResponse.json([unsignedForm])))
 
-    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage company documents' })).toBeEnabled()
@@ -91,7 +112,9 @@ describe('CompanyFormsCard', () => {
   it('renders the empty state when the company has no documents', async () => {
     server.use(handleGetAllCompanyForms(() => HttpResponse.json([])))
 
-    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<CompanyFormsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('No company documents yet')).toBeInTheDocument()

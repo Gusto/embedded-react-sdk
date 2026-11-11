@@ -5,6 +5,7 @@ import { Loading } from '@/components/Common'
 import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -38,6 +39,9 @@ export interface CompanyFormsCardProps {
  * `requires_signing` flag that flips once the form is signed — so the card
  * reports what is outstanding rather than a signing history.
  *
+ * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the
+ * flag throws.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -48,6 +52,8 @@ export interface CompanyFormsCardProps {
  * @alpha
  */
 export function CompanyFormsCard(props: CompanyFormsCardProps) {
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Company.Management.CompanyForms"
