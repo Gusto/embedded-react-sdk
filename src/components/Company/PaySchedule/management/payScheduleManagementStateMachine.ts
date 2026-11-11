@@ -114,8 +114,8 @@ export const payScheduleManagementStateMachine = {
   ),
   /**
    * Entered directly from PaySchedule.tsx's initial routing when the company has no pay
-   * schedules yet — there's no overview to fall back to, so CANCEL isn't handled here; it
-   * still bubbles to the host via Flow's onEvent re-emit.
+   * schedules yet — there's no overview to fall back to, so CANCEL isn't handled here, and
+   * PayScheduleCreateFormContextual renders the form without a Cancel action.
    */
   createSchedule: state<MachineTransition>(
     transition(componentEvents.PAY_SCHEDULE_CREATED, 'overview', toOverview),

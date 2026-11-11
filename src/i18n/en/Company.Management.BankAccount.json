@@ -1,0 +1,23 @@
+{
+  "card": {
+    "title": "Bank account",
+    "manageCta": "Manage",
+    "manageAriaLabel": "Manage bank account",
+    "addCta": "Add bank account",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "routingNumber": "Routing number",
+    "accountType": "Account type",
+    "verification": "Verification",
+    "listEmptyPlaceholder": "No value",
+    "verificationStatus": {
+      "verified": "Verified",
+      "awaiting_deposits": "Verification pending",
+      "ready_for_verification": "Ready to verify"
+    },
+    "emptyState": {
+      "title": "No bank account yet",
+      "description": "Add a checking account so this company can be debited for wages and taxes."
+    }
+  }
+}

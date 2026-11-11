@@ -26,6 +26,11 @@ interface PayScheduleFormProps extends UsePayScheduleFormProps {
     payrollDeadline: string
   }
   onEvent: OnEventType<EventType, unknown>
+  /**
+   * Whether to render the Cancel action. Defaults to `true`; turn it off when the form is
+   * the first screen of its flow and there is nothing for `CANCEL` to return to.
+   */
+  showCancel?: boolean
   /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
   LoaderComponent?: LoaderComponentType
 }
@@ -49,6 +54,7 @@ function PayScheduleFormRoot({
   LoaderComponent,
   variant = 'onboarding',
   copy,
+  showCancel = true,
   ...hookProps
 }: PayScheduleFormProps) {
   const { t } = useTranslation('Company.PaySchedule')
@@ -258,14 +264,16 @@ function PayScheduleFormRoot({
               </Grid>
             </div>
             <ActionsLayout>
-              <Components.Button
-                variant="secondary"
-                onClick={() => {
-                  onEvent(componentEvents.CANCEL)
-                }}
-              >
-                {t('actions.cancel')}
-              </Components.Button>
+              {showCancel && (
+                <Components.Button
+                  variant="secondary"
+                  onClick={() => {
+                    onEvent(componentEvents.CANCEL)
+                  }}
+                >
+                  {t('actions.cancel')}
+                </Components.Button>
+              )}
               <Components.Button type="submit" isLoading={paySchedule.status.isPending}>
                 {t('actions.save')}
               </Components.Button>

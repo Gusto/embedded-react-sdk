@@ -5,6 +5,9 @@ import {
   IndustryContextual,
   LocationsContextual,
   FederalTaxesContextual,
+  BankAccountContextual,
+  PayScheduleContextual,
+  StateTaxesContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -118,6 +121,21 @@ export const dashboardStateMachine = {
       toSpoke(FederalTaxesContextual),
     ),
     transition(
+      componentEvents.COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED,
+      'bankAccount',
+      toSpoke(BankAccountContextual),
+    ),
+    transition(
+      componentEvents.COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED,
+      'paySchedule',
+      toSpoke(PayScheduleContextual),
+    ),
+    transition(
+      componentEvents.COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
+      'stateTaxes',
+      toSpoke(StateTaxesContextual),
+    ),
+    transition(
       componentEvents.COMPANY_DASHBOARD_ALERT_DISMISSED,
       'index',
       reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -165,6 +183,37 @@ export const dashboardStateMachine = {
     transition(componentEvents.COMPANY_LOCATION_DONE, 'index', returnToIndexWithPendingAlert),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
+  bankAccount: state<MachineTransition>(
+    // Adding an account and verifying its micro-deposits are separate steps of one
+    // visit, so a save must not eject the user from the sub-flow. These
+    // self-transitions keep the spoke open and only record that something changed;
+    // the alert surfaces when the user actually leaves, via either exit below.
+    // Announcing on COMPANY_BANK_ACCOUNT_DONE instead would claim the account was
+    // updated even when the user opened the spoke and continued without touching
+    // anything, and would stay silent when they left via the back header after a
+    // real change. The component's own COMPANY_BANK_ACCOUNT_CANCEL stays absent: it
+    // fires on screens inside the sub-flow and must not eject the user either.
+    transition(
+      componentEvents.COMPANY_BANK_ACCOUNT_CREATED,
+      'bankAccount',
+      recordPendingAlert('bankAccountUpdated'),
+    ),
+    transition(
+      componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED,
+      'bankAccount',
+      recordPendingAlert('bankAccountUpdated'),
+    ),
+    transition(componentEvents.COMPANY_BANK_ACCOUNT_DONE, 'index', returnToIndexWithPendingAlert),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
+  ),
+  paySchedule: state<MachineTransition>(
+    // PaySchedule is a hub in its own right: its edit form, assignment wizard and
+    // AutoPilot dialog all return to its own overview, so it has no completion
+    // event to exit on, and its editSchedule state transitions on the generic
+    // CANCEL. The back header is the only way out, and the spoke surfaces its own
+    // success alerts internally — hence no dashboard-level alert here.
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
   federalTaxes: state<MachineTransition>(
     // COMPANY_FEDERAL_TAXES_UPDATED also fires on save, immediately before
     // COMPANY_FEDERAL_TAXES_DONE; transitioning on the latter alone keeps the
@@ -173,6 +222,18 @@ export const dashboardStateMachine = {
       componentEvents.COMPANY_FEDERAL_TAXES_DONE,
       'index',
       returnToIndexWithAlert('federalTaxesUpdated'),
+    ),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
+  stateTaxes: state<MachineTransition>(
+    // COMPANY_STATE_TAX_EDIT, _MANAGE_RATES and _UPDATED are intentionally absent:
+    // they fire as the user moves between the state list, a state's requirement
+    // form and its tax-rate history, all of which live *inside* the StateTaxes
+    // sub-flow. Only the list's own Continue returns to the dashboard.
+    transition(
+      componentEvents.COMPANY_STATE_TAX_DONE,
+      'index',
+      returnToIndexWithAlert('stateTaxesUpdated'),
     ),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),

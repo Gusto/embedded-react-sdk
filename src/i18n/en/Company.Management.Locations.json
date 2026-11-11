@@ -2,6 +2,7 @@
   "card": {
     "title": "Locations",
     "manageCta": "Manage",
+    "manageAriaLabel": "Manage locations",
     "listLabel": "Company locations",
     "addressColumn": "Address",
     "designationsColumn": "Designations",

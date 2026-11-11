@@ -355,13 +355,16 @@ Translation keys for the `Company.Dashboard` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-companydashboardalerts"></a> `alerts` | |
+| `alerts.bankAccountUpdated` | `"Bank account updated"` |
 | `alerts.federalTaxesUpdated` | `"Federal tax settings updated"` |
 | `alerts.industryUpdated` | `"Industry updated"` |
 | `alerts.locationsUpdated` | `"Locations updated"` |
+| `alerts.stateTaxesUpdated` | `"State tax settings updated"` |
 | <a id="property-companydashboardbacktodashboardcta"></a> `backToDashboardCta` | `"Back to company settings"` |
 | <a id="property-companydashboardcompanysettingslabel"></a> `companySettingsLabel` | `"Company settings"` |
 | <a id="property-companydashboardtabs"></a> `tabs` | |
 | `tabs.companyDetails` | `"Company details"` |
+| `tabs.pay` | `"Pay"` |
 | `tabs.taxes` | `"Taxes"` |
 | <a id="property-companydashboardtabslabel"></a> `tabsLabel` | `"Company settings tabs"` |
 
@@ -708,6 +711,37 @@ Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace.
 
 ***
 
+<a id="companymanagementbankaccount"></a>
+
+### CompanyManagementBankAccount
+
+Translation keys for the `Company.Management.BankAccount` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementbankaccountcard"></a> `card` |
+| `card.accountName` |
+| `card.accountNumber` |
+| `card.accountType` |
+| `card.addCta` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.listEmptyPlaceholder` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.routingNumber` |
+| `card.title` |
+| `card.verification` |
+| `card.verificationStatus` |
+| `card.verificationStatus.awaiting_deposits` |
+| `card.verificationStatus.ready_for_verification` |
+| `card.verificationStatus.verified` |
+
+***
+
 <a id="companymanagementfederaltaxes"></a>
 
 ### CompanyManagementFederalTaxes
@@ -719,6 +753,7 @@ Translation keys for the `Company.Management.FederalTaxes` i18n namespace.
 | Property |
 | ------ |
 | <a id="property-companymanagementfederaltaxescard"></a> `card` |
+| `card.editAriaLabel` |
 | `card.editCta` |
 | `card.ein` |
 | `card.einMissing` |
@@ -746,6 +781,7 @@ Translation keys for the `Company.Management.Industry` i18n namespace.
 | Property |
 | ------ |
 | <a id="property-companymanagementindustrycard"></a> `card` |
+| `card.editAriaLabel` |
 | `card.editCta` |
 | `card.emptyState` |
 | `card.emptyState.description` |
@@ -776,6 +812,7 @@ Translation keys for the `Company.Management.Locations` i18n namespace.
 | `card.filingAddress` |
 | `card.listLabel` |
 | `card.mailingAddress` |
+| `card.manageAriaLabel` |
 | `card.manageCta` |
 | `card.title` |
 
@@ -907,6 +944,65 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `typeStep.options.single` | |
 | `typeStep.options.single.description` | `"Choose one pay schedule for all your employees"` |
 | `typeStep.options.single.label` | `"Everyone on one schedule"` |
+
+***
+
+<a id="companymanagementpayschedules"></a>
+
+### CompanyManagementPaySchedules
+
+Translation keys for the `Company.Management.PaySchedules` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementpayschedulescard"></a> `card` |
+| `card.addCta` |
+| `card.assignmentMode` |
+| `card.assignmentMode.byDepartment` |
+| `card.assignmentMode.byEmployee` |
+| `card.assignmentMode.hourlySalaried` |
+| `card.assignmentMode.single` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.listLabel` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.scheduleColumn` |
+| `card.title` |
+| `card.unnamedSchedule` |
+
+***
+
+<a id="companymanagementstatetaxes"></a>
+
+### CompanyManagementStateTaxes
+
+Translation keys for the `Company.Management.StateTaxes` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementstatetaxescard"></a> `card` |
+| `card.defaultRatesApplied` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.listLabel` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.readyToRunPayroll` |
+| `card.setupStatus` |
+| `card.setupStatus.complete` |
+| `card.setupStatus.inProgress` |
+| `card.setupStatus.notStarted` |
+| `card.stateColumn` |
+| `card.statusColumn` |
+| `card.title` |
+| `card.unknownState` |
 
 ***
 
@@ -6255,11 +6351,14 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
 | <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
+| <a id="property-resourcescompanymanagementbankaccount"></a> `Company.Management.BankAccount` | [`CompanyManagementBankAccount`](#companymanagementbankaccount) |
 | <a id="property-resourcescompanymanagementfederaltaxes"></a> `Company.Management.FederalTaxes` | [`CompanyManagementFederalTaxes`](#companymanagementfederaltaxes) |
 | <a id="property-resourcescompanymanagementindustry"></a> `Company.Management.Industry` | [`CompanyManagementIndustry`](#companymanagementindustry) |
 | <a id="property-resourcescompanymanagementlocations"></a> `Company.Management.Locations` | [`CompanyManagementLocations`](#companymanagementlocations) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
+| <a id="property-resourcescompanymanagementpayschedules"></a> `Company.Management.PaySchedules` | [`CompanyManagementPaySchedules`](#companymanagementpayschedules) |
+| <a id="property-resourcescompanymanagementstatetaxes"></a> `Company.Management.StateTaxes` | [`CompanyManagementStateTaxes`](#companymanagementstatetaxes) |
 | <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |
 | <a id="property-resourcescompanymanagementtaxpaymentslist"></a> `Company.Management.TaxPaymentsList` | [`CompanyManagementTaxPaymentsList`](#companymanagementtaxpaymentslist) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
