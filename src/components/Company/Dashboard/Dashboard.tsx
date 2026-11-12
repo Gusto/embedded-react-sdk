@@ -4,6 +4,7 @@ import { useCompaniesGet } from '@gusto/embedded-api/react-query/companiesGet'
 import { CompanyDetailsView } from './CompanyDetailsView'
 import { PayView } from './PayView'
 import { TaxesView } from './TaxesView'
+import { DocumentsView } from './DocumentsView'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base/Base'
@@ -16,7 +17,7 @@ import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnsta
  *
  * @alpha
  */
-export type DashboardTab = 'companyDetails' | 'pay' | 'taxes'
+export type DashboardTab = 'companyDetails' | 'pay' | 'taxes' | 'documents'
 
 /**
  * Props for {@link Dashboard}.
@@ -61,6 +62,11 @@ function DashboardRoot({
       label: t('tabs.taxes'),
       content: null,
     },
+    {
+      id: 'documents' as const,
+      label: t('tabs.documents'),
+      content: null,
+    },
   ]
 
   return (
@@ -95,6 +101,14 @@ function DashboardRoot({
           {selectedTab === 'taxes' && (
             <TaxesView companyId={companyId} onEvent={onEvent} LoaderComponent={LoaderComponent} />
           )}
+
+          {selectedTab === 'documents' && (
+            <DocumentsView
+              companyId={companyId}
+              onEvent={onEvent}
+              LoaderComponent={LoaderComponent}
+            />
+          )}
         </Flex>
       </Flex>
     </Flex>
@@ -120,7 +134,7 @@ function DashboardHeader({ companyId }: { companyId: string }) {
 }
 
 /**
- * Company settings dashboard summarizing a company's details, pay setup, and taxes.
+ * Company settings dashboard summarizing a company's details, pay setup, taxes, and documents.
  *
  * @remarks
  * Renders a tabbed overview of the company, wrapped in the SDK's standard error and suspense
@@ -144,6 +158,8 @@ function DashboardHeader({ companyId }: { companyId: string }) {
  * - {@link FederalTaxesCard}
  * - {@link StateTaxesCard}
  * - {@link TaxPaymentsCard}
+ * - {@link SignatoryCard}
+ * - {@link CompanyFormsCard}
  *
  * @param props - Component props. See {@link DashboardProps}.
  * @returns A React element rendering the company settings dashboard.

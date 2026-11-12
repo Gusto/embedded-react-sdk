@@ -9,6 +9,8 @@ import {
   PayScheduleContextual,
   StateTaxesContextual,
   TaxPaymentsContextual,
+  AssignSignatoryContextual,
+  CompanyFormsContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -17,6 +19,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.COMPANY_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
+  [componentEvents.COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED]: { signatoryId?: string }
 }
 
 /**
@@ -29,9 +32,9 @@ type EventPayloads = {
  * would fire whenever a user cancelled an *inner* screen (a location form, say),
  * ejecting them from the whole spoke instead of returning them to that spoke's
  * own list. Several spokes also have no cancel affordance of their own at all
- * (`Industry` and `FederalTaxes` are submit-only; `Locations` opens straight
- * into a form when the company has no addresses), so this header is the only
- * reliable way back to the dashboard.
+ * (`Industry`, `FederalTaxes` and `AssignSignatory` are submit-only; `Locations`
+ * opens straight into a form when the company has no addresses), so this header
+ * is the only reliable way back to the dashboard.
  *
  * @internal
  */
@@ -84,6 +87,30 @@ const returnToIndexWithPendingAlert = reduce(
     header: null,
     successAlert: ctx.pendingAlert ?? null,
     pendingAlert: null,
+  }),
+)
+
+/**
+ * Opens the signatory spoke, carrying the identifier the Signatory card reported
+ * alongside the usual spoke setup — see {@link DashboardContextInterface.signatoryId}
+ * for why `AssignSignatory` cannot be handed the company alone.
+ *
+ * @internal
+ */
+const toSignatorySpoke = reduce(
+  (
+    ctx: DashboardContextInterface,
+    ev: MachineEventType<
+      EventPayloads,
+      typeof componentEvents.COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED
+    >,
+  ): DashboardContextInterface => ({
+    ...ctx,
+    component: AssignSignatoryContextual,
+    header: spokeHeader,
+    successAlert: null,
+    pendingAlert: null,
+    signatoryId: ev.payload.signatoryId,
   }),
 )
 
@@ -140,6 +167,16 @@ export const dashboardStateMachine = {
       componentEvents.COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED,
       'taxPayments',
       toSpoke(TaxPaymentsContextual),
+    ),
+    transition(
+      componentEvents.COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED,
+      'signatory',
+      toSignatorySpoke,
+    ),
+    transition(
+      componentEvents.COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED,
+      'companyForms',
+      toSpoke(CompanyFormsContextual),
     ),
     transition(
       componentEvents.COMPANY_DASHBOARD_ALERT_DISMISSED,
@@ -250,5 +287,41 @@ export const dashboardStateMachine = {
     // detail, both of which live inside the spoke. The back header is the only way
     // out.
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
+  signatory: state<MachineTransition>(
+    // COMPANY_SIGNATORY_CREATED / _UPDATED / _INVITED and
+    // COMPANY_ASSIGN_SIGNATORY_MODE_UPDATED are intentionally absent: the first
+    // three fire on save, immediately before COMPANY_ASSIGN_SIGNATORY_DONE, and
+    // the last fires as the user switches between the create and invite forms
+    // inside the spoke. Transitioning on the single completion event keeps the
+    // alert tied to one unambiguous signal, whichever way the signatory was
+    // assigned.
+    transition(
+      componentEvents.COMPANY_ASSIGN_SIGNATORY_DONE,
+      'index',
+      returnToIndexWithAlert('signatoryUpdated'),
+    ),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
+  companyForms: state<MachineTransition>(
+    // DocumentSigner is a hub in its own right, and one that contains an
+    // assign-signatory screen of its own: COMPANY_VIEW_FORM_TO_SIGN,
+    // COMPANY_SIGN_FORM_DONE, COMPANY_SIGN_FORM_BACK, COMPANY_FORM_EDIT_SIGNATORY
+    // and — note — COMPANY_ASSIGN_SIGNATORY_DONE all move between its own
+    // screens. That last one is the subtle hazard: it is the very event the
+    // `signatory` spoke above returns to the dashboard on, so declaring it here
+    // too would eject a user who merely changed the signatory from inside the
+    // document list.
+    //
+    // A company signs its forms one at a time, so a signature must not end the
+    // visit either. The self-transition records that something was signed and
+    // the alert surfaces when the user actually leaves, via either exit below.
+    transition(
+      componentEvents.COMPANY_SIGN_FORM,
+      'companyForms',
+      recordPendingAlert('formsSigned'),
+    ),
+    transition(componentEvents.COMPANY_FORMS_DONE, 'index', returnToIndexWithPendingAlert),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
 }

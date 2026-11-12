@@ -1128,6 +1128,16 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
     dictionary?: ResourceDictionary<TResourceKey>;
 }
 
+// @alpha
+function CompanyFormsCard(props: CompanyFormsCardProps): JSX;
+
+// @alpha
+interface CompanyFormsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 declare namespace CompanyManagement {
     export {
         PaySchedule_2 as PaySchedule,
@@ -1155,6 +1165,10 @@ declare namespace CompanyManagement {
         StateTaxesCardProps_2 as StateTaxesCardProps,
         TaxPaymentsCard,
         TaxPaymentsCardProps,
+        SignatoryCard,
+        SignatoryCardProps,
+        CompanyFormsCard,
+        CompanyFormsCardProps,
         Dashboard_2 as Dashboard,
         DashboardFlow_2 as DashboardFlow,
         DashboardProps_2 as DashboardProps,
@@ -1607,6 +1621,8 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
     readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: "company/management/signatory/editRequested";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: "company/management/companyForms/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -2559,6 +2575,7 @@ interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
     companyId: string;
     enableAutoPilot?: boolean;
     enableMultipleSchedules?: boolean;
+    viewerSignatoryId?: string;
 }
 
 // @public
@@ -2588,7 +2605,7 @@ interface DashboardProps_3 extends BaseComponentInterface<'Contractor.Dashboard'
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
 
 // @alpha
-type DashboardTab_2 = 'companyDetails' | 'pay' | 'taxes';
+type DashboardTab_2 = 'companyDetails' | 'pay' | 'taxes' | 'documents';
 
 // @public (undocumented)
 type DashboardTab_3 = 'details' | 'pay' | 'documents';
@@ -5243,6 +5260,8 @@ export interface Resources {
     // (undocumented)
     'Company.Management.BankAccount': Translations.CompanyManagementBankAccount
     // (undocumented)
+    'Company.Management.CompanyForms': Translations.CompanyManagementCompanyForms
+    // (undocumented)
     'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
     // (undocumented)
     'Company.Management.Industry': Translations.CompanyManagementIndustry
@@ -5254,6 +5273,8 @@ export interface Resources {
     'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
     // (undocumented)
     'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
+    // (undocumented)
+    'Company.Management.Signatory': Translations.CompanyManagementSignatory
     // (undocumented)
     'Company.Management.StateTaxes': Translations.CompanyManagementStateTaxes
     // (undocumented)
@@ -5658,6 +5679,16 @@ export interface SharedQuestionMetadata {
     description: string | null;
     label: string;
     questionId: string;
+}
+
+// @alpha
+function SignatoryCard(props: SignatoryCardProps): JSX;
+
+// @alpha
+interface SignatoryCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public

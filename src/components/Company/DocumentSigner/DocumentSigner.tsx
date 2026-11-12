@@ -24,7 +24,17 @@ export interface DocumentSignerProps extends BaseComponentInterface<'Company.Doc
   signatoryId?: string
 }
 
-function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: DocumentSignerProps) {
+interface DocumentSignerFlowProps extends DocumentSignerProps {
+  adoptsAssignedSignatory: boolean
+}
+
+function DocumentSignerFlow({
+  companyId,
+  signatoryId,
+  adoptsAssignedSignatory,
+  onEvent,
+  dictionary,
+}: DocumentSignerFlowProps) {
   useComponentDictionary('Company.DocumentList', dictionary)
   const {
     data: { signatories: signatoryList },
@@ -44,6 +54,7 @@ function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: Doc
           component: doesSignatoryExist ? DocumentList : AssignSignatory,
           companyId,
           signatoryId,
+          adoptsAssignedSignatory,
         }),
       ),
 
@@ -82,7 +93,28 @@ function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: Doc
 export function DocumentSigner(props: DocumentSignerProps) {
   return (
     <BaseComponent {...props}>
-      <DocumentSignerFlow {...props} />
+      <DocumentSignerFlow {...props} adoptsAssignedSignatory />
+    </BaseComponent>
+  )
+}
+
+/**
+ * {@link DocumentSigner} with signing rights bound to the `signatoryId` the host supplies.
+ *
+ * @remarks
+ * `DocumentSigner` treats whoever creates or updates the signatory from its assign screen as that
+ * signatory, which unlocks signing for them. This variant keeps the host's `signatoryId` instead,
+ * so changing the signatory never grants the viewer signing rights. Used by
+ * `CompanyManagement.DashboardFlow`, where the viewer's identity is a claim only the host can make.
+ *
+ * @param props - See {@link DocumentSignerProps}.
+ * @returns The document signer flow.
+ * @internal
+ */
+export function ViewerBoundDocumentSigner(props: DocumentSignerProps) {
+  return (
+    <BaseComponent {...props}>
+      <DocumentSignerFlow {...props} adoptsAssignedSignatory={false} />
     </BaseComponent>
   )
 }
