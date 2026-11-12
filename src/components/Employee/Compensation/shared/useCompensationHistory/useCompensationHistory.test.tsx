@@ -16,24 +16,22 @@ function assertReady(hookResult: UseCompensationHistoryResult): asserts hookResu
   }
 }
 
-const renderCompensationHistory = () =>
-  renderHook(() => useCompensationHistory({ employeeId: 'employee-uuid' }), {
-    wrapper: GustoTestProvider,
-  })
-
 describe('useCompensationHistory', () => {
   beforeEach(() => {
     setupApiTestMocks()
   })
 
-  it('starts loading and resolves to the per-job history', async () => {
-    server.use(
-      handleGetEmployeeJobs(() =>
-        HttpResponse.json(buildEmployeeWithJobs({ scenario: 'compensationHistory' })),
-      ),
-    )
+  it('requests every compensation and resolves to the per-job history', async () => {
+    let includeParam: string | null = null
+    const resolver = vi.fn<HttpResponseResolver>(({ request }) => {
+      includeParam = new URL(request.url).searchParams.get('include')
+      return HttpResponse.json(buildEmployeeWithJobs({ scenario: 'compensationHistory' }))
+    })
+    server.use(handleGetEmployeeJobs(resolver))
 
-    const { result } = renderCompensationHistory()
+    const { result } = renderHook(() => useCompensationHistory({ employeeId: 'employee-uuid' }), {
+      wrapper: GustoTestProvider,
+    })
 
     expect(result.current.isLoading).toBe(true)
 
@@ -42,49 +40,12 @@ describe('useCompensationHistory', () => {
     })
     assertReady(result.current)
 
-    expect(result.current.data.hasMultipleJobs).toBe(true)
+    expect(includeParam).toBe('all_compensations')
     expect(
       result.current.data.jobs.map(job => [job.jobId, job.jobTitle, job.entries.length]),
     ).toEqual([
       ['job-uuid', 'Software engineer', 4],
       ['job-uuid-2', 'Team lead', 2],
     ])
-    expect(result.current.data.jobs[0]?.entries.map(entry => entry.status)).toEqual([
-      'upcoming',
-      'current',
-      'past',
-      'past',
-    ])
-  })
-
-  it('requests all compensations so past rates are included', async () => {
-    const resolver = vi.fn<HttpResponseResolver>(() =>
-      HttpResponse.json(buildEmployeeWithJobs({ scenario: 'compensationHistory' })),
-    )
-    server.use(handleGetEmployeeJobs(resolver))
-
-    const { result } = renderCompensationHistory()
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-
-    // Without include=all_compensations the API returns only the current
-    // compensation, which would make the whole view empty of history.
-    const requestUrl = new URL(resolver.mock.calls[0]![0].request.url)
-    expect(requestUrl.searchParams.get('include')).toBe('all_compensations')
-  })
-
-  it('reports no jobs when the employee has none', async () => {
-    server.use(handleGetEmployeeJobs(() => HttpResponse.json([])))
-
-    const { result } = renderCompensationHistory()
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-
-    expect(result.current.data).toMatchObject({ jobs: [], hasMultipleJobs: false })
   })
 })

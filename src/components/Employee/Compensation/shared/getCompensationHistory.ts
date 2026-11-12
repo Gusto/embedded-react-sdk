@@ -1,4 +1,4 @@
-import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
+import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
@@ -11,14 +11,14 @@ import { formatDateToStringDate } from '@/helpers/dateFormatting'
  * today. A job whose compensations are all future-dated has no `current`
  * entry — every entry is `upcoming`.
  *
- * @alpha
+ * @internal
  */
 export type CompensationHistoryStatus = 'past' | 'current' | 'upcoming'
 
 /**
  * A single effective-dated compensation record in an employee's history.
  *
- * @alpha
+ * @internal
  */
 export interface CompensationHistoryEntry {
   /** Identifier of the underlying compensation record. */
@@ -32,7 +32,7 @@ export interface CompensationHistoryEntry {
   /** Pay rate for this compensation, as a decimal string. */
   rate?: string
   /** Period the rate is tracked over, e.g. `Hour` or `Year`. */
-  paymentUnit?: string
+  paymentUnit?: PaymentUnit
   /** Where this record sits relative to today. */
   status: CompensationHistoryStatus
 }
@@ -40,12 +40,15 @@ export interface CompensationHistoryEntry {
 /**
  * One job's compensation history.
  *
- * @alpha
+ * @internal
  */
 export interface JobCompensationHistory {
   /** Identifier of the job these compensations belong to. */
   jobId: string
-  /** Title to display for the job, taken from its current or earliest compensation. */
+  /**
+   * Title to display for the job: the title in effect today or, for a job that has not started
+   * yet, the title it starts with.
+   */
   jobTitle: string
   /** Whether this is the employee's primary job. */
   isPrimary: boolean
@@ -112,8 +115,6 @@ export function getCompensationHistory(
     acc.push({
       jobId: job.uuid,
       isPrimary: job.primary ?? false,
-      // Prefer the title in effect today; a job that hasn't started yet has no
-      // current compensation, so fall back to the title it starts with.
       jobTitle: sorted[currentIndex]?.title ?? sorted[0]?.title ?? job.title ?? '',
       entries: entries.reverse(),
     })

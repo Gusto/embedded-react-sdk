@@ -23,8 +23,6 @@ type StatusBadge = {
   labelKey: 'history.statusLabels.current' | 'history.statusLabels.upcoming'
 }
 
-// Past rows carry no badge — the absence of one is what reads as "historical"
-// once Current and Upcoming are called out explicitly.
 const statusBadgeMap = {
   current: { status: 'success', labelKey: 'history.statusLabels.current' },
   upcoming: { status: 'info', labelKey: 'history.statusLabels.upcoming' },
@@ -50,7 +48,9 @@ export interface CompensationHistoryPresentationProps {
  *
  * @remarks
  * Takes already-derived history and renders it. All data fetching, feature
- * gating, and event emission live in {@link CompensationHistory}.
+ * gating, and event emission live in {@link CompensationHistory}. Past rows are
+ * unbadged, and the status column is omitted for a job with no current or
+ * upcoming row.
  *
  * @param props - See {@link CompensationHistoryPresentationProps}.
  * @returns The rendered history tables.
@@ -65,8 +65,6 @@ export function CompensationHistoryPresentation({
   const { t } = useTranslation('Employee.Management.Compensation')
   const Components = useComponentContext()
 
-  // Single render path so the Back action keeps the same position in the tree
-  // across the loading boundary — remounting it would detach the live node.
   return (
     <Flex flexDirection="column" gap={32}>
       {isLoading ? (
@@ -129,8 +127,6 @@ function JobHistorySection({ job }: { job: JobCompensationHistory }) {
           return formatCompensationRate(rate, entry.paymentUnit)
         },
       },
-      // The status column only earns its width when something is badged — an
-      // all-past history would render an empty column on every row.
       ...(hasUpcomingOrCurrent
         ? [
             {
