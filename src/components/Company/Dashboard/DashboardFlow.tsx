@@ -2,6 +2,7 @@ import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { dashboardStateMachine } from './dashboardStateMachine'
 import { type DashboardContextInterface, DashboardViewContextual } from './DashboardComponents'
+import { ViewerSignatoryContext } from './ViewerSignatoryContext'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
@@ -18,7 +19,8 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
    * Identifier of the signatory viewing the dashboard. When it matches the company's saved
    * signatory, that user is treated as the signatory on the company forms screen and may sign.
    * Leave unset when the viewer's identity is not known: the forms screen is then review-only,
-   * where documents can be read and the signatory changed but not signed.
+   * where documents can be read and the signatory changed but not signed. Changing the signatory
+   * from that screen does not change this; signing stays bound to this value.
    */
   viewerSignatoryId?: string
   /** Shows the AutoPilot row and its Edit action on the pay schedule screen. */
@@ -92,13 +94,13 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/taxPayments/back` | Fired when the user returns from a tax payment to the manage screen; the manage screen stays open | — |
  * | `company/management/signatory/editRequested` | Fired when "Edit" or "Assign signatory" is clicked on the Signatory card | `{ companyId: string, signatoryId?: string }` |
  * | `company/signatory/assignSignatory/modeUpdated` | Fired when the user switches between assigning a signatory directly and inviting one; the assign screen stays open | The selected mode (`'createSignatory'` or `'inviteSignatory'`) |
- * | `company/signatory/created` | Fired after a signatory is created; the assign screen stays open | Created `Signatory` entity |
- * | `company/signatory/updated` | Fired after a signatory is updated; the assign screen stays open | Updated `Signatory` entity |
- * | `company/signatory/invited` | Fired after a signatory invitation is sent; the assign screen stays open | The invited `Signatory` |
- * | `company/signatory/assignSignatory/done` | Fired once a signatory is assigned either way; the dashboard returns to the cards and surfaces the "Signatory updated" alert | — |
+ * | `company/signatory/created` | Fired after a signatory is created. From the Signatory card the assign screen stays open; from the documents screen it returns to the document list | Created `Signatory` entity |
+ * | `company/signatory/updated` | Fired after a signatory is updated. From the Signatory card the assign screen stays open; from the documents screen it returns to the document list | Updated `Signatory` entity |
+ * | `company/signatory/invited` | Fired after a signatory invitation is sent. From the Signatory card the assign screen stays open; from the documents screen it returns to the document list | The invited `Signatory` |
+ * | `company/signatory/assignSignatory/done` | Fired once a signatory is assigned either way. From the Signatory card the dashboard returns to the cards and surfaces the "Signatory updated" alert; from the documents screen the document list stays open | — |
  * | `company/management/companyForms/editRequested` | Fired when "Manage" is clicked on the Documents card | `{ companyId: string }` |
  * | `company/forms/view` | Fired when a form is selected for signing on the manage screen; the manage screen stays open | The selected `Form` |
- * | `company/forms/editSignatory` | Fired when the signatory is changed from the manage screen; the manage screen stays open | The current `Signatory` |
+ * | `company/forms/editSignatory` | Fired when the user chooses to change the signatory on the manage screen; the manage screen opens its own assign-signatory step | The current `Signatory` |
  * | `company/forms/sign/signForm` | Fired after a form is signed; the manage screen stays open | The signed `Form` |
  * | `company/forms/sign/done` | Fired when the signature step closes; the manage screen stays open | — |
  * | `company/forms/sign/back` | Fired when the user leaves the signature form; the manage screen stays open | — |
@@ -156,13 +158,16 @@ export const DashboardFlow = ({
           ...initialContext,
           component: DashboardViewContextual,
           companyId,
-          viewerSignatoryId,
           enableAutoPilot,
           enableMultipleSchedules,
         }),
       ),
-    [companyId, viewerSignatoryId, enableAutoPilot, enableMultipleSchedules],
+    [companyId, enableAutoPilot, enableMultipleSchedules],
   )
 
-  return <Flow machine={dashboardMachine} onEvent={onEvent} />
+  return (
+    <ViewerSignatoryContext.Provider value={viewerSignatoryId}>
+      <Flow machine={dashboardMachine} onEvent={onEvent} />
+    </ViewerSignatoryContext.Provider>
+  )
 }

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Dashboard, type DashboardTab } from './Dashboard'
+import { useViewerSignatoryId } from './ViewerSignatoryContext'
 import { Industry } from '@/components/Company/Industry'
 import { Locations } from '@/components/Company/Locations/Locations'
 import { FederalTaxes } from '@/components/Company/FederalTaxes'
@@ -8,7 +9,7 @@ import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/StateTaxes'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
 import { AssignSignatory } from '@/components/Company/AssignSignatory'
-import { DocumentSigner } from '@/components/Company/DocumentSigner'
+import { ViewerBoundDocumentSigner } from '@/components/Company/DocumentSigner/DocumentSigner'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -50,18 +51,6 @@ export interface DashboardContextInterface extends FlowContextInterface {
    * deletes the existing signatory before creating a replacement.
    */
   signatoryId?: string
-  /**
-   * Identifier of the signatory *viewing* the dashboard, supplied by the host
-   * through `DashboardFlow`'s `viewerSignatoryId` prop and forwarded to the
-   * company forms spoke as its `signatoryId`. It unlocks signing only when it
-   * matches the company's saved signatory.
-   *
-   * Deliberately never derived from the signatory list: doing so would assert
-   * that whoever opened the dashboard *is* the signatory, letting anyone with
-   * access sign the company's federal tax forms. Without it the spoke is
-   * review-only — forms can be read and the signatory changed, but not signed.
-   */
-  viewerSignatoryId?: string
   /** Forwarded to the pay schedule spoke to show the AutoPilot row and its Edit action. */
   enableAutoPilot?: boolean
   /** Forwarded to the pay schedule spoke to show its Manage action. */
@@ -156,11 +145,17 @@ export function TaxPaymentsContextual() {
   return <TaxPaymentsFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
-/** @internal */
+/**
+ * Keyed on the viewer because `DocumentSigner` reads `signatoryId` only when it mounts.
+ *
+ * @internal
+ */
 export function CompanyFormsContextual() {
-  const { companyId, viewerSignatoryId, onEvent } = useFlow<DashboardContextInterface>()
+  const { companyId, onEvent } = useFlow<DashboardContextInterface>()
+  const viewerSignatoryId = useViewerSignatoryId()
   return (
-    <DocumentSigner
+    <ViewerBoundDocumentSigner
+      key={viewerSignatoryId}
       companyId={ensureRequired(companyId)}
       signatoryId={viewerSignatoryId}
       onEvent={onEvent}
