@@ -8,6 +8,7 @@ import commonEn from '@/i18n/en/common.json'
 const SDKI18next: i18n = i18next.createInstance({
   debug: false,
   fallbackLng: 'en',
+  returnEmptyString: true,
   resources: {
     en: { common: commonEn },
   },
