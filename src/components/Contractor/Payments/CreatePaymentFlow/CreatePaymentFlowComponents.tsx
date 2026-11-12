@@ -1,6 +1,6 @@
 import { CreatePayment } from '../CreatePayment/CreatePayment'
 import { PaymentSummaryInternal } from '../PaymentSummary/PaymentSummary'
-import type { InternalAlert } from '../types'
+import type { InternalAlert, PaymentSummaryAlertKey } from '../types'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -19,7 +19,7 @@ export interface CreatePaymentFlowProps extends BaseComponentInterface<never> {
 export interface CreatePaymentFlowContextInterface extends FlowContextInterface {
   companyId: string
   createdPaymentGroupId?: string
-  alerts?: InternalAlert[]
+  alerts?: InternalAlert<PaymentSummaryAlertKey>[]
 }
 
 /** @internal */

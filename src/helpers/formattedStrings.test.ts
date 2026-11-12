@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import type { TFunction } from 'i18next'
+import { createCommonT } from '@/test/createCommonT'
 import {
   removeNonDigits,
   stripLeadingZeros,
@@ -116,17 +116,15 @@ describe('formattedStrings', () => {
   })
 
   describe('formatCompensationRate', () => {
-    const mockT = ((key: string, options?: { amount?: string; ns?: string }) => {
-      const templates: Record<string, string> = {
-        'compensationRateFormats.hourly': '{{amount}} per hour',
-        'compensationRateFormats.weekly': '{{amount}} per week',
-        'compensationRateFormats.monthly': '{{amount}} per month',
-        'compensationRateFormats.yearly': '{{amount}} per year',
-        'compensationRateFormats.paycheck': '{{amount}} per paycheck',
-      }
-      const template = templates[key] ?? key
-      return options?.amount ? template.replace('{{amount}}', options.amount) : template
-    }) as TFunction
+    const mockT = createCommonT({
+      compensationRateFormats: {
+        hourly: '{{amount}} per hour',
+        weekly: '{{amount}} per week',
+        monthly: '{{amount}} per month',
+        yearly: '{{amount}} per year',
+        paycheck: '{{amount}} per paycheck',
+      },
+    })
 
     it('displays weekly and monthly rates as-is without annualizing', () => {
       expect(formatCompensationRate({ rate: 1000, paymentUnit: 'Week', t: mockT })).toBe(
@@ -154,17 +152,15 @@ describe('formattedStrings', () => {
   })
 
   describe('formatPayRate', () => {
-    const mockT = ((key: string, options?: { amount?: string; ns?: string }) => {
-      const templates = {
-        'payRateFormats.hourly': '{{amount}}/hr',
-        'payRateFormats.weekly': '{{amount}}/yr',
-        'payRateFormats.monthly': '{{amount}}/yr',
-        'payRateFormats.yearly': '{{amount}}/yr',
-        'payRateFormats.paycheck': '{{amount}}/paycheck',
-      }
-      const template = templates[key as keyof typeof templates] || key
-      return options?.amount ? template.replace('{{amount}}', options.amount) : template
-    }) as TFunction
+    const mockT = createCommonT({
+      payRateFormats: {
+        hourly: '{{amount}}/hr',
+        weekly: '{{amount}}/yr',
+        monthly: '{{amount}}/yr',
+        yearly: '{{amount}}/yr',
+        paycheck: '{{amount}}/paycheck',
+      },
+    })
 
     it('should format pay rates with basic functionality', () => {
       const result = formatPayRate({ rate: 25.5, paymentUnit: 'Hour', t: mockT })
