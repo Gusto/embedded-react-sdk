@@ -14,6 +14,7 @@
     "locationsUpdated": "Locations updated",
     "bankAccountUpdated": "Bank account updated",
     "stateTaxesUpdated": "State tax settings updated",
-    "signatoryUpdated": "Signatory updated"
+    "signatoryUpdated": "Signatory updated",
+    "formsSigned": "Documents signed"
   }
 }

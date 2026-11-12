@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Dashboard, type DashboardTab } from './Dashboard'
+import { useViewerSignatoryId } from './ViewerSignatoryContext'
 import { Industry } from '@/components/Company/Industry'
 import { Locations } from '@/components/Company/Locations/Locations'
 import { FederalTaxes } from '@/components/Company/FederalTaxes'
@@ -8,6 +9,7 @@ import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/StateTaxes'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
 import { AssignSignatory } from '@/components/Company/AssignSignatory'
+import { ViewerBoundDocumentSigner } from '@/components/Company/DocumentSigner/DocumentSigner'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -22,6 +24,7 @@ type DashboardSuccessAlert =
   | 'bankAccountUpdated'
   | 'stateTaxesUpdated'
   | 'signatoryUpdated'
+  | 'formsSigned'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -68,6 +71,7 @@ export function DashboardViewContextual() {
     bankAccountUpdated: t('alerts.bankAccountUpdated'),
     stateTaxesUpdated: t('alerts.stateTaxesUpdated'),
     signatoryUpdated: t('alerts.signatoryUpdated'),
+    formsSigned: t('alerts.formsSigned'),
   }
 
   return (
@@ -139,6 +143,24 @@ export function StateTaxesContextual() {
 export function TaxPaymentsContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
   return <TaxPaymentsFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
+}
+
+/**
+ * Keyed on the viewer because `DocumentSigner` reads `signatoryId` only when it mounts.
+ *
+ * @internal
+ */
+export function CompanyFormsContextual() {
+  const { companyId, onEvent } = useFlow<DashboardContextInterface>()
+  const viewerSignatoryId = useViewerSignatoryId()
+  return (
+    <ViewerBoundDocumentSigner
+      key={viewerSignatoryId}
+      companyId={ensureRequired(companyId)}
+      signatoryId={viewerSignatoryId}
+      onEvent={onEvent}
+    />
+  )
 }
 
 /** @internal */

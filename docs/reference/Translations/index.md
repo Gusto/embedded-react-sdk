@@ -357,6 +357,7 @@ Translation keys for the `Company.Dashboard` i18n namespace.
 | <a id="property-companydashboardalerts"></a> `alerts` | |
 | `alerts.bankAccountUpdated` | `"Bank account updated"` |
 | `alerts.federalTaxesUpdated` | `"Federal tax settings updated"` |
+| `alerts.formsSigned` | `"Documents signed"` |
 | `alerts.industryUpdated` | `"Industry updated"` |
 | `alerts.locationsUpdated` | `"Locations updated"` |
 | `alerts.signatoryUpdated` | `"Signatory updated"` |
@@ -741,6 +742,35 @@ Translation keys for the `Company.Management.BankAccount` i18n namespace.
 | `card.verificationStatus.awaiting_deposits` |
 | `card.verificationStatus.ready_for_verification` |
 | `card.verificationStatus.verified` |
+
+***
+
+<a id="companymanagementcompanyforms"></a>
+
+### CompanyManagementCompanyForms
+
+Translation keys for the `Company.Management.CompanyForms` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementcompanyformscard"></a> `card` |
+| `card.allSigned` |
+| `card.awaitingCount_one` |
+| `card.awaitingCount_other` |
+| `card.awaitingSignature` |
+| `card.documentCount_one` |
+| `card.documentCount_other` |
+| `card.documents` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.signatures` |
+| `card.title` |
+| `card.untitledForm` |
 
 ***
 
@@ -6419,6 +6449,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
 | <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
 | <a id="property-resourcescompanymanagementbankaccount"></a> `Company.Management.BankAccount` | [`CompanyManagementBankAccount`](#companymanagementbankaccount) |
+| <a id="property-resourcescompanymanagementcompanyforms"></a> `Company.Management.CompanyForms` | [`CompanyManagementCompanyForms`](#companymanagementcompanyforms) |
 | <a id="property-resourcescompanymanagementfederaltaxes"></a> `Company.Management.FederalTaxes` | [`CompanyManagementFederalTaxes`](#companymanagementfederaltaxes) |
 | <a id="property-resourcescompanymanagementindustry"></a> `Company.Management.Industry` | [`CompanyManagementIndustry`](#companymanagementindustry) |
 | <a id="property-resourcescompanymanagementlocations"></a> `Company.Management.Locations` | [`CompanyManagementLocations`](#companymanagementlocations) |

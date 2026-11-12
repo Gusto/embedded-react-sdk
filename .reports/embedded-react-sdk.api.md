@@ -1128,6 +1128,16 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
     dictionary?: ResourceDictionary<TResourceKey>;
 }
 
+// @alpha
+function CompanyFormsCard(props: CompanyFormsCardProps): JSX;
+
+// @alpha
+interface CompanyFormsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 declare namespace CompanyManagement {
     export {
         PaySchedule_2 as PaySchedule,
@@ -1157,6 +1167,8 @@ declare namespace CompanyManagement {
         TaxPaymentsCardProps,
         SignatoryCard,
         SignatoryCardProps,
+        CompanyFormsCard,
+        CompanyFormsCardProps,
         Dashboard_2 as Dashboard,
         DashboardFlow_2 as DashboardFlow,
         DashboardProps_2 as DashboardProps,
@@ -1610,6 +1622,7 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
     readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
     readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: "company/management/signatory/editRequested";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: "company/management/companyForms/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -2562,6 +2575,7 @@ interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
     companyId: string;
     enableAutoPilot?: boolean;
     enableMultipleSchedules?: boolean;
+    viewerSignatoryId?: string;
 }
 
 // @public
@@ -5245,6 +5259,8 @@ export interface Resources {
     'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
     // (undocumented)
     'Company.Management.BankAccount': Translations.CompanyManagementBankAccount
+    // (undocumented)
+    'Company.Management.CompanyForms': Translations.CompanyManagementCompanyForms
     // (undocumented)
     'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
     // (undocumented)
