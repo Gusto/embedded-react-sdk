@@ -25,7 +25,7 @@ describe('CompensationHistory', () => {
     setupApiTestMocks()
   })
 
-  it('renders one section per job, newest first, with each row\'s status, title, type and wage', async () => {
+  it('renders one section per job, newest first, with the status, title, type and wage of each row', async () => {
     server.use(
       handleGetEmployeeJobs(() =>
         HttpResponse.json(buildEmployeeWithJobs({ scenario: 'compensationHistory' })),
@@ -54,7 +54,9 @@ describe('CompensationHistory', () => {
     assertDefined(oldestRow)
 
     expect(within(upcomingRow).getByText('Upcoming')).toBeInTheDocument()
-    expect(within(upcomingRow).getByRole('gridcell', { name: 'Senior engineer' })).toBeInTheDocument()
+    expect(
+      within(upcomingRow).getByRole('gridcell', { name: 'Senior engineer' }),
+    ).toBeInTheDocument()
     expect(
       within(upcomingRow).getByRole('gridcell', { name: 'Salary/No overtime' }),
     ).toBeInTheDocument()

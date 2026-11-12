@@ -170,8 +170,6 @@ function CompensationCardReady({
     ) ?? false
   const canAddAnotherJob =
     jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT && !hasFutureNonNonexemptComp
-  // Read the flag rather than wrapping the CTA, so the footer isn't rendered
-  // empty when history is the only thing that would have gone in it.
   const canViewHistory = useUnstableFeature('compensationHistory') && jobs.length > 0
   const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
   const singleJobCurrentComp = singleJob?.compensations?.find(
