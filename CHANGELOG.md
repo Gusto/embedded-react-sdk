@@ -1,5 +1,67 @@
 # Changelog
 
+## [0.59.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.58.1...v0.59.0) (2026-11-12)
+
+### Breaking Changes
+
+#### `ContractorManagement.ContractorListFlow` handles `contractor/rehire` itself ([#3029](https://github.com/Gusto/embedded-react-sdk/issues/3029))
+
+Selecting "Rehire" on a dismissed contractor now opens the new `ContractorManagement.Rehire` step inside the flow. Before, the event passed through to `onEvent` with nothing rendered. If your handler opens its own rehire screen on `contractor/rehire`, both screens now open. Remove that handler, or mount `ContractorManagement.ContractorList` directly to keep owning the step.
+
+```tsx
+// Before
+<ContractorManagement.ContractorListFlow
+  companyId={companyId}
+  onEvent={(eventType, data) => {
+    if (eventType === componentEvents.CONTRACTOR_REHIRE) {
+      openRehireScreen(data.contractorId)
+    }
+  }}
+/>
+
+// After: the flow renders the rehire step
+<ContractorManagement.ContractorListFlow companyId={companyId} onEvent={onEvent} />
+```
+
+#### Contractor documents card view events can carry `formId` instead of `documentUuid` ([#3038](https://github.com/Gusto/embedded-react-sdk/issues/3038))
+
+`ContractorManagement.DocumentsCard` now lists a contractor's 1099s alongside the W-9. The `contractor/management/documents/card/viewRequested` and `contractor/management/documents/card/viewed` events send `{ contractorId, formId }` for a 1099 row and `{ contractorId, documentUuid }` for a document row. Handlers that always read `documentUuid` get `undefined` for a 1099 row.
+
+```tsx
+// Before
+if (eventType === componentEvents.CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED) {
+  handleDocumentViewed(data.documentUuid)
+}
+
+// After: branch on which key is present
+if (eventType === componentEvents.CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED) {
+  if (data.formId) handleTaxFormViewed(data.formId)
+  else handleDocumentViewed(data.documentUuid)
+}
+```
+
+### Features & Enhancements
+
+- Add `ContractorManagement.Rehire` and the `useContractorRehireForm` hook for scheduling a dismissed contractor's start date, with a new `contractor/rehire/scheduled` event. `useDismissal` is now exported too ([#3029](https://github.com/Gusto/embedded-react-sdk/issues/3029))
+- Show recent payments on the contractor dashboard Pay tab ([#3039](https://github.com/Gusto/embedded-react-sdk/issues/3039))
+- Show saved 4- and 5-digit NAICS codes in the industry selector. These used to render blank, so a classified company looked unclassified ([#3023](https://github.com/Gusto/embedded-react-sdk/issues/3023))
+- Add the alpha `CompanyManagement.Dashboard` and `CompanyManagement.DashboardFlow` company settings hub, with `BankAccountCard` on the Pay tab, `TaxPaymentsCard` on the Taxes tab, and `SignatoryCard` on a new Documents tab. Gated behind the new `companySettingsDashboard` flag in `UnstableFeatures` ([#3058](https://github.com/Gusto/embedded-react-sdk/issues/3058), [#3066](https://github.com/Gusto/embedded-react-sdk/issues/3066), [#3087](https://github.com/Gusto/embedded-react-sdk/issues/3087), [#3088](https://github.com/Gusto/embedded-react-sdk/issues/3088))
+
+### Fixes
+
+- Fix `ContractorManagement.DocumentsCard` not showing a contractor's 1099s. Tokens without the `contractor_forms:read` scope still see the W-9 ([#3038](https://github.com/Gusto/embedded-react-sdk/issues/3038))
+- Fix the pay date and submit-by time shown for unprocessed off-cycle payrolls, including dismissal payrolls ([#3093](https://github.com/Gusto/embedded-react-sdk/issues/3093))
+- Fix child support deductions showing the wrong withholding amount. They now show the per-paycheck dollar amount when set, then the percentage ([#3094](https://github.com/Gusto/embedded-react-sdk/issues/3094))
+- Fix `PayrollConfiguration` showing an error when an employee is terminated after the payroll was calculated ([#3104](https://github.com/Gusto/embedded-react-sdk/issues/3104))
+- Fix the payroll employee editor failing to load when a company has a custom earning type with a category the SDK didn't recognize, and tolerate unrecognized payroll blocker types ([#3091](https://github.com/Gusto/embedded-react-sdk/issues/3091))
+
+### Chores & Maintenance
+
+- Upgrade `i18next` to 27 and `react-i18next` to 18 ([#3115](https://github.com/Gusto/embedded-react-sdk/issues/3115))
+- Bump runtime dependencies (`@hookform/resolvers`)
+- Bump dev dependencies (`@playwright/test`, `@storybook/*`, `cspell`, `dotenv`, `eslint-plugin-storybook`, `msw`, `sass-embedded`, `vite-plugin-checker`)
+- Add a troubleshooting docs page covering SDK version headers, `406 invalid_api_version` errors, and CORS allowlists ([#3080](https://github.com/Gusto/embedded-react-sdk/issues/3080))
+
 ## [0.58.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.58.0...v0.58.1) (2026-11-06)
 
 ### Features & Enhancements
