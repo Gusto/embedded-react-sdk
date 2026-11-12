@@ -37,11 +37,17 @@ const DEFAULT_RANGE_DAYS = 14
 export interface ShiftsProps {
   companyId: string
   onAddShift: (request: AddShiftRequest) => void
+  onEditShift: (request: EditShiftRequest) => void
 }
 
 export interface AddShiftRequest {
   initialEmployeeUuid: string | null
   knownSheets: ApiTimeSheet[]
+}
+
+export interface EditShiftRequest {
+  sheet: ApiTimeSheet
+  employee: TimeTrackingEmployee | undefined
 }
 
 // Bounded at the viewer's midnight, so shifts recorded in another time zone can fall outside an edge.
@@ -61,7 +67,7 @@ function toShiftStartBounds(startDate: Date, endDate: Date) {
   }
 }
 
-export function Shifts({ companyId, onAddShift }: ShiftsProps) {
+export function Shifts({ companyId, onAddShift, onEditShift }: ShiftsProps) {
   const [defaultRange] = useState(() => {
     const today = new Date()
     return { start: addDays(today, -(DEFAULT_RANGE_DAYS - 1)), end: today }
@@ -271,7 +277,12 @@ export function Shifts({ companyId, onAddShift }: ShiftsProps) {
         setActionResult(null)
         onAddShift({ initialEmployeeUuid: employeeFilter, knownSheets: pageSheets })
       }}
-      onEditShift={() => {}}
+      onEditShift={shiftId => {
+        const sheet = pageSheets.find(pageSheet => pageSheet.uuid === shiftId)
+        if (!sheet) return
+        setActionResult(null)
+        onEditShift({ sheet, employee: employeesByUuid.get(sheet.entity_uuid) })
+      }}
       onDeleteShift={shiftId => {
         void deleteShift(shiftId)
       }}

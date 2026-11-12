@@ -36,7 +36,8 @@ import {
   useSaveOvertimePolicy,
 } from '../TimeTracking/timeTrackingApi'
 import { AddShiftModal } from './AddShiftModal'
-import { Shifts, type AddShiftRequest } from './Shifts'
+import { EditShiftModal } from './EditShiftModal'
+import { Shifts, type AddShiftRequest, type EditShiftRequest } from './Shifts'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 export interface ShiftReviewProps {
@@ -55,6 +56,7 @@ export function ShiftReview({ companyId }: ShiftReviewProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [serverErrors, setServerErrors] = useState<string[]>([])
   const [addShiftRequest, setAddShiftRequest] = useState<AddShiftRequest | null>(null)
+  const [editShiftRequest, setEditShiftRequest] = useState<EditShiftRequest | null>(null)
   const [today] = useState(() => formatDateToStringDate(new Date()) ?? '')
 
   const navigate = (next: View) => {
@@ -234,6 +236,10 @@ export function ShiftReview({ companyId }: ShiftReviewProps) {
               setSuccessMessage(null)
               setAddShiftRequest(request)
             }}
+            onEditShift={request => {
+              setSuccessMessage(null)
+              setEditShiftRequest(request)
+            }}
           />
         }
         policies={
@@ -278,6 +284,21 @@ export function ShiftReview({ companyId }: ShiftReviewProps) {
           }}
           onCreated={message => {
             setAddShiftRequest(null)
+            setSuccessMessage(message)
+          }}
+        />
+      ) : null}
+
+      {editShiftRequest ? (
+        <EditShiftModal
+          key={editShiftRequest.sheet.uuid}
+          sheet={editShiftRequest.sheet}
+          employee={editShiftRequest.employee}
+          onClose={() => {
+            setEditShiftRequest(null)
+          }}
+          onSaved={message => {
+            setEditShiftRequest(null)
             setSuccessMessage(message)
           }}
         />
