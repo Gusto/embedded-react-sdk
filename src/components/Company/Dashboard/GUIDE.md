@@ -44,7 +44,7 @@ flowchart LR
   linkStyle 1,2,3,4,5,6,7,8,9 stroke-width:2.5px
 ```
 
-Each spoke is a complete component rather than a single form, so it may have screens of its own — `Locations`, for example, has its own address list with add and edit screens. Events raised inside a spoke (`company/location/add/done`, `company/bankAccount/created`, `company/bankAccount/verified`, `company/federalTaxes/updated`, `company/stateTaxes/edit`, `company/stateTaxes/updated`, `company/signatory/created`, `company/signatory/updated`, `company/signatory/invited`) keep the spoke open; only the spoke's own completion event (`company/location/done`, `company/bankAccount/done`, `company/federalTaxes/done`, `company/industry/selected`, `company/stateTaxes/done`, `company/signatory/assignSignatory/done`) or the back header returns to the dashboard.
+Each spoke is a complete component rather than a single form, so it may have screens of its own — `Locations`, for example, has its own address list with add and edit screens. Events raised inside a spoke (`company/location/add/done`, `company/bankAccount/created`, `company/bankAccount/verified`, `company/federalTaxes/updated`, `company/stateTaxes/edit`, `company/stateTaxes/updated`, `company/stateTaxes/rateScheduled`, `company/signatory/created`, `company/signatory/updated`, `company/signatory/invited`) keep the spoke open; only the spoke's own completion event (`company/location/done`, `company/bankAccount/done`, `company/federalTaxes/done`, `company/industry/selected`, `company/signatory/assignSignatory/done`) or the back header returns to the dashboard.
 
 `DocumentSigner` is a hub too, and the one case where a spoke contains a screen the dashboard also reaches directly: changing the signatory from the document list opens `DocumentSigner`'s own assign-signatory screen, which raises the same `company/signatory/assignSignatory/done` the Signatory card's spoke returns on. The dashboard stays put for it, so changing the signatory mid-review returns you to the document list rather than to the cards. Signing is the same: a company signs its forms one at a time, so each `company/forms/sign/signForm` keeps the screen open and the "Documents signed" alert surfaces only once you leave, whether by Continue or the back header.
 
@@ -60,7 +60,9 @@ Because `Industry`, `FederalTaxes` and `AssignSignatory` submit without a Cancel
 
 Some actions stay on the cards view without a screen swap: switching tabs (`company/dashboard/tabChange`) and dismissing a success alert (`company/dashboard/alertDismissed`).
 
-`StateTaxes` has two levels of its own: a list of states, and per state either a requirements form or a tax rate history view. Moving between them raises `company/stateTaxes/edit` and `company/stateTaxes/manageRates`, and saving a state raises `company/stateTaxes/updated` — all of which keep the spoke open, since a company is rarely done after one state.
+`StateTaxes` is a hub too, with two levels of its own: a list of states, and per state either a requirements form or a tax rate history view. Moving between them raises `company/stateTaxes/edit` and `company/stateTaxes/manageRates`, saving a state raises `company/stateTaxes/updated`, and scheduling a future-dated rate raises `company/stateTaxes/rateScheduled` — all of which keep the spoke open, since a company is rarely done after one state. The state list has no Continue button, so the back header is the only way from it to the dashboard; the "State tax settings updated" alert surfaces then, if a state was saved or a rate scheduled during the visit.
+
+The tax rate history lists a state's past, current, and scheduled rates. A new rate can be scheduled only for one of the effective dates the state accepts, which the API supplies. A scheduled rate cannot be cancelled from the dashboard: the tax requirements API has no operation for removing one.
 
 ## Empty states <!-- slot: appendix -->
 

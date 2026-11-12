@@ -2120,6 +2120,12 @@ export namespace Translations {
       /** @defaultValue `"Tax rate scheduled to take effect on {{date}}."` */
       rateScheduledSuccess: string
     }
+    management: {
+      /** @defaultValue `"State taxes"` */
+      title: string
+      /** @defaultValue `"Review each state's tax setup and schedule upcoming tax rate changes."` */
+      description: string
+    }
   }
   /** Translation keys for the `Company.TimeOff.CreateTimeOffPolicy` i18n namespace. */
   export interface CompanyTimeOffCreateTimeOffPolicy {

@@ -31,14 +31,19 @@ export interface TaxRateManagementProps extends BaseComponentInterface<'Company.
  * schedule a new future-dated rate.
  *
  * @remarks
- * Lower-level building block used by {@link StateTaxes} for its "manage tax rates" view. Only
- * effective-dated requirement keys (e.g. tax rates, deposit schedules) are shown — non-dated
- * sections like registration numbers have no history/scheduling story and are edited via
- * {@link StateTaxesForm} instead.
+ * Lower-level building block used by both the onboarding and management `StateTaxes` flows for
+ * their "manage tax rates" view, exported as `CompanyOnboarding.TaxRateManagement` and
+ * `CompanyManagement.TaxRateManagement`. Only effective-dated requirement keys (e.g. tax rates,
+ * deposit schedules) are shown — non-dated sections like registration numbers have no
+ * history/scheduling story and are edited via {@link StateTaxesForm} instead.
+ *
+ * A scheduled rate cannot be cancelled from this view: the tax requirements API has no operation
+ * for removing a future-dated requirement set.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
+ * | `company/stateTaxes/rateScheduled` | A new effective-dated rate was saved. The API returns no body for this update, so the payload echoes what was saved | `{ state: string, key: string, effectiveFrom: string, requirements: { key: string, value: string }[] }` |
  * | `CANCEL` | The user navigated back to the state tax list | — |
  *
  * @param props - {@link TaxRateManagementProps}
@@ -141,6 +146,7 @@ function Root({ companyId, state, className, children }: TaxRateManagementProps)
         },
       })
       result.succeeded = true
+      onEvent(componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED, { state, ...payload })
     })
     if (result.succeeded) {
       setSuccessMessage(

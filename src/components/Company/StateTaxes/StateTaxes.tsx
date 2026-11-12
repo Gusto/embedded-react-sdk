@@ -40,6 +40,7 @@ export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTa
  * | `company/stateTaxes/edit` | A state row was selected for editing | `{ state: string }` |
  * | `company/stateTaxes/manageRates` | A state row's tax rate history/scheduling view was opened | `{ state: string }` |
  * | `company/stateTaxes/updated` | State tax requirements were saved | — |
+ * | `company/stateTaxes/rateScheduled` | A new effective-dated tax rate was saved from the tax rate history view | `{ state: string, key: string, effectiveFrom: string, requirements: { key: string, value: string }[] }` |
  * | `company/stateTaxes/done` | The list view was completed | — |
  * | `CANCEL` | Editing or rate management was cancelled and the list was shown again | — |
  *

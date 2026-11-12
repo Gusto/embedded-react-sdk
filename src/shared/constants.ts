@@ -204,6 +204,7 @@ export const companyEvents = {
   COMPANY_STATE_TAX_DONE: 'company/stateTaxes/done',
   COMPANY_STATE_TAX_EDIT: 'company/stateTaxes/edit',
   COMPANY_STATE_TAX_MANAGE_RATES: 'company/stateTaxes/manageRates',
+  COMPANY_STATE_TAX_RATE_SCHEDULED: 'company/stateTaxes/rateScheduled',
   COMPANY_OVERVIEW_DONE: 'company/overview/done',
   COMPANY_OVERVIEW_CONTINUE: 'company/overview/continue',
   COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED: 'company/management/industry/editRequested',

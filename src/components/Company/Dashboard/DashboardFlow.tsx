@@ -40,7 +40,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * This is a hub-and-spoke surface with no terminal step, so it can stay mounted indefinitely. Each
  * spoke renders an existing company component — `CompanyOnboarding.Industry`,
  * `CompanyOnboarding.Locations`, `CompanyOnboarding.FederalTaxes`, `CompanyOnboarding.BankAccount`,
- * `CompanyManagement.PaySchedule`, `CompanyOnboarding.StateTaxes`,
+ * `CompanyManagement.PaySchedule`, `CompanyManagement.StateTaxes`,
  * `CompanyManagement.TaxPaymentsFlow`, `CompanyOnboarding.AssignSignatory`,
  * `CompanyOnboarding.DocumentSigner` — beneath a "Back to company
  * settings" header, which is the reliable way back: those components are submit-only or open
@@ -88,7 +88,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/stateTaxes/edit` | Fired when a state is selected for editing on the manage screen; the manage screen stays open | `{ state: string }` |
  * | `company/stateTaxes/manageRates` | Fired when a state's tax rate history is opened; the manage screen stays open | `{ state: string }` |
  * | `company/stateTaxes/updated` | Fired after a state's requirements are saved; the manage screen stays open | — |
- * | `company/stateTaxes/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards and surfaces the "State tax settings updated" alert | — |
+ * | `company/stateTaxes/rateScheduled` | Fired after a future-dated tax rate is scheduled from a state's tax rate history; the manage screen stays open | `{ state: string, key: string, effectiveFrom: string, requirements: { key: string, value: string }[] }` |
  * | `company/management/taxPayments/editRequested` | Fired when "Manage" is clicked on the Tax payments card | `{ companyId: string }` |
  * | `company/taxPayments/view` | Fired when a tax payment is selected on the manage screen; the manage screen stays open | `{ taxPaymentId: string }` |
  * | `company/taxPayments/back` | Fired when the user returns from a tax payment to the manage screen; the manage screen stays open | — |
@@ -106,7 +106,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/forms/sign/back` | Fired when the user leaves the signature form; the manage screen stays open | — |
  * | `company/forms/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards and surfaces the "Documents signed" alert if anything was signed | — |
  * | `company/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'companyDetails' \| 'pay' \| 'taxes' \| 'documents' }` |
- * | `company/dashboard/back` | Fired when the user clicks "Back to company settings" on a spoke; the dashboard returns to the cards | — |
+ * | `company/dashboard/back` | Fired when the user clicks "Back to company settings" on a spoke; the dashboard returns to the cards. Leaving the state taxes screen surfaces the "State tax settings updated" alert if a state was saved or a rate scheduled during the visit | — |
  * | `company/dashboard/alertDismissed` | Fired when the user dismisses a top-of-dashboard success alert | — |
  *
  * @components
