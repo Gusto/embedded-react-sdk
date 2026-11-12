@@ -97,7 +97,7 @@ function CompanyFormsCardContent({ companyId, onEvent, LoaderComponent }: Compan
               <Flex flexDirection="column" gap={4}>
                 {formsAwaitingSignature.map(form => (
                   <Components.Text key={form.uuid} size="sm">
-                    {form.title || form.name || t('card.untitledForm')}
+                    {form.title || t('card.untitledForm')}
                   </Components.Text>
                 ))}
               </Flex>
