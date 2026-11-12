@@ -1320,25 +1320,11 @@ export interface CompensationFormFields {
 function CompensationHistory(input: CompensationHistoryProps): JSX;
 
 // @alpha
-export interface CompensationHistoryEntry {
-    compensationId: string;
-    effectiveDate: string;
-    flsaStatus?: FlsaStatusType;
-    paymentUnit?: string;
-    rate?: string;
-    status: CompensationHistoryStatus;
-    title: string | null;
-}
-
-// @alpha
 interface CompensationHistoryProps {
     employeeId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
-
-// @alpha
-export type CompensationHistoryStatus = 'past' | 'current' | 'upcoming';
 
 // @public
 export type CompensationOptionalFieldsToRequire = { create?: ("minimumWageId" | "title")[] | undefined; update?: ("effectiveDate" | "flsaStatus" | "minimumWageId" | "paymentUnit" | "rate" | "title")[] | undefined; };
@@ -3830,14 +3816,6 @@ type InviteSignatoryDefaultValues = RequireAtLeastOne<Pick<Signatory, 'firstName
 interface InviteSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
     companyId: string;
     defaultValues?: InviteSignatoryDefaultValues;
-}
-
-// @alpha
-export interface JobCompensationHistory {
-    entries: CompensationHistoryEntry[];
-    isPrimary: boolean;
-    jobId: string;
-    jobTitle: string;
 }
 
 // @public
@@ -6403,25 +6381,6 @@ export interface UseCompensationFormReady extends BaseFormHookReady<Compensation
 
 // @public
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady;
-
-// @alpha
-export function useCompensationHistory(input: UseCompensationHistoryProps): UseCompensationHistoryResult;
-
-// @alpha
-export interface UseCompensationHistoryProps {
-    employeeId: string;
-}
-
-// @alpha
-export type UseCompensationHistoryReady = BaseHookReady<{
-    jobs: JobCompensationHistory[];
-    hasMultipleJobs: boolean;
-}, {
-    isFetching: boolean;
-}>;
-
-// @alpha
-export type UseCompensationHistoryResult = HookLoadingResult | UseCompensationHistoryReady;
 
 // @public
 export function useContractorAddressForm(input: UseContractorAddressFormProps): HookLoadingResult | UseContractorAddressFormReady;
