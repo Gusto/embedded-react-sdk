@@ -489,6 +489,13 @@ export class SDKRouter extends MemberRouter {
   // Populated by buildPages; used by emitCategoryFiles to create hooks subdirectories.
   private static readonly domainsWithHooks = new Set<string>()
 
+  // Namespace ids that produced a page, populated by buildPages. A namespace tagged
+  // `@alpha`/`@beta` is removed by excludeUnreleasedTags before pages are built, so it can
+  // sit in DOMAINS — reserving its sidebar slot for graduation — while rendering nothing.
+  // emitCategoryFiles consults this so an unreleased namespace doesn't leave a
+  // `_category_.json` stranded over an empty directory.
+  private static readonly renderedNamespaces = new Set<string>()
+
   // Emit _category_.json files for each domain directory and namespace subdirectory
   // so Docusaurus uses our labels and ordering in the sidebar rather than inferring
   // them from directory names.
@@ -503,11 +510,14 @@ export class SDKRouter extends MemberRouter {
       )
       for (const [nsIdx, ns] of domain.namespaces.entries()) {
         if (!ns.subpath) continue
+        if (!SDKRouter.renderedNamespaces.has(ns.id)) continue
         const nsDir = join(domainDir, ns.subpath)
         mkdirSync(nsDir, { recursive: true })
         writeFileSync(
           join(nsDir, '_category_.json'),
-          // index.md = position 1; namespace subdirs start at position 2
+          // index.md = position 1; namespace subdirs start at position 2. Positions track
+          // DOMAINS order, so a skipped unreleased namespace leaves a gap instead of
+          // renumbering its siblings — graduation then slots it in without touching them.
           JSON.stringify({ label: ns.id, position: nsIdx + 2, collapsed: false }, null, 2) + '\n',
         )
       }
@@ -906,6 +916,16 @@ export class SDKRouter extends MemberRouter {
     SDKRouter.clearSources(project)
 
     const pages = super.buildPages(project)
+
+    for (const page of pages) {
+      if (
+        page.model instanceof DeclarationReflection &&
+        page.model.kind === ReflectionKind.Namespace &&
+        NAMESPACE_PATHS[page.model.name]
+      ) {
+        SDKRouter.renderedNamespaces.add(page.model.name)
+      }
+    }
 
     // The project index is rendered as .mdx (JSX required for DocCardList).
     // Update the pages array entry and all fullUrls that reference index.md so
