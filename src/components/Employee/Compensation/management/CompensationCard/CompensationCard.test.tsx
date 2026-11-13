@@ -210,4 +210,50 @@ describe('CompensationCard (standalone)', () => {
     })
     expect(deletePath).toBe('/v1/jobs/job-uuid-2')
   })
+
+  describe('compensation history entry point', () => {
+    beforeEach(() => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
+    })
+
+    it('hides the View history CTA when the compensationHistory flag is off', async () => {
+      renderWithProviders(<CompensationCard employeeId="employee-uuid" onEvent={onEvent} />)
+
+      await screen.findByText('My Job')
+
+      expect(screen.queryByRole('button', { name: 'View history' })).toBeNull()
+    })
+
+    it('emits CARD_HISTORY_REQUESTED when the View history CTA is clicked', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<CompensationCard employeeId="employee-uuid" onEvent={onEvent} />, {
+        unstableFeatures: { compensationHistory: true },
+      })
+
+      await user.click(await screen.findByRole('button', { name: 'View history' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_HISTORY_REQUESTED,
+          { employeeId: 'employee-uuid' },
+        )
+      })
+    })
+
+    it('omits the View history CTA when the employee has no jobs', async () => {
+      server.use(handleGetEmployeeJobs(() => HttpResponse.json([])))
+
+      renderWithProviders(<CompensationCard employeeId="employee-uuid" onEvent={onEvent} />, {
+        unstableFeatures: { compensationHistory: true },
+      })
+
+      await screen.findByText('No compensation')
+
+      expect(screen.queryByRole('button', { name: 'View history' })).toBeNull()
+    })
+  })
 })

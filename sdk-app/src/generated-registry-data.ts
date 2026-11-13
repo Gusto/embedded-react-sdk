@@ -89,6 +89,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeManagement.CompensationAddJobForm': ['employeeId'],
   'EmployeeManagement.CompensationCard': ['employeeId'],
   'EmployeeManagement.CompensationEditForm': ['employeeId'],
+  'EmployeeManagement.CompensationHistory': ['employeeId'],
   'EmployeeManagement.Dashboard': ['employeeId'],
   'EmployeeManagement.DashboardFlow': ['employeeId'],
   'EmployeeManagement.Deductions': ['employeeId'],
@@ -216,6 +217,7 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   companySettingsDashboard: false,
+  compensationHistory: false,
   contractorPaymentHistory: false,
   historicalPayments: false,
   managePaySchedules: false,

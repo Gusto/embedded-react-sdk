@@ -145,6 +145,10 @@ export const employeeEvents = {
     'employee/management/compensation/card/jobDeleted',
   EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED:
     'employee/management/compensation/card/changeCancelled',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_HISTORY_REQUESTED:
+    'employee/management/compensation/card/historyRequested',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_HISTORY_CLOSED:
+    'employee/management/compensation/history/closed',
   EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED:
     'employee/management/compensation/editForm/submitted',
   EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED:

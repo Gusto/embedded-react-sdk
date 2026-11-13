@@ -15,6 +15,7 @@ import {
   AddJobContextual,
   EditCompensationContextual,
   AddAnotherJobContextual,
+  CompensationHistoryContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -168,6 +169,16 @@ export const dashboardStateMachine = {
       reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
         ...ctx,
         component: AddAnotherJobContextual,
+        currentJobId: null,
+        successAlert: null,
+      })),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_HISTORY_REQUESTED,
+      'compensationHistory',
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: CompensationHistoryContextual,
         currentJobId: null,
         successAlert: null,
       })),
@@ -363,6 +374,13 @@ export const dashboardStateMachine = {
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
+  ),
+  compensationHistory: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_HISTORY_CLOSED,
       'index',
       returnToIndex,
     ),

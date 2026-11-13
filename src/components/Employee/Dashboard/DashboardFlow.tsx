@@ -65,6 +65,8 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `employee/management/compensation/card/addAnotherRequested` | Fired when "Add another job" is clicked on the Compensation card | `{ employeeId: string }` |
  * | `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }` |
  * | `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
+ * | `employee/management/compensation/card/historyRequested` | Fired when "View history" is clicked on the Compensation card; the dashboard swaps to the compensation history view. Requires the `compensationHistory` unstable feature flag | `{ employeeId: string }` |
+ * | `employee/management/compensation/history/closed` | Fired when the user clicks Back in the compensation history view; the dashboard returns to the cards | `{ employeeId: string }` |
  * | `employee/management/compensation/editForm/submitted` | Fired after an edit-compensation save completes; the dashboard returns to the cards | Updated `Compensation` entity |
  * | `employee/management/compensation/editForm/cancelled` | Fired when the user cancels the edit-compensation form; the dashboard returns to the cards | — |
  * | `employee/management/compensation/addJobForm/submitted` | Fired after the first job and compensation are saved; the dashboard returns to the cards and surfaces the "Job added" alert | Updated `Compensation` entity |
@@ -109,6 +111,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * - {@link CompensationAddJobForm}
  * - {@link CompensationEditForm}
  * - {@link CompensationAddAnotherJobForm}
+ * - {@link CompensationHistory} (behind the `compensationHistory` unstable feature flag)
  * - {@link DeductionsEditForm}
  * - {@link DocumentManager}
  *

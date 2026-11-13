@@ -102,6 +102,8 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `employee/management/compensation/card/addAnotherRequested` | Fired when "Add another job" is clicked on the Compensation card | `{ employeeId: string }` |
 | `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }` |
 | `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
+| `employee/management/compensation/card/historyRequested` | Fired when "View history" is clicked on the Compensation card; the dashboard swaps to the compensation history view. Requires the `compensationHistory` unstable feature flag | `{ employeeId: string }` |
+| `employee/management/compensation/history/closed` | Fired when the user clicks Back in the compensation history view; the dashboard returns to the cards | `{ employeeId: string }` |
 | `employee/management/compensation/editForm/submitted` | Fired after an edit-compensation save completes; the dashboard returns to the cards | Updated `Compensation` entity |
 | `employee/management/compensation/editForm/cancelled` | Fired when the user cancels the edit-compensation form; the dashboard returns to the cards | — |
 | `employee/management/compensation/addJobForm/submitted` | Fired after the first job and compensation are saved; the dashboard returns to the cards and surfaces the "Job added" alert | Updated `Compensation` entity |
@@ -149,6 +151,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | [CompensationAddJobForm](blocks.md#compensationaddjobform) | Standalone form for adding an employee's first job and compensation from the management surface. |
 | [CompensationEditForm](blocks.md#compensationeditform) | Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change. |
 | [CompensationAddAnotherJobForm](blocks.md#compensationaddanotherjobform) | Standalone form for adding a secondary job and compensation to an employee from the management surface. |
+| CompensationHistory | |
 | [DeductionsEditForm](blocks.md#deductionseditform) | Standalone add/edit surface for a single employee deduction. |
 | [DocumentManager](blocks.md#documentmanager) | Read-only document viewer for the admin-facing employee dashboard. Renders the selected form's PDF — including unsigned forms, which are shown as-is. Signing is intentionally not offered here; forms are signed by the employee during onboarding, not by an admin viewing the dashboard. |
 
