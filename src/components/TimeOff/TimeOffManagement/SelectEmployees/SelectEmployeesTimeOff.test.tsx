@@ -174,7 +174,7 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.getByText('Bob Jones')).toBeInTheDocument()
   })
 
-  it('hides employees whose primary job hire_date is in the future', async () => {
+  it('trusts server eligibility when a hire date is ahead of the browser date', async () => {
     const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
     mockEmployees.push({
       uuid: '99',
@@ -189,7 +189,7 @@ describe('SelectEmployeesTimeOff', () => {
       await waitFor(() => {
         expect(screen.getByText('Alice Smith')).toBeInTheDocument()
       })
-      expect(screen.queryByText('Future Hire')).not.toBeInTheDocument()
+      expect(screen.getByText('Future Hire')).toBeInTheDocument()
     } finally {
       mockEmployees.pop()
     }

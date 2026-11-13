@@ -319,7 +319,7 @@ const paymentUnitEntries: PaymentUnit[] = [
 const paymentUnitOptions = paymentUnitEntries.map(unit => ({ value: unit, label: unit }))
 
 function todayISO(): string {
-  return new Date().toISOString().split('T')[0]!
+  return formatDateToStringDate(new Date()) ?? ''
 }
 
 /** @internal */
