@@ -10,7 +10,12 @@ const formatters = {
 
 const baseDeduction: Pick<
   Garnishment,
-  'amount' | 'deductAsPercentage' | 'recurring' | 'payPeriodMaximum'
+  | 'amount'
+  | 'deductAsPercentage'
+  | 'recurring'
+  | 'payPeriodMaximum'
+  | 'childSupport'
+  | 'garnishmentType'
 > = {
   amount: '50',
   deductAsPercentage: false,
@@ -19,6 +24,49 @@ const baseDeduction: Pick<
 }
 
 describe('formatDeductionAmount', () => {
+  it.each(['0', '50'])('shows child support dollars when the percentage limit is %s', amount => {
+    expect(
+      formatDeductionAmount(
+        {
+          ...baseDeduction,
+          amount,
+          deductAsPercentage: true,
+          recurring: true,
+          payPeriodMaximum: '150',
+          childSupport: { paymentPeriod: 'Monthly' },
+        },
+        formatters,
+      ),
+    ).toBe('$150.00')
+  })
+
+  it('recognizes child support by type when order details are absent', () => {
+    expect(
+      formatDeductionAmount(
+        { ...baseDeduction, garnishmentType: 'child_support', payPeriodMaximum: '150' },
+        formatters,
+      ),
+    ).toBe('$150.00')
+  })
+
+  it.each([null, '0', 'invalid'])(
+    'shows the percentage for child support without valid dollars (%s)',
+    payPeriodMaximum => {
+      expect(
+        formatDeductionAmount({ ...baseDeduction, childSupport: {}, payPeriodMaximum }, formatters),
+      ).toBe('50%')
+    },
+  )
+
+  it('shows a placeholder when child support has neither dollars nor a percentage', () => {
+    expect(
+      formatDeductionAmount(
+        { ...baseDeduction, childSupport: {}, amount: '0', payPeriodMaximum: null },
+        formatters,
+      ),
+    ).toBe('-')
+  })
+
   it('formats a one-time fixed-dollar deduction as currency without suffix', () => {
     expect(formatDeductionAmount(baseDeduction, formatters)).toBe('$50.00')
   })
@@ -57,9 +105,6 @@ describe('formatDeductionAmount', () => {
     )
   })
 
-  // SDK-945: child-support garnishments are stored as deductAsPercentage:true
-  // even when the user only set a fixed dollar cap (payPeriodMaximum) and no
-  // percentage. The amount is then "0", which must not render as "0%".
   it('shows the dollar cap (not "0%") for a percentage deduction with no percentage but a payPeriodMaximum', () => {
     expect(
       formatDeductionAmount(

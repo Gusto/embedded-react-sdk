@@ -216,6 +216,12 @@ export const companyEvents = {
   COMPANY_DASHBOARD_TAB_CHANGE: 'company/dashboard/tabChange',
   COMPANY_DASHBOARD_ALERT_DISMISSED: 'company/dashboard/alertDismissed',
   COMPANY_DASHBOARD_BACK: 'company/dashboard/back',
+  COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: 'company/management/bankAccount/editRequested',
+  COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: 'company/management/paySchedule/editRequested',
+  COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: 'company/management/stateTaxes/editRequested',
+  COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: 'company/management/taxPayments/editRequested',
+  COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: 'company/management/signatory/editRequested',
+  COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: 'company/management/companyForms/editRequested',
 } as const
 
 /**
@@ -290,6 +296,10 @@ export const contractorEvents = {
   CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED:
     'contractor/management/documents/card/viewRequested',
   CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: 'contractor/management/documents/card/viewed',
+  CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED:
+    'contractor/management/payments/card/paymentSelected',
+  CONTRACTOR_MANAGEMENT_PAYMENTS_STATEMENT_CLOSED:
+    'contractor/management/payments/statement/closed',
   CONTRACTOR_DASHBOARD_TAB_CHANGE: 'contractor/dashboard/tabChange',
   CONTRACTOR_DASHBOARD_ALERT_DISMISSED: 'contractor/dashboard/alertDismissed',
 } as const

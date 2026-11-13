@@ -105,6 +105,37 @@ describe('PayrollBlockerList', () => {
   })
 
   describe('blocker content rendering', () => {
+    // SDK-1418: the published OAS excludes `partner_tos_not_accepted` from Payroll-Blocker.key, and
+    // the application emits keys the OAS doesn't list at all. The pinned client tolerates both only
+    // because the key is generated as an open enum. This pins that tolerance from the consumer side,
+    // so a client regen that closes the enum fails here instead of silently crashing the surface.
+    it('renders blockers whose keys the published schema does not list', async () => {
+      server.use(
+        handleGetPayrollBlockers(() =>
+          HttpResponse.json([
+            {
+              key: 'partner_tos_not_accepted',
+              message: 'Partner must accept the terms of service.',
+            },
+            {
+              key: 'some_blocker_shipped_after_this_client',
+              message: 'A blocker this client has never heard of.',
+            },
+          ]),
+        ),
+      )
+
+      renderPayrollBlockerList({ companyId: mockCompanyId })
+
+      expect(await screen.findByText('Terms of Service Required')).toBeInTheDocument()
+      expect(
+        await screen.findByText('Partner must accept the terms of service.'),
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('A blocker this client has never heard of.'),
+      ).toBeInTheDocument()
+    })
+
     it('displays blocker title and description', async () => {
       server.use(
         handleGetPayrollBlockers(() =>

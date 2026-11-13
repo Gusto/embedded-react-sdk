@@ -144,6 +144,7 @@ import { Garnishment } from '@gusto/embedded-api/models/components/garnishment';
 import { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment';
 import { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument';
+import { GetV1ContractorsContractorUuidPaymentsResponse } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidpayments';
 import { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HolidayPayPolicyEmployees } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HourlyCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -804,6 +805,16 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 // @public
 function BankAccount(props: BankAccountProps): JSX;
 
+// @alpha
+function BankAccountCard(props: BankAccountCardProps): JSX;
+
+// @alpha
+interface BankAccountCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
     companyId: string;
@@ -1117,6 +1128,16 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
     dictionary?: ResourceDictionary<TResourceKey>;
 }
 
+// @alpha
+function CompanyFormsCard(props: CompanyFormsCardProps): JSX;
+
+// @alpha
+interface CompanyFormsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 declare namespace CompanyManagement {
     export {
         PaySchedule_2 as PaySchedule,
@@ -1136,6 +1157,18 @@ declare namespace CompanyManagement {
         LocationsCardProps,
         FederalTaxesCard_2 as FederalTaxesCard,
         FederalTaxesCardProps_2 as FederalTaxesCardProps,
+        BankAccountCard,
+        BankAccountCardProps,
+        PaySchedulesCard,
+        PaySchedulesCardProps,
+        StateTaxesCard_2 as StateTaxesCard,
+        StateTaxesCardProps_2 as StateTaxesCardProps,
+        TaxPaymentsCard,
+        TaxPaymentsCardProps,
+        SignatoryCard,
+        SignatoryCardProps,
+        CompanyFormsCard,
+        CompanyFormsCardProps,
         Dashboard_2 as Dashboard,
         DashboardFlow_2 as DashboardFlow,
         DashboardProps_2 as DashboardProps,
@@ -1532,6 +1565,8 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "contractor/management/compensation/alertDismissed";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED: "contractor/management/documents/card/viewRequested";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: "contractor/management/documents/card/viewed";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED: "contractor/management/payments/card/paymentSelected";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENTS_STATEMENT_CLOSED: "contractor/management/payments/statement/closed";
     readonly CONTRACTOR_DASHBOARD_TAB_CHANGE: "contractor/dashboard/tabChange";
     readonly CONTRACTOR_DASHBOARD_ALERT_DISMISSED: "contractor/dashboard/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
@@ -1592,6 +1627,12 @@ export const componentEvents: {
     readonly COMPANY_DASHBOARD_TAB_CHANGE: "company/dashboard/tabChange";
     readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
     readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: "company/management/bankAccount/editRequested";
+    readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
+    readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: "company/management/signatory/editRequested";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: "company/management/companyForms/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -2073,6 +2114,8 @@ declare namespace ContractorManagement {
         CompensationEditFormProps_2 as CompensationEditFormProps,
         DocumentsCard_2 as DocumentsCard,
         DocumentsCardProps_2 as DocumentsCardProps,
+        PaymentsCard,
+        PaymentsCardProps,
         PaymentFlow,
         PaymentFlowProps,
         CreatePaymentFlow,
@@ -2177,6 +2220,9 @@ export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFi
 
 // @public
 export type ContractorPayMaxHourlyRateValidation = typeof ContractorPayErrorCodes.MAX_HOURLY_RATE;
+
+// @alpha
+export type ContractorPaymentHistoryEntry = NonNullable<GetV1ContractorsContractorUuidPaymentsResponse['contractorPaymentListings']>[number];
 
 // @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
@@ -2539,6 +2585,9 @@ interface DashboardFlowProps extends BaseComponentInterface<never> {
 // @alpha
 interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
     companyId: string;
+    enableAutoPilot?: boolean;
+    enableMultipleSchedules?: boolean;
+    viewerSignatoryId?: string;
 }
 
 // @public
@@ -2568,7 +2617,7 @@ interface DashboardProps_3 extends BaseComponentInterface<'Contractor.Dashboard'
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
 
 // @alpha
-type DashboardTab_2 = 'companyDetails' | 'taxes';
+type DashboardTab_2 = 'companyDetails' | 'pay' | 'taxes' | 'documents';
 
 // @public (undocumented)
 type DashboardTab_3 = 'details' | 'pay' | 'documents';
@@ -4503,6 +4552,16 @@ export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
 // @public
 export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, PaymentPeriod>>;
 
+// @alpha
+function PaymentsCard(input: PaymentsCardProps): JSX;
+
+// @alpha
+interface PaymentsCardProps {
+    contractorId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 function PaymentsList(props: PaymentsListProps): JSX;
 
@@ -4806,6 +4865,16 @@ interface PayScheduleProps_2 extends Omit<BaseComponentInterface<'Company.Manage
 
 // @public
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
+
+// @alpha
+function PaySchedulesCard(props: PaySchedulesCardProps): JSX;
+
+// @alpha
+interface PaySchedulesCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // @public
 export type PayScheduleWorkweekStartDay = WorkweekStartDay;
@@ -5203,6 +5272,10 @@ export interface Resources {
     // (undocumented)
     'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
     // (undocumented)
+    'Company.Management.BankAccount': Translations.CompanyManagementBankAccount
+    // (undocumented)
+    'Company.Management.CompanyForms': Translations.CompanyManagementCompanyForms
+    // (undocumented)
     'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
     // (undocumented)
     'Company.Management.Industry': Translations.CompanyManagementIndustry
@@ -5213,7 +5286,15 @@ export interface Resources {
     // (undocumented)
     'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
     // (undocumented)
+    'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
+    // (undocumented)
+    'Company.Management.Signatory': Translations.CompanyManagementSignatory
+    // (undocumented)
+    'Company.Management.StateTaxes': Translations.CompanyManagementStateTaxes
+    // (undocumented)
     'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
+    // (undocumented)
+    'Company.Management.TaxPayments': Translations.CompanyManagementTaxPayments
     // (undocumented)
     'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
     // (undocumented)
@@ -5264,6 +5345,8 @@ export interface Resources {
     'Contractor.Management.Documents': Translations.ContractorManagementDocuments
     // (undocumented)
     'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
+    // (undocumented)
+    'Contractor.Management.Payments': Translations.ContractorManagementPayments
     // (undocumented)
     'Contractor.Management.Profile': Translations.ContractorManagementProfile
     // (undocumented)
@@ -5612,6 +5695,16 @@ export interface SharedQuestionMetadata {
     questionId: string;
 }
 
+// @alpha
+function SignatoryCard(props: SignatoryCardProps): JSX;
+
+// @alpha
+interface SignatoryCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCompanyFormRequiredValidation>>;
 
@@ -5835,9 +5928,19 @@ function StateTaxes_3(input: StateTaxesProps_3): JSX;
 // @public
 function StateTaxesCard(input: StateTaxesCardProps): JSX;
 
+// @alpha
+function StateTaxesCard_2(props: StateTaxesCardProps_2): JSX;
+
 // @public
 interface StateTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+interface StateTaxesCardProps_2 {
+    companyId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
@@ -6018,6 +6121,16 @@ function TaxPaymentDetail(props: TaxPaymentDetailProps): JSX;
 interface TaxPaymentDetailProps extends BaseComponentInterface<'Company.Management.TaxPaymentDetail'> {
     companyId: string;
     taxPaymentId: string;
+}
+
+// @alpha
+function TaxPaymentsCard(props: TaxPaymentsCardProps): JSX;
+
+// @alpha
+interface TaxPaymentsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @alpha
@@ -6275,6 +6388,7 @@ export interface UnorderedListProps extends BaseListProps {
 export interface UnstableFeatures {
     companySettingsDashboard?: boolean;
     compensationHistory?: boolean;
+    contractorPaymentHistory?: boolean;
     historicalPayments?: boolean;
     managePaySchedules?: boolean;
     taxPayments?: boolean;
@@ -6555,6 +6669,29 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<C
 
 // @public
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
+
+// @alpha
+export function useContractorPaymentsList(input: UseContractorPaymentsListParams): UseContractorPaymentsListResult;
+
+// @alpha
+export interface UseContractorPaymentsListParams {
+    contractorId: string;
+    defaultItemsPerPage?: PaginationItemsPerPage;
+}
+
+// @alpha
+export interface UseContractorPaymentsListReady extends BaseHookReady<{
+    payments: ContractorPaymentHistoryEntry[];
+}, {
+    isFetching: boolean;
+}> {
+    pagination: {
+        payments?: PaginationControlProps;
+    };
+}
+
+// @alpha
+export type UseContractorPaymentsListResult = HookLoadingResult | UseContractorPaymentsListReady;
 
 // @public
 export function useContractorRehireForm(input: UseContractorRehireFormProps): HookLoadingResult | UseContractorRehireFormReady;

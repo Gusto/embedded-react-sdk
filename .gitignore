@@ -136,12 +136,6 @@ dist
 
 .temp
 
-# Docusaurus cache and generated files
-
-.docusaurus
-docs-site/build/
-docs-site/.docusaurus/
-
 
 # Serverless directories
 
@@ -183,6 +177,11 @@ src/types/schema.*
 dist
 
 .secrets
+
+# A committed one would get rejected by the release workflows' npm-config
+# guard anyway, but keep it from being committed by accident in the first
+# place.
+.npmrc
 
 *storybook.log
 

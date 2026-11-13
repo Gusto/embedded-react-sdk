@@ -1,6 +1,5 @@
 import { createMachine } from 'robot3'
-import { useEffect, useMemo, useState } from 'react'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { useMemo, useState } from 'react'
 import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAssignments'
 import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
 import type { PayScheduleAssignment as PayScheduleAssignmentEntity } from '@gusto/embedded-api/models/components/payscheduleassignment'
@@ -10,7 +9,6 @@ import type {
   PayScheduleAssignmentContextInterface,
   SupportedAssignmentType,
 } from './usePayScheduleAssignment'
-import { stripNullAssignmentPreviewFields } from './stripNullAssignmentPreviewFields'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import type { BaseComponentKeys } from '@/components/Base/Base'
@@ -128,25 +126,6 @@ function Root({ companyId, dictionary }: Omit<PayScheduleAssignmentProps, BaseCo
   // under its own namespace and are otherwise never loaded from this flow.
   useI18n('Company.PaySchedule')
   const { onEvent } = useBase()
-
-  // Temporary: patch the assignment-preview response before the SDK validates it, and log
-  // request/error details for debugging. See stripNullAssignmentPreviewFields for why —
-  // remove both alongside it once the OAS is fixed upstream.
-  const client = useGustoEmbeddedContext()
-  useEffect(() => {
-    const hooks = client._options.hooks
-    if (!hooks) return
-    hooks.registerAfterSuccessHook(stripNullAssignmentPreviewFields)
-
-    return () => {
-      // Remove only the single instance this effect registered — filtering the array would
-      // also drop another concurrently-mounted instance's registration of the same hook.
-      const index = hooks.afterSuccessHooks.indexOf(stripNullAssignmentPreviewFields)
-      if (index !== -1) {
-        hooks.afterSuccessHooks.splice(index, 1)
-      }
-    }
-  }, [client])
 
   const { data: assignments } = usePaySchedulesGetAssignmentsSuspense({ companyId })
 

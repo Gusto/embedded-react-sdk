@@ -4,6 +4,7 @@ import 'i18next'
 declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: 'common'
+    returnEmptyString: true
     resources: Resources
   }
 }
@@ -36,6 +37,10 @@ export interface Resources {
   /** */
   'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
   /** */
+  'Company.Management.BankAccount': Translations.CompanyManagementBankAccount
+  /** */
+  'Company.Management.CompanyForms': Translations.CompanyManagementCompanyForms
+  /** */
   'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
   /** */
   'Company.Management.Industry': Translations.CompanyManagementIndustry
@@ -46,7 +51,15 @@ export interface Resources {
   /** */
   'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
   /** */
+  'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
+  /** */
+  'Company.Management.Signatory': Translations.CompanyManagementSignatory
+  /** */
+  'Company.Management.StateTaxes': Translations.CompanyManagementStateTaxes
+  /** */
   'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
+  /** */
+  'Company.Management.TaxPayments': Translations.CompanyManagementTaxPayments
   /** */
   'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
   /** */
@@ -97,6 +110,8 @@ export interface Resources {
   'Contractor.Management.Documents': Translations.ContractorManagementDocuments
   /** */
   'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
+  /** */
+  'Contractor.Management.Payments': Translations.ContractorManagementPayments
   /** */
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
   /** */
@@ -490,8 +505,12 @@ export namespace Translations {
     tabs: {
       /** @defaultValue `"Company details"` */
       companyDetails: string
+      /** @defaultValue `"Pay"` */
+      pay: string
       /** @defaultValue `"Taxes"` */
       taxes: string
+      /** @defaultValue `"Documents"` */
+      documents: string
     }
     /** @defaultValue `"Back to company settings"` */
     backToDashboardCta: string
@@ -502,6 +521,14 @@ export namespace Translations {
       federalTaxesUpdated: string
       /** @defaultValue `"Locations updated"` */
       locationsUpdated: string
+      /** @defaultValue `"Bank account updated"` */
+      bankAccountUpdated: string
+      /** @defaultValue `"State tax settings updated"` */
+      stateTaxesUpdated: string
+      /** @defaultValue `"Signatory updated"` */
+      signatoryUpdated: string
+      /** @defaultValue `"Documents signed"` */
+      formsSigned: string
     }
   }
   /** Translation keys for the `Company.DocumentList` i18n namespace. */
@@ -1071,6 +1098,80 @@ export namespace Translations {
       }
     }
   }
+  /** Translation keys for the `Company.Management.BankAccount` i18n namespace. */
+  export interface CompanyManagementBankAccount {
+    card: {
+      /** @defaultValue `"Bank account"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage bank account"` */
+      manageAriaLabel: string
+      /** @defaultValue `"Add bank account"` */
+      addCta: string
+      /** @defaultValue `"Account name"` */
+      accountName: string
+      /** @defaultValue `"Account number"` */
+      accountNumber: string
+      /** @defaultValue `"Routing number"` */
+      routingNumber: string
+      /** @defaultValue `"Account type"` */
+      accountType: string
+      /** @defaultValue `"Verification"` */
+      verification: string
+      /** @defaultValue `"No value"` */
+      listEmptyPlaceholder: string
+      verificationStatus: {
+        /** @defaultValue `"Verified"` */
+        verified: string
+        /** @defaultValue `"Verification pending"` */
+        awaiting_deposits: string
+        /** @defaultValue `"Ready to verify"` */
+        ready_for_verification: string
+      }
+      emptyState: {
+        /** @defaultValue `"No bank account yet"` */
+        title: string
+        /** @defaultValue `"Add a checking account so this company can be debited for wages and taxes."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.CompanyForms` i18n namespace. */
+  export interface CompanyManagementCompanyForms {
+    card: {
+      /** @defaultValue `"Documents"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage company documents"` */
+      manageAriaLabel: string
+      /** @defaultValue `"Signatures"` */
+      signatures: string
+      /** @defaultValue `"Awaiting signature"` */
+      awaitingSignature: string
+      /** @defaultValue `"Documents"` */
+      documents: string
+      /** @defaultValue `"Untitled form"` */
+      untitledForm: string
+      /** @defaultValue `"{{count}} form awaiting signature"` */
+      awaitingCount_one: string
+      /** @defaultValue `"{{count}} forms awaiting signature"` */
+      awaitingCount_other: string
+      /** @defaultValue `"All forms signed"` */
+      allSigned: string
+      /** @defaultValue `"{{count}} document"` */
+      documentCount_one: string
+      /** @defaultValue `"{{count}} documents"` */
+      documentCount_other: string
+      emptyState: {
+        /** @defaultValue `"No company documents yet"` */
+        title: string
+        /** @defaultValue `"Documents appear here once this company's tax and authorization forms are generated."` */
+        description: string
+      }
+    }
+  }
   /** Translation keys for the `Company.Management.FederalTaxes` i18n namespace. */
   export interface CompanyManagementFederalTaxes {
     card: {
@@ -1078,6 +1179,8 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Edit"` */
       editCta: string
+      /** @defaultValue `"Edit federal taxes"` */
+      editAriaLabel: string
       /** @defaultValue `"Legal name"` */
       legalName: string
       /** @defaultValue `"EIN"` */
@@ -1109,6 +1212,8 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Edit"` */
       editCta: string
+      /** @defaultValue `"Edit industry"` */
+      editAriaLabel: string
       /** @defaultValue `"Industry"` */
       industry: string
       /** @defaultValue `"NAICS code"` */
@@ -1130,6 +1235,8 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Manage"` */
       manageCta: string
+      /** @defaultValue `"Manage locations"` */
+      manageAriaLabel: string
       /** @defaultValue `"Company locations"` */
       listLabel: string
       /** @defaultValue `"Address"` */
@@ -1360,6 +1467,117 @@ export namespace Translations {
     /** @defaultValue `"Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator."` */
     employeeAccessDenied: string
   }
+  /** Translation keys for the `Company.Management.PaySchedules` i18n namespace. */
+  export interface CompanyManagementPaySchedules {
+    card: {
+      /** @defaultValue `"Pay schedules"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage pay schedules"` */
+      manageAriaLabel: string
+      /** @defaultValue `"Add pay schedule"` */
+      addCta: string
+      /** @defaultValue `"Schedule"` */
+      scheduleColumn: string
+      /** @defaultValue `"Pay schedules"` */
+      listLabel: string
+      /** @defaultValue `"Untitled schedule"` */
+      unnamedSchedule: string
+      assignmentMode: {
+        /** @defaultValue `"One schedule for all employees"` */
+        single: string
+        /** @defaultValue `"Separate schedules for hourly and salaried employees"` */
+        hourlySalaried: string
+        /** @defaultValue `"Assigned per employee"` */
+        byEmployee: string
+        /** @defaultValue `"Assigned per department"` */
+        byDepartment: string
+      }
+      emptyState: {
+        /** @defaultValue `"No pay schedule yet"` */
+        title: string
+        /** @defaultValue `"Add a pay schedule to set when this company's employees are paid."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.Signatory` i18n namespace. */
+  export interface CompanyManagementSignatory {
+    card: {
+      /** @defaultValue `"Signatory"` */
+      title: string
+      /** @defaultValue `"Edit"` */
+      editCta: string
+      /** @defaultValue `"Edit signatory"` */
+      editAriaLabel: string
+      /** @defaultValue `"Assign signatory"` */
+      assignCta: string
+      /** @defaultValue `"Name"` */
+      name: string
+      /** @defaultValue `"Title"` */
+      jobTitle: string
+      /** @defaultValue `"Email"` */
+      email: string
+      /** @defaultValue `"Identity verification"` */
+      identityVerification: string
+      /** @defaultValue `"No value"` */
+      listEmptyPlaceholder: string
+      identityVerificationStatus: {
+        /** @defaultValue `"Verified"` */
+        Pass: string
+        /** @defaultValue `"Verification failed"` */
+        Fail: string
+        /** @defaultValue `"Wet signature required"` */
+        Skipped: string
+        /** @defaultValue `"Verification pending"` */
+        pending: string
+      }
+      emptyState: {
+        /** @defaultValue `"No signatory assigned"` */
+        title: string
+        /** @defaultValue `"Assign a signatory so this company's tax and payroll forms can be signed."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.StateTaxes` i18n namespace. */
+  export interface CompanyManagementStateTaxes {
+    card: {
+      /** @defaultValue `"State taxes"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage state taxes"` */
+      manageAriaLabel: string
+      /** @defaultValue `"State"` */
+      stateColumn: string
+      /** @defaultValue `"Setup status"` */
+      statusColumn: string
+      /** @defaultValue `"State tax requirements"` */
+      listLabel: string
+      /** @defaultValue `"Unknown state"` */
+      unknownState: string
+      /** @defaultValue `"Default rates applied"` */
+      defaultRatesApplied: string
+      /** @defaultValue `"Ready to run payroll"` */
+      readyToRunPayroll: string
+      setupStatus: {
+        /** @defaultValue `"Not started"` */
+        notStarted: string
+        /** @defaultValue `"In progress"` */
+        inProgress: string
+        /** @defaultValue `"Complete"` */
+        complete: string
+      }
+      emptyState: {
+        /** @defaultValue `"No state taxes yet"` */
+        title: string
+        /** @defaultValue `"State tax requirements appear once this company has a work address in a state."` */
+        description: string
+      }
+    }
+  }
   /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
   export interface CompanyManagementTaxPaymentDetail {
     /** @defaultValue `"Back to tax payments"` */
@@ -1421,6 +1639,51 @@ export namespace Translations {
     errors: {
       /** @defaultValue `"Tax payment not found"` */
       taxPaymentNotFound: string
+    }
+  }
+  /** Translation keys for the `Company.Management.TaxPayments` i18n namespace. */
+  export interface CompanyManagementTaxPayments {
+    card: {
+      /** @defaultValue `"Tax payments"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage tax payments"` */
+      manageAriaLabel: string
+      /** @defaultValue `"Overdue"` */
+      overdue: string
+      /** @defaultValue `"{{count}} payment overdue"` */
+      overdueCount_one: string
+      /** @defaultValue `"{{count}} payments overdue"` */
+      overdueCount_other: string
+      /** @defaultValue `"None overdue"` */
+      noneOverdue: string
+      /** @defaultValue `"Next payment due"` */
+      nextPaymentDue: string
+      /** @defaultValue `"Agency"` */
+      agency: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+      /** @defaultValue `"Unknown agency"` */
+      unknownAgency: string
+      /** @defaultValue `"No due date on file"` */
+      noDueDate: string
+      jurisdiction: {
+        /** @defaultValue `"Federal"` */
+        federal: string
+        /** @defaultValue `"{{jurisdiction}}"` */
+        state: string
+      }
+      errorState: {
+        /** @defaultValue `"Could not load tax payments, try again later."` */
+        title: string
+      }
+      emptyState: {
+        /** @defaultValue `"No tax payments scheduled"` */
+        title: string
+        /** @defaultValue `"Tax payments appear here once this company owes payroll taxes to an agency."` */
+        description: string
+      }
     }
   }
   /** Translation keys for the `Company.Management.TaxPaymentsList` i18n namespace. */
@@ -3196,6 +3459,43 @@ export namespace Translations {
         /** @defaultValue `"Enter a valid account number"` */
         accountNumber: string
       }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.Payments` i18n namespace. */
+  export interface ContractorManagementPayments {
+    /** @defaultValue `"Recent payments"` */
+    title: string
+    /** @defaultValue `"List of recent payments"` */
+    listLabel: string
+    /** @defaultValue `"View details"` */
+    viewDetailsCta: string
+    /** @defaultValue `"Back"` */
+    backCta: string
+    /** @defaultValue `"Payment date"` */
+    paymentDateColumn: string
+    /** @defaultValue `"Total"` */
+    totalColumn: string
+    /** @defaultValue `"Payment method"` */
+    paymentMethodColumn: string
+    /** @defaultValue `"Status"` */
+    statusColumn: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    status: {
+      /** @defaultValue `"Funded"` */
+      funded: string
+      /** @defaultValue `"Unfunded"` */
+      unfunded: string
+    }
+    emptyState: {
+      /** @defaultValue `"No payments yet"` */
+      title: string
+      /** @defaultValue `"Once you pay this contractor, payments will appear here."` */
+      description: string
+    }
+    errors: {
+      /** @defaultValue `"We could not load this contractor."` */
+      contractorNotFound: string
     }
   }
   /** Translation keys for the `Contractor.Management.Profile` i18n namespace. */

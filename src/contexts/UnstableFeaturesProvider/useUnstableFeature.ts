@@ -31,6 +31,19 @@ export interface UnstableFeatures {
    */
   historicalPayments?: boolean
   /**
+   * Reviewing a single contractor's payment history.
+   *
+   * When `true`, `ContractorManagement.PaymentsCard` can be mounted, and the contractor
+   * dashboard's Pay tab shows a "Recent payments" card.
+   *
+   * When `false`, the card is hidden on the Pay tab and throws when mounted directly. Gated
+   * because the underlying endpoint reports a cancelled payment's status as `Funded` or
+   * `Unfunded` with no field distinguishing it, so a cancelled payment can be shown as paid.
+   *
+   * @defaultValue `false`
+   */
+  contractorPaymentHistory?: boolean
+  /**
    * Managing pay schedules and their employee assignments after onboarding.
    *
    * When `true`, `CompanyManagement.PaySchedule` and `CompanyManagement.PayScheduleAssignment` can
@@ -46,9 +59,10 @@ export interface UnstableFeatures {
    * Reviewing a company's tax payments and their liabilities.
    *
    * When `true`, `CompanyManagement.TaxPaymentsFlow`, `CompanyManagement.TaxPaymentsList`, and
-   * `CompanyManagement.TaxPaymentDetail` can be mounted.
+   * `CompanyManagement.TaxPaymentDetail` can be mounted, and the company settings dashboard
+   * includes its Tax payments card.
    *
-   * When `false`, all three components throw when mounted.
+   * When `false`, all three components throw when mounted and the dashboard omits the card.
    *
    * @defaultValue `false`
    */
@@ -58,9 +72,15 @@ export interface UnstableFeatures {
    *
    * When `true`, `CompanyManagement.Dashboard` and `CompanyManagement.DashboardFlow` can be
    * mounted, along with the section cards they compose: `CompanyManagement.IndustryCard`,
-   * `CompanyManagement.LocationsCard` and `CompanyManagement.FederalTaxesCard`.
+   * `CompanyManagement.LocationsCard`, `CompanyManagement.FederalTaxesCard`,
+   * `CompanyManagement.BankAccountCard`, `CompanyManagement.PaySchedulesCard`,
+   * `CompanyManagement.StateTaxesCard`, `CompanyManagement.TaxPaymentsCard`,
+   * `CompanyManagement.SignatoryCard` and `CompanyManagement.CompanyFormsCard`. The Pay
+   * schedules and Tax payments cards additionally require `managePaySchedules` and
+   * `taxPayments` respectively, and are omitted from the dashboard when their flag is off;
+   * every other card renders regardless.
    *
-   * When `false`, all five components throw when mounted. The individual company components the
+   * When `false`, each of them throws when mounted. The individual company components the
    * dashboard routes to, such as `CompanyOnboarding.Industry` and `CompanyOnboarding.Locations`,
    * are not affected.
    *

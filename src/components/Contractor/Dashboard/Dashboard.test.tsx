@@ -80,6 +80,8 @@ describe('Dashboard', () => {
 
     expect(await screen.findByText('Payment')).toBeInTheDocument()
     expect(await screen.findByText('Compensation')).toBeInTheDocument()
+    // Recent payments is gated on the `contractorPaymentHistory` flag, left off here.
+    expect(screen.queryByText('Recent payments')).toBeNull()
     expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_DASHBOARD_TAB_CHANGE, {
       tab: 'pay',
     })
@@ -262,6 +264,28 @@ describe('DashboardFlow', () => {
       },
       { timeout: 5000 },
     )
+  })
+
+  it('opens a payment statement from the Pay tab and returns to the dashboard', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow contractorId="contractor-123" onEvent={onEvent} />, {
+      unstableFeatures: { contractorPaymentHistory: true },
+    })
+
+    await screen.findByRole('heading', { name: 'Ada Lovelace' })
+    await user.click(screen.getByRole('tab', { name: 'Pay' }))
+
+    const [viewDetails] = await screen.findAllByRole('button', { name: 'View details' })
+    if (!viewDetails) throw new Error('No "View details" button found')
+    await user.click(viewDetails)
+
+    expect(
+      await screen.findByRole('heading', { name: 'Payment statement for Ada Lovelace' }),
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Back' }))
+
+    expect(await screen.findByRole('heading', { name: 'Ada Lovelace' })).toBeInTheDocument()
   })
 
   it('dismisses the success alert', async () => {

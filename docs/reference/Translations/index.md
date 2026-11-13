@@ -355,13 +355,19 @@ Translation keys for the `Company.Dashboard` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-companydashboardalerts"></a> `alerts` | |
+| `alerts.bankAccountUpdated` | `"Bank account updated"` |
 | `alerts.federalTaxesUpdated` | `"Federal tax settings updated"` |
+| `alerts.formsSigned` | `"Documents signed"` |
 | `alerts.industryUpdated` | `"Industry updated"` |
 | `alerts.locationsUpdated` | `"Locations updated"` |
+| `alerts.signatoryUpdated` | `"Signatory updated"` |
+| `alerts.stateTaxesUpdated` | `"State tax settings updated"` |
 | <a id="property-companydashboardbacktodashboardcta"></a> `backToDashboardCta` | `"Back to company settings"` |
 | <a id="property-companydashboardcompanysettingslabel"></a> `companySettingsLabel` | `"Company settings"` |
 | <a id="property-companydashboardtabs"></a> `tabs` | |
 | `tabs.companyDetails` | `"Company details"` |
+| `tabs.documents` | `"Documents"` |
+| `tabs.pay` | `"Pay"` |
 | `tabs.taxes` | `"Taxes"` |
 | <a id="property-companydashboardtabslabel"></a> `tabsLabel` | `"Company settings tabs"` |
 
@@ -708,6 +714,66 @@ Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace.
 
 ***
 
+<a id="companymanagementbankaccount"></a>
+
+### CompanyManagementBankAccount
+
+Translation keys for the `Company.Management.BankAccount` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementbankaccountcard"></a> `card` |
+| `card.accountName` |
+| `card.accountNumber` |
+| `card.accountType` |
+| `card.addCta` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.listEmptyPlaceholder` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.routingNumber` |
+| `card.title` |
+| `card.verification` |
+| `card.verificationStatus` |
+| `card.verificationStatus.awaiting_deposits` |
+| `card.verificationStatus.ready_for_verification` |
+| `card.verificationStatus.verified` |
+
+***
+
+<a id="companymanagementcompanyforms"></a>
+
+### CompanyManagementCompanyForms
+
+Translation keys for the `Company.Management.CompanyForms` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementcompanyformscard"></a> `card` |
+| `card.allSigned` |
+| `card.awaitingCount_one` |
+| `card.awaitingCount_other` |
+| `card.awaitingSignature` |
+| `card.documentCount_one` |
+| `card.documentCount_other` |
+| `card.documents` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.signatures` |
+| `card.title` |
+| `card.untitledForm` |
+
+***
+
 <a id="companymanagementfederaltaxes"></a>
 
 ### CompanyManagementFederalTaxes
@@ -719,6 +785,7 @@ Translation keys for the `Company.Management.FederalTaxes` i18n namespace.
 | Property |
 | ------ |
 | <a id="property-companymanagementfederaltaxescard"></a> `card` |
+| `card.editAriaLabel` |
 | `card.editCta` |
 | `card.ein` |
 | `card.einMissing` |
@@ -746,6 +813,7 @@ Translation keys for the `Company.Management.Industry` i18n namespace.
 | Property |
 | ------ |
 | <a id="property-companymanagementindustrycard"></a> `card` |
+| `card.editAriaLabel` |
 | `card.editCta` |
 | `card.emptyState` |
 | `card.emptyState.description` |
@@ -776,6 +844,7 @@ Translation keys for the `Company.Management.Locations` i18n namespace.
 | `card.filingAddress` |
 | `card.listLabel` |
 | `card.mailingAddress` |
+| `card.manageAriaLabel` |
 | `card.manageCta` |
 | `card.title` |
 
@@ -910,6 +979,96 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 
 ***
 
+<a id="companymanagementpayschedules"></a>
+
+### CompanyManagementPaySchedules
+
+Translation keys for the `Company.Management.PaySchedules` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementpayschedulescard"></a> `card` |
+| `card.addCta` |
+| `card.assignmentMode` |
+| `card.assignmentMode.byDepartment` |
+| `card.assignmentMode.byEmployee` |
+| `card.assignmentMode.hourlySalaried` |
+| `card.assignmentMode.single` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.listLabel` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.scheduleColumn` |
+| `card.title` |
+| `card.unnamedSchedule` |
+
+***
+
+<a id="companymanagementsignatory"></a>
+
+### CompanyManagementSignatory
+
+Translation keys for the `Company.Management.Signatory` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementsignatorycard"></a> `card` |
+| `card.assignCta` |
+| `card.editAriaLabel` |
+| `card.editCta` |
+| `card.email` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.identityVerification` |
+| `card.identityVerificationStatus` |
+| `card.identityVerificationStatus.Fail` |
+| `card.identityVerificationStatus.Pass` |
+| `card.identityVerificationStatus.pending` |
+| `card.identityVerificationStatus.Skipped` |
+| `card.jobTitle` |
+| `card.listEmptyPlaceholder` |
+| `card.name` |
+| `card.title` |
+
+***
+
+<a id="companymanagementstatetaxes"></a>
+
+### CompanyManagementStateTaxes
+
+Translation keys for the `Company.Management.StateTaxes` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementstatetaxescard"></a> `card` |
+| `card.defaultRatesApplied` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.listLabel` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.readyToRunPayroll` |
+| `card.setupStatus` |
+| `card.setupStatus.complete` |
+| `card.setupStatus.inProgress` |
+| `card.setupStatus.notStarted` |
+| `card.stateColumn` |
+| `card.statusColumn` |
+| `card.title` |
+| `card.unknownState` |
+
+***
+
 <a id="companymanagementtaxpaymentdetail"></a>
 
 ### CompanyManagementTaxPaymentDetail
@@ -950,6 +1109,40 @@ Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace.
 | `status.refund` | `"Refund / Credit"` |
 | `status.scheduled` | `"Scheduled"` |
 | <a id="property-companymanagementtaxpaymentdetailunknownagency"></a> `unknownAgency` | `"Unknown agency"` |
+
+***
+
+<a id="companymanagementtaxpayments"></a>
+
+### CompanyManagementTaxPayments
+
+Translation keys for the `Company.Management.TaxPayments` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementtaxpaymentscard"></a> `card` |
+| `card.agency` |
+| `card.amount` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.errorState` |
+| `card.errorState.title` |
+| `card.jurisdiction` |
+| `card.jurisdiction.federal` |
+| `card.jurisdiction.state` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.nextPaymentDue` |
+| `card.noDueDate` |
+| `card.noneOverdue` |
+| `card.overdue` |
+| `card.overdueCount_one` |
+| `card.overdueCount_other` |
+| `card.title` |
+| `card.unknownAgency` |
 
 ***
 
@@ -2192,6 +2385,36 @@ Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace.
 | `removeBankAccountDialog.title` | `"Remove bank account"` |
 | <a id="property-contractormanagementpaymentmethodroutingnumbercolumn"></a> `routingNumberColumn` | `"Routing number"` |
 | <a id="property-contractormanagementpaymentmethodtitle"></a> `title` | `"Payment"` |
+
+***
+
+<a id="contractormanagementpayments"></a>
+
+### ContractorManagementPayments
+
+Translation keys for the `Contractor.Management.Payments` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementpaymentsbackcta"></a> `backCta` | `"Back"` |
+| <a id="property-contractormanagementpaymentsemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementpaymentsemptystate"></a> `emptyState` | |
+| `emptyState.description` | `"Once you pay this contractor, payments will appear here."` |
+| `emptyState.title` | `"No payments yet"` |
+| <a id="property-contractormanagementpaymentserrors"></a> `errors` | |
+| `errors.contractorNotFound` | `"We could not load this contractor."` |
+| <a id="property-contractormanagementpaymentslistlabel"></a> `listLabel` | `"List of recent payments"` |
+| <a id="property-contractormanagementpaymentspaymentdatecolumn"></a> `paymentDateColumn` | `"Payment date"` |
+| <a id="property-contractormanagementpaymentspaymentmethodcolumn"></a> `paymentMethodColumn` | `"Payment method"` |
+| <a id="property-contractormanagementpaymentsstatus"></a> `status` | |
+| `status.funded` | `"Funded"` |
+| `status.unfunded` | `"Unfunded"` |
+| <a id="property-contractormanagementpaymentsstatuscolumn"></a> `statusColumn` | `"Status"` |
+| <a id="property-contractormanagementpaymentstitle"></a> `title` | `"Recent payments"` |
+| <a id="property-contractormanagementpaymentstotalcolumn"></a> `totalColumn` | `"Total"` |
+| <a id="property-contractormanagementpaymentsviewdetailscta"></a> `viewDetailsCta` | `"View details"` |
 
 ***
 
@@ -6242,12 +6465,18 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
 | <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
+| <a id="property-resourcescompanymanagementbankaccount"></a> `Company.Management.BankAccount` | [`CompanyManagementBankAccount`](#companymanagementbankaccount) |
+| <a id="property-resourcescompanymanagementcompanyforms"></a> `Company.Management.CompanyForms` | [`CompanyManagementCompanyForms`](#companymanagementcompanyforms) |
 | <a id="property-resourcescompanymanagementfederaltaxes"></a> `Company.Management.FederalTaxes` | [`CompanyManagementFederalTaxes`](#companymanagementfederaltaxes) |
 | <a id="property-resourcescompanymanagementindustry"></a> `Company.Management.Industry` | [`CompanyManagementIndustry`](#companymanagementindustry) |
 | <a id="property-resourcescompanymanagementlocations"></a> `Company.Management.Locations` | [`CompanyManagementLocations`](#companymanagementlocations) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
+| <a id="property-resourcescompanymanagementpayschedules"></a> `Company.Management.PaySchedules` | [`CompanyManagementPaySchedules`](#companymanagementpayschedules) |
+| <a id="property-resourcescompanymanagementsignatory"></a> `Company.Management.Signatory` | [`CompanyManagementSignatory`](#companymanagementsignatory) |
+| <a id="property-resourcescompanymanagementstatetaxes"></a> `Company.Management.StateTaxes` | [`CompanyManagementStateTaxes`](#companymanagementstatetaxes) |
 | <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |
+| <a id="property-resourcescompanymanagementtaxpayments"></a> `Company.Management.TaxPayments` | [`CompanyManagementTaxPayments`](#companymanagementtaxpayments) |
 | <a id="property-resourcescompanymanagementtaxpaymentslist"></a> `Company.Management.TaxPaymentsList` | [`CompanyManagementTaxPaymentsList`](#companymanagementtaxpaymentslist) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
 | <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
@@ -6273,6 +6502,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractormanagementcompensation"></a> `Contractor.Management.Compensation` | [`ContractorManagementCompensation`](#contractormanagementcompensation) |
 | <a id="property-resourcescontractormanagementdocuments"></a> `Contractor.Management.Documents` | [`ContractorManagementDocuments`](#contractormanagementdocuments) |
 | <a id="property-resourcescontractormanagementpaymentmethod"></a> `Contractor.Management.PaymentMethod` | [`ContractorManagementPaymentMethod`](#contractormanagementpaymentmethod) |
+| <a id="property-resourcescontractormanagementpayments"></a> `Contractor.Management.Payments` | [`ContractorManagementPayments`](#contractormanagementpayments) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |

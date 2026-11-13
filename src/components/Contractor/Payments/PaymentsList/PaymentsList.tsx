@@ -3,7 +3,7 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useContractorPaymentGroupsGetList } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGetList'
 import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
 import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest'
-import type { InternalAlert } from '../types'
+import type { InternalAlert, PaymentsListAlertKey } from '../types'
 import { PaymentsListPresentation } from './PaymentsListPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, BaseLayout, type BaseComponentInterface } from '@/components/Base'
@@ -28,7 +28,7 @@ export interface PaymentsListProps extends BaseComponentInterface<'Contractor.Pa
  */
 export interface PaymentsListInternalProps extends PaymentsListProps {
   /** Flow-injected alerts (e.g. wire-transfer confirmation, payment cancellation). */
-  alerts?: InternalAlert[]
+  alerts?: InternalAlert<PaymentsListAlertKey>[]
 }
 
 /**
@@ -130,7 +130,7 @@ const Root = ({
   }, [onEvent])
 
   const rfiAlerts = useMemo(() => {
-    const rfiAlertsArray: InternalAlert[] = []
+    const rfiAlertsArray: InternalAlert<PaymentsListAlertKey>[] = []
 
     const hasPendingResponseRfis = informationRequests.some(
       request => request.status === InformationRequestStatus.PendingResponse,

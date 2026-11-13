@@ -11,7 +11,7 @@ description: >-
 Everything under `docs/reference/**` is generated from TSDoc in `src/` by a TypeDoc
 plugin — committed to the repo, never hand-edited. Regenerate when the source TSDoc or
 reference config changes. Hand-authored markdown (`docs/**` except `docs/reference/**`)
-doesn't need this; the dev server hot-reloads it.
+doesn't need this.
 
 ## When to regenerate
 
@@ -29,7 +29,7 @@ Run from the repo root:
 test -d typedoc/node_modules || npm run docs:install      # one-time prerequisite
 npm run docs:api:generate                                # fast path: reference only
 git diff docs/reference/                                 # confirm only intended changes
-npm run docs:build                                       # broken links/anchors throw
+npm run docs:lint:links                                  # relative links still resolve
 ```
 
 - `docs:api:generate` (TypeDoc only) is the quick loop while iterating.

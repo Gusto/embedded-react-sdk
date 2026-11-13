@@ -1,10 +1,12 @@
 import { Trans, useTranslation } from 'react-i18next'
-import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useMemo } from 'react'
 import type { ContractorPaymentReceipt } from '@gusto/embedded-api/models/components/contractorpaymentreceipt'
 import { getContractorDisplayName } from '../../shared/helpers'
-import { getContractorPaymentTotalAmount } from '../shared/paymentAmounts'
+import {
+  getContractorPaymentTotalAmount,
+  type ContractorPaymentStatementFields,
+} from '../shared/paymentAmounts'
 import styles from './PaymentStatementPresentation.module.scss'
 import { DataView, Flex } from '@/components/Common'
 import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
@@ -19,7 +21,7 @@ import ReceiptCheck from '@/assets/icons/receipt-check.svg?react'
 interface PaymentStatementPresentationProps {
   /** CSS class name applied to the root element. */
   className?: string
-  payment: ContractorPaymentForGroup
+  payment: ContractorPaymentStatementFields
   contractor: Contractor
   paymentReceipt?: ContractorPaymentReceipt
   checkDate: string

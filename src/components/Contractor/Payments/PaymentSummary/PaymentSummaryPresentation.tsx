@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
-import type { InternalAlert } from '../types'
+import type { InternalAlert, PaymentSummaryAlertKey } from '../types'
 import { PaymentSummaryBlock } from '../shared/PaymentSummaryBlock'
 import { usePaymentSummaryDictionary } from './useFormDictionary'
 import { Flex } from '@/components/Common'
@@ -19,7 +19,7 @@ interface PaymentSummaryPresentationProps {
   wireInRequestUuid?: string
   onEvent: (type: EventType, data?: unknown) => void
   onDone: () => void
-  alerts?: InternalAlert[]
+  alerts?: InternalAlert<PaymentSummaryAlertKey>[]
 }
 
 /** @internal */
@@ -47,7 +47,7 @@ export const PaymentSummaryPresentation = ({
           {alerts.map((alert, index) => (
             <Alert
               key={`${alert.type}-${alert.title}-${index}`}
-              label={t(`alerts.${alert.title}` as never, alert.translationParams)}
+              label={t(`alerts.${alert.title}`, alert.translationParams ?? {})}
               status={alert.type}
               onDismiss={alert.onDismiss}
             >

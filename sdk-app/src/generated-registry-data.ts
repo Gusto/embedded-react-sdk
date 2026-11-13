@@ -5,6 +5,8 @@ import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUn
 import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
+  'CompanyManagement.BankAccountCard': ['companyId'],
+  'CompanyManagement.CompanyFormsCard': ['companyId'],
   'CompanyManagement.Dashboard': ['companyId'],
   'CompanyManagement.DashboardFlow': ['companyId'],
   'CompanyManagement.FederalTaxesCard': ['companyId'],
@@ -12,7 +14,11 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.LocationsCard': ['companyId'],
   'CompanyManagement.PaySchedule': ['companyId'],
   'CompanyManagement.PayScheduleAssignment': ['companyId'],
+  'CompanyManagement.PaySchedulesCard': ['companyId'],
+  'CompanyManagement.SignatoryCard': ['companyId'],
+  'CompanyManagement.StateTaxesCard': ['companyId'],
   'CompanyManagement.TaxPaymentDetail': ['companyId'],
+  'CompanyManagement.TaxPaymentsCard': ['companyId'],
   'CompanyManagement.TaxPaymentsFlow': ['companyId'],
   'CompanyManagement.TaxPaymentsList': ['companyId'],
   'CompanyOnboarding.AssignSignatory': ['companyId'],
@@ -58,6 +64,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorManagement.PaymentMethodEditForm': ['contractorId'],
   'ContractorManagement.PaymentStatement': ['paymentGroupId'],
   'ContractorManagement.PaymentSummary': ['paymentGroupId', 'companyId'],
+  'ContractorManagement.PaymentsCard': ['contractorId'],
   'ContractorManagement.PaymentsList': ['companyId'],
   'ContractorManagement.Profile': ['contractorId'],
   'ContractorManagement.ProfileCard': ['contractorId'],
@@ -211,6 +218,7 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   companySettingsDashboard: false,
   compensationHistory: false,
+  contractorPaymentHistory: false,
   historicalPayments: false,
   managePaySchedules: false,
   taxPayments: false,

@@ -1,22 +1,68 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { Dashboard } from './Dashboard'
 import { DashboardFlow } from './DashboardFlow'
 import { server } from '@/test/mocks/server'
 import { handleGetIndustrySelection } from '@/test/mocks/apis/company'
+import { API_BASE_URL } from '@/test/constants'
 import {
   basicLocation,
   getLocation,
   handleGetCompanyLocations,
 } from '@/test/mocks/apis/company_locations'
 import { handleGetCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
+import { handleGetCompanyBankAccounts } from '@/test/mocks/apis/company_bank_accounts'
+import {
+  handleGetPaySchedules,
+  handleGetPayScheduleAssignments,
+} from '@/test/mocks/apis/payschedule'
+import { getAllStateTaxRequirementsWithStatus } from '@/test/mocks/apis/company_state_taxes'
+import { handleGetAllSignatories } from '@/test/mocks/apis/company_signatories'
+import { handleGetAllCompanyForms } from '@/test/mocks/apis/company_forms'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const unstableFeatures = { companySettingsDashboard: true }
+const unstableFeaturesWithPaySchedules = {
+  companySettingsDashboard: true,
+  managePaySchedules: true,
+}
+const unstableFeaturesWithTaxPayments = {
+  companySettingsDashboard: true,
+  taxPayments: true,
+}
+
+const fixtureSignatory = {
+  uuid: 'signatory-1',
+  first_name: 'Ada',
+  last_name: 'Lovelace',
+  email: 'ada@example.com',
+  title: 'PRESIDENT',
+  identity_verification_status: 'Pass',
+  version: 'signatory-version',
+}
+
+const fixtureUnsignedForm = {
+  uuid: 'form-8655',
+  name: 'US_8655',
+  title: 'Form 8655 Reporting Agent Authorization',
+  requires_signing: true,
+}
+
+const fixturePaySchedule = {
+  uuid: 'schedule-1',
+  version: 'schedule-version',
+  frequency: 'Every other week',
+  custom_name: 'Biweekly',
+  name: 'Biweekly',
+  anchor_pay_date: '2025-01-10',
+  anchor_end_of_pay_period: '2025-01-05',
+  active: true,
+  auto_payroll: false,
+}
 
 describe('Company Dashboard', () => {
   const onEvent = vi.fn()
@@ -46,6 +92,26 @@ describe('Company Dashboard', () => {
           legal_name: 'Test Company Legal',
         }),
       ),
+      handleGetCompanyBankAccounts(() =>
+        HttpResponse.json([
+          {
+            uuid: 'bank-1',
+            company_uuid: 'company-123',
+            account_type: 'Checking',
+            routing_number: '851070439',
+            hidden_account_number: 'XXXX4087',
+            verification_status: 'verified',
+            name: 'Employer Funding Account',
+          },
+        ]),
+      ),
+      handleGetPayScheduleAssignments(() =>
+        HttpResponse.json({ type: 'single', default_pay_schedule_uuid: 'schedule-1' }),
+      ),
+      handleGetPaySchedules(() => HttpResponse.json([fixturePaySchedule])),
+      getAllStateTaxRequirementsWithStatus,
+      handleGetAllSignatories(() => HttpResponse.json([fixtureSignatory])),
+      handleGetAllCompanyForms(() => HttpResponse.json([fixtureUnsignedForm])),
     )
   })
 
@@ -67,12 +133,40 @@ describe('Company Dashboard', () => {
       unstableFeatures,
     })
 
+    expect(await screen.findByRole('heading', { name: 'Test Company' })).toBeInTheDocument()
     expect(await screen.findByRole('tab', { name: 'Company details' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Pay' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Taxes' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Documents' })).toBeInTheDocument()
 
     // Company details is the default tab: its two cards render.
     expect(await screen.findByRole('heading', { name: 'Industry' })).toBeInTheDocument()
     expect(await screen.findByRole('heading', { name: 'Locations' })).toBeInTheDocument()
+  })
+
+  it('keeps the tabs and cards usable when the company name fails to load', async () => {
+    const user = userEvent.setup()
+    const getCompanyResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.error())
+    server.use(http.get(`${API_BASE_URL}/v1/companies/:company_id`, getCompanyResolver))
+
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await waitFor(() => {
+      expect(getCompanyResolver).toHaveBeenCalled()
+    })
+
+    // The heading is the only casualty: each card fetches its own data and survives.
+    expect(await screen.findByRole('heading', { name: 'Industry' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Locations' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Test Company' })).toBeNull()
+
+    // The surface also stays interactive, rather than being swapped for the error card.
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+
+    expect(await screen.findByRole('heading', { name: 'Federal taxes' })).toBeInTheDocument()
+    expect(screen.queryByTestId('internal-error-card')).toBeNull()
   })
 
   it('switches to the Taxes tab and emits the tab-change event', async () => {
@@ -91,6 +185,103 @@ describe('Company Dashboard', () => {
     expect(screen.queryByRole('heading', { name: 'Industry' })).toBeNull()
   })
 
+  it('switches to the Pay tab and renders the bank account card', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_DASHBOARD_TAB_CHANGE, {
+      tab: 'pay',
+    })
+    expect(await screen.findByRole('heading', { name: 'Bank account' })).toBeInTheDocument()
+  })
+
+  it('renders the Pay schedules card on the Pay tab when managePaySchedules is also on', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures: unstableFeaturesWithPaySchedules,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+
+    expect(await screen.findByRole('heading', { name: 'Pay schedules' })).toBeInTheDocument()
+    expect(await screen.findByText('Biweekly')).toBeInTheDocument()
+  })
+
+  it('omits the Pay schedules card without managePaySchedules, leaving the rest of the tab intact', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+
+    // The card is omitted rather than throwing: the dashboard still renders, and the
+    // rest of the Pay tab is unaffected.
+    expect(await screen.findByRole('heading', { name: 'Bank account' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Pay schedules' })).toBeNull()
+  })
+
+  it('stacks the Federal and State taxes cards on the Taxes tab', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+
+    expect(await screen.findByRole('heading', { name: 'Federal taxes' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
+    expect(await screen.findByText('Wyoming')).toBeInTheDocument()
+  })
+
+  it('renders the Tax payments card on the Taxes tab when taxPayments is also on', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures: unstableFeaturesWithTaxPayments,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+
+    expect(await screen.findByRole('heading', { name: 'Tax payments' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Manage tax payments' })).toBeInTheDocument()
+  })
+
+  it('omits the Tax payments card without taxPayments, leaving the rest of the tab intact', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+
+    // The card is omitted rather than throwing: the dashboard still renders, and the
+    // rest of the Taxes tab is unaffected.
+    expect(await screen.findByRole('heading', { name: 'Federal taxes' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Tax payments' })).toBeNull()
+  })
+
+  it('switches to the Documents tab and renders the signatory card', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Documents' }))
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_DASHBOARD_TAB_CHANGE, {
+      tab: 'documents',
+    })
+    expect(await screen.findByRole('heading', { name: 'Signatory' })).toBeInTheDocument()
+    expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Documents' })).toBeInTheDocument()
+    expect(await screen.findByText('1 form awaiting signature')).toBeInTheDocument()
+  })
+
   it('honours a controlled selectedTab', async () => {
     renderWithProviders(
       <Dashboard companyId="company-123" onEvent={onEvent} selectedTab="taxes" />,
@@ -107,10 +298,10 @@ describe('Company Dashboard', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Edit industry' })).toBeEnabled()
     })
 
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Edit industry' }))
 
     expect(onEvent).toHaveBeenCalledWith(
       componentEvents.COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED,
@@ -147,6 +338,26 @@ describe('Company DashboardFlow', () => {
           legal_name: 'Test Company Legal',
         }),
       ),
+      handleGetCompanyBankAccounts(() =>
+        HttpResponse.json([
+          {
+            uuid: 'bank-1',
+            company_uuid: 'company-123',
+            account_type: 'Checking',
+            routing_number: '851070439',
+            hidden_account_number: 'XXXX4087',
+            verification_status: 'verified',
+            name: 'Employer Funding Account',
+          },
+        ]),
+      ),
+      handleGetPayScheduleAssignments(() =>
+        HttpResponse.json({ type: 'single', default_pay_schedule_uuid: 'schedule-1' }),
+      ),
+      handleGetPaySchedules(() => HttpResponse.json([fixturePaySchedule])),
+      getAllStateTaxRequirementsWithStatus,
+      handleGetAllSignatories(() => HttpResponse.json([fixtureSignatory])),
+      handleGetAllCompanyForms(() => HttpResponse.json([fixtureUnsignedForm])),
     )
   })
 
@@ -157,9 +368,9 @@ describe('Company DashboardFlow', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Edit industry' })).toBeEnabled()
     })
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Edit industry' }))
 
     // The spoke is the full Industry component, identified by its selector.
     expect(
@@ -179,9 +390,9 @@ describe('Company DashboardFlow', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Manage locations' })).toBeEnabled()
     })
-    await user.click(screen.getByRole('button', { name: 'Manage' }))
+    await user.click(screen.getByRole('button', { name: 'Manage locations' }))
 
     expect(
       await screen.findByRole('button', { name: 'Back to company settings' }),
@@ -195,9 +406,9 @@ describe('Company DashboardFlow', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Manage locations' })).toBeEnabled()
     })
-    await user.click(screen.getByRole('button', { name: 'Manage' }))
+    await user.click(screen.getByRole('button', { name: 'Manage locations' }))
 
     // Saving an address keeps the spoke open rather than returning to the dashboard...
     // The list's rows arrive after its chrome, so wait for the row menu itself.
@@ -222,9 +433,9 @@ describe('Company DashboardFlow', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Manage locations' })).toBeEnabled()
     })
-    await user.click(screen.getByRole('button', { name: 'Manage' }))
+    await user.click(screen.getByRole('button', { name: 'Manage locations' }))
 
     await user.click(await screen.findByRole('button', { name: 'Back to company settings' }))
 
@@ -232,6 +443,102 @@ describe('Company DashboardFlow', () => {
     // must not announce a change that never happened.
     expect(await screen.findByRole('tab', { name: 'Company details' })).toBeInTheDocument()
     expect(screen.queryByText('Locations updated')).toBeNull()
+  })
+
+  it('leaves the Bank account spoke without an alert when nothing was saved', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage bank account' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage bank account' }))
+
+    // Continue fires COMPANY_BANK_ACCOUNT_DONE whether or not the account changed, so
+    // a look-and-leave visit must not announce an update that never happened.
+    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+    expect(await screen.findByRole('tab', { name: 'Pay' })).toBeInTheDocument()
+    expect(screen.queryByText('Bank account updated')).toBeNull()
+  })
+
+  it('surfaces the Bank account alert when the user leaves the spoke after a save', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage bank account' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage bank account' }))
+
+    // Replacing the account keeps the spoke open rather than returning to the dashboard...
+    await user.click(await screen.findByRole('button', { name: 'Change bank account' }))
+    await user.type(await screen.findByLabelText('Routing number'), '851070439')
+    await user.type(screen.getByLabelText('Account number'), '1234567890')
+    await user.click(screen.getByTestId('bank-account-submit'))
+
+    // ...so the alert only surfaces once the user actually leaves, including via the
+    // back header, which announced nothing before.
+    await user.click(await screen.findByRole('button', { name: 'Back to company settings' }))
+
+    expect(await screen.findByText('Bank account updated')).toBeInTheDocument()
+  })
+
+  it('routes the Pay schedules card Manage CTA to the PaySchedule spoke', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures: unstableFeaturesWithPaySchedules,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage pay schedules' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage pay schedules' }))
+
+    expect(
+      await screen.findByRole('button', { name: 'Back to company settings' }),
+    ).toBeInTheDocument()
+  })
+
+  it('routes the State taxes card Manage CTA to the StateTaxes spoke', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage state taxes' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage state taxes' }))
+
+    expect(
+      await screen.findByRole('button', { name: 'Back to company settings' }),
+    ).toBeInTheDocument()
+  })
+
+  it('routes the Tax payments card Manage CTA to the TaxPayments spoke', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures: unstableFeaturesWithTaxPayments,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage tax payments' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage tax payments' }))
+
+    expect(
+      await screen.findByRole('button', { name: 'Back to company settings' }),
+    ).toBeInTheDocument()
   })
 
   // Covers routing into the spoke only; driving a real federal-taxes save through the
@@ -244,12 +551,71 @@ describe('Company DashboardFlow', () => {
 
     await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Edit federal taxes' })).toBeEnabled()
     })
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Edit federal taxes' }))
 
     expect(
       await screen.findByRole('button', { name: 'Back to company settings' }),
     ).toBeInTheDocument()
+  })
+
+  it('routes the Signatory card Edit CTA to the AssignSignatory spoke and back again', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Documents' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit signatory' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit signatory' }))
+
+    // The spoke pre-populates from the recorded signatoryId, which is what proves
+    // the identifier survived the hop from the card into the machine's context.
+    expect(await screen.findByDisplayValue('Ada')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Back to company settings' }))
+
+    // Back lands on the Documents tab rather than resetting to company details,
+    // so the card that opened the spoke is what comes into view.
+    expect(await screen.findByRole('heading', { name: 'Signatory' })).toBeInTheDocument()
+  })
+
+  it('opens the Documents card into a review-only forms spoke when the viewer is unknown', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Documents' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage company documents' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage company documents' }))
+
+    expect(await screen.findByText('Form 8655 Reporting Agent Authorization')).toBeInTheDocument()
+
+    // Signing is withheld rather than offered to whoever opened the dashboard:
+    // without a declared viewer the form reads as outstanding and nothing more.
+    expect(screen.getByText('Not signed')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Sign document' })).toBeNull()
+  })
+
+  it('lets the declared viewer sign when they are the company signatory', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <DashboardFlow companyId="company-123" onEvent={onEvent} viewerSignatoryId="signatory-1" />,
+      { unstableFeatures },
+    )
+
+    await user.click(await screen.findByRole('tab', { name: 'Documents' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage company documents' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage company documents' }))
+
+    expect(await screen.findByRole('button', { name: 'Sign document' })).toBeInTheDocument()
   })
 })

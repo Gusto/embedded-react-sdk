@@ -137,7 +137,7 @@ Don't reach for: prefix-stripping event names (breaks the verbatim-event convent
 ### Styling
 
 - Double round-trip edges (`<-->`) get a slightly thicker stroke: `linkStyle <indices> stroke-width:2.5px`.
-- Color vars, the handDrawn theme, and the `branch`/`flow` classes are centralized in `docs-site/docusaurus.config.ts` — don't add per-diagram `classDef`s.
+- Color vars, the handDrawn theme, and the `branch`/`flow` classes are centralized in the docs site config (maintained outside this repo) — don't add per-diagram `classDef`s.
 
 ### Verify before finalizing
 

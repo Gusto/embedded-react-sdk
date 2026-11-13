@@ -16,6 +16,19 @@ export interface ContractorPaymentAmountFields {
 }
 
 /**
+ * The subset of a contractor payment needed to render a payment statement. Extends the amount
+ * fields with the two the statement branches on. Both `ContractorPaymentForGroup` (from a payment
+ * group) and `ContractorPaymentListing` (from a contractor's payment history) satisfy this
+ * structurally, which lets one presentation serve both without a payment group in hand.
+ *
+ * @internal
+ */
+export interface ContractorPaymentStatementFields extends ContractorPaymentAmountFields {
+  status?: string
+  paymentMethod?: string
+}
+
+/**
  * The payment's wage amount: `hours * hourlyRate` for Hourly contractors, otherwise the raw
  * `wage` field. The API only populates `wage` for Fixed-wage contractors, so Hourly payments
  * must be derived from hours and rate instead.

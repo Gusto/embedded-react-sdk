@@ -1,9 +1,9 @@
 ---
 name: docs-check
 description: >-
-  Verify the docs site is publish-ready: frontmatter lint + production build
-  (catches broken links/anchors the dev server tolerates). Use before finishing
-  docs work or opening a docs PR, or on "check/verify the docs".
+  Verify docs are publish-ready: frontmatter, relative-link, markdown, and spelling
+  lint. Use before finishing docs work or opening a docs PR, or on "check/verify
+  the docs".
 ---
 
 # Check the docs before you're done
@@ -11,24 +11,22 @@ description: >-
 Run from the repo root, in order. Stop at the first failure and report its output.
 
 ```bash
-test -d docs-site/node_modules && test -d typedoc/node_modules || npm run docs:install
-npm run derive        # 1. regenerate reference so checks run against what publishes
-npm run docs:lint     # 2. every docs/**/*.md needs title + description frontmatter
-npm run docs:build    # 3. the real gate — broken links/anchors throw
+test -d typedoc/node_modules || npm run docs:install
+npm run derive             # 1. regenerate reference so checks run against what publishes
+npx run-s 'docs:lint:*'    # 2. frontmatter, relative links, markdownlint, cspell
 ```
 
 - **`derive`** rebuilds the generated reference. If TSDoc or reference config changed
-  since the last regen, the build would otherwise pass against stale content. After it
+  since the last regen, the checks would otherwise pass against stale content. After it
   runs, review `git diff docs/reference/` — unexpected churn is itself a finding.
   (`docs-regen` has the fast iterate-only path; for a publish check, `derive` is right.)
-- **`docs:build`** is configured to throw on any broken link or anchor
-  (`onBrokenLinks` / `onBrokenAnchors` / `onBrokenMarkdownLinks` are all `'throw'`), so
-  it catches what the dev server tolerates. The release build fails the same way.
+- **`docs:lint:links`** ensures that all relative links resolve.
+  Anchors (`#heading`) are not checked locally.
 
-## When a build check fails
+## When a check fails
 
-- **Broken link/anchor** — the error names the source page and bad target. Fix the
-  relative markdown link, or the navbar/footer `to:` path in `docs-site/docusaurus.config.ts`.
+- **Broken link** — the output names the file, line, and bad target. Fix the relative
+  markdown link.
 - **Missing frontmatter** — add `title` and `description` to the named file.
 - **Failure under `docs/reference/**`** — don't hand-edit generated files; see
   `docs-regen` and `docs-change-ia`.

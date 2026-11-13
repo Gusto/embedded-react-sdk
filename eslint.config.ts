@@ -90,7 +90,6 @@ export default [
       '**/.prettierrc.js',
       '.storybook/**/*',
       'storybook-static/**/*',
-      'docs-site/**/*',
       'typedoc/**/*',
       'sdk-app/public/**/*',
     ],

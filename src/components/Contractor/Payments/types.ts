@@ -1,11 +1,18 @@
 import type { ReactNode } from 'react'
+import type { Resources } from '@/types/Helpers'
 
 /** @internal */
-export type InternalAlert = {
+export type PaymentsListAlertKey = keyof Resources['Contractor.Payments.PaymentsList']['alerts']
+
+/** @internal */
+export type PaymentSummaryAlertKey = keyof Resources['Contractor.Payments.PaymentSummary']['alerts']
+
+/** @internal */
+export type InternalAlert<TKey extends string = string> = {
   /** Visual severity of the alert. */
   type: 'error' | 'info' | 'success'
   /** Translation key for the alert headline. */
-  title: string
+  title: TKey
   /** Optional body content rendered below the title. */
   content?: ReactNode
   /** Called when the user dismisses the alert; omit to render a non-dismissible alert. */
@@ -15,5 +22,5 @@ export type InternalAlert = {
   /** Called when the user activates the alert's action button. */
   onAction?: () => void
   /** Translation key for the action button label; required when `onAction` is set. */
-  actionLabel?: string
+  actionLabel?: TKey
 }
