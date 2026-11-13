@@ -168,7 +168,7 @@ describe('TaxRateManagement', () => {
       putBody = (await request.json()) as Record<string, unknown>
       return HttpResponse.json({})
     })
-    renderTaxRateManagement(vi.fn(), [
+    const { onEvent } = renderTaxRateManagement(vi.fn(), [
       http.put(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, updateResolver),
     ])
     const user = userEvent.setup()
@@ -206,6 +206,12 @@ describe('TaxRateManagement', () => {
     expect(
       await screen.findByText('Tax rate scheduled to take effect on January 1, 2027.'),
     ).toBeInTheDocument()
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED, {
+      state: 'GA',
+      key: 'taxrates',
+      effectiveFrom: '2027-01-01',
+      requirements: [{ key: 'e0ac2284-8d30-4100-ae23-f85f9574868b', value: '0.06' }],
+    })
   })
 
   it('dismisses the success alert when its dismiss control is used', async () => {

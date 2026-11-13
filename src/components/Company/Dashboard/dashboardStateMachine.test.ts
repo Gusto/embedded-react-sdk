@@ -4,9 +4,9 @@ import { dashboardStateMachine } from './dashboardStateMachine'
 import { DashboardViewContextual, type DashboardContextInterface } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
 
-function createService() {
+function createService(initialState: keyof typeof dashboardStateMachine = 'companyForms') {
   const machine = createMachine(
-    'companyForms',
+    initialState,
     dashboardStateMachine,
     (initialContext: DashboardContextInterface): DashboardContextInterface => ({
       ...initialContext,
@@ -35,5 +35,29 @@ describe('dashboardStateMachine — companyForms', () => {
     send(service, componentEvents.COMPANY_DASHBOARD_BACK)
     expect(service.machine.current).toBe('index')
     expect(service.context.successAlert).toBe('formsSigned')
+  })
+})
+
+describe('dashboardStateMachine — stateTaxes', () => {
+  it('stays on the state taxes spoke as states are saved and rates scheduled', () => {
+    const service = createService('stateTaxes')
+    send(service, componentEvents.COMPANY_STATE_TAX_UPDATED)
+    send(service, componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED)
+    expect(service.machine.current).toBe('stateTaxes')
+  })
+
+  it('surfaces "State tax settings updated" on leaving after a rate was scheduled', () => {
+    const service = createService('stateTaxes')
+    send(service, componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED)
+    send(service, componentEvents.COMPANY_DASHBOARD_BACK)
+    expect(service.machine.current).toBe('index')
+    expect(service.context.successAlert).toBe('stateTaxesUpdated')
+  })
+
+  it('returns without an alert when nothing was saved during the visit', () => {
+    const service = createService('stateTaxes')
+    send(service, componentEvents.COMPANY_DASHBOARD_BACK)
+    expect(service.machine.current).toBe('index')
+    expect(service.context.successAlert).toBeNull()
   })
 })

@@ -1163,6 +1163,10 @@ declare namespace CompanyManagement {
         PaySchedulesCardProps,
         StateTaxesCard_2 as StateTaxesCard,
         StateTaxesCardProps_2 as StateTaxesCardProps,
+        StateTaxes_4 as StateTaxes,
+        StateTaxesProps_4 as StateTaxesProps,
+        TaxRateManagement,
+        TaxRateManagementProps,
         TaxPaymentsCard,
         TaxPaymentsCardProps,
         SignatoryCard,
@@ -1609,6 +1613,7 @@ export const componentEvents: {
     readonly COMPANY_STATE_TAX_DONE: "company/stateTaxes/done";
     readonly COMPANY_STATE_TAX_EDIT: "company/stateTaxes/edit";
     readonly COMPANY_STATE_TAX_MANAGE_RATES: "company/stateTaxes/manageRates";
+    readonly COMPANY_STATE_TAX_RATE_SCHEDULED: "company/stateTaxes/rateScheduled";
     readonly COMPANY_OVERVIEW_DONE: "company/overview/done";
     readonly COMPANY_OVERVIEW_CONTINUE: "company/overview/continue";
     readonly COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED: "company/management/industry/editRequested";
@@ -5911,6 +5916,9 @@ function StateTaxes_2(input: StateTaxesProps_2): JSX;
 // @public
 function StateTaxes_3(input: StateTaxesProps_3): JSX;
 
+// @alpha
+function StateTaxes_4(input: StateTaxesProps_4): JSX;
+
 // @public
 function StateTaxesCard(input: StateTaxesCardProps): JSX;
 
@@ -5972,6 +5980,11 @@ interface StateTaxesProps_2 extends BaseComponentInterface<'Employee.Management.
 interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'> {
     companyId: string;
     showContinueButton?: boolean;
+}
+
+// @alpha
+interface StateTaxesProps_4 extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
 }
 
 // @public

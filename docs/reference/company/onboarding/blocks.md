@@ -755,6 +755,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/stateTaxes/edit` | A state row was selected for editing | `{ state: string }` |
 | `company/stateTaxes/manageRates` | A state row's tax rate history/scheduling view was opened | `{ state: string }` |
 | `company/stateTaxes/updated` | State tax requirements were saved | — |
+| `company/stateTaxes/rateScheduled` | A new effective-dated tax rate was saved from the tax rate history view | `{ state: string, key: string, effectiveFrom: string, requirements: { key: string, value: string }[] }` |
 | `company/stateTaxes/done` | The list view was completed | — |
 | `CANCEL` | Editing or rate management was cancelled and the list was shown again | — |
 
@@ -892,10 +893,14 @@ schedule a new future-dated rate.
 
 ### Remarks
 
-Lower-level building block used by [StateTaxes](#statetaxes) for its "manage tax rates" view. Only
-effective-dated requirement keys (e.g. tax rates, deposit schedules) are shown — non-dated
-sections like registration numbers have no history/scheduling story and are edited via
-[StateTaxesForm](#statetaxesform) instead.
+Lower-level building block used by both the onboarding and management `StateTaxes` flows for
+their "manage tax rates" view, exported as `CompanyOnboarding.TaxRateManagement` and
+`CompanyManagement.TaxRateManagement`. Only effective-dated requirement keys (e.g. tax rates,
+deposit schedules) are shown — non-dated sections like registration numbers have no
+history/scheduling story and are edited via [StateTaxesForm](#statetaxesform) instead.
+
+A scheduled rate cannot be cancelled from this view: the tax requirements API has no operation
+for removing a future-dated requirement set.
 
 <br />
 
@@ -938,6 +943,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
+| `company/stateTaxes/rateScheduled` | A new effective-dated rate was saved. The API returns no body for this update, so the payload echoes what was saved | `{ state: string, key: string, effectiveFrom: string, requirements: { key: string, value: string }[] }` |
 | `CANCEL` | The user navigated back to the state tax list | — |
 
 <br />

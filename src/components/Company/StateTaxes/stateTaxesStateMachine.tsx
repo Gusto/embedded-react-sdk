@@ -15,75 +15,66 @@ type EventPayloads = {
   [componentEvents.COMPANY_STATE_TAX_MANAGE_RATES]: { state: string }
 }
 
-/** @internal */
-export const stateTaxesStateMachine = {
-  viewStateTaxes: state<MachineTransition>(
-    transition(
-      componentEvents.COMPANY_STATE_TAX_EDIT,
-      'editStateTaxes',
-      reduce(
-        (
-          ctx: StateTaxesContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.COMPANY_STATE_TAX_EDIT>,
-        ): StateTaxesContextInterface => ({
-          ...ctx,
-          component: StateTaxesFormContextual as ComponentType,
-          state: ev.payload.state,
-        }),
+/**
+ * Builds the list → requirements form / tax rate history machine around a given list screen.
+ *
+ * @remarks
+ * The onboarding and management journeys share every screen except the state list, so the
+ * list is the only thing that varies: each transition back to the list lands on
+ * `listComponent`.
+ *
+ * @internal
+ */
+export function createStateTaxesStateMachine(listComponent: ComponentType) {
+  const returnToList = reduce((ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
+    ...ctx,
+    component: listComponent,
+    state: undefined,
+  }))
+
+  return {
+    viewStateTaxes: state<MachineTransition>(
+      transition(
+        componentEvents.COMPANY_STATE_TAX_EDIT,
+        'editStateTaxes',
+        reduce(
+          (
+            ctx: StateTaxesContextInterface,
+            ev: MachineEventType<EventPayloads, typeof componentEvents.COMPANY_STATE_TAX_EDIT>,
+          ): StateTaxesContextInterface => ({
+            ...ctx,
+            component: StateTaxesFormContextual,
+            state: ev.payload.state,
+          }),
+        ),
+      ),
+      transition(
+        componentEvents.COMPANY_STATE_TAX_MANAGE_RATES,
+        'manageTaxRates',
+        reduce(
+          (
+            ctx: StateTaxesContextInterface,
+            ev: MachineEventType<
+              EventPayloads,
+              typeof componentEvents.COMPANY_STATE_TAX_MANAGE_RATES
+            >,
+          ): StateTaxesContextInterface => ({
+            ...ctx,
+            component: TaxRateManagementContextual,
+            state: ev.payload.state,
+          }),
+        ),
       ),
     ),
-    transition(
-      componentEvents.COMPANY_STATE_TAX_MANAGE_RATES,
-      'manageTaxRates',
-      reduce(
-        (
-          ctx: StateTaxesContextInterface,
-          ev: MachineEventType<
-            EventPayloads,
-            typeof componentEvents.COMPANY_STATE_TAX_MANAGE_RATES
-          >,
-        ): StateTaxesContextInterface => ({
-          ...ctx,
-          component: TaxRateManagementContextual as ComponentType,
-          state: ev.payload.state,
-        }),
-      ),
+    editStateTaxes: state<MachineTransition>(
+      transition(componentEvents.COMPANY_STATE_TAX_UPDATED, 'viewStateTaxes', returnToList),
+      transition(componentEvents.CANCEL, 'viewStateTaxes', returnToList),
     ),
-  ),
-  editStateTaxes: state<MachineTransition>(
-    transition(
-      componentEvents.COMPANY_STATE_TAX_UPDATED,
-      'viewStateTaxes',
-      reduce(
-        (
-          ctx: StateTaxesContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.COMPANY_STATE_TAX_UPDATED>,
-        ): StateTaxesContextInterface => ({
-          ...ctx,
-          component: StateTaxesListContextual as ComponentType,
-          state: undefined,
-        }),
-      ),
+    manageTaxRates: state<MachineTransition>(
+      transition(componentEvents.CANCEL, 'viewStateTaxes', returnToList),
     ),
-    transition(
-      componentEvents.CANCEL,
-      'viewStateTaxes',
-      reduce((ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
-        ...ctx,
-        component: StateTaxesListContextual as ComponentType,
-        state: undefined,
-      })),
-    ),
-  ),
-  manageTaxRates: state<MachineTransition>(
-    transition(
-      componentEvents.CANCEL,
-      'viewStateTaxes',
-      reduce((ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
-        ...ctx,
-        component: StateTaxesListContextual as ComponentType,
-        state: undefined,
-      })),
-    ),
-  ),
+  }
 }
+
+/** @internal */
+export const stateTaxesStateMachine = createStateTaxesStateMachine(StateTaxesListContextual)
