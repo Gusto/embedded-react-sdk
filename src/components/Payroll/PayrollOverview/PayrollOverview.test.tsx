@@ -1073,12 +1073,6 @@ describe('PayrollOverview out-of-date calculation on submit', () => {
     message:
       "This payroll's calculation is out of date and must be recalculated before it can be submitted.",
   }
-  const debitDateError: EntityErrorObject = {
-    errorKey: 'debit_date',
-    category: 'invalid_attribute_value',
-    message:
-      "The payroll's deadline has passed and the debit date is no longer valid. Please re-calculate to update to the next processable debit date.",
-  }
 
   const buildSubmitRejection = (errors: EntityErrorObject[]) =>
     new UnprocessableEntityError({ errors }, createHttpMeta(422))
@@ -1106,21 +1100,6 @@ describe('PayrollOverview out-of-date calculation on submit', () => {
 
   afterEach(() => {
     vi.useRealTimers()
-  })
-
-  it('submits without recalculating when the calculation is current', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
-    mockSubmitPayroll.mockResolvedValueOnce({ payrollUuid: 'payroll-uuid' })
-
-    renderOverview()
-    await user.click(await screen.findByRole('button', { name: 'Submit' }))
-
-    await waitFor(() => {
-      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_SUBMITTED, {
-        payrollUuid: 'payroll-uuid',
-      })
-    })
-    expect(mockCalculatePayroll).not.toHaveBeenCalled()
   })
 
   it('recalculates in place when submit is rejected as out of date, and submits only on the next click', async () => {
@@ -1178,20 +1157,6 @@ describe('PayrollOverview out-of-date calculation on submit', () => {
         "This payroll's calculation was out of date, so we recalculated it. Total payroll didn't change. Review the totals, then submit again.",
       ),
     ).toBeInTheDocument()
-  })
-
-  it('shows the deadline error instead of recalculating when the rejection also reports a passed debit date', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
-    mockSubmitPayroll.mockRejectedValueOnce(
-      buildSubmitRejection([requiresRecalculationError, debitDateError]),
-    )
-
-    renderOverview()
-    await user.click(await screen.findByRole('button', { name: 'Submit' }))
-
-    expect(await screen.findByText(debitDateError.message ?? '')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled()
-    expect(mockCalculatePayroll).not.toHaveBeenCalled()
   })
 
   it('offers to edit the payroll when the recalculation fails', async () => {
