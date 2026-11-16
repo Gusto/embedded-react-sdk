@@ -2,6 +2,7 @@
   "card": {
     "title": "Industry",
     "editCta": "Edit",
+    "editAriaLabel": "Edit industry",
     "industry": "Industry",
     "naicsCode": "NAICS code",
     "listEmptyPlaceholder": "No value",

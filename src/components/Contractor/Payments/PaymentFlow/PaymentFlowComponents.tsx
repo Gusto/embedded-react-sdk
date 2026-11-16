@@ -2,7 +2,7 @@ import { PaymentsListInternal } from '../PaymentsList/PaymentsList'
 import { CreatePaymentInternalFlow } from '../CreatePaymentFlow/CreatePaymentFlow'
 import { ViewPaymentInternalFlow } from '../ViewPaymentFlow/ViewPaymentFlow'
 import { HistoricalPaymentInternalFlow } from '../HistoricalPaymentFlow/HistoricalPaymentFlow'
-import type { InternalAlert } from '../types'
+import type { InternalAlert, PaymentsListAlertKey } from '../types'
 import { InformationRequestsFlow } from '@/components/InformationRequests'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -22,7 +22,7 @@ export interface PaymentFlowProps extends BaseComponentInterface<never> {
 export interface PaymentFlowContextInterface extends FlowContextInterface {
   companyId: string
   currentPaymentId?: string
-  alerts?: InternalAlert[]
+  alerts?: InternalAlert<PaymentsListAlertKey>[]
 }
 
 /** @internal */

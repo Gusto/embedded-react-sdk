@@ -20,12 +20,7 @@ export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
           {t('errors.errorHeading')}
         </Components.Heading>
         <Components.Text className={styles.errorMessage}>
-          <Trans
-            t={t}
-            i18nKey="errors.globalReactError"
-            values={{ error: errorMessage }}
-            shouldUnescape={true}
-          />
+          <Trans t={t} i18nKey="errors.globalReactError" values={{ error: errorMessage }} />
         </Components.Text>
       </div>
       <div>

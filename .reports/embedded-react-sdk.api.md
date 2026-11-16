@@ -805,6 +805,16 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 // @public
 function BankAccount(props: BankAccountProps): JSX;
 
+// @alpha
+function BankAccountCard(props: BankAccountCardProps): JSX;
+
+// @alpha
+interface BankAccountCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
     companyId: string;
@@ -1118,6 +1128,16 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
     dictionary?: ResourceDictionary<TResourceKey>;
 }
 
+// @alpha
+function CompanyFormsCard(props: CompanyFormsCardProps): JSX;
+
+// @alpha
+interface CompanyFormsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 declare namespace CompanyManagement {
     export {
         PaySchedule_2 as PaySchedule,
@@ -1137,6 +1157,18 @@ declare namespace CompanyManagement {
         LocationsCardProps,
         FederalTaxesCard_2 as FederalTaxesCard,
         FederalTaxesCardProps_2 as FederalTaxesCardProps,
+        BankAccountCard,
+        BankAccountCardProps,
+        PaySchedulesCard,
+        PaySchedulesCardProps,
+        StateTaxesCard_2 as StateTaxesCard,
+        StateTaxesCardProps_2 as StateTaxesCardProps,
+        TaxPaymentsCard,
+        TaxPaymentsCardProps,
+        SignatoryCard,
+        SignatoryCardProps,
+        CompanyFormsCard,
+        CompanyFormsCardProps,
         Dashboard_2 as Dashboard,
         DashboardFlow_2 as DashboardFlow,
         DashboardProps_2 as DashboardProps,
@@ -1585,6 +1617,12 @@ export const componentEvents: {
     readonly COMPANY_DASHBOARD_TAB_CHANGE: "company/dashboard/tabChange";
     readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
     readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: "company/management/bankAccount/editRequested";
+    readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
+    readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: "company/management/signatory/editRequested";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: "company/management/companyForms/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -2535,6 +2573,9 @@ interface DashboardFlowProps extends BaseComponentInterface<never> {
 // @alpha
 interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
     companyId: string;
+    enableAutoPilot?: boolean;
+    enableMultipleSchedules?: boolean;
+    viewerSignatoryId?: string;
 }
 
 // @public
@@ -2564,7 +2605,7 @@ interface DashboardProps_3 extends BaseComponentInterface<'Contractor.Dashboard'
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
 
 // @alpha
-type DashboardTab_2 = 'companyDetails' | 'taxes';
+type DashboardTab_2 = 'companyDetails' | 'pay' | 'taxes' | 'documents';
 
 // @public (undocumented)
 type DashboardTab_3 = 'details' | 'pay' | 'documents';
@@ -4811,6 +4852,16 @@ interface PayScheduleProps_2 extends Omit<BaseComponentInterface<'Company.Manage
 // @public
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
+// @alpha
+function PaySchedulesCard(props: PaySchedulesCardProps): JSX;
+
+// @alpha
+interface PaySchedulesCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 export type PayScheduleWorkweekStartDay = WorkweekStartDay;
 
@@ -5207,6 +5258,10 @@ export interface Resources {
     // (undocumented)
     'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
     // (undocumented)
+    'Company.Management.BankAccount': Translations.CompanyManagementBankAccount
+    // (undocumented)
+    'Company.Management.CompanyForms': Translations.CompanyManagementCompanyForms
+    // (undocumented)
     'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
     // (undocumented)
     'Company.Management.Industry': Translations.CompanyManagementIndustry
@@ -5217,7 +5272,15 @@ export interface Resources {
     // (undocumented)
     'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
     // (undocumented)
+    'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
+    // (undocumented)
+    'Company.Management.Signatory': Translations.CompanyManagementSignatory
+    // (undocumented)
+    'Company.Management.StateTaxes': Translations.CompanyManagementStateTaxes
+    // (undocumented)
     'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
+    // (undocumented)
+    'Company.Management.TaxPayments': Translations.CompanyManagementTaxPayments
     // (undocumented)
     'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
     // (undocumented)
@@ -5618,6 +5681,16 @@ export interface SharedQuestionMetadata {
     questionId: string;
 }
 
+// @alpha
+function SignatoryCard(props: SignatoryCardProps): JSX;
+
+// @alpha
+interface SignatoryCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCompanyFormRequiredValidation>>;
 
@@ -5841,9 +5914,19 @@ function StateTaxes_3(input: StateTaxesProps_3): JSX;
 // @public
 function StateTaxesCard(input: StateTaxesCardProps): JSX;
 
+// @alpha
+function StateTaxesCard_2(props: StateTaxesCardProps_2): JSX;
+
 // @public
 interface StateTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+interface StateTaxesCardProps_2 {
+    companyId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
@@ -6024,6 +6107,16 @@ function TaxPaymentDetail(props: TaxPaymentDetailProps): JSX;
 interface TaxPaymentDetailProps extends BaseComponentInterface<'Company.Management.TaxPaymentDetail'> {
     companyId: string;
     taxPaymentId: string;
+}
+
+// @alpha
+function TaxPaymentsCard(props: TaxPaymentsCardProps): JSX;
+
+// @alpha
+interface TaxPaymentsCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @alpha

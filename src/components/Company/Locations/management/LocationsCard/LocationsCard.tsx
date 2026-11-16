@@ -128,7 +128,12 @@ function LocationsCardContent({ companyId, onEvent, LoaderComponent }: Locations
           <Components.BoxHeader
             title={t('card.title')}
             action={
-              <Components.Button variant="secondary" onClick={handleManage} isDisabled={isLoading}>
+              <Components.Button
+                variant="secondary"
+                onClick={handleManage}
+                isDisabled={isLoading}
+                aria-label={t('card.manageAriaLabel')}
+              >
                 {t('card.manageCta')}
               </Components.Button>
             }

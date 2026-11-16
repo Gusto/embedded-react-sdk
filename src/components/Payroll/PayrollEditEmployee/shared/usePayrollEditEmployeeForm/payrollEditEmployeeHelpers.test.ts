@@ -81,6 +81,18 @@ describe('collectOvertimeEarningNames', () => {
   it('returns an empty set for an undefined list', () => {
     expect(collectOvertimeEarningNames(undefined)).toEqual(new Set())
   })
+
+  // An earning type whose category the OAS omits (e.g. FlatSumBonus) reaches this helper with
+  // `category` stripped by earningTypeCategoryHook. It must still be collected -- the hook
+  // preserves the earning type, and overtime inclusion is driven by `includedInOvertimePay`,
+  // never by the category. See SDK-1419.
+  it('collects an earning type that carries no category', () => {
+    const earningTypeList: EarningTypeList = {
+      custom: [{ uuid: 'et-flat-sum', name: 'Flat Sum Bonus', includedInOvertimePay: true }],
+    }
+
+    expect(collectOvertimeEarningNames(earningTypeList)).toEqual(new Set(['Flat Sum Bonus']))
+  })
 })
 
 describe('resolveEditableFixedCompensations', () => {

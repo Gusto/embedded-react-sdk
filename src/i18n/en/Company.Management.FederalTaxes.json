@@ -2,6 +2,7 @@
   "card": {
     "title": "Federal taxes",
     "editCta": "Edit",
+    "editAriaLabel": "Edit federal taxes",
     "legalName": "Legal name",
     "ein": "EIN",
     "taxPayerType": "Tax payer type",

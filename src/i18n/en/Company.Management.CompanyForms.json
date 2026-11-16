@@ -1,0 +1,20 @@
+{
+  "card": {
+    "title": "Documents",
+    "manageCta": "Manage",
+    "manageAriaLabel": "Manage company documents",
+    "signatures": "Signatures",
+    "awaitingSignature": "Awaiting signature",
+    "documents": "Documents",
+    "untitledForm": "Untitled form",
+    "awaitingCount_one": "{{count}} form awaiting signature",
+    "awaitingCount_other": "{{count}} forms awaiting signature",
+    "allSigned": "All forms signed",
+    "documentCount_one": "{{count}} document",
+    "documentCount_other": "{{count}} documents",
+    "emptyState": {
+      "title": "No company documents yet",
+      "description": "Documents appear here once this company's tax and authorization forms are generated."
+    }
+  }
+}

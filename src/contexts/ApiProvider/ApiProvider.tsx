@@ -7,6 +7,7 @@ import { apiVersionHook } from './apiVersionHook'
 import { apiVersionMismatchHook } from './apiVersionMismatchHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
 import {
+  earningTypeCategoryHook,
   informationRequestEnumHook,
   payrollDeductionAmountHook,
   payrollOffCycleReasonEnumHook,
@@ -70,6 +71,7 @@ export function ApiProvider({
     sdkHooks.registerBeforeRequestHook(apiVersionHook)
     sdkHooks.registerAfterSuccessHook(apiVersionMismatchHook)
     sdkHooks.registerAfterErrorHook(apiVersionMismatchHook)
+    sdkHooks.registerAfterSuccessHook(earningTypeCategoryHook)
     sdkHooks.registerAfterSuccessHook(informationRequestEnumHook)
     sdkHooks.registerAfterSuccessHook(payrollDeductionAmountHook)
     sdkHooks.registerAfterSuccessHook(payrollOffCycleReasonEnumHook)

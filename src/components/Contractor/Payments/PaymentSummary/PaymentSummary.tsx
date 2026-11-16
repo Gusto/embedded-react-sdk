@@ -2,7 +2,7 @@ import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api/react
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import type { PayrollCreditBlockerType } from '@gusto/embedded-api/models/components/payrollcreditblockertype'
-import type { InternalAlert } from '../types'
+import type { InternalAlert, PaymentSummaryAlertKey } from '../types'
 import { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -29,7 +29,7 @@ export interface PaymentSummaryProps {
  */
 export interface PaymentSummaryInternalProps extends PaymentSummaryProps {
   /** Flow-injected alerts (e.g. wire-transfer confirmation). */
-  alerts?: InternalAlert[]
+  alerts?: InternalAlert<PaymentSummaryAlertKey>[]
 }
 
 const findWireInRequestUuid = (

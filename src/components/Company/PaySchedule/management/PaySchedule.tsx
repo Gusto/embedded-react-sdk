@@ -5,7 +5,7 @@ import { payScheduleManagementStateMachine } from './payScheduleManagementStateM
 import type { PayScheduleManagementContextInterface } from './PayScheduleManagementComponents'
 import {
   PayScheduleOverviewContextual,
-  PayScheduleEditFormContextual,
+  PayScheduleCreateFormContextual,
 } from './PayScheduleManagementComponents'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -123,7 +123,7 @@ function Root({
     'Company.Management.AutoPilotDialog',
     pickNamespaceDictionary(dictionary, 'Company.Management.AutoPilotDialog'),
   )
-  // PayScheduleEditFormContextual reuses the onboarding PayScheduleForm, whose translations
+  // The schedule form contextuals reuse the onboarding PayScheduleForm, whose translations
   // live under its own namespace and are otherwise never loaded from this flow.
   useI18n('Company.PaySchedule')
   const { onEvent } = useBase()
@@ -135,14 +135,14 @@ function Root({
    */
   const [{ initialState, initialComponent }] = useState<{
     initialState: keyof typeof payScheduleManagementStateMachine
-    initialComponent: typeof PayScheduleOverviewContextual | typeof PayScheduleEditFormContextual
+    initialComponent: typeof PayScheduleOverviewContextual | typeof PayScheduleCreateFormContextual
   }>(() => {
     const hasSchedules = (paySchedules.payScheduleShowResponse?.length ?? 0) > 0
     return {
       initialState: hasSchedules ? 'overview' : 'createSchedule',
       initialComponent: hasSchedules
         ? PayScheduleOverviewContextual
-        : PayScheduleEditFormContextual,
+        : PayScheduleCreateFormContextual,
     }
   })
 

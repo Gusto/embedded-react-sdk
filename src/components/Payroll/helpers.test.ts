@@ -36,7 +36,7 @@ import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/mode
 import { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
 import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import type { TFunction } from 'i18next'
+import { createCommonT } from '@/test/createCommonT'
 import { Job } from '@gusto/embedded-api/models/components/job.js'
 import {
   type FixedCompensations,
@@ -45,17 +45,15 @@ import {
 
 describe('Payroll helpers', () => {
   describe('formatEmployeePayRate', () => {
-    const mockT = ((key: string, options?: { amount?: string; ns?: string }) => {
-      const templates = {
-        'payRateFormats.hourly': '{{amount}}/hr',
-        'payRateFormats.weekly': '{{amount}}/yr',
-        'payRateFormats.monthly': '{{amount}}/yr',
-        'payRateFormats.yearly': '{{amount}}/yr',
-        'payRateFormats.paycheck': '{{amount}}/paycheck',
-      }
-      const template = templates[key as keyof typeof templates] || key
-      return options?.amount ? template.replace('{{amount}}', options.amount) : template
-    }) as TFunction
+    const mockT = createCommonT({
+      payRateFormats: {
+        hourly: '{{amount}}/hr',
+        weekly: '{{amount}}/yr',
+        monthly: '{{amount}}/yr',
+        yearly: '{{amount}}/yr',
+        paycheck: '{{amount}}/paycheck',
+      },
+    })
 
     it('should return null when employee has no jobs', () => {
       const employee = {} as Employee

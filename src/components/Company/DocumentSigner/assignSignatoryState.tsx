@@ -24,7 +24,7 @@ export const assignSignatoryState = state<MachineTransition>(
         ev: MachineEventType<EventPayloads, typeof companyEvents.COMPANY_SIGNATORY_CREATED>,
       ): DocumentSignerContextInterface => ({
         ...ctx,
-        signatoryId: ev.payload.uuid,
+        signatoryId: ctx.adoptsAssignedSignatory ? ev.payload.uuid : ctx.signatoryId,
         component: DocumentList,
       }),
     ),
@@ -38,7 +38,7 @@ export const assignSignatoryState = state<MachineTransition>(
         ev: MachineEventType<EventPayloads, typeof companyEvents.COMPANY_SIGNATORY_UPDATED>,
       ): DocumentSignerContextInterface => ({
         ...ctx,
-        signatoryId: ev.payload.uuid,
+        signatoryId: ctx.adoptsAssignedSignatory ? ev.payload.uuid : ctx.signatoryId,
         component: DocumentList,
       }),
     ),

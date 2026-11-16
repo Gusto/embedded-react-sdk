@@ -77,6 +77,7 @@ import 'i18next'
 declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: '${defaultNamespace}'
+    returnEmptyString: true
     resources: Resources
   }
 }

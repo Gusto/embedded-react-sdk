@@ -1361,6 +1361,64 @@ describe('PayrollConfiguration', () => {
 
       expect(screen.getByText('Skipped')).toBeInTheDocument()
     })
+
+    it('re-prepares without an excluded employee the prepare API rejects, such as one just terminated', async () => {
+      currentPayrollData = buildPayrollData({
+        employeeCompensations: [
+          ...allCompensations,
+          createCompensation('emp-terminated', { excluded: true }),
+        ],
+      })
+
+      const preparedRosters: string[][] = []
+      const prepareResolver: HttpResponseResolver = async ({ request }) => {
+        const body = (await request.json()) as { employee_uuids?: string[] } | null
+        const requestedUuids = body?.employee_uuids ?? []
+        preparedRosters.push(requestedUuids)
+
+        if (requestedUuids.includes('emp-terminated')) {
+          return HttpResponse.json(
+            {
+              errors: [
+                {
+                  error_key: 'employee_uuids',
+                  category: 'invalid_attribute_value',
+                  message: 'Invalid Employee UUID(s).',
+                  metadata: {
+                    entities: [{ entity_type: 'Employee', entity_uuid: 'emp-terminated' }],
+                  },
+                },
+              ],
+            },
+            { status: 422 },
+          )
+        }
+
+        return HttpResponse.json({
+          ...currentPayrollData,
+          employee_compensations: allCompensations.filter(comp =>
+            requestedUuids.includes(comp.employee_uuid),
+          ),
+        })
+      }
+
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          prepareResolver,
+        ),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () =>
+          HttpResponse.json(createEmployee('emp-terminated', 'Terminated', 'Person')),
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      expect(await screen.findByText('Alice Anderson')).toBeInTheDocument()
+
+      const listedUuids = allEmployees.slice(0, 25).map(emp => emp.uuid)
+      expect(preparedRosters).toEqual([[...listedUuids, 'emp-terminated'], listedUuids])
+    })
   })
 
   describe('editing an employee', () => {

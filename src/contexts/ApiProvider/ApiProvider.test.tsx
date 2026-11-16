@@ -3,6 +3,7 @@ import { render } from '@testing-library/react'
 import { ApiProvider } from './ApiProvider'
 import { apiVersionMismatchHook } from './apiVersionMismatchHook'
 import {
+  earningTypeCategoryHook,
   informationRequestEnumHook,
   payrollDeductionAmountHook,
   payrollOffCycleReasonEnumHook,
@@ -190,6 +191,7 @@ describe('ApiProvider', () => {
 
     expect(mockSDKHooksInstance.registerAfterSuccessHook.mock.calls).toEqual([
       [apiVersionMismatchHook],
+      [earningTypeCategoryHook],
       [informationRequestEnumHook],
       [payrollDeductionAmountHook],
       [payrollOffCycleReasonEnumHook],

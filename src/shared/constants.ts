@@ -212,6 +212,12 @@ export const companyEvents = {
   COMPANY_DASHBOARD_TAB_CHANGE: 'company/dashboard/tabChange',
   COMPANY_DASHBOARD_ALERT_DISMISSED: 'company/dashboard/alertDismissed',
   COMPANY_DASHBOARD_BACK: 'company/dashboard/back',
+  COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: 'company/management/bankAccount/editRequested',
+  COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: 'company/management/paySchedule/editRequested',
+  COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: 'company/management/stateTaxes/editRequested',
+  COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: 'company/management/taxPayments/editRequested',
+  COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: 'company/management/signatory/editRequested',
+  COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: 'company/management/companyForms/editRequested',
 } as const
 
 /**

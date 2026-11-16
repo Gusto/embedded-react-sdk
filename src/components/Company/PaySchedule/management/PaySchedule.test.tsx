@@ -163,6 +163,23 @@ describe('PaySchedule (management)', () => {
     expect(screen.queryByRole('heading', { name: /^pay schedule$/i })).not.toBeInTheDocument()
   })
 
+  it('omits Cancel on the first-schedule create form, since there is nothing to return to', async () => {
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () =>
+        HttpResponse.json([]),
+      ),
+    )
+
+    renderPaySchedule()
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+    })
+
+    expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /cancel/i })).not.toBeInTheDocument()
+  })
+
   it('returns to the overview after creating the first pay schedule', async () => {
     const user = userEvent.setup()
 

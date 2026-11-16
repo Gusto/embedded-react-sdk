@@ -367,7 +367,7 @@ Shape of the values managed by the contractor bank account form.
 
 ### ContractorBankAccountFormField
 
-> **ContractorBankAccountFormField** = `"routingNumber"` \| `"accountNumber"` \| `"name"` \| `"accountType"`
+> **ContractorBankAccountFormField** = `"routingNumber"` \| `"accountNumber"` \| `"accountType"` \| `"name"`
 
 Field names accepted by the contractor bank account form.
 

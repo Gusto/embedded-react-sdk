@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api/models/components/contractorpaymentgroupwithblockers'
-import type { InternalAlert } from '../types'
+import type { InternalAlert, PaymentsListAlertKey } from '../types'
 import styles from './PaymentsListPresentation.module.scss'
 import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -23,7 +23,7 @@ interface ContractorPaymentPaymentsListPresentationProps {
   onCreateHistoricalPayment: () => void
   onDateRangeChange: (numberOfMonths: number) => void
   onViewPayment: (paymentId: string) => void
-  alerts?: InternalAlert[]
+  alerts?: InternalAlert<PaymentsListAlertKey>[]
   companyId: string
   hasUnresolvedWireInRequests: boolean
   onEvent: (type: EventType, data?: unknown) => void
@@ -118,7 +118,7 @@ export const PaymentsListPresentation = ({
           {alerts.map((alert, index) => (
             <Alert
               key={`${alert.type}-${alert.title}-${index}`}
-              label={t(`alerts.${alert.title}` as never, alert.translationParams)}
+              label={t(`alerts.${alert.title}`, alert.translationParams ?? {})}
               status={alert.type}
               onDismiss={alert.onDismiss}
             >
@@ -129,7 +129,7 @@ export const PaymentsListPresentation = ({
                 {alert.onAction && alert.actionLabel && (
                   <div>
                     <Button variant="secondary" onClick={alert.onAction}>
-                      {t(`alerts.${alert.actionLabel}` as never)}
+                      {t(`alerts.${alert.actionLabel}`)}
                     </Button>
                   </div>
                 )}

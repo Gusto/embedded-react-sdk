@@ -1,0 +1,23 @@
+{
+  "card": {
+    "title": "Signatory",
+    "editCta": "Edit",
+    "editAriaLabel": "Edit signatory",
+    "assignCta": "Assign signatory",
+    "name": "Name",
+    "jobTitle": "Title",
+    "email": "Email",
+    "identityVerification": "Identity verification",
+    "listEmptyPlaceholder": "No value",
+    "identityVerificationStatus": {
+      "Pass": "Verified",
+      "Fail": "Verification failed",
+      "Skipped": "Wet signature required",
+      "pending": "Verification pending"
+    },
+    "emptyState": {
+      "title": "No signatory assigned",
+      "description": "Assign a signatory so this company's tax and payroll forms can be signed."
+    }
+  }
+}

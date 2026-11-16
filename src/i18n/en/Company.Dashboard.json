@@ -3,12 +3,18 @@
   "tabsLabel": "Company settings tabs",
   "tabs": {
     "companyDetails": "Company details",
-    "taxes": "Taxes"
+    "pay": "Pay",
+    "taxes": "Taxes",
+    "documents": "Documents"
   },
   "backToDashboardCta": "Back to company settings",
   "alerts": {
     "industryUpdated": "Industry updated",
     "federalTaxesUpdated": "Federal tax settings updated",
-    "locationsUpdated": "Locations updated"
+    "locationsUpdated": "Locations updated",
+    "bankAccountUpdated": "Bank account updated",
+    "stateTaxesUpdated": "State tax settings updated",
+    "signatoryUpdated": "Signatory updated",
+    "formsSigned": "Documents signed"
   }
 }
