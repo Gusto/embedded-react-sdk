@@ -73,7 +73,6 @@ Props for PayrollExecutionFlow.
 | `runPayroll/submitted` | Fired when payroll is successfully submitted | Response from the Submit payroll endpoint |
 | `runPayroll/processed` | Fired when payroll processing is completed | — |
 | `runPayroll/processingFailed` | Fired when payroll processing fails | Error details |
-| `runPayroll/recalculated` | Fired when the review screen recalculates a payroll after a submit was rejected for an out-of-date calculation | Refreshed payroll from the Get payroll endpoint |
 | `runPayroll/cancelled` | Fired when a payroll is cancelled | Response from the Cancel payroll endpoint |
 | `runPayroll/receipt/get` | Fired when user requests payroll receipt | `{ payrollId }` |
 | `runPayroll/receipt/viewed` | Fired when the receipt screen is viewed | — |

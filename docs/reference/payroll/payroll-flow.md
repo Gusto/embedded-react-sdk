@@ -58,7 +58,6 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `runPayroll/submitted` | Payroll is successfully submitted | Response from the submit payroll endpoint |
 | `runPayroll/processed` | Payroll processing completes | — |
 | `runPayroll/processingFailed` | Payroll processing fails | Error details |
-| `runPayroll/recalculated` | A payroll is recalculated after a submit was rejected for an out-of-date calculation | Refreshed payroll from the Get payroll endpoint |
 | `runPayroll/cancelled` | A submitted payroll is cancelled | `{ payrollId: string, result: object }` |
 | `runPayroll/notCalculated/backToList` | User returns to the payroll list from a payroll that is no longer calculated | — |
 | `runPayroll/summary/viewed` | The summary screen is opened | `{ payrollId: string }` |

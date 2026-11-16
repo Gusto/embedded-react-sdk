@@ -368,7 +368,6 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `RUN_PAYROLL_PDF_PAYSTUB_VIEWED` | `"runPayroll/pdfPaystub/viewed"` |
 | `RUN_PAYROLL_PROCESSED` | `"runPayroll/processed"` |
 | `RUN_PAYROLL_PROCESSING_FAILED` | `"runPayroll/processingFailed"` |
-| `RUN_PAYROLL_RECALCULATED` | `"runPayroll/recalculated"` |
 | `RUN_PAYROLL_RECEIPT_GET` | `"runPayroll/receipt/get"` |
 | `RUN_PAYROLL_RECEIPT_VIEWED` | `"runPayroll/receipt/viewed"` |
 | `RUN_PAYROLL_SELECTED` | `"runPayroll/selected"` |

@@ -667,9 +667,9 @@ polls until success or failure and emits the corresponding event. Pass `readOnly
 the edit and cancel actions while keeping submit available.
 
 If the API rejects a submit because the payroll's calculation is out of date
-(`requires_recalculation`), the component recalculates the payroll in place, shows the
-refreshed totals with a notice, and emits `runPayroll/recalculated`. It never resubmits on
-its own: the user reviews the new totals and submits again. A rejection that also reports a
+(`requires_recalculation`), the component recalculates the payroll in place and shows the
+refreshed totals with a notice. It never resubmits on its own: the user reviews the new
+totals and submits again. A rejection that also reports a
 passed deadline (`debit_date`) is not recalculated automatically, because recalculating moves
 the debit and pay dates; it renders as an error instead.
 
@@ -705,7 +705,6 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/submitted` | Payroll was successfully submitted | Submit payroll response |
 | `runPayroll/processed` | Payroll finished processing successfully | `{ payPeriod, payrollUuid }` |
 | `runPayroll/processingFailed` | Payroll processing failed | — |
-| `runPayroll/recalculated` | Payroll was recalculated after a submit was rejected for an out-of-date calculation | Refreshed payroll from the Get payroll endpoint |
 | `runPayroll/cancelled` | Payroll was cancelled | Cancel payroll response |
 | `runPayroll/notCalculated/backToList` | User chose to return to the payroll list after the payroll was found to be no longer calculated (e.g. cancelled in another session) | — |
 | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
