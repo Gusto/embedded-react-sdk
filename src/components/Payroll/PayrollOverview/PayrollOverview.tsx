@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequestsGet'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
@@ -24,7 +24,7 @@ import {
   ConfirmWireDetails,
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
-import { canCancelPayroll } from '../helpers'
+import { calculateTotalPayroll, canCancelPayroll } from '../helpers'
 import { getPayrollDisplayDates } from '../payrollDates'
 import { useCalculationPoll } from '../PayrollConfiguration/useCalculationPoll'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
@@ -198,6 +198,7 @@ const Root = ({
     defaultItemsPerPage: 25,
   })
   const gustoEmbedded = useGustoEmbeddedContext()
+  const totalPayrollBeforeRecalculationRef = useRef<string | null>(null)
 
   const payrollRequest = useMemo<GetV1CompaniesCompanyIdPayrollsPayrollIdRequest>(
     () => ({
@@ -391,6 +392,18 @@ const Root = ({
     ])
   }
 
+  const describeRecalculatedTotal = (payroll: PayrollShow | undefined) => {
+    const previousTotal = totalPayrollBeforeRecalculationRef.current
+    if (!payroll || previousTotal === null) {
+      return t('alerts.recalculatedMessage')
+    }
+    const newTotal = formatCurrency(calculateTotalPayroll(payroll))
+    if (newTotal === previousTotal) {
+      return t('alerts.recalculatedTotalUnchangedMessage')
+    }
+    return t('alerts.recalculatedTotalChangedMessage', { previousTotal, newTotal })
+  }
+
   const { start: startCalculationPoll } = useCalculationPoll({
     refetch: refetchPayroll,
     componentName: 'Payroll.PayrollOverview',
@@ -400,7 +413,7 @@ const Root = ({
         {
           type: 'info',
           title: t('alerts.recalculatedTitle'),
-          content: t('alerts.recalculatedMessage'),
+          content: describeRecalculatedTotal(payroll),
         },
       ])
       onEvent(componentEvents.RUN_PAYROLL_RECALCULATED, payroll)
@@ -549,6 +562,7 @@ const Root = ({
     }
   }
   const recalculatePayroll = async () => {
+    totalPayrollBeforeRecalculationRef.current = formatCurrency(calculateTotalPayroll(payrollData))
     setStatus(PayrollOverviewStatus.Recalculating)
     try {
       const calculateResult = await payrollsCalculate(gustoEmbedded, { companyId, payrollId })

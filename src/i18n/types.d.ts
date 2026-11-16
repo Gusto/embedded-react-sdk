@@ -8910,6 +8910,10 @@ export namespace Translations {
       recalculatedTitle: string
       /** @defaultValue `"This payroll's calculation was out of date, so we recalculated it. Review the updated totals, then submit again."` */
       recalculatedMessage: string
+      /** @defaultValue `"This payroll's calculation was out of date, so we recalculated it. Total payroll changed from {{previousTotal}} to {{newTotal}}. Review the updated totals, then submit again."` */
+      recalculatedTotalChangedMessage: string
+      /** @defaultValue `"This payroll's calculation was out of date, so we recalculated it. Total payroll didn't change. Review the totals, then submit again."` */
+      recalculatedTotalUnchangedMessage: string
       /** @defaultValue `"We couldn't recalculate this payroll"` */
       recalculationFailedTitle: string
       /** @defaultValue `"Edit the payroll and calculate it again before you submit."` */

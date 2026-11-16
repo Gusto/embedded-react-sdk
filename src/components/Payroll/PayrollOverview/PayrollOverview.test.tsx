@@ -1128,11 +1128,24 @@ describe('PayrollOverview out-of-date calculation on submit', () => {
     mockSubmitPayroll
       .mockRejectedValueOnce(buildSubmitRejection([requiresRecalculationError]))
       .mockResolvedValueOnce({ payrollUuid: 'payroll-uuid' })
+    mockCalculatePayroll.mockImplementation(() => {
+      mockPayrollData = {
+        ...basePayrollData,
+        calculatedAt: recalculatedAt,
+        totals: { ...basePayrollData.totals, grossPay: '5300.00' },
+      }
+      return Promise.resolve({ ok: true, value: undefined })
+    })
 
     renderOverview()
     await user.click(await screen.findByRole('button', { name: 'Submit' }))
 
     expect(await screen.findByText('Payroll recalculated')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        "This payroll's calculation was out of date, so we recalculated it. Total payroll changed from $5,500.00 to $5,800.00. Review the updated totals, then submit again.",
+      ),
+    ).toBeInTheDocument()
     expect(mockCalculatePayroll).toHaveBeenCalledWith(expect.anything(), {
       companyId: 'company-uuid',
       payrollId: 'payroll-uuid',
@@ -1151,6 +1164,20 @@ describe('PayrollOverview out-of-date calculation on submit', () => {
       })
     })
     expect(mockSubmitPayroll).toHaveBeenCalledTimes(2)
+  })
+
+  it('says the total did not change when the recalculation leaves it the same', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockSubmitPayroll.mockRejectedValueOnce(buildSubmitRejection([requiresRecalculationError]))
+
+    renderOverview()
+    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+    expect(
+      await screen.findByText(
+        "This payroll's calculation was out of date, so we recalculated it. Total payroll didn't change. Review the totals, then submit again.",
+      ),
+    ).toBeInTheDocument()
   })
 
   it('shows the deadline error instead of recalculating when the rejection also reports a passed debit date', async () => {
