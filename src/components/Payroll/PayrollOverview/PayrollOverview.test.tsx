@@ -1129,10 +1129,6 @@ describe('PayrollOverview out-of-date calculation on submit', () => {
       companyId: 'company-uuid',
       payrollId: 'payroll-uuid',
     })
-    expect(mockOnEvent).toHaveBeenCalledWith(
-      componentEvents.RUN_PAYROLL_RECALCULATED,
-      expect.objectContaining({ uuid: 'payroll-uuid', calculatedAt: recalculatedAt }),
-    )
     expect(mockSubmitPayroll).toHaveBeenCalledTimes(1)
 
     await user.click(screen.getByRole('button', { name: 'Submit' }))

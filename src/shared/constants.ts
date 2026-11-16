@@ -413,7 +413,6 @@ export const payScheduleEvents = {
 export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
-  RUN_PAYROLL_RECALCULATED: 'runPayroll/recalculated',
   RUN_PAYROLL_ALREADY_PROCESSED: 'runPayroll/alreadyProcessed',
   RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
   RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: 'runPayroll/cancelled/alertDismissed',
