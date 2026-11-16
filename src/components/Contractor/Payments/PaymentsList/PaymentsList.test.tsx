@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
@@ -35,6 +35,37 @@ describe('PaymentsList', () => {
 
   beforeEach(() => {
     setupApiTestMocks()
+  })
+
+  describe.each([
+    ['America/Los_Angeles', '2027-01-01T02:00:00Z', '2026-10-01', '2027-10-01'],
+    ['Asia/Kolkata', '2026-12-31T20:00:00Z', '2026-10-01', '2027-10-01'],
+  ])('calendar range in %s', (timezone, now, startDate, endDate) => {
+    beforeEach(() => {
+      vi.stubEnv('TZ', timezone)
+      vi.useFakeTimers({ toFake: ['Date'] })
+      vi.setSystemTime(new Date(now))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+      vi.unstubAllEnvs()
+    })
+
+    it('requests local calendar boundaries after month arithmetic', async () => {
+      let requestedRange: { startDate: string | null; endDate: string | null } | undefined
+      const resolver = vi.fn<HttpResponseResolver>(({ request }) => {
+        const params = new URL(request.url).searchParams
+        requestedRange = { startDate: params.get('start_date'), endDate: params.get('end_date') }
+        return HttpResponse.json([])
+      })
+      server.use(handleGetContractorPaymentGroupsList(resolver))
+      renderWithProviders(<PaymentsList {...defaultProps} />)
+      await waitFor(() => {
+        expect(resolver).toHaveBeenCalled()
+      })
+      expect(requestedRange).toEqual({ startDate, endDate })
+    })
   })
 
   it('renders a list of contractor payments', async () => {

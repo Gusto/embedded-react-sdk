@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
-import { describe, it, expect, beforeEach, assertType, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, assertType, vi } from 'vitest'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { QueryClient } from '@tanstack/react-query'
 import { invalidateAllJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
@@ -482,6 +482,52 @@ describe('useCompensationForm', () => {
 
       expect(createCompensationResolver).toHaveBeenCalledTimes(1)
       expect(createCompensationPath).toBe('/v1/jobs/newly-created-job/compensations')
+    })
+  })
+
+  describe.each([
+    ['America/Los_Angeles', '2027-01-01T02:00:00Z', '2026-12-31', '2027-01-01'],
+    ['Asia/Kolkata', '2026-12-31T20:00:00Z', '2027-01-01', '2027-01-02'],
+  ])('calendar dates in %s', (timezone, now, today, tomorrow) => {
+    beforeEach(() => {
+      vi.stubEnv('TZ', timezone)
+      vi.useFakeTimers({ toFake: ['Date'] })
+      vi.setSystemTime(new Date(now))
+      const jobs = buildEmployeeWithJobs({ scenario: 'multiJob' })
+      jobs[0]?.compensations.push(
+        buildCompensation({ uuid: 'future-comp', effective_date: tomorrow }),
+      )
+      server.use(handleGetEmployeeJobs(() => HttpResponse.json(jobs)))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+      vi.unstubAllEnvs()
+    })
+
+    it('keeps tomorrow pending and forces immediate classification changes to local today', async () => {
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.data.hasPendingFutureCompensation).toBe(true)
+      expect(result.current.data.maximumEffectiveDate).toBe(tomorrow)
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+      await waitFor(() => {
+        expect(formMethods.getValues('effectiveDate')).toBe(today)
+      })
     })
   })
 

@@ -12,17 +12,6 @@ import { useClientPagination } from '@/hooks/useClientPagination/useClientPagina
 
 const SERVER_MAX_PER_PAGE = 100
 
-// Employees whose primary job's hire_date is in the future are rejected by
-// `POST /time_off_policies/:uuid/add_employees` as "ineligible" with no
-// per-uuid reason in the response. We can detect this from the employees
-// list response, so we drop them client-side to prevent the error.
-/** @internal */
-export function isStartedByToday(hireDate: string | undefined): boolean {
-  if (!hireDate) return false
-  const today = new Date().toISOString().slice(0, 10)
-  return hireDate <= today
-}
-
 // Single source of truth for the search predicate so the client-pagination
 // hook and the select-all handler agree on what's "in scope" for a query.
 /** @internal */
@@ -45,6 +34,7 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
   const { data: firstPage, isFetching: isFirstPageFetching } = useEmployeesListSuspense({
     companyId,
     terminated: false,
+    onboardedActive: true,
     page: 1,
     per: SERVER_MAX_PER_PAGE,
     include: [Include.AllCompensations],
@@ -64,6 +54,7 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
       buildEmployeesListQuery(gustoClient, {
         companyId,
         terminated: false,
+        onboardedActive: true,
         page: i + 2,
         per: SERVER_MAX_PER_PAGE,
         include: [Include.AllCompensations],
@@ -77,7 +68,6 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
       ...restPageResults.flatMap(r => r.data.showEmployees ?? []),
     ]
     return showEmployees
-      .filter(e => isStartedByToday((e.jobs?.find(job => job.primary) ?? e.jobs?.[0])?.hireDate))
       .filter(e => !excludeUuids?.has(e.uuid))
       .map(e => ({
         uuid: e.uuid,
