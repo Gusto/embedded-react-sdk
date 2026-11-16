@@ -5943,6 +5943,11 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `alerts.payrollProcessingFailedCtaLabel` | `"Recalculate payroll"` |
 | `alerts.payrollProcessingFailedTitle` | `"There was an error submitting payroll"` |
 | `alerts.paystubPdfError` | `"There was an issue generating the paystub PDF. Please try again later."` |
+| `alerts.recalculatedMessage` | `"This payroll's calculation was out of date, so we recalculated it. Review the updated totals, then submit again."` |
+| `alerts.recalculatedTitle` | `"Payroll recalculated"` |
+| `alerts.recalculationFailedCtaLabel` | `"Edit payroll"` |
+| `alerts.recalculationFailedMessage` | `"Edit the payroll and calculate it again before you submit."` |
+| `alerts.recalculationFailedTitle` | `"We couldn't recalculate this payroll"` |
 | `alerts.wireDetailsSubmittedMessage` | `"Once we receive the funds from your bank we'll pay your team on {{checkDate}}"` |
 | `alerts.wireDetailsSubmittedTitle` | `"Wire details submitted"` |
 | <a id="property-payrollpayrolloverviewbackcta"></a> `backCta` | `"Back"` |
@@ -5990,6 +5995,8 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewpayrollsummarytitle"></a> `payrollSummaryTitle` | `"Payroll Summary"` |
 | <a id="property-payrollpayrolloverviewpayrollsummarytitlefourday"></a> `payrollSummaryTitleFourDay` | `"Payroll summary (4-day direct deposit)"` |
 | <a id="property-payrollpayrolloverviewpayrollsummarytitlewire"></a> `payrollSummaryTitleWire` | `"Payroll summary (Wire funds)"` |
+| <a id="property-payrollpayrolloverviewrecalculatingdescription"></a> `recalculatingDescription` | `"This payroll's calculation was out of date. This may take a minute."` |
+| <a id="property-payrollpayrolloverviewrecalculatingtitle"></a> `recalculatingTitle` | `"Recalculating payroll..."` |
 | <a id="property-payrollpayrolloverviewreimbursementlabel"></a> `reimbursementLabel` | `"Reimbursements"` |
 | <a id="property-payrollpayrolloverviewskippedbadge"></a> `skippedBadge` | `"Skipped"` |
 | <a id="property-payrollpayrolloverviewsubmissionblockers"></a> `submissionBlockers` | |
