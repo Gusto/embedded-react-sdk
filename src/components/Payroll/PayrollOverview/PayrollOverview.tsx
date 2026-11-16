@@ -10,6 +10,8 @@ import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequ
 import { useEffect, useMemo, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
+import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useErrorBoundary } from 'react-error-boundary'
 import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
@@ -24,6 +26,7 @@ import {
 } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { canCancelPayroll } from '../helpers'
 import { getPayrollDisplayDates } from '../payrollDates'
+import { useCalculationPoll } from '../PayrollConfiguration/useCalculationPoll'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -88,6 +91,13 @@ const findUnresolvedBlockersWithOptions = (
   )
 }
 
+const REQUIRES_RECALCULATION_ERROR_KEY = 'requires_recalculation'
+
+const isRecoverableByRecalculation = (error: unknown): boolean =>
+  error instanceof UnprocessableEntityError &&
+  error.errors.length > 0 &&
+  error.errors.every(entry => entry.errorKey === REQUIRES_RECALCULATION_ERROR_KEY)
+
 const findWireInRequestUuid = (
   creditBlockers: PayrollCreditBlockerType[] = [],
 ): string | undefined => {
@@ -119,6 +129,13 @@ const findWireInRequestUuid = (
  * polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
  * the edit and cancel actions while keeping submit available.
  *
+ * If the API rejects a submit because the payroll's calculation is out of date
+ * (`requires_recalculation`), the component recalculates the payroll in place, shows the
+ * refreshed totals with a notice, and emits `runPayroll/recalculated`. It never resubmits on
+ * its own: the user reviews the new totals and submits again. A rejection that also reports a
+ * passed deadline (`debit_date`) is not recalculated automatically, because recalculating moves
+ * the debit and pay dates; it renders as an error instead.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -127,6 +144,7 @@ const findWireInRequestUuid = (
  * | `runPayroll/submitted` | Payroll was successfully submitted | Submit payroll response |
  * | `runPayroll/processed` | Payroll finished processing successfully | `{ payPeriod, payrollUuid }` |
  * | `runPayroll/processingFailed` | Payroll processing failed | — |
+ * | `runPayroll/recalculated` | Payroll was recalculated after a submit was rejected for an out-of-date calculation | Refreshed payroll from the Get payroll endpoint |
  * | `runPayroll/cancelled` | Payroll was cancelled | Cancel payroll response |
  * | `runPayroll/notCalculated/backToList` | User chose to return to the payroll list after the payroll was found to be no longer calculated (e.g. cancelled in another session) | — |
  * | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
@@ -349,6 +367,50 @@ const Root = ({
     },
   })
 
+  const showRecalculationFailedAlert = (payroll: PayrollShow | undefined) => {
+    const calculationErrors = payroll?.processingRequest?.errors ?? []
+    setStatus(PayrollOverviewStatus.Viewing)
+    setInternalAlerts([
+      {
+        type: 'error',
+        title: t('alerts.recalculationFailedTitle'),
+        content: (
+          <Flex flexDirection="column" gap={16}>
+            <Text>{t('alerts.recalculationFailedMessage')}</Text>
+            {calculationErrors.length > 0 && (
+              <UnorderedList items={renderErrorList(calculationErrors)} />
+            )}
+            {!readOnly && (
+              <Button variant="secondary" onClick={onEdit}>
+                {t('alerts.recalculationFailedCtaLabel')}
+              </Button>
+            )}
+          </Flex>
+        ),
+      },
+    ])
+  }
+
+  const { start: startCalculationPoll } = useCalculationPoll({
+    refetch: refetchPayroll,
+    componentName: 'Payroll.PayrollOverview',
+    onCalculated: payroll => {
+      setStatus(PayrollOverviewStatus.Viewing)
+      setInternalAlerts([
+        {
+          type: 'info',
+          title: t('alerts.recalculatedTitle'),
+          content: t('alerts.recalculatedMessage'),
+        },
+      ])
+      onEvent(componentEvents.RUN_PAYROLL_RECALCULATED, payroll)
+    },
+    onProcessingFailed: showRecalculationFailedAlert,
+    onError: () => {
+      showRecalculationFailedAlert(undefined)
+    },
+  })
+
   // The initial read is a non-suspense query; if its notification never arrives, the component
   // is stuck on `!payrollData` forever with no other render source. This one read forces that
   // render -- it only keeps tracking to completion if it happens to land on `submitting`, not as
@@ -486,34 +548,58 @@ const Root = ({
       })
     }
   }
+  const recalculatePayroll = async () => {
+    setStatus(PayrollOverviewStatus.Recalculating)
+    try {
+      const calculateResult = await payrollsCalculate(gustoEmbedded, { companyId, payrollId })
+      if (!calculateResult.ok) {
+        throw calculateResult.error
+      }
+    } catch (error) {
+      setStatus(PayrollOverviewStatus.Viewing)
+      throw error
+    }
+    startCalculationPoll({
+      baselineCalculatedAt: payrollData.calculatedAt?.getTime() ?? null,
+      sawCalculatingThisPoll: false,
+    })
+  }
+
   const onSubmit = async () => {
     await baseSubmitHandler(data, async () => {
-      const result = await submitPayroll({
-        request: {
-          companyId,
-          payrollId,
-          requestBody: {
-            submissionBlockers: Object.entries(selectedUnblockOptions)
-              .filter(([blockerType]) =>
-                PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blockerType),
-              )
-              .map(([blockerType, selectedOption]) => ({
-                blockerType,
-                selectedOption,
-              })),
+      try {
+        const result = await submitPayroll({
+          request: {
+            companyId,
+            payrollId,
+            requestBody: {
+              submissionBlockers: Object.entries(selectedUnblockOptions)
+                .filter(([blockerType]) =>
+                  PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blockerType),
+                )
+                .map(([blockerType, selectedOption]) => ({
+                  blockerType,
+                  selectedOption,
+                })),
+            },
           },
-        },
-      })
-      onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
-      onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
-      startPayrollPoll({
-        baseline: {
-          processed: payrollData.processed ?? false,
-          status: payrollData.processingRequest?.status,
-        },
-        sawSubmitting: false,
-      })
-      setHasSubmittedInSession(true)
+        })
+        onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
+        onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
+        startPayrollPoll({
+          baseline: {
+            processed: payrollData.processed ?? false,
+            status: payrollData.processingRequest?.status,
+          },
+          sawSubmitting: false,
+        })
+        setHasSubmittedInSession(true)
+      } catch (error) {
+        if (!isRecoverableByRecalculation(error)) {
+          throw error
+        }
+        await recalculatePayroll()
+      }
     })
   }
 

@@ -8,6 +8,8 @@ import type {
 } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
+import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import type { GetV1CompaniesCompanyIdEmployeesRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
 import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import { canCancelPayroll } from '../helpers'
@@ -90,11 +92,20 @@ let mockStaleDataPresent = false
 let mockRefetchError: unknown = null
 let mockWireInRequestStatus: 'pending_review' | undefined
 let mockShowEmployees: Pick<Employee, 'uuid' | 'jobs'>[] = []
-const { mockPayrollsGetRequest, mockEmployeesListRequest } = vi.hoisted(() => ({
-  mockPayrollsGetRequest:
-    vi.fn<(request: GetV1CompaniesCompanyIdPayrollsPayrollIdRequest) => void>(),
-  mockEmployeesListRequest: vi.fn<(request: GetV1CompaniesCompanyIdEmployeesRequest) => void>(),
-}))
+const { mockPayrollsGetRequest, mockEmployeesListRequest, mockCalculatePayroll } = vi.hoisted(
+  () => ({
+    mockPayrollsGetRequest:
+      vi.fn<(request: GetV1CompaniesCompanyIdPayrollsPayrollIdRequest) => void>(),
+    mockEmployeesListRequest: vi.fn<(request: GetV1CompaniesCompanyIdEmployeesRequest) => void>(),
+    mockCalculatePayroll:
+      vi.fn<
+        (
+          client: unknown,
+          request: { companyId: string; payrollId: string },
+        ) => Promise<{ ok: true; value: undefined }>
+      >(),
+  }),
+)
 
 const buildMockPayrollQueryData = () => ({
   payrollShow: mockPayrollData,
@@ -176,6 +187,10 @@ vi.mock('@gusto/embedded-api/react-query/_context', async importOriginal => {
 
 vi.mock('@gusto/embedded-api/funcs/payrollsGetPayStub', () => ({
   payrollsGetPayStub: vi.fn(),
+}))
+
+vi.mock('@gusto/embedded-api/funcs/payrollsCalculate', () => ({
+  payrollsCalculate: mockCalculatePayroll,
 }))
 
 vi.mock('../helpers', async importOriginal => {
@@ -1045,5 +1060,137 @@ describe('PayrollOverview cancel action', () => {
 
     expect(await screen.findByRole('button', { name: 'View payroll receipt' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Cancel payroll' })).toBeNull()
+  })
+})
+
+describe('PayrollOverview out-of-date calculation on submit', () => {
+  const mockOnEvent = vi.fn()
+  const recalculatedAt = new Date('2025-08-12T09:00:00Z')
+
+  const requiresRecalculationError: EntityErrorObject = {
+    errorKey: 'requires_recalculation',
+    category: 'invalid_attribute_value',
+    message:
+      "This payroll's calculation is out of date and must be recalculated before it can be submitted.",
+  }
+  const debitDateError: EntityErrorObject = {
+    errorKey: 'debit_date',
+    category: 'invalid_attribute_value',
+    message:
+      "The payroll's deadline has passed and the debit date is no longer valid. Please re-calculate to update to the next processable debit date.",
+  }
+
+  const buildSubmitRejection = (errors: EntityErrorObject[]) =>
+    new UnprocessableEntityError({ errors }, createHttpMeta(422))
+
+  const renderOverview = () =>
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
+    mockIsError = false
+    mockError = null
+    mockStaleDataPresent = false
+    mockRefetchError = null
+    mockSubmitPayroll.mockReset()
+    mockCalculatePayroll.mockImplementation(() => {
+      mockPayrollData = { ...basePayrollData, calculatedAt: recalculatedAt }
+      return Promise.resolve({ ok: true, value: undefined })
+    })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('submits without recalculating when the calculation is current', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockSubmitPayroll.mockResolvedValueOnce({ payrollUuid: 'payroll-uuid' })
+
+    renderOverview()
+    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+    await waitFor(() => {
+      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_SUBMITTED, {
+        payrollUuid: 'payroll-uuid',
+      })
+    })
+    expect(mockCalculatePayroll).not.toHaveBeenCalled()
+  })
+
+  it('recalculates in place when submit is rejected as out of date, and submits only on the next click', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockSubmitPayroll
+      .mockRejectedValueOnce(buildSubmitRejection([requiresRecalculationError]))
+      .mockResolvedValueOnce({ payrollUuid: 'payroll-uuid' })
+
+    renderOverview()
+    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+    expect(await screen.findByText('Payroll recalculated')).toBeInTheDocument()
+    expect(mockCalculatePayroll).toHaveBeenCalledWith(expect.anything(), {
+      companyId: 'company-uuid',
+      payrollId: 'payroll-uuid',
+    })
+    expect(mockOnEvent).toHaveBeenCalledWith(
+      componentEvents.RUN_PAYROLL_RECALCULATED,
+      expect.objectContaining({ uuid: 'payroll-uuid', calculatedAt: recalculatedAt }),
+    )
+    expect(mockSubmitPayroll).toHaveBeenCalledTimes(1)
+
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    await waitFor(() => {
+      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_SUBMITTED, {
+        payrollUuid: 'payroll-uuid',
+      })
+    })
+    expect(mockSubmitPayroll).toHaveBeenCalledTimes(2)
+  })
+
+  it('shows the deadline error instead of recalculating when the rejection also reports a passed debit date', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockSubmitPayroll.mockRejectedValueOnce(
+      buildSubmitRejection([requiresRecalculationError, debitDateError]),
+    )
+
+    renderOverview()
+    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+    expect(await screen.findByText(debitDateError.message ?? '')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled()
+    expect(mockCalculatePayroll).not.toHaveBeenCalled()
+  })
+
+  it('offers to edit the payroll when the recalculation fails', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockSubmitPayroll.mockRejectedValueOnce(buildSubmitRejection([requiresRecalculationError]))
+    mockCalculatePayroll.mockImplementation(() => {
+      mockPayrollData = {
+        ...basePayrollData,
+        processingRequest: {
+          status: 'processing_failed',
+          errors: [
+            { errorKey: 'base', category: 'invalid_operation', message: 'Tax setup changed' },
+          ],
+        },
+      }
+      return Promise.resolve({ ok: true, value: undefined })
+    })
+
+    renderOverview()
+    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+    expect(await screen.findByText("We couldn't recalculate this payroll")).toBeInTheDocument()
+    expect(screen.getByText('Tax setup changed')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Edit payroll' }))
+
+    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_EDIT)
   })
 })

@@ -15,7 +15,7 @@ import {
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
 import { normalizeToSDKError } from '@/types/sdkError'
 
-const COMPONENT_NAME = 'Payroll.PayrollConfiguration'
+const DEFAULT_COMPONENT_NAME = 'Payroll.PayrollConfiguration'
 
 /** @internal */
 export type PayrollShow = NonNullable<PayrollsGetQueryData['payrollShow']>
@@ -120,6 +120,8 @@ export interface UseCalculationPollOptions {
    * calculated/failed outcome. The raw error is reported to observability by this hook already.
    */
   onError: () => void
+  /** Component name reported to observability. Defaults to `Payroll.PayrollConfiguration`. */
+  componentName?: string
 }
 
 /** @internal */
@@ -138,6 +140,7 @@ export function useCalculationPoll({
   onCalculated,
   onProcessingFailed,
   onError,
+  componentName = DEFAULT_COMPONENT_NAME,
 }: UseCalculationPollOptions): CalculationPoll {
   const pollRunRef = useRef<CalculationPollRun | null>(null)
   const { observability } = useObservability()
@@ -169,7 +172,7 @@ export function useCalculationPoll({
       observability?.onError?.({
         ...sdkError,
         timestamp: Date.now(),
-        componentName: COMPONENT_NAME,
+        componentName,
       })
       onError()
     },
