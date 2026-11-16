@@ -112,6 +112,18 @@ describe('getCompensationHistory', () => {
     })
   })
 
+  it('falls back past a blank title instead of rendering an empty one', () => {
+    const job = buildJob({ title: 'Line cook' }, [
+      buildComp({ uuid: 'comp-blank', effectiveDate: '2025-06-01', title: '' }),
+    ])
+
+    const [history] = getCompensationHistory([job], { today: TODAY })
+    assertDefined(history)
+
+    expect(history.jobTitle).toBe('Line cook')
+    expect(history.entries[0]?.title).toBeNull()
+  })
+
   it('builds a separate history for each job', () => {
     const jobs = [
       buildJob({ uuid: 'job-primary', title: 'Server', primary: true }, [

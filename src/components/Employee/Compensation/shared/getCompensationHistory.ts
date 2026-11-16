@@ -25,7 +25,7 @@ export interface CompensationHistoryEntry {
   compensationId: string
   /** Date this compensation took (or takes) effect, as `YYYY-MM-DD`. */
   effectiveDate: string
-  /** Job title in effect on `effectiveDate`; `null` when the record carries no title. */
+  /** Job title in effect on `effectiveDate`; `null` when the record carries no usable title. */
   title: string | null
   /** Employee classification in effect on `effectiveDate`. */
   flsaStatus?: FlsaStatusType
@@ -69,6 +69,9 @@ export interface JobCompensationHistory {
  * can reference a compensation that has not taken effect yet. Dates are
  * compared as `YYYY-MM-DD` strings so no timezone conversion is involved.
  *
+ * An empty `title` falls back the same way a missing one does, so a blank
+ * string can never surface as an empty heading or table label.
+ *
  * `title` is read off each compensation rather than off the job, because
  * `job.title` is a denormalized snapshot of the primary compensation's title
  * and lags behind compensation-level edits. The API resolves each
@@ -105,7 +108,7 @@ export function getCompensationHistory(
     const entries = sorted.map((compensation, index) => ({
       compensationId: compensation.uuid,
       effectiveDate: compensation.effectiveDate,
-      title: compensation.title ?? null,
+      title: compensation.title || null,
       flsaStatus: compensation.flsaStatus,
       rate: compensation.rate,
       paymentUnit: compensation.paymentUnit,
@@ -115,7 +118,7 @@ export function getCompensationHistory(
     acc.push({
       jobId: job.uuid,
       isPrimary: job.primary ?? false,
-      jobTitle: sorted[currentIndex]?.title ?? sorted[0]?.title ?? job.title ?? '',
+      jobTitle: sorted[currentIndex]?.title || sorted[0]?.title || job.title || '',
       entries: entries.reverse(),
     })
 

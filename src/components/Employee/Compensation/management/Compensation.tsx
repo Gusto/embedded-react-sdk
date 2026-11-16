@@ -44,9 +44,9 @@ function CompensationFlow({ employeeId, onEvent, LoaderComponent }: Compensation
  * @remarks
  * Renders a read-only card showing the employee's job(s), pay type, wage, and effective date, along with affordances to edit a job's compensation, add a first job from the empty state, add another job (when the primary job is Nonexempt), delete a non-primary job, and cancel a scheduled future-dated change. Choosing to edit or add a job swaps the card for the corresponding form; a successful add returns to the card with a dismissible "Job successfully added." alert, an edit returns to the card without an alert, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
  *
- * When the `compensationHistory` unstable feature flag is enabled, the card also offers a "View history" CTA that swaps in {@link CompensationHistory} — a read-only table of every past, current, and upcoming pay rate per job — with a "Back" action that returns to the card.
+ * When the `compensationHistory` unstable feature flag is enabled, the card also offers a "View history" CTA that swaps in `EmployeeManagement.CompensationHistory` — a read-only table of every past, current, and upcoming pay rate per job — with a "Back" action that returns to the card.
  *
- * The card and form surfaces ({@link CompensationCard}, {@link CompensationEditForm}, {@link CompensationAddJobForm}, {@link CompensationAddAnotherJobForm}, {@link CompensationHistory}) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
+ * The card and form surfaces ({@link CompensationCard}, {@link CompensationEditForm}, {@link CompensationAddJobForm}, {@link CompensationAddAnotherJobForm}) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
  *
  * @events
  * | Event | Description | Data |

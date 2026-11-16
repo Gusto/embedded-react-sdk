@@ -4,7 +4,6 @@ import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import type { LoaderComponentType } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
-import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 
 /**
@@ -63,7 +62,6 @@ function CompensationHistoryContent({
   LoaderComponent,
 }: CompensationHistoryProps) {
   useUnstableFeature('compensationHistory', { throwIfDisabled: true })
-  useI18n('Employee.Management.Compensation')
 
   const history = useCompensationHistory({ employeeId })
 

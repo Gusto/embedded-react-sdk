@@ -9,6 +9,7 @@ import {
 import type { PendingCompensationChange } from '../../shared/getPendingCompensationChanges'
 import { usePendingChangeDetailRenderer } from '../../shared/usePendingChangeDetailRenderer'
 import { PendingChangesReviewModal } from '../../shared/PendingChangesReviewModal'
+import { parseRate } from '../../shared/parseRate'
 import styles from './CompensationCard.module.scss'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -25,12 +26,6 @@ import type { LoaderComponentType } from '@/components/Base'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
-
-function parseJobRate(rate: Job['rate']): number | null {
-  if (rate === undefined) return null
-  const numericRate = parseFloat(rate)
-  return Number.isFinite(numericRate) ? numericRate : null
-}
 
 /**
  * Props for {@link CompensationCard}.
@@ -50,7 +45,7 @@ export interface CompensationCardProps {
  * Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances.
  *
  * @remarks
- * The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. With the `compensationHistory` unstable feature flag enabled it also renders a "View history" CTA, which the consumer routes to {@link CompensationHistory}. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to {@link CompensationEditForm}, {@link CompensationAddJobForm}, or {@link CompensationAddAnotherJobForm} and renders any post-save success alerts. {@link Compensation} bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
+ * The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. With the `compensationHistory` unstable feature flag enabled it also renders a "View history" CTA, which the consumer routes to `EmployeeManagement.CompensationHistory`. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to {@link CompensationEditForm}, {@link CompensationAddJobForm}, or {@link CompensationAddAnotherJobForm} and renders any post-save success alerts. {@link Compensation} bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
  *
  * @events
  * | Event | Description | Data |
@@ -171,7 +166,7 @@ function CompensationCardReady({
   const canAddAnotherJob =
     jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT && !hasFutureNonNonexemptComp
   const canViewHistory = useUnstableFeature('compensationHistory') && jobs.length > 0
-  const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
+  const singleJobNumericRate = singleJob ? parseRate(singleJob.rate) : null
   const singleJobCurrentComp = singleJob?.compensations?.find(
     c => c.uuid === singleJob.currentCompensationUuid,
   )
@@ -239,7 +234,7 @@ function CompensationCardReady({
         // pending jobs, so read from the comp pointed to by
         // `currentCompensationUuid`.
         const currentComp = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
-        const numericRate = parseJobRate(job.rate)
+        const numericRate = parseRate(job.rate)
         return (
           <>
             {currentComp?.title || '-'}

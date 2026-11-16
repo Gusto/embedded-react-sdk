@@ -44,6 +44,10 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * complete, current set of events observable from `DashboardFlow`, grouped by
  * the tab that emits them.
  *
+ * With the `compensationHistory` unstable feature flag enabled, the compensation card offers a
+ * "View history" CTA and the flow swaps in `EmployeeManagement.CompensationHistory`, a read-only
+ * table of every past, current, and upcoming pay rate per job, returning to the cards on "Back".
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -111,7 +115,6 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * - {@link CompensationAddJobForm}
  * - {@link CompensationEditForm}
  * - {@link CompensationAddAnotherJobForm}
- * - {@link CompensationHistory} (behind the `compensationHistory` unstable feature flag)
  * - {@link DeductionsEditForm}
  * - {@link DocumentManager}
  *

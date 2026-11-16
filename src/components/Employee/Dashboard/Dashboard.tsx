@@ -130,12 +130,17 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
  * boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
  * case it defaults to basic details. Each tab composes the read-only section cards listed below.
  *
+ * With the `compensationHistory` unstable feature flag enabled, the compensation card on the Job
+ * and pay tab also offers a "View history" CTA. The card emits
+ * `employee/management/compensation/card/historyRequested` for it; rendering
+ * `EmployeeManagement.CompensationHistory` in response is the consumer's job, which
+ * {@link DashboardFlow} does.
+ *
  * @components
  * - {@link ProfileCard}
  * - {@link HomeAddressCard}
  * - {@link WorkAddressCard}
  * - {@link CompensationCard}
- * - {@link CompensationHistory} (behind the `compensationHistory` unstable feature flag)
  * - {@link PaymentMethodCard}
  * - {@link DeductionsCard}
  * - {@link PaystubsCard}
