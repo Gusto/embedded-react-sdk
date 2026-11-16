@@ -34,8 +34,13 @@ describe('CompensationHistory', () => {
 
     renderHistory()
 
-    expect(await screen.findByRole('heading', { name: 'Software engineer' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Team lead' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Software engineer', level: 3 }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Team lead', level: 3 })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Compensation history', level: 2 }),
+    ).toBeInTheDocument()
 
     const [primaryTable] = screen.getAllByRole('grid')
     assertDefined(primaryTable)
@@ -77,6 +82,9 @@ describe('CompensationHistory', () => {
     renderHistory()
 
     expect(await screen.findByText('No compensation history')).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Compensation history', level: 2 }),
+    ).toBeInTheDocument()
   })
 
   it('emits the close event when Back is clicked', async () => {

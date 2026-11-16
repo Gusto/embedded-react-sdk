@@ -4,6 +4,7 @@ import type {
   CompensationHistoryStatus,
   JobCompensationHistory,
 } from '../../shared/getCompensationHistory'
+import { parseRate } from '../../shared/parseRate'
 import { Flex } from '@/components/Common/Flex/Flex'
 import {
   ActionsLayout,
@@ -49,8 +50,8 @@ export interface CompensationHistoryPresentationProps {
  * @remarks
  * Takes already-derived history and renders it. All data fetching, feature
  * gating, and event emission live in {@link CompensationHistory}. Past rows are
- * unbadged, and the status column is omitted for a job with no current or
- * upcoming row.
+ * unbadged; the badge column header is visually hidden because only the current
+ * and upcoming rows carry a badge.
  *
  * @param props - See {@link CompensationHistoryPresentationProps}.
  * @returns The rendered history tables.
@@ -67,22 +68,23 @@ export function CompensationHistoryPresentation({
 
   return (
     <Flex flexDirection="column" gap={32}>
-      {isLoading ? (
-        <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h2">{t('history.title')}</Components.Heading>
+      <Flex flexDirection="column" gap={16}>
+        <Components.Heading as="h2">{t('history.title')}</Components.Heading>
+        {isLoading ? (
           <Loading />
-        </Flex>
-      ) : jobs.length === 0 ? (
-        <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h2">{t('history.title')}</Components.Heading>
+        ) : jobs.length === 0 ? (
           <EmptyData
             title={t('history.emptyState.title')}
             description={t('history.emptyState.description')}
           />
-        </Flex>
-      ) : (
-        jobs.map(job => <JobHistorySection key={job.jobId} job={job} />)
-      )}
+        ) : (
+          <Flex flexDirection="column" gap={32}>
+            {jobs.map(job => (
+              <JobHistorySection key={job.jobId} job={job} />
+            ))}
+          </Flex>
+        )}
+      </Flex>
       <ActionsLayout>
         <Components.Button variant="secondary" onClick={onBack}>
           {t('history.backCta')}
@@ -97,8 +99,6 @@ function JobHistorySection({ job }: { job: JobCompensationHistory }) {
   const Components = useComponentContext()
   const dateFormatter = useDateFormatter()
   const formatCompensationRate = useFormatCompensationRate()
-
-  const hasUpcomingOrCurrent = job.entries.some(entry => entry.status !== 'past')
 
   const dataViewProps = useDataView<CompensationHistoryEntry>({
     data: job.entries,
@@ -122,32 +122,26 @@ function JobHistorySection({ job }: { job: JobCompensationHistory }) {
         key: 'rate',
         title: t('history.columns.wage'),
         render: entry => {
-          const rate = Number(entry.rate)
-          if (!entry.paymentUnit || Number.isNaN(rate)) return '-'
+          const rate = parseRate(entry.rate)
+          if (!entry.paymentUnit || rate === null) return '-'
           return formatCompensationRate(rate, entry.paymentUnit)
         },
       },
-      ...(hasUpcomingOrCurrent
-        ? [
-            {
-              key: 'status',
-              title: <VisuallyHidden>{t('history.columns.status')}</VisuallyHidden>,
-              render: (entry: CompensationHistoryEntry) => {
-                const badge = statusBadgeMap[entry.status]
-                if (!badge) return null
-                return (
-                  <Components.Badge status={badge.status}>{t(badge.labelKey)}</Components.Badge>
-                )
-              },
-            },
-          ]
-        : []),
+      {
+        key: 'status',
+        title: <VisuallyHidden>{t('history.columns.status')}</VisuallyHidden>,
+        render: entry => {
+          const badge = statusBadgeMap[entry.status]
+          if (!badge) return null
+          return <Components.Badge status={badge.status}>{t(badge.labelKey)}</Components.Badge>
+        },
+      },
     ],
   })
 
   return (
     <Flex flexDirection="column" gap={16}>
-      <Components.Heading as="h2">{job.jobTitle}</Components.Heading>
+      <Components.Heading as="h3">{job.jobTitle}</Components.Heading>
       <DataView label={t('history.tableLabel', { jobTitle: job.jobTitle })} {...dataViewProps} />
     </Flex>
   )

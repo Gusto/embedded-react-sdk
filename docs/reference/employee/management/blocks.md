@@ -20,9 +20,9 @@ Self-contained block for viewing and managing an employee's jobs and compensatio
 
 Renders a read-only card showing the employee's job(s), pay type, wage, and effective date, along with affordances to edit a job's compensation, add a first job from the empty state, add another job (when the primary job is Nonexempt), delete a non-primary job, and cancel a scheduled future-dated change. Choosing to edit or add a job swaps the card for the corresponding form; a successful add returns to the card with a dismissible "Job successfully added." alert, an edit returns to the card without an alert, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
 
-When the `compensationHistory` unstable feature flag is enabled, the card also offers a "View history" CTA that swaps in CompensationHistory — a read-only table of every past, current, and upcoming pay rate per job — with a "Back" action that returns to the card.
+When the `compensationHistory` unstable feature flag is enabled, the card also offers a "View history" CTA that swaps in `EmployeeManagement.CompensationHistory` — a read-only table of every past, current, and upcoming pay rate per job — with a "Back" action that returns to the card.
 
-The card and form surfaces ([CompensationCard](#compensationcard), [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), [CompensationAddAnotherJobForm](#compensationaddanotherjobform), CompensationHistory) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
+The card and form surfaces ([CompensationCard](#compensationcard), [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), [CompensationAddAnotherJobForm](#compensationaddanotherjobform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
 
 <br />
 
@@ -156,7 +156,7 @@ Standalone "Compensation" management card that displays an employee's current jo
 
 ### Remarks
 
-The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. With the `compensationHistory` unstable feature flag enabled it also renders a "View history" CTA, which the consumer routes to CompensationHistory. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), or [CompensationAddAnotherJobForm](#compensationaddanotherjobform) and renders any post-save success alerts. [Compensation](#compensation) bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
+The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. With the `compensationHistory` unstable feature flag enabled it also renders a "View history" CTA, which the consumer routes to `EmployeeManagement.CompensationHistory`. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), or [CompensationAddAnotherJobForm](#compensationaddanotherjobform) and renders any post-save success alerts. [Compensation](#compensation) bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
 
 <br />
 
@@ -238,6 +238,12 @@ Renders a tabbed overview of the employee, wrapped in the SDK's standard error a
 boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
 case it defaults to basic details. Each tab composes the read-only section cards listed below.
 
+With the `compensationHistory` unstable feature flag enabled, the compensation card on the Job
+and pay tab also offers a "View history" CTA. The card emits
+`employee/management/compensation/card/historyRequested` for it; rendering
+`EmployeeManagement.CompensationHistory` in response is the consumer's job, which
+[DashboardFlow](dashboard-flow.md) does.
+
 <br />
 
 ### DashboardProps
@@ -261,7 +267,6 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 - [HomeAddressCard](#homeaddresscard)
 - [WorkAddressCard](#workaddresscard)
 - [CompensationCard](#compensationcard)
-- CompensationHistory (behind the `compensationHistory` unstable feature flag)
 - [PaymentMethodCard](#paymentmethodcard)
 - [DeductionsCard](#deductionscard)
 - [PaystubsCard](#paystubscard)

@@ -3,6 +3,7 @@ import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/
 import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
 import { getCompensationHistory, type JobCompensationHistory } from '../getCompensationHistory'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import { useCurrentCalendarDate } from '@/hooks/useCurrentCalendarDate'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
 /**
@@ -48,6 +49,11 @@ export type UseCompensationHistoryResult = HookLoadingResult | UseCompensationHi
  * ordered newest effective date first. Shares its query with
  * `useCompensationManagement`, including `staleTime: Infinity`.
  *
+ * Because the query is never refetched on its own, the past/current/upcoming
+ * boundary is re-derived from {@link useCurrentCalendarDate} rather than read once:
+ * a screen left open past midnight re-tags a rate that has become effective instead
+ * of leaving it marked upcoming.
+ *
  * @param props - See {@link UseCompensationHistoryProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseCompensationHistoryReady} once ready.
  * @internal
@@ -60,7 +66,12 @@ export function useCompensationHistory({
     { staleTime: Infinity },
   )
 
-  const jobs = useMemo(() => getCompensationHistory(jobsQuery.data?.jobs), [jobsQuery.data?.jobs])
+  const today = useCurrentCalendarDate()
+
+  const jobs = useMemo(
+    () => getCompensationHistory(jobsQuery.data?.jobs, { today }),
+    [jobsQuery.data?.jobs, today],
+  )
 
   const errorHandling = composeErrorHandler([jobsQuery])
 
