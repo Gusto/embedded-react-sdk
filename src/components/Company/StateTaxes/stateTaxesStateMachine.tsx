@@ -1,11 +1,7 @@
-import { reduce, state, transition } from 'robot3'
+import { createMachine, reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { StateTaxesContextInterface } from './StateTaxesComponents'
-import {
-  StateTaxesFormContextual,
-  StateTaxesListContextual,
-  TaxRateManagementContextual,
-} from './StateTaxesComponents'
+import { StateTaxesFormContextual, TaxRateManagementContextual } from './StateTaxesComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
@@ -15,24 +11,38 @@ type EventPayloads = {
   [componentEvents.COMPANY_STATE_TAX_MANAGE_RATES]: { state: string }
 }
 
+/** @internal */
+export interface StateTaxesMachineContext {
+  /** UUID of the company whose state taxes are being managed. */
+  companyId: string
+  /** Controls visibility of the Continue button in list screens that offer one. */
+  showContinueButton?: boolean
+}
+
 /**
  * Builds the list → requirements form / tax rate history machine around a given list screen.
  *
  * @remarks
  * The onboarding and management journeys share every screen except the state list, so the
- * list is the only thing that varies: each transition back to the list lands on
- * `listComponent`.
+ * list is the only thing that varies: the machine opens on `listComponent` and every
+ * transition back to the list lands on it again.
  *
+ * @param listComponent - The state list screen this machine opens on and returns to.
+ * @param context - Initial machine context. See {@link StateTaxesMachineContext}.
+ * @returns A robot3 machine seeded with `listComponent` as its current screen.
  * @internal
  */
-export function createStateTaxesStateMachine(listComponent: ComponentType) {
+export function createStateTaxesMachine(
+  listComponent: ComponentType,
+  { companyId, showContinueButton }: StateTaxesMachineContext,
+) {
   const returnToList = reduce((ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
     ...ctx,
     component: listComponent,
     state: undefined,
   }))
 
-  return {
+  const states = {
     viewStateTaxes: state<MachineTransition>(
       transition(
         componentEvents.COMPANY_STATE_TAX_EDIT,
@@ -74,7 +84,11 @@ export function createStateTaxesStateMachine(listComponent: ComponentType) {
       transition(componentEvents.CANCEL, 'viewStateTaxes', returnToList),
     ),
   }
-}
 
-/** @internal */
-export const stateTaxesStateMachine = createStateTaxesStateMachine(StateTaxesListContextual)
+  return createMachine('viewStateTaxes', states, (initialContext: StateTaxesContextInterface) => ({
+    ...initialContext,
+    component: listComponent,
+    companyId,
+    showContinueButton,
+  }))
+}

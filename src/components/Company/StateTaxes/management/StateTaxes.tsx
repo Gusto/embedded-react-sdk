@@ -1,16 +1,10 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { createStateTaxesStateMachine } from '../stateTaxesStateMachine'
-import type { StateTaxesContextInterface } from '../StateTaxesComponents'
+import { createStateTaxesMachine } from '../stateTaxesStateMachine'
 import { StateTaxesManagementListContextual } from './StateTaxesManagementComponents'
 import { Flow } from '@/components/Flow/Flow'
-import type { BaseComponentInterface } from '@/components/Base'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useComponentDictionary } from '@/i18n/I18n'
-
-const stateTaxesManagementStateMachine = createStateTaxesStateMachine(
-  StateTaxesManagementListContextual,
-)
 
 /**
  * Props for the management {@link StateTaxes} flow.
@@ -69,24 +63,28 @@ export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTa
  * }
  * ```
  */
-export function StateTaxes({ companyId, onEvent, dictionary }: StateTaxesProps) {
+export function StateTaxes({
+  companyId,
+  onEvent,
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+}: StateTaxesProps) {
   useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
   useComponentDictionary('Company.StateTaxes', dictionary)
 
   const machine = useMemo(
-    () =>
-      createMachine(
-        'viewStateTaxes',
-        stateTaxesManagementStateMachine,
-        (initialContext: StateTaxesContextInterface) => ({
-          ...initialContext,
-          component: StateTaxesManagementListContextual,
-          companyId,
-          showContinueButton: false,
-        }),
-      ),
+    () => createStateTaxesMachine(StateTaxesManagementListContextual, { companyId }),
     [companyId],
   )
 
-  return <Flow machine={machine} onEvent={onEvent} />
+  return (
+    <BaseBoundaries
+      componentName="Company.Management.StateTaxesFlow"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <Flow machine={machine} onEvent={onEvent} />
+    </BaseBoundaries>
+  )
 }

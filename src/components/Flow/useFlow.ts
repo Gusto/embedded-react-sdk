@@ -10,7 +10,7 @@ import type { EventType } from '@/shared/constants'
  *
  * @internal
  */
-interface CtaConfig {
+export interface CtaConfig {
   labelKey: string
   namespace?: keyof CustomTypeOptions['resources']
 }
