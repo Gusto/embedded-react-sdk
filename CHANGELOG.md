@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.59.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.59.0...v0.59.1) (2026-11-17)
+
+### Features & Enhancements
+
+- Add the alpha `CompanyManagement.StateTaxes` flow and export `CompanyManagement.TaxRateManagement`, for reviewing a state's rate history and scheduling future SUI rate changes outside onboarding. `TaxRateManagement` emits a new `company/stateTaxes/rateScheduled` event, and `CompanyManagement.DashboardFlow`'s State taxes section now uses this flow. Gated behind the `companySettingsDashboard` flag in `UnstableFeatures` ([#3122](https://github.com/Gusto/embedded-react-sdk/issues/3122))
+- Add the alpha `EmployeeManagement.CompensationHistory` view, showing an employee's past, current, and upcoming pay rates across all jobs. `EmployeeManagement.CompensationCard` gains a "View history" action when enabled. Gated behind the new `compensationHistory` flag in `UnstableFeatures` ([#3101](https://github.com/Gusto/embedded-react-sdk/issues/3101))
+
+### Fixes
+
+- Fix `PayrollOverview` showing a generic error when submitting a payroll whose calculation is out of date. It now recalculates in place, shows the refreshed totals with a notice of whether the total changed, and emits `runPayroll/recalculated` so the user can review and submit again ([#3129](https://github.com/Gusto/embedded-react-sdk/issues/3129))
+- Fix default and boundary dates shifting by one day in timezones ahead of UTC (contractor start date, compensation effective date, and the contractor payments date range). Time off policy employee selection now relies on the API for eligibility instead of a client-side hire date check ([#3102](https://github.com/Gusto/embedded-react-sdk/issues/3102))
+
+### Chores & Maintenance
+
+- Bump runtime dependencies (`react-hook-form`)
+- Bump dev dependencies (`@playwright/test`, `@storybook/*`, `@testing-library/user-event`, `@typescript-eslint/*`, `typescript-eslint`, `cspell`, `prettier`, `sass-embedded`, `vite`)
+- Register `CompanyManagement` in the reference docs ([#3105](https://github.com/Gusto/embedded-react-sdk/issues/3105))
+
 ## [0.59.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.58.1...v0.59.0) (2026-11-12)
 
 ### Breaking Changes
