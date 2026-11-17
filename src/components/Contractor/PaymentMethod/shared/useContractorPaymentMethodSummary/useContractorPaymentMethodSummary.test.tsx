@@ -1,7 +1,10 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
-import { useContractorPaymentMethodSummary } from './useContractorPaymentMethodSummary'
+import {
+  useContractorPaymentMethodSummary,
+  type UseContractorPaymentMethodSummaryResult,
+} from './useContractorPaymentMethodSummary'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import {
@@ -9,6 +12,16 @@ import {
   handleUpdateContractorPaymentMethod,
 } from '@/test/mocks/apis/contractor_payment_method'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+
+type ReadyResult = Extract<UseContractorPaymentMethodSummaryResult, { isLoading: false }>
+
+function assertReady(
+  hookResult: UseContractorPaymentMethodSummaryResult,
+): asserts hookResult is ReadyResult {
+  if (hookResult.isLoading) {
+    throw new Error('Expected hook to be ready but it is still loading')
+  }
+}
 
 describe('useContractorPaymentMethodSummary', () => {
   beforeEach(() => {
@@ -22,13 +35,13 @@ describe('useContractorPaymentMethodSummary', () => {
     )
 
     expect(result.current.isLoading).toBe(true)
+    expect(result.current.errorHandling.errors).toEqual([])
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false)
     })
 
-    if (result.current.isLoading) return
-
+    assertReady(result.current)
     expect(result.current.data.paymentMethod).toMatchObject({ type: 'Direct Deposit' })
     expect(result.current.data.bankAccount).toMatchObject({
       name: 'BoA Checking Account',
@@ -38,9 +51,11 @@ describe('useContractorPaymentMethodSummary', () => {
   })
 
   it('reverts the payment method to Check via onRemoveBankAccount', async () => {
-    const updateResolver = vi.fn<HttpResponseResolver>(() =>
-      HttpResponse.json({ version: 'updated-version', type: 'Check', splits: [] }),
-    )
+    let requestBody: Record<string, unknown> | null = null
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      requestBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json({ version: 'updated-version', type: 'Check', splits: [] })
+    })
     server.use(handleUpdateContractorPaymentMethod(updateResolver))
 
     const { result } = renderHook(
@@ -51,15 +66,17 @@ describe('useContractorPaymentMethodSummary', () => {
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false)
     })
-    if (result.current.isLoading) return
-    const ready = result.current
+
+    assertReady(result.current)
+    const { onRemoveBankAccount } = result.current.actions
 
     let submitResult: unknown
     await act(async () => {
-      submitResult = await ready.actions.onRemoveBankAccount()
+      submitResult = await onRemoveBankAccount()
     })
 
     expect(updateResolver).toHaveBeenCalledTimes(1)
+    expect(requestBody).toMatchObject({ type: 'Check' })
     expect(submitResult).toEqual(
       expect.objectContaining({ mode: 'update', data: expect.objectContaining({ type: 'Check' }) }),
     )
@@ -85,5 +102,38 @@ describe('useContractorPaymentMethodSummary', () => {
     })
 
     expect(result.current.isLoading).toBe(true)
+  })
+
+  it('surfaces a failed removal through errorHandling.errors and resolves undefined', async () => {
+    server.use(
+      handleUpdateContractorPaymentMethod(
+        () =>
+          new HttpResponse(JSON.stringify({ message: 'Payment method is out of date' }), {
+            status: 422,
+          }),
+      ),
+    )
+
+    const { result } = renderHook(
+      () => useContractorPaymentMethodSummary({ contractorId: 'contractor-123' }),
+      { wrapper: GustoTestProvider },
+    )
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+
+    assertReady(result.current)
+    const { onRemoveBankAccount } = result.current.actions
+
+    let submitResult: unknown = 'untouched'
+    await act(async () => {
+      submitResult = await onRemoveBankAccount()
+    })
+
+    expect(submitResult).toBeUndefined()
+    await waitFor(() => {
+      expect(result.current.errorHandling.errors.length).toBeGreaterThan(0)
+    })
   })
 })
