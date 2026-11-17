@@ -1104,7 +1104,7 @@ describe('PayrollEditEmployeePresentation', () => {
         expect.objectContaining({
           fixedCompensations: expect.arrayContaining([
             expect.objectContaining({ name: 'Bonus', amount: '100.00', jobUuid: 'job-1' }),
-            expect.objectContaining({ name: 'Commission', amount: '75.5', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Commission', amount: '75.50', jobUuid: 'job-1' }),
           ]),
         }),
       )
