@@ -6,6 +6,7 @@ import {
   CompensationEditFormContextual,
   CompensationAddJobFormContextual,
   CompensationAddAnotherJobFormContextual,
+  CompensationHistoryContextual,
 } from './CompensationComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -74,7 +75,24 @@ export const compensationStateMachine = {
       })),
     ),
     transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_HISTORY_REQUESTED,
+      'viewHistory',
+      reduce((ctx: CompensationContextInterface): CompensationContextInterface => ({
+        ...ctx,
+        component: CompensationHistoryContextual as ComponentType,
+        currentJobId: null,
+        successAlert: null,
+      })),
+    ),
+    transition(
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ALERT_DISMISSED,
+      'card',
+      returnToCard,
+    ),
+  ),
+  viewHistory: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_HISTORY_CLOSED,
       'card',
       returnToCard,
     ),

@@ -1349,6 +1349,16 @@ export interface CompensationFormFields {
     Title: ComponentType<CompensationTitleFieldProps>;
 }
 
+// @alpha
+function CompensationHistory(input: CompensationHistoryProps): JSX;
+
+// @alpha
+interface CompensationHistoryProps {
+    employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 export type CompensationOptionalFieldsToRequire = { create?: ("minimumWageId" | "title")[] | undefined; update?: ("effectiveDate" | "flsaStatus" | "minimumWageId" | "paymentUnit" | "rate" | "title")[] | undefined; };
 
@@ -1732,6 +1742,8 @@ export const componentEvents: {
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED: "employee/management/compensation/card/addAnotherRequested";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED: "employee/management/compensation/card/jobDeleted";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED: "employee/management/compensation/card/changeCancelled";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_HISTORY_REQUESTED: "employee/management/compensation/card/historyRequested";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_HISTORY_CLOSED: "employee/management/compensation/history/closed";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED: "employee/management/compensation/editForm/submitted";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED: "employee/management/compensation/editForm/cancelled";
     readonly EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED: "employee/management/compensation/addJobForm/submitted";
@@ -3103,11 +3115,13 @@ declare namespace EmployeeManagement {
         CompensationEditForm,
         CompensationAddJobForm,
         CompensationAddAnotherJobForm,
+        CompensationHistory,
         CompensationProps_2 as CompensationProps,
         CompensationCardProps,
         CompensationEditFormProps,
         CompensationAddJobFormProps,
         CompensationAddAnotherJobFormProps,
+        CompensationHistoryProps,
         TerminateEmployee,
         TerminateEmployeeProps,
         TerminationSummary,
@@ -6373,6 +6387,7 @@ export interface UnorderedListProps extends BaseListProps {
 // @alpha
 export interface UnstableFeatures {
     companySettingsDashboard?: boolean;
+    compensationHistory?: boolean;
     contractorPaymentHistory?: boolean;
     historicalPayments?: boolean;
     managePaySchedules?: boolean;

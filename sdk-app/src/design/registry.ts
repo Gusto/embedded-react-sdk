@@ -148,7 +148,7 @@ export const categorizedRegistry: CategorizedRegistry = {
       name: 'Compensation History',
       path: '/design/employee-compensation-history',
       description:
-        'A read-only view of an employee’s compensation history across all of their jobs, with a job filter for multi-job employees.',
+        'A read-only view of an employee’s compensation history across all of their jobs, each job stacked as its own section.',
       children: [
         {
           name: 'Prototype',

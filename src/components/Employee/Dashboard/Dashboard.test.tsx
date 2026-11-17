@@ -21,6 +21,7 @@ import {
 } from '@/test/mocks/apis/employees'
 import { handleGetEmployeeStateTaxes } from '@/test/mocks/apis/employee_state_taxes'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
+import { buildEmployeeWithJobs } from '@/test/factories/jobsAndCompensations'
 import { componentEvents } from '@/shared/constants'
 import { assertDefined } from '@/test-utils/assertions'
 
@@ -1957,5 +1958,32 @@ describe('Dashboard', () => {
         formId: 'i9-form-123',
       },
     )
+  })
+
+  it('routes the Compensation card "View history" CTA to the history view and back (via DashboardFlow)', async () => {
+    const user = userEvent.setup()
+    server.use(
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json(buildEmployeeWithJobs({ scenario: 'compensationHistory' })),
+      ),
+    )
+
+    renderWithProviders(<DashboardFlow employeeId="employee-123" onEvent={onEvent} />, {
+      unstableFeatures: { compensationHistory: true },
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Job and pay' }))
+    await user.click(await screen.findByRole('button', { name: 'View history' }))
+
+    // The history view replaces the dashboard tabs entirely.
+    expect(await screen.findByRole('heading', { name: 'Software engineer' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Team lead' })).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: 'Job and pay' })).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: 'Back' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('tab', { name: 'Job and pay' })).toBeInTheDocument()
+    })
   })
 })

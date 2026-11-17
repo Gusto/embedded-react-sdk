@@ -11,6 +11,7 @@ import { DocumentManager } from '@/components/Employee/Documents/management/Docu
 import { DeductionsEditForm } from '@/components/Employee/Deductions/management/DeductionsEditForm'
 import { CompensationEditForm } from '@/components/Employee/Compensation/management/CompensationEditForm/CompensationEditForm'
 import { CompensationAddAnotherJobForm } from '@/components/Employee/Compensation/management/CompensationAddAnotherJobForm/CompensationAddAnotherJobForm'
+import { CompensationHistory } from '@/components/Employee/Compensation/management/CompensationHistory'
 import { CompensationAddJobForm } from '@/components/Employee/Compensation/management/CompensationAddJobForm/CompensationAddJobForm'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -178,4 +179,10 @@ export function EditCompensationContextual() {
 export function AddAnotherJobContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <CompensationAddAnotherJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function CompensationHistoryContextual() {
+  const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
+  return <CompensationHistory employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
