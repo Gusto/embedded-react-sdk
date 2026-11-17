@@ -1,3 +1,6 @@
+import { existsSync, mkdtempSync, readFileSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { beforeAll, describe, expect, it } from 'vitest'
 import {
   Application,
@@ -14,6 +17,7 @@ import {
   ReferenceType,
   ReflectionGroup,
   ReflectionKind,
+  RendererEvent,
   SignatureReflection,
   SourceReference,
   TypeOperatorType,
@@ -214,6 +218,7 @@ describe('getIdealBaseName — namespaces', () => {
     ['EmployeeOnboarding', 'employee/onboarding/README'],
     ['EmployeeManagement', 'employee/management/README'],
     ['CompanyOnboarding', 'company/onboarding/README'],
+    ['CompanyManagement', 'company/management/README'],
     ['ContractorOnboarding', 'contractor/onboarding/README'],
     // Single-namespace domains (no subpath) → use fixed 'namespace' slug
     ['Payroll', 'payroll/namespace'],
@@ -291,6 +296,41 @@ describe('buildPages — namespace routing', () => {
     expect(namespaceUrls).toContain('employee/onboarding/README.md')
     expect(namespaceUrls).toContain('employee/management/README.md')
     expect(namespaceUrls).toContain('company/onboarding/README.md')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// emitCategoryFiles — unreleased namespaces reserve a slot but render nothing
+// ---------------------------------------------------------------------------
+
+describe('emitCategoryFiles', () => {
+  it('writes a category only for the namespaces that produced a page', () => {
+    const project = makeProject()
+    makeChild(project, 'CompanyOnboarding', ReflectionKind.Namespace)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const outDir = mkdtempSync(join(tmpdir(), 'sdk-router-categories-'))
+    SDKRouter.emitCategoryFiles(new RendererEvent(outDir, project, pages))
+
+    // CompanyManagement and InformationRequests are configured in DOMAINS but have no
+    // reflection in this project, standing in for a namespace excludeUnreleasedTags
+    // stripped. Only the one that rendered should get a sidebar category.
+    const withCategory = ['onboarding', 'management', 'information-requests'].filter(subpath =>
+      existsSync(join(outDir, 'company', subpath, '_category_.json')),
+    )
+    expect(withCategory).toEqual(['onboarding'])
+
+    // Positions track DOMAINS order, so onboarding keeps slot 2 whether or not the
+    // namespaces after it rendered.
+    const onboarding: unknown = JSON.parse(
+      readFileSync(join(outDir, 'company', 'onboarding', '_category_.json'), 'utf8'),
+    )
+    expect(onboarding).toMatchObject({
+      label: 'CompanyOnboarding',
+      position: 2,
+      collapsed: false,
+    })
   })
 })
 

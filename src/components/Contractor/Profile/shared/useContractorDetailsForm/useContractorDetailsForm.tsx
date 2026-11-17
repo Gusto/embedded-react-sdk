@@ -69,6 +69,7 @@ import {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { removeNonDigits } from '@/helpers/formattedStrings'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 export type { ContractorDetailsOptionalFieldsToRequire } from './contractorDetailsSchema'
 
@@ -355,7 +356,8 @@ export function useContractorDetailsForm({
       startDate:
         contractor?.startDate ??
         partnerDefaults?.startDate ??
-        new Date().toISOString().split('T')[0]!,
+        formatDateToStringDate(new Date()) ??
+        '',
       hourlyRate: parsedHourlyRate ?? partnerDefaults?.hourlyRate ?? NaN,
       selfOnboarding: partnerDefaults?.selfOnboarding ?? isCurrentlySelfOnboarding(contractor),
       fileNewHireReport:

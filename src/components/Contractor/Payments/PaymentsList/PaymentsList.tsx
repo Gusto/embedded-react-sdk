@@ -8,6 +8,7 @@ import { PaymentsListPresentation } from './PaymentsListPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
 /**
@@ -75,8 +76,8 @@ const calculateDateRange = (months: number = 3) => {
   endDate.setMonth(endDate.getMonth() + (12 - months))
 
   return {
-    startDate: startDate.toISOString().split('T')[0] || '',
-    endDate: endDate.toISOString().split('T')[0] || '',
+    startDate: formatDateToStringDate(startDate) ?? '',
+    endDate: formatDateToStringDate(endDate) ?? '',
   }
 }
 
