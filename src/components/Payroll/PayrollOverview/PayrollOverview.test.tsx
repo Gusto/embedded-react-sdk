@@ -1155,6 +1155,25 @@ describe('PayrollOverview out-of-date calculation on submit', () => {
     ).toBeInTheDocument()
   })
 
+  it('does not recalculate when the rejection also reports a passed deadline', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    const debitDateMessage =
+      "The payroll's deadline has passed and the debit date is no longer valid. Please re-calculate to update to the next processable debit date."
+    mockSubmitPayroll.mockRejectedValueOnce(
+      buildSubmitRejection([
+        requiresRecalculationError,
+        { errorKey: 'debit_date', category: 'invalid_attribute_value', message: debitDateMessage },
+      ]),
+    )
+
+    renderOverview()
+    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+    expect(await screen.findByText(debitDateMessage)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled()
+    expect(mockCalculatePayroll).not.toHaveBeenCalled()
+  })
+
   it('offers to edit the payroll when the recalculation fails', async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
     mockSubmitPayroll.mockRejectedValueOnce(buildSubmitRejection([requiresRecalculationError]))
