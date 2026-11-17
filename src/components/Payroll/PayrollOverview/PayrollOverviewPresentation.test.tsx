@@ -404,6 +404,57 @@ describe('PayrollOverviewPresentation', () => {
     expect(onUnblockOptionChange).toHaveBeenCalledWith('fast_ach_threshold_exceeded', 'wire_in')
   })
 
+  describe('with a single unblock option', () => {
+    const fourDayOnlyBlocker: PayrollSubmissionBlockerType = {
+      ...mockFastAchBlocker,
+      unblockOptions: [{ unblockType: 'move_to_four_day', checkDate: '2025-08-15' }],
+    }
+
+    it('lays out the option without radios and holds Submit until the change is accepted', async () => {
+      const user = userEvent.setup()
+      const onUnblockOptionChange = vi.fn()
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          submissionBlockers={[fourDayOnlyBlocker]}
+          onUnblockOptionChange={onUnblockOptionChange}
+        />,
+      )
+
+      expect(await screen.findByText('Switch to 4-day direct deposit')).toBeInTheDocument()
+      expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^Submit$/i })).toBeDisabled()
+
+      await user.click(screen.getByRole('checkbox', { name: /accept this change/i }))
+
+      expect(onUnblockOptionChange).toHaveBeenCalledWith(
+        'fast_ach_threshold_exceeded',
+        'move_to_four_day',
+      )
+    })
+
+    it('enables Submit once the change is accepted, and clears the selection when unchecked', async () => {
+      const user = userEvent.setup()
+      const onUnblockOptionChange = vi.fn()
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          submissionBlockers={[fourDayOnlyBlocker]}
+          selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'move_to_four_day' }}
+          onUnblockOptionChange={onUnblockOptionChange}
+        />,
+      )
+
+      const acceptCheckbox = await screen.findByRole('checkbox', { name: /accept this change/i })
+      expect(acceptCheckbox).toBeChecked()
+      expect(screen.getByRole('button', { name: /^Submit$/i })).not.toBeDisabled()
+
+      await user.click(acceptCheckbox)
+
+      expect(onUnblockOptionChange).toHaveBeenCalledWith('fast_ach_threshold_exceeded', '')
+    })
+  })
+
   it('renders multiple submission blockers simultaneously', async () => {
     const secondBlocker: PayrollSubmissionBlockerType = {
       blockerType: 'another_blocker_type',
