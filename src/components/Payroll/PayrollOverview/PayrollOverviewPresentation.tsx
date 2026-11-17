@@ -106,7 +106,9 @@ export const PayrollOverviewPresentation = ({
   const isDesktop = breakpoints.includes('small')
 
   const isLoading =
-    status === PayrollOverviewStatus.Submitting || status === PayrollOverviewStatus.Cancelling
+    status === PayrollOverviewStatus.Submitting ||
+    status === PayrollOverviewStatus.Recalculating ||
+    status === PayrollOverviewStatus.Cancelling
 
   const pageHeading = (
     <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
@@ -670,6 +672,11 @@ export const PayrollOverviewPresentation = ({
           <PayrollLoading title={t('cancellingTitle')} />
         ) : status === PayrollOverviewStatus.Submitting ? (
           <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
+        ) : status === PayrollOverviewStatus.Recalculating ? (
+          <PayrollLoading
+            title={t('recalculatingTitle')}
+            description={t('recalculatingDescription')}
+          />
         ) : (
           <>
             {wireInConfirmationRequest}

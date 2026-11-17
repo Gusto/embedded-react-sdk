@@ -666,6 +666,13 @@ blocker has a selected unblock option. While the payroll is processing, the comp
 polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
 the edit and cancel actions while keeping submit available.
 
+If the API rejects a submit because the payroll's calculation is out of date
+(`requires_recalculation`), the component recalculates the payroll in place and shows the
+refreshed totals with a notice. It never resubmits on its own: the user reviews the new
+totals and submits again. A rejection that also reports a
+passed deadline (`debit_date`) is not recalculated automatically, because recalculating moves
+the debit and pay dates; it renders as an error instead.
+
 <br />
 
 ### PayrollOverviewProps
@@ -720,6 +727,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
 | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/calculate`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-calculate) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
 | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |

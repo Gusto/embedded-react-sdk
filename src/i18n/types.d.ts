@@ -8911,6 +8911,10 @@ export namespace Translations {
     loadingTitle: string
     /** @defaultValue `"This may take a minute or two. You can navigate away while this happens."` */
     loadingDescription: string
+    /** @defaultValue `"Recalculating payroll..."` */
+    recalculatingTitle: string
+    /** @defaultValue `"This payroll's calculation was out of date. This may take a minute."` */
+    recalculatingDescription: string
     /** @defaultValue `"Loading payroll..."` */
     dataLoadingTitle: string
     /** @defaultValue `"Cancelling payroll..."` */
@@ -8942,6 +8946,20 @@ export namespace Translations {
       payrollProcessingFailedTitle: string
       /** @defaultValue `"Recalculate payroll"` */
       payrollProcessingFailedCtaLabel: string
+      /** @defaultValue `"Payroll recalculated"` */
+      recalculatedTitle: string
+      /** @defaultValue `"This payroll's calculation was out of date, so we recalculated it. Review the updated totals, then submit again."` */
+      recalculatedMessage: string
+      /** @defaultValue `"This payroll's calculation was out of date, so we recalculated it. Total payroll changed from {{previousTotal}} to {{newTotal}}. Review the updated totals, then submit again."` */
+      recalculatedTotalChangedMessage: string
+      /** @defaultValue `"This payroll's calculation was out of date, so we recalculated it. Total payroll didn't change. Review the totals, then submit again."` */
+      recalculatedTotalUnchangedMessage: string
+      /** @defaultValue `"We couldn't recalculate this payroll"` */
+      recalculationFailedTitle: string
+      /** @defaultValue `"Edit the payroll and calculate it again before you submit."` */
+      recalculationFailedMessage: string
+      /** @defaultValue `"Edit payroll"` */
+      recalculationFailedCtaLabel: string
       /** @defaultValue `"Wire details submitted"` */
       wireDetailsSubmittedTitle: string
       /** @defaultValue `"Once we receive the funds from your bank we'll pay your team on {{checkDate}}"` */
