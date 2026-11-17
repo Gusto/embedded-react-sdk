@@ -59,5 +59,9 @@
     "noEditableFieldsTitle": "No editable fields",
     "noEditableFieldsDescription": "This state does not expose editable effective-dated tax requirements.",
     "rateScheduledSuccess": "Tax rate scheduled to take effect on {{date}}."
+  },
+  "management": {
+    "title": "State taxes",
+    "description": "Review each state's tax setup and schedule upcoming tax rate changes."
   }
 }

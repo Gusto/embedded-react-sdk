@@ -47,7 +47,8 @@ const SETUP_STATUS_LABEL = {
  * Owns its own data fetch and emits
  * `company/management/stateTaxes/editRequested` when the Manage button is
  * clicked. The card is read-only — completing a state's requirements and
- * managing its tax rates happens in the screen the parent routes to — and
+ * managing its tax rates happens in the screen the parent routes to, which
+ * `DashboardFlow` renders as `CompanyManagement.StateTaxes` — and
  * renders no alerts: alert presentation is the surrounding surface's
  * responsibility.
  *

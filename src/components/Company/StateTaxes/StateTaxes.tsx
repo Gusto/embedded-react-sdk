@@ -1,7 +1,5 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { stateTaxesStateMachine } from './stateTaxesStateMachine'
-import type { StateTaxesContextInterface } from './StateTaxesComponents'
+import { createStateTaxesMachine } from './stateTaxesStateMachine'
 import { StateTaxesListContextual } from './StateTaxesComponents'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -40,6 +38,7 @@ export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTa
  * | `company/stateTaxes/edit` | A state row was selected for editing | `{ state: string }` |
  * | `company/stateTaxes/manageRates` | A state row's tax rate history/scheduling view was opened | `{ state: string }` |
  * | `company/stateTaxes/updated` | State tax requirements were saved | — |
+ * | `company/stateTaxes/rateScheduled` | A new effective-dated tax rate was saved from the tax rate history view | `{ state: string, key: string, effectiveFrom: string, requirements: { key: string, value: string }[] }` |
  * | `company/stateTaxes/done` | The list view was completed | — |
  * | `CANCEL` | Editing or rate management was cancelled and the list was shown again | — |
  *
@@ -55,17 +54,7 @@ export function StateTaxes({
 }: StateTaxesProps) {
   useComponentDictionary('Company.StateTaxes', dictionary)
   const manageStateTaxes = useMemo(
-    () =>
-      createMachine(
-        'viewStateTaxes',
-        stateTaxesStateMachine,
-        (initialContext: StateTaxesContextInterface) => ({
-          ...initialContext,
-          component: StateTaxesListContextual,
-          companyId,
-          showContinueButton,
-        }),
-      ),
+    () => createStateTaxesMachine(StateTaxesListContextual, { companyId, showContinueButton }),
     [companyId, showContinueButton],
   )
   return <Flow machine={manageStateTaxes} onEvent={onEvent} />

@@ -12,8 +12,11 @@ export interface StateTaxesContextInterface extends FlowContextInterface {
   state?: string
   /** Current step component rendered by the flow machine. */
   component: React.ComponentType | null
-  /** Controls visibility of the Continue button in the state tax list. */
-  showContinueButton: boolean
+  /**
+   * Controls visibility of the Continue button in list screens that offer one. Omitted by the
+   * management list, which has no Continue button at all.
+   */
+  showContinueButton?: boolean
 }
 
 /** @internal */

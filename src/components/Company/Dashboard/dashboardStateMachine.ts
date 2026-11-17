@@ -269,16 +269,24 @@ export const dashboardStateMachine = {
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
   stateTaxes: state<MachineTransition>(
-    // COMPANY_STATE_TAX_EDIT, _MANAGE_RATES and _UPDATED are intentionally absent:
-    // they fire as the user moves between the state list, a state's requirement
-    // form and its tax-rate history, all of which live *inside* the StateTaxes
-    // sub-flow. Only the list's own Continue returns to the dashboard.
+    // StateTaxes is a hub in its own right: its state list, each state's
+    // requirements form and each state's tax rate history all return to the
+    // list, so COMPANY_STATE_TAX_EDIT and _MANAGE_RATES are intentionally absent.
+    // It has no completion event either — the management list carries no
+    // Continue — so the back header is the only way out. A company often updates
+    // several states, or schedules several rates, in one visit, so saves only
+    // record the alert and it surfaces once the user leaves.
     transition(
-      componentEvents.COMPANY_STATE_TAX_DONE,
-      'index',
-      returnToIndexWithAlert('stateTaxesUpdated'),
+      componentEvents.COMPANY_STATE_TAX_UPDATED,
+      'stateTaxes',
+      recordPendingAlert('stateTaxesUpdated'),
     ),
-    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+    transition(
+      componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED,
+      'stateTaxes',
+      recordPendingAlert('stateTaxesUpdated'),
+    ),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
   taxPayments: state<MachineTransition>(
     // TaxPaymentsFlow is a hub in its own right and, being read-only, has neither

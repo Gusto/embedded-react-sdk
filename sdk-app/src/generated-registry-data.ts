@@ -16,11 +16,13 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.PayScheduleAssignment': ['companyId'],
   'CompanyManagement.PaySchedulesCard': ['companyId'],
   'CompanyManagement.SignatoryCard': ['companyId'],
+  'CompanyManagement.StateTaxes': ['companyId'],
   'CompanyManagement.StateTaxesCard': ['companyId'],
   'CompanyManagement.TaxPaymentDetail': ['companyId'],
   'CompanyManagement.TaxPaymentsCard': ['companyId'],
   'CompanyManagement.TaxPaymentsFlow': ['companyId'],
   'CompanyManagement.TaxPaymentsList': ['companyId'],
+  'CompanyManagement.TaxRateManagement': ['companyId'],
   'CompanyOnboarding.AssignSignatory': ['companyId'],
   'CompanyOnboarding.BankAccount': ['companyId'],
   'CompanyOnboarding.CreateSignatory': ['companyId'],
@@ -184,6 +186,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
 
 export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
   'CompanyManagement.TaxPaymentDetail': ['taxPaymentId'],
+  'CompanyManagement.TaxRateManagement': ['state'],
   'CompanyOnboarding.SignatureForm': ['formId'],
   'CompanyOnboarding.StateTaxesForm': ['state'],
   'CompanyOnboarding.TaxRateManagement': ['state'],

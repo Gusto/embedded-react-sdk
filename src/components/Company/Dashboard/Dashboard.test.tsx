@@ -522,6 +522,10 @@ describe('Company DashboardFlow', () => {
     expect(
       await screen.findByRole('button', { name: 'Back to company settings' }),
     ).toBeInTheDocument()
+    expect(
+      await screen.findByRole('button', { name: /Actions for California/i }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull()
   })
 
   it('routes the Tax payments card Manage CTA to the TaxPayments spoke', async () => {
