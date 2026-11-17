@@ -1861,6 +1861,9 @@ interface ConfirmWireDetailsProps extends BaseComponentInterface<'Payroll.Confir
 export type ContractorAccountType = (typeof ContractorBankAccountTypes)[number];
 
 // @public
+export type ContractorAction = 'edit' | 'delete' | 'cancel_self_onboarding' | 'view' | 'dismiss' | 'rehire' | 'cancel_dismissal' | 'cancel_rehire';
+
+// @public
 export type ContractorAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
 
 // @public
@@ -2064,6 +2067,9 @@ export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProp
 function ContractorList(input: ContractorListProps): JSX;
 
 // @public
+export type ContractorListFilter = 'active' | 'onboarding' | 'terminated';
+
+// @public
 const ContractorListFlow: (input: ContractorListFlowProps) => JSX;
 
 // @public
@@ -2075,6 +2081,12 @@ interface ContractorListFlowProps extends BaseComponentInterface<never> {
 interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
     companyId: string;
     successMessage?: string;
+}
+
+// @public
+export interface ContractorListSort {
+    direction: TableSortDirection;
+    field: ContractorSortField;
 }
 
 declare namespace ContractorManagement {
@@ -2464,6 +2476,9 @@ export type ContractorSignatureSsnValidation = typeof ContractorSignatureFormErr
 export type ContractorSignatureTaxClassificationFieldProps = HookFieldProps<RadioGroupHookFieldProps<ContractorSignatureRequiredValidation, string>>;
 
 // @public
+export type ContractorSortField = 'name';
+
+// @public
 export type ContractorSsnFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsSsnValidation, ContractorDetailsSsnRequiredValidation>>;
 
 // @public
@@ -2492,6 +2507,11 @@ export type ContractorTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<n
 
 // @public
 export type ContractorWageTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorDetailsFormData['wageType']>>;
+
+// @public
+export interface ContractorWithActions extends Contractor {
+    allowedActions: ContractorAction[];
+}
 
 // @public
 export type ContractorWorkStateFieldProps = HookFieldProps<SelectHookFieldProps<ContractorDetailsRequiredValidation, string>>;
@@ -6625,6 +6645,38 @@ export type UseContractorDocumentsListReady = BaseHookReady<{
 
 // @public
 export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
+
+// @public
+export function useContractorList(input: UseContractorListProps): UseContractorListResult;
+
+// @public
+export interface UseContractorListProps {
+    companyId: string;
+    contractorType?: ContractorListFilter;
+}
+
+// @public
+export interface UseContractorListReady extends BaseHookReady<{
+    contractors: ContractorWithActions[];
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}> {
+    actions: {
+        onDelete: (contractorId: string) => Promise<void>;
+        onCancelSelfOnboarding: (contractorId: string) => Promise<ContractorOnboardingStatus_2 | undefined>;
+        onCancelDismissal: (contractorId: string) => Promise<void>;
+        onCancelRehire: (contractorId: string) => Promise<void>;
+    };
+    pagination: PaginationControlProps;
+    sort: {
+        current?: ContractorListSort;
+        onSortChange: (sort: ContractorListSort | undefined) => void;
+    };
+}
+
+// @public
+export type UseContractorListResult = HookLoadingResult | UseContractorListReady;
 
 // @public
 export function useContractorPayForm(input: UseContractorPayFormProps): HookLoadingResult | UseContractorPayFormReady;

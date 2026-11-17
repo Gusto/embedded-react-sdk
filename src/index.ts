@@ -687,6 +687,18 @@ export type {
   UseContractorDocumentsListReady,
 } from '@/components/Contractor/Documents/shared/useContractorDocumentsList'
 
+export { useContractorList } from '@/components/Contractor/ContractorList/shared'
+export type {
+  ContractorAction,
+  ContractorWithActions,
+  ContractorType as ContractorListFilter,
+  ContractorSortField,
+  ContractorListSort,
+  UseContractorListProps,
+  UseContractorListResult,
+  UseContractorListReady,
+} from '@/components/Contractor/ContractorList/shared'
+
 export { useContractorPaymentsList } from '@/components/Contractor/Payments/shared/useContractorPaymentsList'
 export type {
   ContractorPaymentHistoryEntry,
