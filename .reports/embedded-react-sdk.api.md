@@ -6561,6 +6561,26 @@ export interface UseContractorAddressFormReady extends BaseFormHookReady<Contrac
 export type UseContractorAddressFormResult = HookLoadingResult | UseContractorAddressFormReady;
 
 // @public
+export function useContractorAddressSummary(input: UseContractorAddressSummaryParams): UseContractorAddressSummaryResult;
+
+// @public
+export interface UseContractorAddressSummaryParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorAddressSummaryReady = BaseHookReady<{
+    contractorAddress: ContractorAddress;
+    contractorType: ContractorType_2 | undefined;
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}>;
+
+// @public
+export type UseContractorAddressSummaryResult = HookLoadingResult | UseContractorAddressSummaryReady;
+
+// @public
 export function useContractorBankAccountForm(input: UseContractorBankAccountFormProps): HookLoadingResult | UseContractorBankAccountFormReady;
 
 // @public
@@ -6735,6 +6755,30 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<C
 // @public
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
+// @public
+export function useContractorPaymentMethodSummary(input: UseContractorPaymentMethodSummaryParams): UseContractorPaymentMethodSummaryResult;
+
+// @public
+export interface UseContractorPaymentMethodSummaryParams {
+    contractorId: string;
+}
+
+// @public
+export interface UseContractorPaymentMethodSummaryReady extends BaseHookReady<{
+    paymentMethod: ContractorPaymentMethod;
+    bankAccount: ContractorBankAccount | undefined;
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}> {
+    actions: {
+        onRemoveBankAccount: () => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>;
+    };
+}
+
+// @public
+export type UseContractorPaymentMethodSummaryResult = HookLoadingResult | UseContractorPaymentMethodSummaryReady;
+
 // @alpha
 export function useContractorPaymentsList(input: UseContractorPaymentsListParams): UseContractorPaymentsListResult;
 
@@ -6757,6 +6801,25 @@ export interface UseContractorPaymentsListReady extends BaseHookReady<{
 
 // @alpha
 export type UseContractorPaymentsListResult = HookLoadingResult | UseContractorPaymentsListReady;
+
+// @public
+export function useContractorProfileSummary(input: UseContractorProfileSummaryParams): UseContractorProfileSummaryResult;
+
+// @public
+export interface UseContractorProfileSummaryParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorProfileSummaryReady = BaseHookReady<{
+    contractor: Contractor;
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}>;
+
+// @public
+export type UseContractorProfileSummaryResult = HookLoadingResult | UseContractorProfileSummaryReady;
 
 // @public
 export function useContractorRehireForm(input: UseContractorRehireFormProps): HookLoadingResult | UseContractorRehireFormReady;
@@ -6815,6 +6878,24 @@ export interface UseContractorSignatureFormReady extends BaseFormHookReady<Contr
 
 // @public
 export type UseContractorSignatureFormResult = HookLoadingResult | UseContractorSignatureFormReady;
+
+// @public
+export function useContractorTaxForms(input: UseContractorTaxFormsParams): UseContractorTaxFormsResult;
+
+// @public
+export interface UseContractorTaxFormsParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorTaxFormsReady = BaseHookReady<{
+    forms: Form1099[];
+}, {
+    isFetching: boolean;
+}>;
+
+// @public
+export type UseContractorTaxFormsResult = HookLoadingResult | UseContractorTaxFormsReady;
 
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
