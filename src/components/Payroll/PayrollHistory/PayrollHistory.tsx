@@ -32,7 +32,7 @@ export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.Pay
  * Displays historical payroll records with filtering and management capabilities.
  *
  * @remarks
- * Lists processed regular, off-cycle, and external payrolls for a company and supports filtering by
+ * Lists processed regular and off-cycle payrolls for a company and supports filtering by
  * pay period, viewing payroll summaries and receipts, and cancelling processed payrolls when they
  * remain within the cancellation window. Each row shows the pay period, payroll type, pay date,
  * status, and total pay amount.
