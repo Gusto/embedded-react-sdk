@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form'
+import { CreateSignatory } from '../CreateSignatory'
+import { InviteSignatory } from '../InviteSignatory'
 import { SignatoryAssignmentMode, useAssignSignatory } from './useAssignSignatory'
-import { CreateSignatory } from './CreateSignatory'
-import { InviteSignatory } from './InviteSignatory'
 
 /** @internal */
 export const SignatoryForm = () => {

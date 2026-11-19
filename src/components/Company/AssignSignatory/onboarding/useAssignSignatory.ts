@@ -1,5 +1,5 @@
-import { type CreateSignatoryDefaultValues } from './CreateSignatory'
-import { type InviteSignatoryDefaultValues } from './InviteSignatory'
+import { type CreateSignatoryDefaultValues } from '../CreateSignatory'
+import { type InviteSignatoryDefaultValues } from '../InviteSignatory'
 import type { BaseComponentInterface } from '@/components/Base'
 import { createCompoundContext } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'
