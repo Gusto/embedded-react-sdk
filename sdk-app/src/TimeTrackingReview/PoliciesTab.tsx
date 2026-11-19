@@ -6,34 +6,21 @@ import {
   currentWorkweekStart,
   eligibility,
   formatDay,
-  formatPeriod,
   hoursLabel,
   localStartDate,
-  overlaps,
   scheduleLabel,
   type ApiBreakPolicy,
-  type ApiBreakRule,
   type ApiOvertimePolicy,
-  type ApiPayPeriod,
   type ApiPaySchedule,
   type ApiShift,
   type Person,
 } from './model'
-import { GapPin, Modal, ReadOnlyNote, RequestBlock } from './parts'
+import { GapPin, PrototypeModal, ReadOnlyNote, RequestBlock } from './parts'
 import type { Preview } from './preview'
-import styles from './TimeTrackingReview.module.scss'
+import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type PolicyKind = 'overtime' | 'break'
-
-interface Props {
-  companyId: string
-  people: Person[]
-  schedules: ApiPaySchedule[]
-  periods: ApiPayPeriod[]
-  overtimePolicies: ApiOvertimePolicy[]
-  breakPolicies: ApiBreakPolicy[]
-  onPreview: (preview: Preview) => void
-}
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10)
@@ -43,12 +30,19 @@ export function PoliciesTab({
   companyId,
   people,
   schedules,
-  periods,
   overtimePolicies,
   breakPolicies,
   onPreview,
-}: Props) {
-  const [todayShifts, setTodayShifts] = useState<ApiShift[] | null>(null)
+}: {
+  companyId: string
+  people: Person[]
+  schedules: ApiPaySchedule[]
+  overtimePolicies: ApiOvertimePolicy[]
+  breakPolicies: ApiBreakPolicy[]
+  onPreview: (preview: Preview) => void
+}) {
+  const Components = useComponentContext()
+  const [todayShifts, setTodayShifts] = useState<ApiShift[]>([])
   const [overtimeForm, setOvertimeForm] = useState<ApiOvertimePolicy | 'new' | null>(null)
   const [breakForm, setBreakForm] = useState<ApiBreakPolicy | 'new' | null>(null)
   const [assigning, setAssigning] = useState<{
@@ -76,31 +70,20 @@ export function PoliciesTab({
   }, [companyId])
 
   const breakToday = useMemo(
-    () => new Set((todayShifts ?? []).filter(s => s.breaks.length > 0).map(s => s.entity_uuid)),
+    () => new Set(todayShifts.filter(s => s.breaks.length > 0).map(s => s.entity_uuid)),
     [todayShifts],
   )
-
-  const eligiblePeople = people.filter(p => eligibility(p.employee).eligible)
-  const ineligiblePeople = people.filter(p => !eligibility(p.employee).eligible)
-  const noOvertime = eligiblePeople.filter(p => !p.overtimePolicy)
-  const noBreak = eligiblePeople.filter(p => !p.breakPolicy)
   const nameOf = (uuid: string) => people.find(p => p.employee.uuid === uuid)?.name ?? 'Unknown'
+  const eligiblePeople = people.filter(p => eligibility(p.employee).eligible)
+  const uncovered = eligiblePeople.filter(p => !p.overtimePolicy || !p.breakPolicy)
 
   const today = todayIso()
-  const workweeks = schedules.map(schedule => {
-    const start = schedule.workweek_start_day
+  const workweeks = schedules.map(schedule => ({
+    schedule,
+    start: schedule.workweek_start_day
       ? currentWorkweekStart(schedule.workweek_start_day, today)
-      : null
-    const week = start ? { start_date: start, end_date: addDays(start, 6) } : null
-    const touched = week
-      ? periods.filter(
-          p =>
-            p.pay_schedule_uuid === schedule.uuid &&
-            overlaps(p as ApiPayPeriod, { ...week, pay_schedule_uuid: '', payroll: null }),
-        )
-      : []
-    return { schedule, start, touched }
-  })
+      : null,
+  }))
 
   const deletePolicy = (kind: PolicyKind, policy: ApiOvertimePolicy | ApiBreakPolicy) => {
     const blocked =
@@ -125,232 +108,137 @@ export function PoliciesTab({
     })
   }
 
+  const menu = (kind: PolicyKind, policy: ApiOvertimePolicy | ApiBreakPolicy) => (
+    <HamburgerMenu
+      triggerLabel={`Actions for ${policy.name}`}
+      items={[
+        {
+          label: 'Edit',
+          onClick: () => {
+            if (kind === 'overtime') setOvertimeForm(policy as ApiOvertimePolicy)
+            else setBreakForm(policy as ApiBreakPolicy)
+          },
+        },
+        {
+          label: 'Assign people',
+          onClick: () => {
+            setAssigning({ kind, policy })
+          },
+        },
+        {
+          label: 'Delete',
+          onClick: () => {
+            deletePolicy(kind, policy)
+          },
+        },
+      ]}
+    />
+  )
+
+  const overtimeView = useDataView<ApiOvertimePolicy>({
+    data: overtimePolicies,
+    columns: [
+      { title: 'Name', render: p => p.name },
+      {
+        title: 'Rules',
+        render: p =>
+          [
+            `Weekly over ${p.weekly_overtime_hours_threshold ?? '—'}h`,
+            p.daily_overtime_hours_threshold && `daily over ${p.daily_overtime_hours_threshold}h`,
+            p.double_overtime_hours_threshold &&
+              `double over ${p.double_overtime_hours_threshold}h`,
+            p.work_week_consecutive_days_threshold && '7th day rule',
+          ]
+            .filter(Boolean)
+            .join(' · '),
+      },
+      { title: 'People', justify: 'end', render: p => p.assigned_employees.length },
+    ],
+    itemMenu: p => menu('overtime', p),
+  })
+
+  const breakView = useDataView<ApiBreakPolicy>({
+    data: breakPolicies,
+    columns: [
+      {
+        title: 'Name',
+        render: p => (
+          <Flex gap={8} alignItems="center">
+            {p.name}
+            {p.jurisdiction && <Components.Badge>{p.jurisdiction}</Components.Badge>}
+          </Flex>
+        ),
+      },
+      {
+        title: 'Rules',
+        render: p =>
+          p.rules
+            .map(r => `${breakRuleLabel(r)} per ${hoursLabel(r.for_hours_worked_in_minutes)}`)
+            .join('; '),
+      },
+      { title: 'People', justify: 'end', render: p => p.assigned_employees.length },
+    ],
+    itemMenu: p => menu('break', p),
+  })
+
   return (
-    <div className={styles.tabBody}>
-      <section className={styles.coverage}>
-        <div>
-          <strong>Coverage</strong> <GapPin id="missing-policy" />
-          <p className={styles.muted}>
-            {eligiblePeople.length} of {people.length} people are eligible for time tracking
-            policies.{' '}
-            {noOvertime.length === 0 && noBreak.length === 0
-              ? 'All of them have an overtime and a break policy.'
-              : `${noOvertime.length} have no overtime policy, ${noBreak.length} have no break policy.`}
-          </p>
-          {noOvertime.length > 0 && (
-            <p className={styles.muted}>
-              No overtime policy: {noOvertime.map(p => p.name).join(', ')}
-            </p>
-          )}
-          {noBreak.length > 0 && (
-            <p className={styles.muted}>No break policy: {noBreak.map(p => p.name).join(', ')}</p>
-          )}
-        </div>
-        <div>
-          <strong>Not eligible</strong> <GapPin id="eligibility" />
-          <p className={styles.muted}>
-            {ineligiblePeople.length === 0
-              ? 'Everyone is eligible.'
-              : ineligiblePeople
-                  .map(p => `${p.name} (${eligibility(p.employee).reason})`)
-                  .join(', ')}
-          </p>
-        </div>
-        <div>
-          <strong>Break taken today</strong> <GapPin id="break-today" />
-          <p className={styles.muted}>
-            {todayShifts === null
-              ? 'Checking today’s shifts…'
-              : breakToday.size === 0
-                ? `Nobody yet (${todayShifts.length} shifts today). Break policy changes are allowed for everyone.`
-                : `${[...breakToday].map(nameOf).join(', ')}. Their break policy can’t change until tomorrow.`}
-          </p>
-        </div>
-      </section>
+    <Flex flexDirection="column" gap={24}>
+      {uncovered.length > 0 && (
+        <Components.Alert
+          status="warning"
+          label={`${uncovered.length} eligible people are missing a policy`}
+        >
+          {uncovered.map(p => p.name).join(', ')} <GapPin id="missing-policy" />
+        </Components.Alert>
+      )}
 
-      <section className={styles.policySection}>
-        <div className={styles.sectionHeader}>
-          <h2>Overtime policies</h2>
-          <GapPin id="state" />
-          <span className={styles.spacer} />
-          <button
-            type="button"
-            className={styles.secondaryButton}
-            onClick={() => {
-              setOvertimeForm('new')
-            }}
-          >
-            New overtime policy
-          </button>
-        </div>
-        <div className={styles.policyGrid}>
-          {overtimePolicies.map(policy => (
-            <article key={policy.uuid} className={styles.policyCard}>
-              <h3>{policy.name}</h3>
-              <dl className={styles.policyRules}>
-                <dt>Weekly</dt>
-                <dd>Over {policy.weekly_overtime_hours_threshold ?? '—'}h · 1.5x</dd>
-                <dt>Daily</dt>
-                <dd>
-                  {policy.daily_overtime_hours_threshold
-                    ? `Over ${policy.daily_overtime_hours_threshold}h · 1.5x`
-                    : 'Off'}
-                </dd>
-                <dt>Double</dt>
-                <dd>
-                  {policy.double_overtime_hours_threshold
-                    ? `Over ${policy.double_overtime_hours_threshold}h in a day · 2x`
-                    : 'Off'}
-                </dd>
-                <dt>7th day</dt>
-                <dd>
-                  {policy.work_week_consecutive_days_threshold
-                    ? `Consecutive-day rule on (${policy.work_week_consecutive_days_threshold} days)`
-                    : 'Off'}
-                </dd>
-              </dl>
-              <p className={styles.muted}>
-                {policy.assigned_employees.length} people:{' '}
-                {policy.assigned_employees
-                  .slice(0, 4)
-                  .map(a => nameOf(a.uuid))
-                  .join(', ')}
-                {policy.assigned_employees.length > 4 &&
-                  ` and ${policy.assigned_employees.length - 4} more`}
-              </p>
-              <div className={styles.cardActions}>
-                <button
-                  type="button"
-                  className={styles.linkButton}
-                  onClick={() => {
-                    setOvertimeForm(policy)
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  className={styles.linkButton}
-                  onClick={() => {
-                    setAssigning({ kind: 'overtime', policy })
-                  }}
-                >
-                  Assign people
-                </button>
-                <button
-                  type="button"
-                  className={styles.linkButton}
-                  onClick={() => {
-                    deletePolicy('overtime', policy)
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      <Components.Box
+        header={
+          <Components.BoxHeader
+            title={
+              <>
+                Overtime policies <GapPin id="state" />
+              </>
+            }
+            action={
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  setOvertimeForm('new')
+                }}
+              >
+                New overtime policy
+              </Components.Button>
+            }
+          />
+        }
+      >
+        <DataView label="Overtime policies" {...overtimeView} />
+      </Components.Box>
 
-      <section className={styles.policySection}>
-        <div className={styles.sectionHeader}>
-          <h2>Break policies</h2>
-          <span className={styles.spacer} />
-          <button
-            type="button"
-            className={styles.secondaryButton}
-            onClick={() => {
-              setBreakForm('new')
-            }}
-          >
-            New break policy
-          </button>
-        </div>
-        <div className={styles.policyGrid}>
-          {breakPolicies.map(policy => (
-            <article key={policy.uuid} className={styles.policyCard}>
-              <h3>
-                {policy.name}{' '}
-                {policy.jurisdiction && (
-                  <span className={styles.status}>{policy.jurisdiction}</span>
-                )}
-              </h3>
-              <ul className={styles.plainList}>
-                {policy.rules.map(rule => (
-                  <li key={rule.uuid}>
-                    {breakRuleLabel(rule)}, for every {hoursLabel(rule.for_hours_worked_in_minutes)}{' '}
-                    worked
-                    {rule.minimum_time_required_in_minutes !== null && (
-                      <span className={styles.muted}>
-                        {' '}
-                        · min. shift {hoursLabel(rule.minimum_time_required_in_minutes)}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <p className={styles.muted}>
-                Pay premium for missed breaks: {policy.pay_premium ? 'on' : 'off'}{' '}
-                <GapPin id="min-time" />
-              </p>
-              <p className={styles.muted}>
-                {policy.assigned_employees.length} people:{' '}
-                {policy.assigned_employees
-                  .slice(0, 4)
-                  .map(a => nameOf(a.uuid))
-                  .join(', ')}
-                {policy.assigned_employees.length > 4 &&
-                  ` and ${policy.assigned_employees.length - 4} more`}
-              </p>
-              <div className={styles.cardActions}>
-                <button
-                  type="button"
-                  className={styles.linkButton}
-                  onClick={() => {
-                    setBreakForm(policy)
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  className={styles.linkButton}
-                  onClick={() => {
-                    setAssigning({ kind: 'break', policy })
-                  }}
-                >
-                  Assign people
-                </button>
-                <button
-                  type="button"
-                  className={styles.linkButton}
-                  onClick={() => {
-                    deletePolicy('break', policy)
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.receipt}>
-        <div>
-          <strong>When an overtime change takes effect</strong> <GapPin id="ot-effective" />
-          <ul className={styles.plainList}>
-            {workweeks.map(({ schedule, start, touched }) => (
-              <li key={schedule.uuid}>
-                {scheduleLabel(schedule)}: workweek starts{' '}
-                {schedule.workweek_start_day ?? 'unknown'}
-                {start && `, so a change today counts from ${formatDay(start)}`}
-                {touched.length > 0 && ` (overlaps ${touched.map(formatPeriod).join(', ')})`}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <Components.Box
+        header={
+          <Components.BoxHeader
+            title={
+              <>
+                Break policies <GapPin id="missing-policy" />
+              </>
+            }
+            action={
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  setBreakForm('new')
+                }}
+              >
+                New break policy
+              </Components.Button>
+            }
+          />
+        }
+      >
+        <DataView label="Break policies" {...breakView} />
+      </Components.Box>
 
       {overtimeForm && (
         <OvertimeFormModal
@@ -386,7 +274,17 @@ export function PoliciesTab({
           }}
         />
       )}
-    </div>
+    </Flex>
+  )
+}
+
+function Problems({ problems }: { problems: string[] }) {
+  const Components = useComponentContext()
+  if (!problems.length) return null
+  return (
+    <Components.Alert status="error" label="The API would reject this">
+      {problems.join(' ')}
+    </Components.Alert>
   )
 }
 
@@ -403,149 +301,85 @@ function OvertimeFormModal({
   workweeks: Array<{ schedule: ApiPaySchedule; start: string | null }>
   onClose: () => void
 }) {
+  const Components = useComponentContext()
   const [name, setName] = useState(policy?.name ?? '')
-  const [weekly, setWeekly] = useState(String(policy?.weekly_overtime_hours_threshold ?? 40))
+  const [weekly, setWeekly] = useState(policy?.weekly_overtime_hours_threshold ?? 40)
   const [hasDaily, setHasDaily] = useState(
     Boolean(policy?.daily_overtime_hours_threshold ?? !policy),
   )
-  const [daily, setDaily] = useState(String(policy?.daily_overtime_hours_threshold ?? 8))
+  const [daily, setDaily] = useState(policy?.daily_overtime_hours_threshold ?? 8)
   const [hasDouble, setHasDouble] = useState(Boolean(policy?.double_overtime_hours_threshold))
-  const [double, setDouble] = useState(String(policy?.double_overtime_hours_threshold ?? 12))
+  const [double, setDouble] = useState(policy?.double_overtime_hours_threshold ?? 12)
   const [consecutive, setConsecutive] = useState(
     Boolean(policy?.work_week_consecutive_days_threshold),
   )
 
-  const errors: string[] = []
-  const weeklyN = Number(weekly)
-  const dailyN = Number(daily)
-  const doubleN = Number(double)
-  if (!name.trim()) errors.push('Policy name is required.')
+  const problems: string[] = []
+  if (!name.trim()) problems.push('Policy name is required.')
   if (existingNames.includes(name.trim().toLowerCase()))
-    errors.push('There is already another policy with this name.')
-  if (!Number.isInteger(weeklyN) || weeklyN < 10 || weeklyN > 168)
-    errors.push('Weekly overtime must be a whole number between 10 and 168 hours.')
-  if (hasDaily && (!Number.isFinite(dailyN) || dailyN < 1 || dailyN > 24))
-    errors.push('Daily overtime must be between 1 and 24 hours.')
-  if (hasDouble && (!Number.isFinite(doubleN) || doubleN < 1 || doubleN > 24))
-    errors.push('Double overtime must be between 1 and 24 hours.')
-  if (hasDouble && !hasDaily)
-    errors.push('Double daily overtime can’t exist without daily overtime.')
-  if (hasDaily && hasDouble && dailyN >= doubleN)
-    errors.push('Daily overtime must be less than double daily overtime.')
+    problems.push('Another policy has this name.')
+  if (!Number.isInteger(weekly) || weekly < 10 || weekly > 168)
+    problems.push('Weekly overtime must be a whole number from 10 to 168 hours.')
+  if (hasDaily && (daily < 1 || daily > 24)) problems.push('Daily overtime must be 1 to 24 hours.')
+  if (hasDouble && (double < 1 || double > 24)) problems.push('Double time must be 1 to 24 hours.')
+  if (hasDouble && !hasDaily) problems.push('Double time needs daily overtime.')
+  if (hasDaily && hasDouble && daily >= double)
+    problems.push('Daily overtime must be less than double time.')
 
   const body = {
     name: name.trim(),
-    weekly_overtime_hours_threshold: weeklyN,
-    daily_overtime_hours_threshold: hasDaily ? dailyN : null,
-    double_overtime_hours_threshold: hasDouble ? doubleN : null,
+    weekly_overtime_hours_threshold: weekly,
+    daily_overtime_hours_threshold: hasDaily ? daily : null,
+    double_overtime_hours_threshold: hasDouble ? double : null,
     work_week_consecutive_days_threshold: consecutive ? 7 : null,
     ...(policy ? { version: policy.version } : {}),
   }
 
   return (
-    <Modal
-      wide
+    <PrototypeModal
       title={policy ? `Edit ${policy.name}` : 'New overtime policy'}
       onClose={onClose}
-      footer={
-        <button type="button" className={styles.secondaryButton} onClick={onClose}>
-          Close
-        </button>
-      }
     >
-      <div className={styles.formGrid}>
-        <label className={styles.field}>
-          <span>Name</span>
-          <input
-            value={name}
-            onChange={e => {
-              setName(e.target.value)
-            }}
-          />
-        </label>
-        <label className={styles.field}>
-          <span>Weekly overtime after (hours)</span>
-          <input
-            type="number"
-            inputMode="numeric"
-            value={weekly}
-            onChange={e => {
-              setWeekly(e.target.value)
-            }}
-          />
-        </label>
-        <label className={styles.checkField}>
-          <input
-            type="checkbox"
-            checked={hasDaily}
-            onChange={e => {
-              setHasDaily(e.target.checked)
-            }}
-          />{' '}
-          Daily overtime after
-          <input
-            type="number"
-            inputMode="numeric"
-            value={daily}
-            onChange={e => {
-              setDaily(e.target.value)
-            }}
-            disabled={!hasDaily}
-          />{' '}
-          hours
-        </label>
-        <label className={styles.checkField}>
-          <input
-            type="checkbox"
-            checked={hasDouble}
-            onChange={e => {
-              setHasDouble(e.target.checked)
-            }}
-          />{' '}
-          Double time after
-          <input
-            type="number"
-            inputMode="numeric"
-            value={double}
-            onChange={e => {
-              setDouble(e.target.value)
-            }}
-            disabled={!hasDouble}
-          />{' '}
-          hours in a day
-        </label>
-        <label className={styles.checkField}>
-          <input
-            type="checkbox"
-            checked={consecutive}
-            onChange={e => {
-              setConsecutive(e.target.checked)
-            }}
-          />{' '}
-          Seventh consecutive day rule
-        </label>
-      </div>
-      <p className={styles.muted}>
-        <GapPin id="state" /> There’s no field to say which state this policy is for, so the SDK
-        can’t check it against that state’s law.
-      </p>
-      {errors.length > 0 && (
-        <ul className={styles.checkList}>
-          {errors.map(e => (
-            <li key={e} className={styles.checkFail}>
-              ✕ {e}
-            </li>
-          ))}
-        </ul>
-      )}
+      <Components.TextInput label="Name" value={name} onChange={setName} />
+      <Components.NumberInput
+        label="Weekly overtime after (hours)"
+        value={weekly}
+        onChange={setWeekly}
+      />
+      <Grid gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }} gap={12}>
+        <Components.Switch label="Daily overtime" value={hasDaily} onChange={setHasDaily} />
+        <Components.NumberInput
+          label="After (hours in a day)"
+          value={daily}
+          onChange={setDaily}
+          isDisabled={!hasDaily}
+        />
+        <Components.Switch label="Double time" value={hasDouble} onChange={setHasDouble} />
+        <Components.NumberInput
+          label="After (hours in a day)"
+          value={double}
+          onChange={setDouble}
+          isDisabled={!hasDouble}
+        />
+      </Grid>
+      <Components.Switch
+        label="Seventh consecutive day rule"
+        value={consecutive}
+        onChange={setConsecutive}
+      />
+      <Components.Text size="sm" variant="supporting">
+        There’s no field for which state this is for, so it can’t be checked against state law.{' '}
+        <GapPin id="state" />
+      </Components.Text>
+      <Problems problems={problems} />
       {policy && (
-        <div className={styles.bannerWarning}>
-          <GapPin id="ot-effective" /> Changes take effect in the current workweek:{' '}
+        <Components.Alert status="warning" label="Changes apply to the current workweek">
           {workweeks
             .map(w => `${scheduleLabel(w.schedule)} from ${w.start ? formatDay(w.start) : '?'}`)
             .join('; ')}
-          . If a payroll already includes part of that week, it may need a correction payroll.
-        </div>
+          . A payroll that already covers part of that week may need a correction.{' '}
+          <GapPin id="ot-effective" />
+        </Components.Alert>
       )}
       <RequestBlock
         method={policy ? 'PATCH' : 'POST'}
@@ -555,10 +389,9 @@ function OvertimeFormModal({
             : `/v1/companies/${companyId}/time_tracking/overtime_policies`
         }
         body={body}
-        caption={errors.length ? 'The API would reject this as it stands.' : undefined}
       />
       <ReadOnlyNote />
-    </Modal>
+    </PrototypeModal>
   )
 }
 
@@ -566,25 +399,12 @@ interface RuleDraft {
   key: string
   uuid?: string
   break_type: 'meal' | 'rest'
-  duration: string
-  everyHours: string
+  duration: number
+  everyHours: number
   is_paid: boolean
-  minimum: number | null
 }
 
-function ruleDraft(rule: ApiBreakRule): RuleDraft {
-  return {
-    key: rule.uuid,
-    uuid: rule.uuid,
-    break_type: rule.break_type,
-    duration: String(rule.break_duration_in_minutes),
-    everyHours: String(rule.for_hours_worked_in_minutes / 60),
-    is_paid: rule.is_paid,
-    minimum: rule.minimum_time_required_in_minutes,
-  }
-}
-
-const JURISDICTIONS = ['', 'CA', 'CO', 'IL', 'KY', 'MN', 'NV', 'NY', 'OR', 'WA']
+const JURISDICTIONS = ['CA', 'CO', 'IL', 'KY', 'MN', 'NV', 'NY', 'OR', 'WA']
 
 function BreakFormModal({
   companyId,
@@ -597,42 +417,32 @@ function BreakFormModal({
   existingNames: string[]
   onClose: () => void
 }) {
+  const Components = useComponentContext()
   const [name, setName] = useState(policy?.name ?? '')
   const [jurisdiction, setJurisdiction] = useState(policy?.jurisdiction ?? '')
   const [payPremium, setPayPremium] = useState(policy?.pay_premium ?? false)
   const [rules, setRules] = useState<RuleDraft[]>(
-    policy?.rules.map(ruleDraft) ?? [
-      {
-        key: 'new-meal',
-        break_type: 'meal',
-        duration: '30',
-        everyHours: '5',
-        is_paid: false,
-        minimum: null,
-      },
-    ],
+    policy?.rules.map(rule => ({
+      key: rule.uuid,
+      uuid: rule.uuid,
+      break_type: rule.break_type,
+      duration: rule.break_duration_in_minutes,
+      everyHours: rule.for_hours_worked_in_minutes / 60,
+      is_paid: rule.is_paid,
+    })) ?? [{ key: 'new-meal', break_type: 'meal', duration: 30, everyHours: 5, is_paid: false }],
   )
-
   const update = (key: string, patch: Partial<RuleDraft>) => {
     setRules(prev => prev.map(r => (r.key === key ? { ...r, ...patch } : r)))
   }
 
-  const errors: string[] = []
-  if (!name.trim()) errors.push('Policy name is required.')
+  const problems: string[] = []
+  if (!name.trim()) problems.push('Policy name is required.')
   if (existingNames.includes(name.trim().toLowerCase()))
-    errors.push('Break policy names must be unique for a company.')
-  if (rules.length === 0) errors.push('Add a meal or rest break to create this policy.')
-  for (const rule of rules) {
-    const d = Number(rule.duration)
-    if (!Number.isInteger(d) || d < 1)
-      errors.push(
-        `${rule.break_type === 'meal' ? 'Meal' : 'Rest'}: duration must be a whole number of at least 1 minute.`,
-      )
-    if (!(Number(rule.everyHours) > 0))
-      errors.push(
-        `${rule.break_type === 'meal' ? 'Meal' : 'Rest'}: enter how often this break is provided.`,
-      )
-  }
+    problems.push('Break policy names must be unique.')
+  if (rules.length === 0) problems.push('Add a meal or rest break.')
+  if (rules.some(r => !Number.isInteger(r.duration) || r.duration < 1))
+    problems.push('Break length must be a whole number of minutes.')
+  if (rules.some(r => !(r.everyHours > 0))) problems.push('Enter how often each break is provided.')
 
   const body = {
     name: name.trim(),
@@ -642,174 +452,102 @@ function BreakFormModal({
       ...(rule.uuid ? { uuid: rule.uuid } : {}),
       break_type: rule.break_type,
       is_paid: rule.is_paid,
-      break_duration_in_minutes: Number(rule.duration),
-      for_hours_worked_in_minutes: Math.round(Number(rule.everyHours) * 60),
+      break_duration_in_minutes: rule.duration,
+      for_hours_worked_in_minutes: Math.round(rule.everyHours * 60),
     })),
   }
 
   return (
-    <Modal
-      wide
-      title={policy ? `Edit ${policy.name}` : 'New break policy'}
-      onClose={onClose}
-      footer={
-        <button type="button" className={styles.secondaryButton} onClick={onClose}>
-          Close
-        </button>
-      }
-    >
-      <div className={styles.formGrid}>
-        <label className={styles.field}>
-          <span>Name</span>
-          <input
-            value={name}
-            onChange={e => {
-              setName(e.target.value)
+    <PrototypeModal title={policy ? `Edit ${policy.name}` : 'New break policy'} onClose={onClose}>
+      <Components.TextInput label="Name" value={name} onChange={setName} />
+      <Components.Select
+        label="State"
+        placeholder="No state"
+        value={jurisdiction || null}
+        isDisabled={Boolean(policy)}
+        description={policy ? 'Can’t change after the policy is created.' : undefined}
+        options={JURISDICTIONS.map(j => ({ value: j, label: j }))}
+        onChange={setJurisdiction}
+      />
+      <Components.Switch
+        label="Pay a premium when a break is missed"
+        value={payPremium}
+        onChange={setPayPremium}
+      />
+      {rules.map(rule => (
+        <Grid key={rule.key} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr 1fr' }} gap={12}>
+          <Components.Select
+            label="Break"
+            placeholder="Type"
+            value={rule.break_type}
+            options={[
+              { value: 'meal', label: 'Meal' },
+              { value: 'rest', label: 'Rest' },
+            ]}
+            onChange={value => {
+              update(rule.key, { break_type: value as 'meal' | 'rest' })
             }}
           />
-        </label>
-        <label className={styles.field}>
-          <span>State (jurisdiction) {policy && <GapPin id="break-replace" />}</span>
-          <select
-            value={jurisdiction}
-            disabled={Boolean(policy)}
-            onChange={e => {
-              setJurisdiction(e.target.value)
+          <Components.NumberInput
+            label="Minutes"
+            value={rule.duration}
+            onChange={value => {
+              update(rule.key, { duration: value })
+            }}
+          />
+          <Components.NumberInput
+            label="Every (hours worked)"
+            value={rule.everyHours}
+            onChange={value => {
+              update(rule.key, { everyHours: value })
+            }}
+          />
+          <Components.Checkbox
+            label="Paid"
+            value={rule.is_paid}
+            onChange={value => {
+              update(rule.key, { is_paid: value })
+            }}
+          />
+          <Components.Button
+            variant="tertiary"
+            onClick={() => {
+              setRules(prev => prev.filter(r => r.key !== rule.key))
             }}
           >
-            {JURISDICTIONS.map(j => (
-              <option key={j} value={j}>
-                {j || 'None'}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.checkField}>
-          <input
-            type="checkbox"
-            checked={payPremium}
-            onChange={e => {
-              setPayPremium(e.target.checked)
-            }}
-          />{' '}
-          Pay a premium when a break is missed
-        </label>
-      </div>
-
-      <h3 className={styles.subhead}>Rules</h3>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Minutes</th>
-            <th>Every (hours worked)</th>
-            <th>Paid</th>
-            <th>
-              Min. shift <GapPin id="min-time" />
-            </th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {rules.map(rule => (
-            <tr key={rule.key}>
-              <td>
-                <select
-                  value={rule.break_type}
-                  onChange={e => {
-                    update(rule.key, { break_type: e.target.value as 'meal' | 'rest' })
-                  }}
-                >
-                  <option value="meal">Meal</option>
-                  <option value="rest">Rest</option>
-                </select>
-              </td>
-              <td className={styles.field}>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  value={rule.duration}
-                  onChange={e => {
-                    update(rule.key, { duration: e.target.value })
-                  }}
-                />
-              </td>
-              <td className={styles.field}>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  value={rule.everyHours}
-                  onChange={e => {
-                    update(rule.key, { everyHours: e.target.value })
-                  }}
-                />
-              </td>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={rule.is_paid}
-                  onChange={e => {
-                    update(rule.key, { is_paid: e.target.checked })
-                  }}
-                />
-              </td>
-              <td className={styles.muted}>
-                {rule.minimum !== null ? hoursLabel(rule.minimum) : 'set by the API'}
-              </td>
-              <td>
-                <button
-                  type="button"
-                  className={styles.linkButton}
-                  onClick={() => {
-                    setRules(prev => prev.filter(r => r.key !== rule.key))
-                  }}
-                >
-                  Remove
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className={styles.cardActions}>
+            Remove
+          </Components.Button>
+        </Grid>
+      ))}
+      <Flex gap={8}>
         {(['meal', 'rest'] as const).map(type => (
-          <button
+          <Components.Button
             key={type}
-            type="button"
-            className={styles.linkButton}
+            variant="secondary"
             onClick={() => {
               setRules(prev => [
                 ...prev,
                 {
                   key: `new-${type}-${prev.length}`,
                   break_type: type,
-                  duration: type === 'meal' ? '30' : '10',
-                  everyHours: type === 'meal' ? '5' : '4',
+                  duration: type === 'meal' ? 30 : 10,
+                  everyHours: type === 'meal' ? 5 : 4,
                   is_paid: type === 'rest',
-                  minimum: null,
                 },
               ])
             }}
           >
-            + Add {type} break
-          </button>
+            Add {type} break
+          </Components.Button>
         ))}
-      </div>
-      {errors.length > 0 && (
-        <ul className={styles.checkList}>
-          {errors.map(e => (
-            <li key={e} className={styles.checkFail}>
-              ✕ {e}
-            </li>
-          ))}
-        </ul>
-      )}
-      {policy && (
-        <p className={styles.muted}>
-          <GapPin id="break-replace" /> This replaces the whole policy. Rules left out are deleted.
-          The state can’t change after the policy is created.
-        </p>
-      )}
+      </Flex>
+      <Components.Text size="sm" variant="supporting">
+        The API also returns a minimum shift length for each rule, which isn’t set here.{' '}
+        <GapPin id="min-time" />
+        {policy && ' Saving replaces the whole policy.'}
+        {policy && <GapPin id="break-replace" />}
+      </Components.Text>
+      <Problems problems={problems} />
       <RequestBlock
         method={policy ? 'PUT' : 'POST'}
         path={
@@ -818,11 +556,18 @@ function BreakFormModal({
             : `/v1/companies/${companyId}/time_tracking/break_policies`
         }
         body={body}
-        caption={errors.length ? 'The API would reject this as it stands.' : undefined}
       />
       <ReadOnlyNote />
-    </Modal>
+    </PrototypeModal>
   )
+}
+
+interface AssignRow {
+  person: Person
+  eligible: boolean
+  label: string
+  note: string
+  locked: boolean
 }
 
 function AssignModal({
@@ -838,23 +583,57 @@ function AssignModal({
   breakToday: Set<string>
   onClose: () => void
 }) {
+  const Components = useComponentContext()
   const initial = useMemo(() => new Set(policy.assigned_employees.map(a => a.uuid)), [policy])
   const [selected, setSelected] = useState<Set<string>>(initial)
 
-  const rows = [...people].sort((a, b) => a.name.localeCompare(b.name))
+  const rows: AssignRow[] = [...people]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(person => {
+      const elig = eligibility(person.employee)
+      const uuid = person.employee.uuid
+      const locked = kind === 'overtime' && initial.has(uuid)
+      const current = kind === 'overtime' ? person.overtimePolicy?.name : person.breakPolicy?.name
+      let note = current && current !== policy.name ? `On ${current}` : ''
+      if (!elig.eligible) note = `Not eligible: ${elig.reason ?? ''}`
+      else if (locked) note = 'Move them to another overtime policy to take them off'
+      else if (kind === 'break' && breakToday.has(uuid))
+        note = 'Took a break today: can’t change until tomorrow'
+      return { person, eligible: elig.eligible, label: elig.label, note, locked }
+    })
+
+  const dataView = useDataView<AssignRow>({
+    data: rows,
+    selectionMode: 'multiple',
+    hideSelectAll: true,
+    getIsItemSelected: row => selected.has(row.person.employee.uuid),
+    onSelect: (row, checked) => {
+      if (!row.eligible || row.locked) return
+      setSelected(prev => {
+        const next = new Set(prev)
+        if (checked) next.add(row.person.employee.uuid)
+        else next.delete(row.person.employee.uuid)
+        return next
+      })
+    },
+    columns: [
+      { title: 'Person', render: row => row.person.name },
+      { title: 'Pay type', render: row => row.label },
+      { title: 'Note', render: row => row.note },
+    ],
+  })
+
   const toAssign = [...selected].filter(uuid => !initial.has(uuid))
   const toRemove = [...initial].filter(uuid => !selected.has(uuid))
   const resource = kind === 'overtime' ? 'overtime_policies' : 'break_policies'
-
   const requests = []
-  if (toAssign.length) {
+  if (toAssign.length)
     requests.push({
       method: 'PUT',
       path: `/v1/time_tracking/${resource}/${policy.uuid}/assign_employees`,
       body: { version: policy.version, employees: toAssign.map(uuid => ({ uuid })) },
     })
-  }
-  if (toRemove.length && kind === 'break') {
+  if (toRemove.length && kind === 'break')
     requests.push({
       method: 'PUT',
       path: `/v1/time_tracking/break_policies/${policy.uuid}/remove_employees`,
@@ -863,111 +642,31 @@ function AssignModal({
         employees: toRemove.map(uuid => ({ uuid })),
       },
     })
-  }
-  const blocked =
-    kind === 'break' ? [...toAssign, ...toRemove].filter(uuid => breakToday.has(uuid)) : []
-
-  const currentPolicyName = (person: Person) =>
-    kind === 'overtime' ? person.overtimePolicy?.name : person.breakPolicy?.name
+  const blocked = kind === 'break' && [...toAssign, ...toRemove].some(uuid => breakToday.has(uuid))
 
   return (
-    <Modal
-      wide
-      title={`Assign people to ${policy.name}`}
-      onClose={onClose}
-      footer={
-        <button type="button" className={styles.secondaryButton} onClick={onClose}>
-          Close
-        </button>
-      }
-    >
-      <p className={styles.muted}>
-        Each person can be on one {kind} policy. Picking someone here moves them from their current
-        one. <GapPin id="eligibility" /> {kind === 'overtime' && <GapPin id="ot-required" />}{' '}
-        {kind === 'break' && <GapPin id="break-today" />}
-      </p>
-      <div className={styles.tableWrap}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th />
-              <th>Person</th>
-              <th>Pay type</th>
-              <th>Current {kind} policy</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(person => {
-              const elig = eligibility(person.employee)
-              const uuid = person.employee.uuid
-              const locked = kind === 'overtime' && initial.has(uuid)
-              const disabled = !elig.eligible || locked
-              const current = currentPolicyName(person)
-              return (
-                <tr key={uuid} className={!elig.eligible ? styles.dimmed : undefined}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selected.has(uuid)}
-                      disabled={disabled}
-                      aria-label={person.name}
-                      onChange={e => {
-                        setSelected(prev => {
-                          const next = new Set(prev)
-                          if (e.target.checked) next.add(uuid)
-                          else next.delete(uuid)
-                          return next
-                        })
-                      }}
-                    />
-                  </td>
-                  <td>{person.name}</td>
-                  <td className={styles.muted}>{elig.label}</td>
-                  <td className={styles.muted}>{current ?? 'None'}</td>
-                  <td className={styles.muted}>
-                    {!elig.eligible && `Not eligible: ${elig.reason}`}
-                    {locked && 'To take them off, assign them to another overtime policy'}
-                    {elig.eligible &&
-                      !locked &&
-                      kind === 'break' &&
-                      breakToday.has(uuid) &&
-                      'Took a break today: can’t change until tomorrow'}
-                    {elig.eligible &&
-                      !locked &&
-                      current &&
-                      current !== policy.name &&
-                      selected.has(uuid) &&
-                      `Moves from ${current}`}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-      {blocked.length > 0 && (
-        <div className={styles.bannerWarning}>
-          This would fail because some people took a break today. The API’s error won’t say who.
-        </div>
+    <PrototypeModal title={`Assign people to ${policy.name}`} onClose={onClose}>
+      <Components.Text size="sm" variant="supporting">
+        Each person can be on one {kind} policy, so picking someone moves them here. Ineligible
+        people can’t be picked. <GapPin id="eligibility" />
+        {kind === 'overtime' ? <GapPin id="ot-required" /> : <GapPin id="break-today" />}
+      </Components.Text>
+      <DataView label="People" {...dataView} />
+      {blocked && (
+        <Components.Alert status="warning" label="This would fail">
+          Someone you changed took a break today. The API’s error won’t say who.
+        </Components.Alert>
       )}
-      {requests.length === 0 ? (
-        <p className={styles.muted}>Change who’s selected to see the request.</p>
-      ) : (
-        requests.map((r, i) => (
-          <RequestBlock
-            key={r.path}
-            method={r.method}
-            path={r.path}
-            body={r.body}
-            caption={requests.length > 1 ? `Step ${i + 1} of ${requests.length}` : undefined}
-          />
-        ))
-      )}
-      <p className={styles.muted}>
-        If anyone selected is ineligible, the whole request fails, without saying who.
-      </p>
+      {requests.map((r, i) => (
+        <RequestBlock
+          key={r.path}
+          method={r.method}
+          path={r.path}
+          body={r.body}
+          caption={requests.length > 1 ? `Step ${i + 1} of ${requests.length}` : undefined}
+        />
+      ))}
       <ReadOnlyNote />
-    </Modal>
+    </PrototypeModal>
   )
 }

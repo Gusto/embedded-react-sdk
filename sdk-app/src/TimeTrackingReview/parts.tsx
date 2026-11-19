@@ -1,7 +1,9 @@
-import { useContext, useEffect, useRef, type ReactNode } from 'react'
+import { useContext, type ReactNode } from 'react'
 import { GapContext } from './gapContext'
 import { GAP_NUMBER } from './gaps'
 import styles from './TimeTrackingReview.module.scss'
+import { Flex } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function GapPin({ id }: { id: string }) {
   const { on, active, setActive } = useContext(GapContext)
@@ -21,49 +23,38 @@ export function GapPin({ id }: { id: string }) {
   )
 }
 
-export function Modal({
+export function PrototypeModal({
   title,
   onClose,
   children,
   footer,
-  wide,
 }: {
   title: ReactNode
   onClose: () => void
   children: ReactNode
   footer?: ReactNode
-  wide?: boolean
 }) {
-  const dialogRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKey)
-    dialogRef.current?.focus()
-    return () => {
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [onClose])
+  const Components = useComponentContext()
   return (
-    <div className={styles.overlay}>
-      <div
-        ref={dialogRef}
-        tabIndex={-1}
-        role="dialog"
-        aria-modal="true"
-        className={`${styles.modal} ${wide ? styles.modalWide : ''}`}
-      >
-        <div className={styles.modalHeader}>
-          <h2>{title}</h2>
-          <button type="button" className={styles.iconButton} onClick={onClose} aria-label="Close">
-            ×
-          </button>
-        </div>
-        <div className={styles.modalBody}>{children}</div>
-        {footer && <div className={styles.modalFooter}>{footer}</div>}
-      </div>
-    </div>
+    <Components.Modal
+      isOpen
+      onClose={onClose}
+      shouldCloseOnBackdropClick
+      footer={
+        footer ?? (
+          <Components.Button variant="secondary" onClick={onClose}>
+            Close
+          </Components.Button>
+        )
+      }
+    >
+      <Flex flexDirection="column" gap={16}>
+        <Components.Heading as="h2" styledAs="h3">
+          {title}
+        </Components.Heading>
+        {children}
+      </Flex>
+    </Components.Modal>
   )
 }
 
@@ -95,7 +86,7 @@ export function RequestBlock({
 export function ReadOnlyNote() {
   return (
     <p className={styles.readOnly}>
-      Not sent. This page only reads. The demo company is shared, so writes need an OK first.
+      Not sent. This prototype only reads from the shared demo company.
     </p>
   )
 }

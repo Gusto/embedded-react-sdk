@@ -107,7 +107,7 @@ export const GAPS: Gap[] = [
     kind: 'workaround',
     title: 'Bulk approve is batches of explicit shifts',
     api: 'Batches take up to 500 shifts with uuid and version, and partial successes persist.',
-    here: 'Approve all builds the batch from the shifts on screen and splits it at 500.',
+    here: 'Select shifts, or use a person’s “Approve all pending”. The batch is built from those shifts and split at 500.',
   },
   {
     id: 'lock-bug',
@@ -137,9 +137,9 @@ export const GAPS: Gap[] = [
     id: 'grouped-rows',
     tabs: ['review'],
     kind: 'sdk',
-    title: 'Grouped rows need new table props',
-    api: 'Not an API gap. Partners bring their own table through the component adapter, which has no expandable or grouped rows.',
-    here: 'Toggle between grouped rows (the design) and a row per person with “See shifts” (what the adapter supports today).',
+    title: 'The SDK table can’t group rows',
+    api: 'Not an API gap. Partners bring their own table through the component adapter, which has no grouped or expandable rows.',
+    here: 'Uses the SDK table as it is: a row per person, and “See shifts” opens that person’s shifts. Grouped rows would need new table props that every partner adapter supports.',
   },
   {
     id: 'overlap-create',
@@ -179,7 +179,7 @@ export const GAPS: Gap[] = [
     kind: 'none',
     title: 'No way to tell if policies are compliant',
     api: 'The API has no list of required policies by state, so it can’t warn about missing or non-compliant ones.',
-    here: 'Only checks coverage: eligible people with no overtime or no break policy. That says nothing about the law.',
+    here: 'Only checks coverage: it warns when an eligible person has no overtime or no break policy. That says nothing about the law.',
   },
   {
     id: 'ot-required',
@@ -195,7 +195,7 @@ export const GAPS: Gap[] = [
     kind: 'workaround',
     title: 'Overtime changes reach back to the start of the workweek',
     api: 'An overtime change applies to the current workweek. The workweek comes from each pay schedule, and here they differ (Saturday on one, Monday on the others). Nothing says which payrolls already include that week.',
-    here: 'Shows each schedule’s current workweek start, and the payrolls that overlap it.',
+    here: 'The edit form lists each schedule’s current workweek start.',
   },
   {
     id: 'break-today',
@@ -227,7 +227,7 @@ export const GAPS: Gap[] = [
     kind: 'none',
     title: 'Payroll doesn’t know about unsent hours',
     api: 'Nothing on a payroll says time tracking is in use, or that approved hours haven’t been sent. Payroll never pulls from timesheets.',
-    here: 'Counts approved shifts with no synced_to_payroll_at in each payroll’s period, and shows the reminder from the design.',
+    here: 'Counts approved shifts with no synced_to_payroll_at in each payroll’s period. Run payroll shows the reminder before going on.',
   },
 ]
 

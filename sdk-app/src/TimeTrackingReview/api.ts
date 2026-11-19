@@ -1,32 +1,3 @@
-import { useSyncExternalStore } from 'react'
-
-export interface RequestLogEntry {
-  id: number
-  method: string
-  path: string
-  status: number | null
-  ms: number
-}
-
-let nextId = 1
-let entries: RequestLogEntry[] = []
-const listeners = new Set<() => void>()
-
-function record(entry: RequestLogEntry) {
-  entries = [entry, ...entries].slice(0, 200)
-  for (const listener of listeners) listener()
-}
-
-export function useRequestLog(): RequestLogEntry[] {
-  return useSyncExternalStore(
-    listener => {
-      listeners.add(listener)
-      return () => listeners.delete(listener)
-    },
-    () => entries,
-  )
-}
-
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -41,31 +12,16 @@ export async function getJson(
   path: string,
   signal?: AbortSignal,
 ): Promise<{ body: unknown; headers: Headers }> {
-  const started = performance.now()
-  let status: number | null = null
+  const res = await fetch(`/api${path}`, { signal })
+  const text = await res.text()
+  let body: unknown = text
   try {
-    const res = await fetch(`/api${path}`, { signal })
-    status = res.status
-    const text = await res.text()
-    let body: unknown = text
-    try {
-      body = JSON.parse(text)
-    } catch {
-      body = text
-    }
-    if (!res.ok) throw new ApiError(res.status, path, body)
-    return { body, headers: res.headers }
-  } finally {
-    if (!signal?.aborted) {
-      record({
-        id: nextId++,
-        method: 'GET',
-        path,
-        status,
-        ms: Math.round(performance.now() - started),
-      })
-    }
+    body = JSON.parse(text)
+  } catch {
+    body = text
   }
+  if (!res.ok) throw new ApiError(res.status, path, body)
+  return { body, headers: res.headers }
 }
 
 /** Follows `x-total-pages`, because list endpoints cap `per` and silently truncate. */

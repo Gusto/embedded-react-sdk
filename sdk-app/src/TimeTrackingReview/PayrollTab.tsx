@@ -14,11 +14,20 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { GapPin } from './parts'
+import { GapPin, PrototypeModal } from './parts'
 import type { Preview } from './preview'
-import styles from './TimeTrackingReview.module.scss'
+import { DataView, Flex, useDataView } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 const PERIODS_PER_SCHEDULE = 3
+
+interface PayrollRow {
+  schedule: ApiPaySchedule
+  period: ApiPayPeriod
+  unsent: number
+  notReady: number
+  total: number
+}
 
 export function PayrollTab({
   companyId,
@@ -32,9 +41,10 @@ export function PayrollTab({
   people: Person[]
   schedules: ApiPaySchedule[]
   periods: ApiPayPeriod[]
-  onReview: (scheduleUuid: string, key: string, openSend: boolean) => void
+  onReview: (scheduleUuid: string, key: string) => void
   onPreview: (preview: Preview) => void
 }) {
+  const Components = useComponentContext()
   const today = new Date().toISOString().slice(0, 10)
   const upcoming = useMemo(
     () =>
@@ -55,6 +65,8 @@ export function PayrollTab({
   )
 
   const [shifts, setShifts] = useState<ApiShift[] | null>(null)
+  const [running, setRunning] = useState<PayrollRow | null>(null)
+
   useEffect(() => {
     if (!upcoming.length) return
     const controller = new AbortController()
@@ -86,7 +98,7 @@ export function PayrollTab({
     [people],
   )
 
-  const rows = upcoming
+  const rows: PayrollRow[] = upcoming
     .map(({ schedule, period }) => {
       const mine = (shifts ?? []).filter(s => {
         const date = localStartDate(s)
@@ -102,121 +114,137 @@ export function PayrollTab({
         period,
         total: mine.length,
         unsent: count(['unsent', 'changed']),
-        pending: count(['pending', 'open']),
-        sent: count(['sent']),
+        notReady: count(['pending', 'open']),
       }
     })
     .sort((a, b) =>
       a.period.payroll!.payroll_deadline.localeCompare(b.period.payroll!.payroll_deadline),
     )
 
-  const runPreview = (period: ApiPayPeriod) => {
+  const dataView = useDataView<PayrollRow>({
+    data: rows,
+    columns: [
+      {
+        title: 'Payroll',
+        render: ({ schedule, period }) => (
+          <Flex flexDirection="column" gap={0}>
+            <Components.Text weight="medium">{formatPeriod(period)}</Components.Text>
+            <Components.Text size="sm" variant="supporting">
+              {scheduleLabel(schedule)}
+            </Components.Text>
+          </Flex>
+        ),
+      },
+      { title: 'Check date', render: ({ period }) => formatShortDate(period.payroll!.check_date) },
+      {
+        title: 'Deadline',
+        render: ({ period }) => formatDateTime(period.payroll!.payroll_deadline),
+      },
+      {
+        title: (
+          <>
+            Timesheets <GapPin id="resync" />
+          </>
+        ),
+        render: row =>
+          shifts === null ? (
+            '…'
+          ) : row.unsent > 0 ? (
+            <Components.Badge status="warning">{row.unsent} not sent</Components.Badge>
+          ) : row.total > 0 ? (
+            <Components.Badge status="success">All sent</Components.Badge>
+          ) : (
+            <Components.Badge>No shifts</Components.Badge>
+          ),
+      },
+    ],
+    itemMenu: row => (
+      <Components.Button
+        variant="secondary"
+        onClick={() => {
+          setRunning(row)
+        }}
+      >
+        Run payroll
+      </Components.Button>
+    ),
+  })
+
+  const runAnyway = (period: ApiPayPeriod) => {
     const payrollUuid = period.payroll!.payroll_uuid
+    setRunning(null)
     onPreview({
       title: `Run payroll: ${formatPeriod(period)}`,
       requests: [
-        {
-          method: 'PUT',
-          path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/prepare`,
-          caption: 'Payroll’s own flow, not time tracking.',
-        },
+        { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/prepare` },
         { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/calculate` },
         { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/submit` },
       ],
       notes: [
-        'Payroll uses whatever hours it has. Approved shifts that were never sent aren’t in them.',
-        'Once it’s processed, sending again changes nothing and status changes on these dates are blocked.',
+        'This is payroll’s own flow. It uses whatever hours payroll has, so approved shifts that were never sent aren’t in them.',
       ],
       gapIds: ['resync', 'lock-bug'],
     })
   }
 
   return (
-    <div className={styles.tabBody}>
-      <div className={styles.bannerInfo}>
-        This stands in for the payroll screen, which is a different flow. It shows where the “send
-        your hours first” reminder would sit. <GapPin id="resync" />
-      </div>
+    <Flex flexDirection="column" gap={16}>
+      <Components.Text size="sm" variant="supporting">
+        A stand-in for the payroll screen, which is a different flow. It shows where the reminder to
+        send hours first would appear. Transition and off-cycle payrolls aren’t listed.{' '}
+        <GapPin id="transition" />
+      </Components.Text>
+      <DataView label="Upcoming payrolls" {...dataView} />
 
-      {shifts === null && (
-        <div className={styles.placeholder}>Loading shifts for upcoming payrolls…</div>
-      )}
-
-      <div className={styles.payrollList}>
-        {rows.map(({ schedule, period, total, unsent, pending, sent }) => {
-          const payroll = period.payroll!
-          const overdue = payroll.payroll_deadline < new Date().toISOString()
-          return (
-            <article key={`${schedule.uuid}-${periodKey(period)}`} className={styles.payrollCard}>
-              <div className={styles.payrollHeader}>
-                <div>
-                  <h3>
-                    {scheduleLabel(schedule)} · {formatPeriod(period)}
-                  </h3>
-                  <p className={styles.muted}>
-                    Check date {formatShortDate(payroll.check_date)} · deadline{' '}
-                    {formatDateTime(payroll.payroll_deadline)}
-                    {overdue && ' · past the deadline'}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
+      {running && (
+        <PrototypeModal
+          title={`Run payroll: ${formatPeriod(running.period)}`}
+          onClose={() => {
+            setRunning(null)
+          }}
+          footer={
+            <Flex justifyContent="flex-end" gap={12}>
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  runAnyway(running.period)
+                }}
+              >
+                {running.unsent > 0 ? 'Run without sending' : 'Continue'}
+              </Components.Button>
+              {running.unsent > 0 && (
+                <Components.Button
                   onClick={() => {
-                    runPreview(period)
+                    setRunning(null)
+                    onReview(running.schedule.uuid, periodKey(running.period))
                   }}
                 >
-                  Run payroll
-                </button>
-              </div>
-              {shifts !== null && unsent > 0 && (
-                <div className={styles.bannerWarning}>
-                  <strong>You use timesheets.</strong> {unsent} approved{' '}
-                  {unsent === 1 ? 'shift hasn’t' : 'shifts haven’t'} been sent to this payroll. Send
-                  them before you run it?
-                  {pending > 0 && ` ${pending} more are pending or still clocked in and won’t go.`}
-                  <div className={styles.cardActions}>
-                    <button
-                      type="button"
-                      className={styles.primaryButton}
-                      onClick={() => {
-                        onReview(schedule.uuid, periodKey(period), true)
-                      }}
-                    >
-                      Review and send
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.linkButton}
-                      onClick={() => {
-                        onReview(schedule.uuid, periodKey(period), false)
-                      }}
-                    >
-                      Open timesheets
-                    </button>
-                  </div>
-                </div>
+                  Review and send hours
+                </Components.Button>
               )}
-              {shifts !== null && unsent === 0 && (
-                <p className={styles.muted}>
-                  {total === 0
-                    ? 'No shifts in this period.'
-                    : `All ${sent} approved shifts have been sent.${pending ? ` ${pending} are pending or still clocked in.` : ''}`}{' '}
-                  <GapPin id="which-payroll" />
-                </p>
-              )}
-              <p className={styles.muted}>
-                What payroll currently has for each person can’t be read until it’s prepared.{' '}
-                <GapPin id="payroll-hours" />
-              </p>
-            </article>
-          )
-        })}
-      </div>
-      <p className={styles.muted}>
-        Shows the latest {PERIODS_PER_SCHEDULE} unprocessed payrolls for each schedule. Transition
-        and off-cycle payrolls aren’t here. <GapPin id="transition" />
-      </p>
-    </div>
+            </Flex>
+          }
+        >
+          {running.unsent > 0 ? (
+            <Components.Alert status="warning" label="You use timesheets">
+              {running.unsent} approved {running.unsent === 1 ? 'shift hasn’t' : 'shifts haven’t'}{' '}
+              been sent to this payroll. Send them before you run it?
+              {running.notReady > 0 &&
+                ` ${running.notReady} more are pending or still clocked in and won’t go.`}
+            </Components.Alert>
+          ) : (
+            <Components.Text>
+              {running.total === 0
+                ? 'No shifts in this period.'
+                : 'Every approved shift in this period has been sent.'}
+            </Components.Text>
+          )}
+          <Components.Text size="sm" variant="supporting">
+            Payroll’s current hours per person can’t be read until it’s prepared.{' '}
+            <GapPin id="payroll-hours" />
+          </Components.Text>
+        </PrototypeModal>
+      )}
+    </Flex>
   )
 }

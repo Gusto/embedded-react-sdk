@@ -13,8 +13,9 @@ import {
   type Person,
   type ShiftStatus,
 } from './model'
-import { GapPin, Modal, ReadOnlyNote, RequestBlock } from './parts'
-import styles from './TimeTrackingReview.module.scss'
+import { GapPin, PrototypeModal, ReadOnlyNote, RequestBlock } from './parts'
+import { Flex, Grid } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface BreakDraft {
   key: string
@@ -48,6 +49,7 @@ export function AddShiftModal({
   initialPersonUuid: string | null
   onClose: () => void
 }) {
+  const Components = useComponentContext()
   const sorted = useMemo(() => [...people].sort((a, b) => a.name.localeCompare(b.name)), [people])
   const [personUuid, setPersonUuid] = useState(initialPersonUuid ?? sorted[0]?.employee.uuid ?? '')
   const [date, setDate] = useState(
@@ -75,9 +77,8 @@ export function AddShiftModal({
   const placeBreak = (rule: ApiBreakRule | null) => {
     if (!start || !end) return
     const minutes = rule?.break_duration_in_minutes ?? 30
-    const target = rule
-      ? Math.min(rule.for_hours_worked_in_minutes - minutes, minutesBetween(start, end) / 2)
-      : minutesBetween(start, end) / 2
+    const half = minutesBetween(start, end) / 2
+    const target = rule ? Math.min(rule.for_hours_worked_in_minutes - minutes, half) : half
     let offset = Math.max(0, Math.round(target / 5) * 5)
     const taken = breaks.map(
       b => [minutesBetween(start, b.start), minutesBetween(start, b.start) + b.minutes] as const,
@@ -91,38 +92,22 @@ export function AddShiftModal({
 
   const unpaid = breaks.reduce((sum, b) => (b.rule?.is_paid ? sum : sum + b.minutes), 0)
   const hours = start && end ? (minutesBetween(start, end) - unpaid) / 60 : 0
-
   const clash =
     start && end
       ? theirs.find(
           s => s.shift_started_at < end && (s.shift_ended_at ?? new Date().toISOString()) > start,
         )
       : undefined
-  const localDate = start ? date : ''
-  const outsidePeriod = localDate && (localDate < period.start_date || localDate > period.end_date)
+  const outsidePeriod = date < period.start_date || date > period.end_date
 
-  const checks = [
-    { label: 'End is after start', ok: Boolean(start && end && end > start), api: true },
-    {
-      label: 'No times in the future',
-      ok: Boolean(end && Date.parse(end) <= Date.now()),
-      api: true,
-    },
-    {
-      label: clash
-        ? `Overlaps ${person?.name ?? 'their'} shift ${formatTime(clash.shift_started_at, clash.time_zone)} – ${clash.shift_ended_at ? formatTime(clash.shift_ended_at, clash.time_zone) : 'now'}`
-        : 'Doesn’t overlap their other shifts',
-      ok: !clash,
-      api: true,
-    },
-    {
-      label: 'Breaks stay inside the shift',
-      ok: breaks.every(
-        b => start && end && b.start >= start && addMinutes(b.start, b.minutes) <= end,
-      ),
-      api: true,
-    },
-  ]
+  const problems: string[] = []
+  if (end && Date.parse(end) > Date.now()) problems.push('Times can’t be in the future.')
+  if (clash)
+    problems.push(
+      `It overlaps ${person?.name ?? 'their'} shift ${formatTime(clash.shift_started_at, clash.time_zone)} – ${clash.shift_ended_at ? formatTime(clash.shift_ended_at, clash.time_zone) : 'now'}.`,
+    )
+  if (!breaks.every(b => start && end && b.start >= start && addMinutes(b.start, b.minutes) <= end))
+    problems.push('A break falls outside the shift.')
 
   const job = person ? primaryJob(person.employee) : undefined
   const body = {
@@ -142,167 +127,94 @@ export function AddShiftModal({
   }
 
   return (
-    <Modal
-      wide
-      title="Add shift"
-      onClose={onClose}
-      footer={
-        <button type="button" className={styles.secondaryButton} onClick={onClose}>
-          Close
-        </button>
-      }
-    >
-      <div className={styles.editGrid}>
-        <label className={styles.field}>
-          <span>Person</span>
-          <select
-            value={personUuid}
-            onChange={e => {
-              setPersonUuid(e.target.value)
-              setBreaks([])
-            }}
-          >
-            {sorted.map(p => (
-              <option key={p.employee.uuid} value={p.employee.uuid}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          <span>Date</span>
-          <input
-            type="date"
-            value={date}
-            onChange={e => {
-              setDate(e.target.value)
-            }}
-          />
-        </label>
-        <label className={styles.field}>
-          <span>Start</span>
-          <input
-            type="time"
-            value={startTime}
-            onChange={e => {
-              setStartTime(e.target.value)
-            }}
-          />
-        </label>
-        <label className={styles.field}>
-          <span>End {endsNextDay && <span className={styles.plusDay}>+1 day</span>}</span>
-          <input
-            type="time"
-            value={endTime}
-            onChange={e => {
-              setEndTime(e.target.value)
-            }}
-          />
-        </label>
-      </div>
-      <p className={styles.muted}>
-        Time zone: {timeZone} <GapPin id="timezone" /> · Worked: {hours.toFixed(2)} hours
-        {outsidePeriod && ` · Outside ${formatPeriod(period)}, so it belongs to another pay period`}
-      </p>
+    <PrototypeModal title="Add shift" onClose={onClose}>
+      <Grid gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }} gap={12}>
+        <Components.Select
+          label="Person"
+          placeholder="Choose a person"
+          value={personUuid}
+          options={sorted.map(p => ({ value: p.employee.uuid, label: p.name }))}
+          onChange={value => {
+            setPersonUuid(value)
+            setBreaks([])
+          }}
+        />
+        <Components.TextInput type="date" label="Date" value={date} onChange={setDate} />
+        <Components.TextInput type="time" label="Start" value={startTime} onChange={setStartTime} />
+        <Components.TextInput
+          type="time"
+          label="End"
+          description={endsNextDay ? 'Ends the next day' : undefined}
+          value={endTime}
+          onChange={setEndTime}
+        />
+      </Grid>
+      <Components.Text size="sm" variant="supporting">
+        {hours.toFixed(2)} hours worked, in {timeZone}. <GapPin id="timezone" />
+        {outsidePeriod && ` This date is outside ${formatPeriod(period)}.`}
+      </Components.Text>
 
-      <h3 className={styles.subhead}>Breaks</h3>
-      <ul className={styles.plainList}>
-        {breaks.length === 0 && <li className={styles.muted}>No breaks yet</li>}
+      <Flex flexDirection="column" gap={8}>
+        <Components.Text weight="medium">Breaks</Components.Text>
         {breaks.map(b => (
-          <li key={b.key}>
-            {b.rule ? breakRuleLabel(b.rule) : 'Unlinked break · counts as unpaid'} ·{' '}
-            {formatTime(b.start, timeZone)} – {formatTime(addMinutes(b.start, b.minutes), timeZone)}{' '}
-            <button
-              type="button"
-              className={styles.linkButton}
+          <Flex key={b.key} alignItems="center" gap={8}>
+            <Components.Text size="sm">
+              {b.rule ? breakRuleLabel(b.rule) : 'Unlinked break · unpaid'} ·{' '}
+              {formatTime(b.start, timeZone)} –{' '}
+              {formatTime(addMinutes(b.start, b.minutes), timeZone)}
+            </Components.Text>
+            <Components.Button
+              variant="tertiary"
               onClick={() => {
                 setBreaks(prev => prev.filter(x => x.key !== b.key))
               }}
             >
               Remove
-            </button>
-          </li>
+            </Components.Button>
+          </Flex>
         ))}
-      </ul>
-      <div className={styles.cardActions}>
-        {rules.map(rule => (
-          <button
-            key={rule.uuid}
-            type="button"
-            className={styles.linkButton}
-            onClick={() => {
-              placeBreak(rule)
-            }}
-          >
-            + {breakRuleLabel(rule)}
-          </button>
-        ))}
-        <button
-          type="button"
-          className={styles.linkButton}
-          onClick={() => {
-            placeBreak(null)
-          }}
-        >
-          + Unlinked break
-        </button>
-      </div>
-      <p className={styles.muted}>
-        Breaks come from {person?.breakPolicy?.name ?? 'no break policy'}, and are placed before the
-        rule’s hours-worked mark.
-      </p>
+        <Flex gap={8} flexWrap="wrap">
+          {rules.map(rule => (
+            <Components.Button
+              key={rule.uuid}
+              variant="secondary"
+              onClick={() => {
+                placeBreak(rule)
+              }}
+            >
+              Add {rule.break_type} break
+            </Components.Button>
+          ))}
+        </Flex>
+      </Flex>
 
-      <div className={styles.field}>
-        <span>Add as</span>
-        <div className={styles.segmented} role="group" aria-label="Add as">
-          <button
-            type="button"
-            aria-pressed={status === 'approved'}
-            onClick={() => {
-              setStatus('approved')
-            }}
-          >
-            Approved
-          </button>
-          <button
-            type="button"
-            aria-pressed={status === 'pending'}
-            onClick={() => {
-              setStatus('pending')
-            }}
-          >
-            Pending
-          </button>
-        </div>
-      </div>
-      <p className={styles.muted}>
-        <GapPin id="approval" /> The API lets an admin create a shift already approved. It will go
-        in the next send.
-      </p>
+      <Components.Select
+        label="Add as"
+        placeholder="Choose a status"
+        value={status}
+        options={[
+          { value: 'approved', label: 'Approved' },
+          { value: 'pending', label: 'Pending' },
+        ]}
+        onChange={value => {
+          setStatus(value as ShiftStatus)
+        }}
+      />
 
-      <h3 className={styles.subhead}>Checks</h3>
-      <ul className={styles.checkList}>
-        {checks.map(c => (
-          <li key={c.label} className={c.ok ? styles.checkOk : styles.checkFail}>
-            {c.ok ? '✓' : '✕'} {c.label}
-            <span className={styles.muted}> · the API rejects this on create</span>
-          </li>
-        ))}
-        <li className={styles.muted}>
-          <GapPin id="overlap-create" /> Overlap is checked here against {theirs.length} loaded
-          shifts. The API checks it too, but only on create.
-        </li>
-      </ul>
-
+      {problems.length > 0 && (
+        <Components.Alert status="error" label="The API would reject this">
+          {problems.join(' ')} <GapPin id="overlap-create" />
+        </Components.Alert>
+      )}
       <RequestBlock
         method="POST"
         path={`/v1/companies/${companyId}/time_tracking/time_sheets`}
         body={body}
       />
-      <p className={styles.muted}>
-        Shifts created after the period was sent only reach payroll with the next send.
-      </p>
+      <Components.Text size="sm" variant="supporting">
+        Admins can add shifts already approved. They go with the next send. <GapPin id="approval" />
+      </Components.Text>
       <ReadOnlyNote />
-    </Modal>
+    </PrototypeModal>
   )
 }
