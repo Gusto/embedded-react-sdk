@@ -19,6 +19,7 @@ const daysFromToday = (days: number) => formatDateToStringDate(addDays(new Date(
 
 const baseTaxPayment = {
   company_uuid: 'company-123',
+  tax_filing_uuid: 'tax-filing-uuid',
   period_start: daysFromToday(-60),
   period_end: daysFromToday(-31),
   payment_sent_on: null,
