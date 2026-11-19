@@ -165,6 +165,7 @@ function TimeTrackingPrototype() {
     }
   }, [navigate])
   const [selectedShifts, setSelectedShifts] = useState<Set<string>>(new Set())
+  const [selectedPeople, setSelectedPeople] = useState<Set<string>>(new Set())
 
   const [gapsOn, setGapsOn] = useState(true)
   const [activeGap, setActiveGap] = useState<string | null>(null)
@@ -344,6 +345,10 @@ function TimeTrackingPrototype() {
   useEffect(() => {
     setSelectedShifts(new Set())
   }, [focusPerson, selectedPeriodKey])
+
+  useEffect(() => {
+    setSelectedPeople(new Set())
+  }, [selectedPeriodKey, scheduleUuid])
 
   useEffect(() => {
     if (sendWhenLoaded && shifts.kind === 'done') {
@@ -550,6 +555,9 @@ function TimeTrackingPrototype() {
         <PeopleTable
           rows={personRows}
           shiftsHref={shiftsHref}
+          selected={selectedPeople}
+          onSelectedChange={setSelectedPeople}
+          onBulk={statusPreview}
           onApproveAll={(person, pending) => {
             statusPreview(
               pending,
@@ -811,17 +819,34 @@ interface PersonRow {
 function PeopleTable({
   rows,
   shiftsHref,
+  selected,
+  onSelectedChange,
+  onBulk,
   onApproveAll,
   onAddShift,
 }: {
   rows: PersonRow[]
   shiftsHref: (personUuid: string) => string
+  selected: Set<string>
+  onSelectedChange: (next: Set<string>) => void
+  onBulk: (targets: ApiShift[], status: ShiftStatus, title: string) => void
   onApproveAll: (person: Person, pending: ApiShift[]) => void
   onAddShift: (personUuid: string) => void
 }) {
   const Components = useComponentContext()
   const dataView = useDataView<PersonRow>({
     data: rows,
+    selectionMode: 'multiple',
+    getIsItemSelected: row => selected.has(row.person.employee.uuid),
+    onSelect: (row, checked) => {
+      const next = new Set(selected)
+      if (checked) next.add(row.person.employee.uuid)
+      else next.delete(row.person.employee.uuid)
+      onSelectedChange(next)
+    },
+    onSelectAll: (checked, visible) => {
+      onSelectedChange(checked ? new Set(visible.map(row => row.person.employee.uuid)) : new Set())
+    },
     columns: [
       {
         title: (
@@ -889,8 +914,40 @@ function PeopleTable({
       )
     },
   })
+  const selectedRows = rows.filter(row => selected.has(row.person.employee.uuid))
+  const selectedShifts = selectedRows.flatMap(row => row.shifts)
+  const toApprove = selectedShifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
+  const toReject = selectedShifts.filter(s => s.status !== 'rejected')
+  const who = `${selectedRows.length} ${selectedRows.length === 1 ? 'person' : 'people'}`
+
   return (
     <Flex flexDirection="column" gap={8}>
+      {selectedRows.length > 0 && (
+        <Flex alignItems="center" gap={12} flexWrap="wrap">
+          <Components.Text size="sm" weight="medium">
+            {who} selected · {selectedShifts.length} shifts
+          </Components.Text>
+          <Components.Button
+            variant="secondary"
+            isDisabled={toApprove.length === 0}
+            onClick={() => {
+              onBulk(toApprove, 'approved', `Approve ${toApprove.length} shifts for ${who}`)
+            }}
+          >
+            {toApprove.length ? `Approve ${toApprove.length} shifts` : 'All approved'}
+          </Components.Button>
+          <Components.Button
+            variant="secondary"
+            isDisabled={toReject.length === 0}
+            onClick={() => {
+              onBulk(toReject, 'rejected', `Reject ${toReject.length} shifts for ${who}`)
+            }}
+          >
+            Reject {toReject.length} shifts
+          </Components.Button>
+          <GapPin id="batch" />
+        </Flex>
+      )}
       <DataView label="People with shifts this period" {...dataView} />
       <Components.Text size="sm" variant="supporting">
         A row per person, then their shifts. <GapPin id="grouped-rows" />
