@@ -5,6 +5,7 @@ import { App } from './App'
 import { Home } from './Home'
 import { ApiExplorer } from './ApiExplorer'
 import { PayPeriodShiftsExplorer } from './PayPeriodShiftsExplorer'
+import { TimeTrackingReview } from './TimeTrackingReview/TimeTrackingReview'
 import { RoutedComponentRenderer } from './RoutedComponentRenderer'
 import { DesignLayout } from './design/DesignLayout'
 import { DesignHome } from './design/DesignHome'
@@ -59,6 +60,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'tools/api-explorer', element: <ApiExplorer /> },
       { path: 'tools/pay-period-shifts', element: <PayPeriodShiftsExplorer /> },
+      { path: 'tools/time-tracking-review', element: <TimeTrackingReview /> },
       { path: ':category/:component', element: <RoutedComponentRenderer /> },
       {
         path: 'design',

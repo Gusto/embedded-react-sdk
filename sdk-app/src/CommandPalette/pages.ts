@@ -51,6 +51,16 @@ function buildPages(): NavEntry[] {
       description: 'Walk the query chain for fetching all shifts in a pay schedule’s pay period',
       keywords: ['time_sheets', 'time tracking', 'pay period', 'pay schedule', 'shifts'],
     },
+    {
+      kind: 'navigate',
+      id: 'time-tracking-review',
+      label: 'Time Tracking Review',
+      category: 'Tools',
+      path: '/tools/time-tracking-review',
+      description:
+        'The review-and-send prototype on real time sheets, read-only, with API gaps called out',
+      keywords: ['time_sheets', 'time tracking', 'timesheets', 'payroll sync', 'gaps'],
+    },
   ]
 
   for (const entry of componentRegistry) {

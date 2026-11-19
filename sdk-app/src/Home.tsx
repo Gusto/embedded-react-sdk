@@ -45,6 +45,10 @@ export function Home() {
             Fetching shifts for a pay period? See the{' '}
             <Link to="/tools/pay-period-shifts">Pay Period Shifts</Link> query walkthrough
           </li>
+          <li>
+            Reviewing timesheets on real data? Open the{' '}
+            <Link to="/tools/time-tracking-review">Time Tracking Review</Link> prototype (read-only)
+          </li>
         </ul>
       </div>
     </div>
