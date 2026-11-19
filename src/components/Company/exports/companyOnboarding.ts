@@ -12,8 +12,8 @@ export { DocumentList, type DocumentListProps } from '../DocumentSigner/Document
 export { SignatureForm, type SignatureFormProps } from '../DocumentSigner/SignatureForm'
 
 export { Industry, type IndustryProps } from '../Industry'
-export { BankAccount, type BankAccountProps } from '../BankAccount/BankAccount'
-export { Locations, type LocationsProps } from '../Locations/Locations'
+export { BankAccount, type BankAccountProps } from '../BankAccount'
+export { Locations, type LocationsProps } from '../Locations'
 export { LocationForm, type LocationFormProps } from '../Locations/LocationForm'
 export { LocationsList, type LocationsListProps } from '../Locations/LocationsList'
 export {
