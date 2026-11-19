@@ -687,6 +687,46 @@ export type {
   UseContractorDocumentsListReady,
 } from '@/components/Contractor/Documents/shared/useContractorDocumentsList'
 
+export { useContractorList } from '@/components/Contractor/ContractorList/shared'
+export type {
+  ContractorAction,
+  ContractorWithActions,
+  ContractorType as ContractorListFilter,
+  ContractorSortField,
+  ContractorListSort,
+  UseContractorListProps,
+  UseContractorListResult,
+  UseContractorListReady,
+} from '@/components/Contractor/ContractorList/shared'
+
+export { useContractorProfileSummary } from '@/components/Contractor/Profile/shared/useContractorProfileSummary'
+export type {
+  UseContractorProfileSummaryParams,
+  UseContractorProfileSummaryResult,
+  UseContractorProfileSummaryReady,
+} from '@/components/Contractor/Profile/shared/useContractorProfileSummary'
+
+export { useContractorAddressSummary } from '@/components/Contractor/Address/shared/useContractorAddressSummary'
+export type {
+  UseContractorAddressSummaryParams,
+  UseContractorAddressSummaryResult,
+  UseContractorAddressSummaryReady,
+} from '@/components/Contractor/Address/shared/useContractorAddressSummary'
+
+export { useContractorPaymentMethodSummary } from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodSummary'
+export type {
+  UseContractorPaymentMethodSummaryParams,
+  UseContractorPaymentMethodSummaryResult,
+  UseContractorPaymentMethodSummaryReady,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodSummary'
+
+export { useContractorTaxForms } from '@/components/Contractor/Documents/shared/useContractorTaxForms'
+export type {
+  UseContractorTaxFormsParams,
+  UseContractorTaxFormsResult,
+  UseContractorTaxFormsReady,
+} from '@/components/Contractor/Documents/shared/useContractorTaxForms'
+
 export { useContractorPaymentsList } from '@/components/Contractor/Payments/shared/useContractorPaymentsList'
 export type {
   ContractorPaymentHistoryEntry,

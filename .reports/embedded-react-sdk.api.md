@@ -1861,6 +1861,9 @@ interface ConfirmWireDetailsProps extends BaseComponentInterface<'Payroll.Confir
 export type ContractorAccountType = (typeof ContractorBankAccountTypes)[number];
 
 // @public
+export type ContractorAction = 'edit' | 'delete' | 'cancel_self_onboarding' | 'view' | 'dismiss' | 'rehire' | 'cancel_dismissal' | 'cancel_rehire';
+
+// @public
 export type ContractorAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
 
 // @public
@@ -2064,6 +2067,9 @@ export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProp
 function ContractorList(input: ContractorListProps): JSX;
 
 // @public
+export type ContractorListFilter = 'active' | 'onboarding' | 'terminated';
+
+// @public
 const ContractorListFlow: (input: ContractorListFlowProps) => JSX;
 
 // @public
@@ -2075,6 +2081,12 @@ interface ContractorListFlowProps extends BaseComponentInterface<never> {
 interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
     companyId: string;
     successMessage?: string;
+}
+
+// @public
+export interface ContractorListSort {
+    direction: TableSortDirection;
+    field: ContractorSortField;
 }
 
 declare namespace ContractorManagement {
@@ -2464,6 +2476,9 @@ export type ContractorSignatureSsnValidation = typeof ContractorSignatureFormErr
 export type ContractorSignatureTaxClassificationFieldProps = HookFieldProps<RadioGroupHookFieldProps<ContractorSignatureRequiredValidation, string>>;
 
 // @public
+export type ContractorSortField = 'name';
+
+// @public
 export type ContractorSsnFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsSsnValidation, ContractorDetailsSsnRequiredValidation>>;
 
 // @public
@@ -2492,6 +2507,11 @@ export type ContractorTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<n
 
 // @public
 export type ContractorWageTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorDetailsFormData['wageType']>>;
+
+// @public
+export interface ContractorWithActions extends Contractor {
+    allowedActions: ContractorAction[];
+}
 
 // @public
 export type ContractorWorkStateFieldProps = HookFieldProps<SelectHookFieldProps<ContractorDetailsRequiredValidation, string>>;
@@ -6541,6 +6561,26 @@ export interface UseContractorAddressFormReady extends BaseFormHookReady<Contrac
 export type UseContractorAddressFormResult = HookLoadingResult | UseContractorAddressFormReady;
 
 // @public
+export function useContractorAddressSummary(input: UseContractorAddressSummaryParams): UseContractorAddressSummaryResult;
+
+// @public
+export interface UseContractorAddressSummaryParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorAddressSummaryReady = BaseHookReady<{
+    contractorAddress: ContractorAddress;
+    contractorType: ContractorType_2 | undefined;
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}>;
+
+// @public
+export type UseContractorAddressSummaryResult = HookLoadingResult | UseContractorAddressSummaryReady;
+
+// @public
 export function useContractorBankAccountForm(input: UseContractorBankAccountFormProps): HookLoadingResult | UseContractorBankAccountFormReady;
 
 // @public
@@ -6627,6 +6667,38 @@ export type UseContractorDocumentsListReady = BaseHookReady<{
 export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
 
 // @public
+export function useContractorList(input: UseContractorListProps): UseContractorListResult;
+
+// @public
+export interface UseContractorListProps {
+    companyId: string;
+    contractorType?: ContractorListFilter;
+}
+
+// @public
+export interface UseContractorListReady extends BaseHookReady<{
+    contractors: ContractorWithActions[];
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}> {
+    actions: {
+        onDelete: (contractorId: string) => Promise<void>;
+        onCancelSelfOnboarding: (contractorId: string) => Promise<ContractorOnboardingStatus_2 | undefined>;
+        onCancelDismissal: (contractorId: string) => Promise<void>;
+        onCancelRehire: (contractorId: string) => Promise<void>;
+    };
+    pagination: PaginationControlProps;
+    sort: {
+        current?: ContractorListSort;
+        onSortChange: (sort: ContractorListSort | undefined) => void;
+    };
+}
+
+// @public
+export type UseContractorListResult = HookLoadingResult | UseContractorListReady;
+
+// @public
 export function useContractorPayForm(input: UseContractorPayFormProps): HookLoadingResult | UseContractorPayFormReady;
 
 // @public
@@ -6683,6 +6755,30 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<C
 // @public
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
+// @public
+export function useContractorPaymentMethodSummary(input: UseContractorPaymentMethodSummaryParams): UseContractorPaymentMethodSummaryResult;
+
+// @public
+export interface UseContractorPaymentMethodSummaryParams {
+    contractorId: string;
+}
+
+// @public
+export interface UseContractorPaymentMethodSummaryReady extends BaseHookReady<{
+    paymentMethod: ContractorPaymentMethod;
+    bankAccount: ContractorBankAccount | undefined;
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}> {
+    actions: {
+        onRemoveBankAccount: () => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>;
+    };
+}
+
+// @public
+export type UseContractorPaymentMethodSummaryResult = HookLoadingResult | UseContractorPaymentMethodSummaryReady;
+
 // @alpha
 export function useContractorPaymentsList(input: UseContractorPaymentsListParams): UseContractorPaymentsListResult;
 
@@ -6705,6 +6801,25 @@ export interface UseContractorPaymentsListReady extends BaseHookReady<{
 
 // @alpha
 export type UseContractorPaymentsListResult = HookLoadingResult | UseContractorPaymentsListReady;
+
+// @public
+export function useContractorProfileSummary(input: UseContractorProfileSummaryParams): UseContractorProfileSummaryResult;
+
+// @public
+export interface UseContractorProfileSummaryParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorProfileSummaryReady = BaseHookReady<{
+    contractor: Contractor;
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}>;
+
+// @public
+export type UseContractorProfileSummaryResult = HookLoadingResult | UseContractorProfileSummaryReady;
 
 // @public
 export function useContractorRehireForm(input: UseContractorRehireFormProps): HookLoadingResult | UseContractorRehireFormReady;
@@ -6763,6 +6878,24 @@ export interface UseContractorSignatureFormReady extends BaseFormHookReady<Contr
 
 // @public
 export type UseContractorSignatureFormResult = HookLoadingResult | UseContractorSignatureFormReady;
+
+// @public
+export function useContractorTaxForms(input: UseContractorTaxFormsParams): UseContractorTaxFormsResult;
+
+// @public
+export interface UseContractorTaxFormsParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorTaxFormsReady = BaseHookReady<{
+    forms: Form1099[];
+}, {
+    isFetching: boolean;
+}>;
+
+// @public
+export type UseContractorTaxFormsResult = HookLoadingResult | UseContractorTaxFormsReady;
 
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;

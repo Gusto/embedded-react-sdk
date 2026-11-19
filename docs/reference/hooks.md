@@ -16,7 +16,12 @@ Headless utilities that handle data fetching, form state, validation, and API su
 
 | Hook | Description |
 | --- | --- |
+| [useContractorAddressSummary](contractor/hooks/use-contractor-address-summary) | Standalone data hook for a contractor's address. |
 | [useContractorDocumentsList](contractor/hooks/use-contractor-documents-list) | Standalone data hook for a contractor's documents. |
+| [useContractorList](contractor/hooks/use-contractor-list) | Fetches a paginated list of a company's contractors and decorates each entry with the actions allowed for its current onboarding/employment state. |
+| [useContractorPaymentMethodSummary](contractor/hooks/use-contractor-payment-method-summary) | Standalone data hook for a contractor's payment method and its linked bank account. |
+| [useContractorProfileSummary](contractor/hooks/use-contractor-profile-summary) | Standalone data hook for a contractor's profile. |
+| [useContractorTaxForms](contractor/hooks/use-contractor-tax-forms) | Standalone data hook for a contractor's tax forms (1099s). |
 | [useDismissal](contractor/hooks/use-dismissal) | Fetches a contractor and exposes an action to schedule their dismissal. |
 | [useEmployeeList](employee/hooks/use-employee-list) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
 
@@ -351,6 +356,8 @@ narrowing. `isLoading: false` discriminates this branch from
 
 - [`UseEmployeeListReady`](employee/hooks/use-employee-list.md#useemployeelistready)
 - [`UseDismissalReady`](contractor/hooks/use-dismissal.md#usedismissalready)
+- [`UseContractorListReady`](contractor/hooks/use-contractor-list.md#usecontractorlistready)
+- [`UseContractorPaymentMethodSummaryReady`](contractor/hooks/use-contractor-payment-method-summary.md#usecontractorpaymentmethodsummaryready)
 
 #### Type Parameters
 

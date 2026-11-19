@@ -3031,6 +3031,23 @@
         "contractorUuid"
       ]
     },
+    "useContractorAddressSummary": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/address",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "useContractorBankAccountForm": {
       "endpoints": [
         {
@@ -3088,6 +3105,39 @@
         "contractorUuid"
       ]
     },
+    "useContractorList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/contractors",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/onboarding_status",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid/rehire",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-rehire"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid/termination",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
+      ]
+    },
     "useContractorPayForm": {
       "endpoints": [
         {
@@ -3122,12 +3172,46 @@
         "contractorUuid"
       ]
     },
+    "useContractorPaymentMethodSummary": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payment_method",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/payment_method",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "useContractorPaymentsList": {
       "endpoints": [
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/payments",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payments"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "useContractorProfileSummary": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         }
       ],
       "variables": [
@@ -3171,6 +3255,18 @@
       ],
       "variables": [
         "documentUuid"
+      ]
+    },
+    "useContractorTaxForms": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/forms",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-forms"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
       ]
     },
     "useCurrentHomeAddressForm": {

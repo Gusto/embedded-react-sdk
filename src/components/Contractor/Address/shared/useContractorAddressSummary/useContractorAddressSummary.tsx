@@ -5,12 +5,23 @@ import type { ContractorAddress } from '@gusto/embedded-api/models/components/co
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
-/** @internal */
+/**
+ * Parameters for {@link useContractorAddressSummary}.
+ *
+ * @public
+ */
 export interface UseContractorAddressSummaryParams {
+  /** The associated contractor identifier. */
   contractorId: string
 }
 
-type UseContractorAddressSummaryReady = BaseHookReady<
+/**
+ * Ready-state shape returned by {@link useContractorAddressSummary} once the address has loaded.
+ *
+ * @public
+ * @interface
+ */
+export type UseContractorAddressSummaryReady = BaseHookReady<
   {
     contractorAddress: ContractorAddress
     contractorType: ContractorType | undefined
@@ -18,10 +29,55 @@ type UseContractorAddressSummaryReady = BaseHookReady<
   { isFetching: boolean; isPending: boolean }
 >
 
-/** @internal */
+/**
+ * Result of {@link useContractorAddressSummary} — a discriminated union of loading and ready states.
+ *
+ * @public
+ */
 export type UseContractorAddressSummaryResult = HookLoadingResult | UseContractorAddressSummaryReady
 
-/** @internal */
+/**
+ * Standalone data hook for a contractor's address.
+ *
+ * @remarks
+ * Read-only. Editing an address goes through `useContractorAddressForm`, so this hook exposes no
+ * actions.
+ *
+ * `data.contractorType` comes from a second request for the contractor itself, and is supplied
+ * because the same address means different things by type: an individual's address is a home
+ * address, a business's is a business address. It is `undefined` if the contractor resolved
+ * without a `type`.
+ *
+ * `status.isPending` is always `false` — it is present so the status shape matches the other
+ * contractor summary hooks, one of which does run a mutation.
+ *
+ * @param params - See {@link UseContractorAddressSummaryParams}.
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseContractorAddressSummaryReady} once the address has arrived.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { useContractorAddressSummary } from '@gusto/embedded-react-sdk'
+ *
+ * function AddressSummary({ contractorId }: { contractorId: string }) {
+ *   const summary = useContractorAddressSummary({ contractorId })
+ *
+ *   if (summary.isLoading) return <div>Loading...</div>
+ *
+ *   const { contractorAddress, contractorType } = summary.data
+ *
+ *   return (
+ *     <section>
+ *       <h2>{contractorType === 'Business' ? 'Business address' : 'Home address'}</h2>
+ *       <p>{contractorAddress.street1}</p>
+ *       <p>
+ *         {contractorAddress.city}, {contractorAddress.state} {contractorAddress.zip}
+ *       </p>
+ *     </section>
+ *   )
+ * }
+ * ```
+ */
 export function useContractorAddressSummary({
   contractorId,
 }: UseContractorAddressSummaryParams): UseContractorAddressSummaryResult {

@@ -226,6 +226,32 @@ function deriveAllowedActions(
  * @param input - Company and optional filter for the list.
  * @returns A {@link HookLoadingResult} while the first page is in flight, or a {@link UseContractorListReady} once data has arrived.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import { useContractorList } from '@gusto/embedded-react-sdk'
+ *
+ * function ActiveContractors({ companyId }: { companyId: string }) {
+ *   const contractorList = useContractorList({ companyId, contractorType: 'active' })
+ *
+ *   if (contractorList.isLoading) return <div>Loading...</div>
+ *
+ *   return (
+ *     <ul>
+ *       {contractorList.data.contractors.map(contractor => (
+ *         <li key={contractor.uuid}>
+ *           {contractor.businessName ?? [contractor.firstName, contractor.lastName].join(' ')}
+ *           {contractor.allowedActions.includes('cancel_dismissal') && (
+ *             <button onClick={() => contractorList.actions.onCancelDismissal(contractor.uuid)}>
+ *               Cancel dismissal
+ *             </button>
+ *           )}
+ *         </li>
+ *       ))}
+ *     </ul>
+ *   )
+ * }
+ * ```
  */
 export function useContractorList({
   companyId,

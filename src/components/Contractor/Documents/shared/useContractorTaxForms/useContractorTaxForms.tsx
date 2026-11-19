@@ -7,7 +7,7 @@ import { isMissingOAuthScopesError } from '@/helpers/missingOAuthScopes'
 /**
  * Parameters for {@link useContractorTaxForms}.
  *
- * @internal
+ * @public
  */
 export interface UseContractorTaxFormsParams {
   /** The associated contractor identifier. */
@@ -17,7 +17,7 @@ export interface UseContractorTaxFormsParams {
 /**
  * Ready-state shape returned by {@link useContractorTaxForms} once the forms have loaded.
  *
- * @internal
+ * @public
  * @interface
  */
 export type UseContractorTaxFormsReady = BaseHookReady<
@@ -28,7 +28,7 @@ export type UseContractorTaxFormsReady = BaseHookReady<
 /**
  * Result of {@link useContractorTaxForms} — a discriminated union of loading and ready states.
  *
- * @internal
+ * @public
  */
 export type UseContractorTaxFormsResult = HookLoadingResult | UseContractorTaxFormsReady
 
@@ -46,11 +46,37 @@ export type UseContractorTaxFormsResult = HookLoadingResult | UseContractorTaxFo
  *
  * A token without the `contractor_forms:read` scope resolves to an empty list
  * rather than an error, so a surface that also renders documents can still show
- * them. Any other failure surfaces through `errorHandling`.
+ * them.
+ *
+ * Any other failure is re-thrown during render rather than placed on
+ * `errorHandling.errors`, so render this hook inside an error boundary. This is
+ * the one place it departs from the other contractor data hooks, which report
+ * query failures through `errorHandling`.
  *
  * @param params - See {@link UseContractorTaxFormsParams}.
- * @returns A {@link HookLoadingResult} while loading, or the ready state with `data.forms` once loaded.
- * @internal
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseContractorTaxFormsReady} once the forms have arrived.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { useContractorTaxForms } from '@gusto/embedded-react-sdk'
+ *
+ * function TaxForms({ contractorId }: { contractorId: string }) {
+ *   const taxForms = useContractorTaxForms({ contractorId })
+ *
+ *   if (taxForms.isLoading) return <div>Loading...</div>
+ *
+ *   if (taxForms.data.forms.length === 0) return <p>No 1099s yet.</p>
+ *
+ *   return (
+ *     <ul>
+ *       {taxForms.data.forms.map(form => (
+ *         <li key={form.uuid}>{form.title}</li>
+ *       ))}
+ *     </ul>
+ *   )
+ * }
+ * ```
  */
 export function useContractorTaxForms({
   contractorId,

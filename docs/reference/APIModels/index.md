@@ -423,6 +423,10 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/contractor.t
 
 The representation of a contractor (individual or business) in Gusto.
 
+### Extended by
+
+- [`ContractorWithActions`](../contractor/hooks/use-contractor-list.md#contractorwithactions)
+
 ### Properties
 
 | Property | Type | Description |
