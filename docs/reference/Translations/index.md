@@ -6025,11 +6025,13 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `submissionBlockers.fast_ach_threshold_exceeded` | |
 | `submissionBlockers.fast_ach_threshold_exceeded.title` | `"You have exceeded the limit at which you can process {{days}} payroll."` |
 | `submissionBlockers.fastAchOptions` | |
+| `submissionBlockers.fastAchOptions.acceptChangeLabel` | `"I understand and accept this change"` |
 | `submissionBlockers.fastAchOptions.description` | `"Payroll can still be funded by selecting one of the options below. The selected funding method will only be used for this cycle and will not apply to future payroll."` |
 | `submissionBlockers.fastAchOptions.directDepositDescription` | `"Delay your employees pay date by four days and process using regular debits."` |
 | `submissionBlockers.fastAchOptions.directDepositLabel` | `"Switch to 4-day direct deposit"` |
 | `submissionBlockers.fastAchOptions.employeePayDate` | `"Employee pay date: {{date}}"` |
 | `submissionBlockers.fastAchOptions.fundingOptionsLabel` | `"Funding options"` |
+| `submissionBlockers.fastAchOptions.singleOptionDescription` | `"To submit this payroll, accept the change below. It only applies to this payroll and won't change future payrolls."` |
 | `submissionBlockers.fastAchOptions.wireDescription` | `"Pay your employees on time by sending a wire transfer. We'll provide instructions on the next step."` |
 | `submissionBlockers.fastAchOptions.wireFastestBadge` | `"Fastest"` |
 | `submissionBlockers.fastAchOptions.wireLabel` | `"Wire funds"` |

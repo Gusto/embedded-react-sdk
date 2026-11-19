@@ -927,6 +927,46 @@ describe('PayrollOverview readOnly mode', () => {
     vi.mocked(canCancelPayroll).mockReturnValue(false)
   })
 
+  it('submits the only unblock option once the user accepts the change', async () => {
+    const user = userEvent.setup()
+    mockSubmitPayroll.mockResolvedValue({ payrollUuid: 'payroll-uuid' })
+    mockPayrollData = {
+      ...basePayrollData,
+      submissionBlockers: [
+        {
+          blockerType: 'fast_ach_threshold_exceeded',
+          status: 'unresolved',
+          unblockOptions: [{ unblockType: 'move_to_four_day', checkDate: '2025-08-19' }],
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+    const submitButton = await screen.findByRole('button', { name: 'Submit' })
+    expect(submitButton).toBeDisabled()
+
+    await user.click(screen.getByRole('checkbox', { name: /accept this change/i }))
+    expect(submitButton).toBeEnabled()
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(mockSubmitPayroll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          request: expect.objectContaining({
+            requestBody: {
+              submissionBlockers: [
+                { blockerType: 'fast_ach_threshold_exceeded', selectedOption: 'move_to_four_day' },
+              ],
+            },
+          }),
+        }),
+      )
+    })
+  })
+
   it('hides Edit but keeps Submit enabled and functional on an unprocessed payroll', async () => {
     const user = userEvent.setup()
     mockSubmitPayroll.mockResolvedValue({ payrollUuid: 'payroll-uuid' })

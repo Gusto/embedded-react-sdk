@@ -113,6 +113,8 @@
     "genericBlockerMessage": "This payroll cannot be submitted. Please contact support for assistance.",
     "fastAchOptions": {
       "description": "Payroll can still be funded by selecting one of the options below. The selected funding method will only be used for this cycle and will not apply to future payroll.",
+      "singleOptionDescription": "To submit this payroll, accept the change below. It only applies to this payroll and won't change future payrolls.",
+      "acceptChangeLabel": "I understand and accept this change",
       "fundingOptionsLabel": "Funding options",
       "wireLabel": "Wire funds",
       "wireFastestBadge": "Fastest",

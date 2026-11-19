@@ -9087,6 +9087,10 @@ export namespace Translations {
       fastAchOptions: {
         /** @defaultValue `"Payroll can still be funded by selecting one of the options below. The selected funding method will only be used for this cycle and will not apply to future payroll."` */
         description: string
+        /** @defaultValue `"To submit this payroll, accept the change below. It only applies to this payroll and won't change future payrolls."` */
+        singleOptionDescription: string
+        /** @defaultValue `"I understand and accept this change"` */
+        acceptChangeLabel: string
         /** @defaultValue `"Funding options"` */
         fundingOptionsLabel: string
         /** @defaultValue `"Wire funds"` */

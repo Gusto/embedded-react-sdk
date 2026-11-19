@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { fn } from 'storybook/test'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
@@ -1287,6 +1288,92 @@ export const PayrollOverviewWith4DayDirectDeposit = () => {
       submissionBlockers={submissionBlockers}
       selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'move_to_four_day' }}
       onUnblockOptionChange={fn().mockName('onUnblockOptionChange')}
+      onCancel={fn().mockName('cancel')}
+      onPayrollReceipt={fn().mockName('payrollReceipt')}
+      onPaystubDownload={fn().mockName('paystubDownload')}
+      payrollData={{
+        payrollDeadline: new Date('2025-09-24T23:00:00.000Z'),
+        checkDate: '2025-09-26',
+        processed: false,
+        processedDate: null,
+        calculatedAt: new Date('2025-09-15T16:25:07.000Z'),
+        uuid: '9f2013b1-caa6-4b49-8ae2-abc988615808',
+        payrollUuid: '9f2013b1-caa6-4b49-8ae2-abc988615808',
+        companyUuid: '624e94a3-da0a-48e1-9f9b-667f8d502ce1',
+        offCycle: false,
+        external: false,
+        payPeriod: {
+          startDate: '2025-09-12',
+          endDate: '2025-09-18',
+          payScheduleUuid: '3bef2adc-5ffb-4575-94d7-2e34c3e7c0ac',
+        },
+        totals: {
+          companyDebit: '8804.53',
+          netPayDebit: '10453.44',
+          taxDebit: '4917.37',
+          reimbursementDebit: '0.00',
+          childSupportDebit: '0.00',
+          reimbursements: '0.00',
+          netPay: '10453.44',
+          grossPay: '13754.60',
+          employeeBonuses: '0.00',
+          employeeCommissions: '0.00',
+          employeeCashTips: '0.00',
+          employeePaycheckTips: '0.00',
+          additionalEarnings: '0.00',
+          ownersDraw: '0.00',
+          checkAmount: '0.00',
+          employerTaxes: '1616.21',
+          employeeTaxes: '3301.16',
+          benefits: '0.00',
+          employeeBenefitsDeductions: '0.00',
+          imputedPay: '0.00',
+          deferredPayrollTaxes: '0.00',
+          otherDeductions: '0.00',
+        },
+        companyTaxes: [],
+        employeeCompensations: [],
+      }}
+      bankAccount={{
+        uuid: 'bank-uuid',
+        name: 'Business Checking',
+        hiddenAccountNumber: 'XXXX7235',
+        routingNumber: '121000248',
+        accountType: 'Checking',
+      }}
+    />
+  )
+}
+
+const fourDayOnlySubmissionBlockers = [
+  {
+    blockerType: 'fast_ach_threshold_exceeded',
+    blockerName: 'Fast ACH Threshold Exceeded',
+    status: 'unresolved' as const,
+    unblockOptions: [
+      {
+        unblockType: 'move_to_four_day',
+        checkDate: '2025-09-24',
+        metadata: { debit_date: '2025-09-18' },
+      },
+    ],
+  },
+]
+
+export const PayrollOverviewWithSingleFundingOption = () => {
+  const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
+  return (
+    <PayrollOverviewPresentation
+      onEdit={fn().mockName('edit')}
+      onSubmit={fn().mockName('submit')}
+      taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
+      isProcessed={false}
+      status={PayrollOverviewStatus.Viewing}
+      submissionBlockers={fourDayOnlySubmissionBlockers}
+      selectedUnblockOptions={selectedUnblockOptions}
+      onUnblockOptionChange={(blockerType, value) => {
+        setSelectedUnblockOptions(prev => ({ ...prev, [blockerType]: value }))
+      }}
       onCancel={fn().mockName('cancel')}
       onPayrollReceipt={fn().mockName('payrollReceipt')}
       onPaystubDownload={fn().mockName('paystubDownload')}
