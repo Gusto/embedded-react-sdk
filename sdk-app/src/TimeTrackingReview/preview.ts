@@ -1,3 +1,5 @@
+import type { GapId } from './gaps'
+
 export interface PreviewRequest {
   method: string
   path: string
@@ -9,7 +11,7 @@ export interface Preview {
   title: string
   requests: PreviewRequest[]
   notes?: string[]
-  gapIds: string[]
+  gapIds: GapId[]
 }
 
 export type NoticeStatus = 'success' | 'error'

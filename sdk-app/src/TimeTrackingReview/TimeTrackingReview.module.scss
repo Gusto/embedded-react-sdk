@@ -156,7 +156,9 @@
   background: var(--color-badge-bg);
 }
 
-.kind_planned {
+.kind_planned,
+.kind_plannedWorkaround,
+.kind_plannedPartial {
   background: var(--color-active-bg);
   color: var(--color-active);
 }
@@ -167,14 +169,9 @@
   color: var(--color-danger);
 }
 
-.kind_workaround,
-.kind_question {
+.kind_limited {
   background: var(--color-warning-bg);
   color: var(--color-warning-text);
-}
-
-.kind_sdk {
-  background: var(--color-badge-bg);
 }
 
 .request {

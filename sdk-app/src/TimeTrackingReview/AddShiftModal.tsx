@@ -13,7 +13,7 @@ import {
   type Person,
   type ShiftStatus,
 } from './model'
-import { GapPin, PrototypeModal } from './parts'
+import { PrototypeModal } from './parts'
 import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -157,7 +157,7 @@ export function AddShiftModal({
         requests: [
           { method: 'POST', path: `/v1/companies/${companyId}/time_tracking/time_sheets`, body },
         ],
-        gapIds: ['overlap-create', 'timezone', 'approval'],
+        gapIds: [],
       },
     )
   }
@@ -199,7 +199,7 @@ export function AddShiftModal({
         />
       </Grid>
       <Components.Text size="sm" variant="supporting">
-        {hours.toFixed(2)} hours worked, in {timeZone}. <GapPin id="timezone" />
+        {hours.toFixed(2)} hours worked, in {timeZone}.
         {outsidePeriod && ` This date is outside ${formatPeriod(period)}.`}
       </Components.Text>
 
@@ -252,11 +252,11 @@ export function AddShiftModal({
 
       {problems.length > 0 && (
         <Components.Alert status="error" label="The API would reject this">
-          {problems.join(' ')} <GapPin id="overlap-create" />
+          {problems.join(' ')}
         </Components.Alert>
       )}
       <Components.Text size="sm" variant="supporting">
-        Admins can add shifts already approved. They go with the next send. <GapPin id="approval" />
+        Admins can add shifts already approved. They go with the next send.
       </Components.Text>
     </PrototypeModal>
   )

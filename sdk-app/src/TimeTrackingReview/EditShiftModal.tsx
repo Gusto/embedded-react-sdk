@@ -95,7 +95,7 @@ export function EditShiftModal({
     onSave(next, {
       title: 'Edit shift',
       requests: [{ method: 'PATCH', path: `/v1/time_tracking/time_sheets/${shift.uuid}`, body }],
-      gapIds: shift.synced_to_payroll_at ? ['changed', 'approval'] : ['approval'],
+      gapIds: shift.synced_to_payroll_at ? ['which-timesheets', 'break-timing'] : ['break-timing'],
     })
   }
 
@@ -108,7 +108,7 @@ export function EditShiftModal({
           path: `/v1/time_tracking/time_sheets/${shift.uuid}?version=${shift.version}`,
         },
       ],
-      gapIds: ['delete'],
+      gapIds: [],
     })
   }
 
@@ -179,7 +179,7 @@ export function EditShiftModal({
             return `${kind} ${formatTime(b.start_time, tz)}`
           })
           .join(', ') || 'none'}
-        .
+        . <GapPin id="break-timing" />
       </Components.Text>
       {problems.length > 0 && (
         <Components.Alert status="error" label="The API would reject this">
@@ -187,17 +187,16 @@ export function EditShiftModal({
         </Components.Alert>
       )}
       <Components.Text size="sm" variant="supporting">
-        Stays “{shift.status}” after the edit. <GapPin id="approval" />
+        Stays “{shift.status}” after the edit.
         {shift.synced_to_payroll_at &&
           ' Already sent: payroll keeps the old hours until the next send.'}
-        {shift.synced_to_payroll_at && <GapPin id="changed" />}
+        {shift.synced_to_payroll_at && <GapPin id="which-timesheets" />}
       </Components.Text>
       {confirmDelete && (
         <Components.Alert status="warning" label="Delete this shift?">
           {shift.synced_to_payroll_at
             ? 'It was already sent. Its hours stay on payroll until you update this period.'
-            : 'It won’t be sent to payroll.'}{' '}
-          <GapPin id="delete" />
+            : 'It won’t be sent to payroll.'}
         </Components.Alert>
       )}
     </PrototypeModal>

@@ -479,7 +479,7 @@ function TimeTrackingPrototype() {
             body: { version: shift.version, status },
           },
         ],
-        gapIds: shift.synced_to_payroll_at ? ['changed', 'lock-bug'] : ['approval', 'lock-bug'],
+        gapIds: shift.synced_to_payroll_at ? ['which-timesheets', 'status-lock'] : ['status-lock'],
       }
     }
     const chunks = Math.ceil(targets.length / BATCH_LIMIT)
@@ -505,7 +505,7 @@ function TimeTrackingPrototype() {
           caption: `${targets.length} shifts in ${chunks} batch${chunks === 1 ? '' : 'es'}. Then poll the batch and reconcile each item's errors.`,
         },
       ],
-      gapIds: ['batch', 'lock-bug'],
+      gapIds: ['bulk-approval', 'status-lock'],
     }
   }
 
@@ -578,7 +578,7 @@ function TimeTrackingPrototype() {
           {lastSyncAt
             ? `Last sent ${formatDateTime(lastSyncAt)}; ${changedCount} shifts changed since.`
             : 'Nothing sent to payroll yet.'}{' '}
-          <GapPin id="receipt" /> <GapPin id="which-payroll" />
+          <GapPin id="which-timesheets" />
         </Components.Text>
       )}
       <Flex alignItems="center" gap={12} flexWrap="wrap">
@@ -599,8 +599,9 @@ function TimeTrackingPrototype() {
         >
           Add shift
         </Components.Button>
-        <GapPin id="scope" />
-        <GapPin id="period" />
+        <GapPin id="auto-sync" />
+        <GapPin id="sync-limits" />
+        <GapPin id="by-period" />
       </Flex>
 
       {period?.payroll?.processed && (
@@ -611,7 +612,7 @@ function TimeTrackingPrototype() {
       {overlappingProcessed.length > 0 && (
         <Components.Alert status="warning" label="An overlapping payroll is processed">
           {overlappingProcessed.map(formatPeriod).join(', ')} on another schedule is processed. The
-          API may block status changes here too. <GapPin id="lock-bug" />
+          API may block status changes here too. <GapPin id="status-lock" />
         </Components.Alert>
       )}
 
@@ -823,8 +824,8 @@ function TimeTrackingPrototype() {
               </button>
             </div>
             <p className={styles.muted}>
-              Each numbered badge marks a gap. “Needs” is the backend or API change that would close
-              it.
+              One badge for each row of “Appendix: Time Tracking SDK PRD and REST API Comparison”
+              that isn’t fully supported, in its order and wording.
             </p>
             <ol className={styles.gapList}>
               {GAPS.filter(gap => gap.tabs.includes(tab)).map(gap => (
@@ -838,14 +839,16 @@ function TimeTrackingPrototype() {
                     <span>{gap.title}</span>
                   </div>
                   <span className={`${styles.gapKind} ${styles[`kind_${gap.kind}`]}`}>
-                    {GAP_KIND_LABEL[gap.kind]}
+                    {gap.priority} · {GAP_KIND_LABEL[gap.kind]}
                   </span>
-                  <p className={styles.needed}>
-                    <strong>Needs:</strong> {gap.needed}
-                  </p>
                   <p>
-                    <strong>API:</strong> {gap.api}
+                    <strong>Details:</strong> {gap.details}
                   </p>
+                  {gap.needed && (
+                    <p className={styles.needed}>
+                      <strong>Needed to meet the PRD:</strong> {gap.needed}
+                    </p>
+                  )}
                   <p>
                     <strong>Here:</strong> {gap.here}
                   </p>
@@ -880,7 +883,7 @@ function TimeTrackingPrototype() {
               Not sent. The page applied this change locally.
             </Components.Text>
             <Components.Text size="sm" variant="supporting">
-              Related gaps:{' '}
+              {preview.gapIds.length > 0 && 'Related gaps: '}
               {preview.gapIds.map(id => (
                 <GapPin key={id} id={id} />
               ))}
@@ -1023,11 +1026,7 @@ function PeopleTable({
     },
     columns: [
       {
-        title: (
-          <>
-            Person <GapPin id="membership" />
-          </>
-        ),
+        title: 'Person',
         render: ({ person }) => (
           <Flex flexDirection="column" gap={0}>
             <Components.Text weight="medium">{person.name}</Components.Text>
@@ -1046,14 +1045,18 @@ function PeopleTable({
         ),
       },
       {
-        title: 'Worked',
+        title: (
+          <>
+            Worked <GapPin id="period-totals" />
+          </>
+        ),
         justify: 'end',
         render: ({ shifts }) => formatHours(shifts.reduce((sum, s) => sum + workedHours(s), 0)),
       },
       {
         title: (
           <>
-            Overtime (est.) <GapPin id="overtime" />
+            Overtime (est.) <GapPin id="rules-applied" />
           </>
         ),
         justify: 'end',
@@ -1147,13 +1150,10 @@ function PeopleTable({
           >
             Reject {toReject.length} shifts
           </Components.Button>
-          <GapPin id="batch" />
+          <GapPin id="bulk-approval" />
         </Flex>
       )}
       <DataView label="People with shifts this period" {...dataView} />
-      <Components.Text size="sm" variant="supporting">
-        A row per person, then their shifts. <GapPin id="grouped-rows" />
-      </Components.Text>
     </Flex>
   )
 }
@@ -1308,7 +1308,7 @@ function ShiftsTable({
             >
               Reject selected
             </Components.Button>
-            <GapPin id="batch" />
+            <GapPin id="bulk-approval" />
           </>
         )}
       </Flex>

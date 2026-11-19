@@ -90,7 +90,7 @@ export function SendModal({
             caption: 'Then poll the sync by its UUID until it finishes. The path is a best guess.',
           },
         ],
-        gapIds: ['scope', 'which-payroll', 'receipt'],
+        gapIds: ['sync-limits', 'which-timesheets'],
       })
       setPhase('sent')
     }, 1500)
@@ -105,11 +105,7 @@ export function SendModal({
       { title: 'Person', render: ({ person }) => person.name },
       { title: 'Hours', justify: 'end', render: ({ hours }) => formatHours(hours) },
       {
-        title: (
-          <>
-            Note <GapPin id="flsa" />
-          </>
-        ),
+        title: <>Note</>,
         render: ({ person }) =>
           person.effect === 'all' ? (
             ''
@@ -138,7 +134,7 @@ export function SendModal({
         {phase === 'sent' && (
           <Components.Text size="sm" variant="supporting">
             This receipt is built from what this page sent. The API can’t list what a sync included,
-            or say which payroll it landed on. <GapPin id="receipt" /> <GapPin id="which-payroll" />
+            or say which payroll it landed on. <GapPin id="which-timesheets" />
           </Components.Text>
         )}
       </PrototypeModal>
@@ -172,12 +168,11 @@ export function SendModal({
       </Components.Text>
       <Components.Alert status="warning" label="This replaces the hours on payroll">
         It recalculates everyone on {scheduleLabel(schedule)} for these dates, including hours fixed
-        by hand in payroll. <GapPin id="scope" />
+        by hand in payroll. <GapPin id="sync-limits" />
       </Components.Alert>
       <DataView label="Included" {...dataView} />
       <Components.Text size="sm" variant="supporting">
         What each person has on payroll now can’t be read, so the change can’t be shown.{' '}
-        <GapPin id="payroll-hours" />
       </Components.Text>
       {skipped.length > 0 && (
         <Flex flexDirection="column" gap={4}>

@@ -1,11 +1,11 @@
 import { useContext, type ReactNode } from 'react'
 import { GapContext } from './gapContext'
-import { GAP_NUMBER } from './gaps'
+import { GAP_NUMBER, type GapId } from './gaps'
 import styles from './TimeTrackingReview.module.scss'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export function GapPin({ id }: { id: string }) {
+export function GapPin({ id }: { id: GapId }) {
   const { on, active, setActive } = useContext(GapContext)
   if (!on) return null
   return (

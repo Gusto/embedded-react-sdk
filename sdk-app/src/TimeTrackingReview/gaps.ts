@@ -1,279 +1,173 @@
-export type GapKind = 'planned' | 'workaround' | 'none' | 'bug' | 'question' | 'sdk'
+export type GapKind =
+  'none' | 'planned' | 'plannedWorkaround' | 'plannedPartial' | 'bug' | 'limited'
 
 export const GAP_KIND_LABEL: Record<GapKind, string> = {
-  planned: 'API work planned',
-  workaround: 'Client workaround',
-  none: 'No workaround',
-  bug: 'Known API bug',
-  question: 'Open question',
-  sdk: 'SDK limitation',
+  none: 'Not supported, no workaround',
+  planned: 'API work planned; coverage TBD',
+  plannedWorkaround: 'API work planned; workaround exists',
+  plannedPartial: 'API work planned; partial workaround exists',
+  bug: 'Supported, with known bugs',
+  limited: 'Supported with limitations',
 }
 
 export type Tab = 'review' | 'policies' | 'payroll'
 
+export type GapId =
+  | 'ot-state'
+  | 'state-reminders'
+  | 'rules-applied'
+  | 'auto-sync'
+  | 'which-timesheets'
+  | 'by-period'
+  | 'eligibility'
+  | 'period-totals'
+  | 'bulk-approval'
+  | 'break-timing'
+  | 'status-lock'
+  | 'sync-limits'
+
 export interface Gap {
-  id: string
+  id: GapId
+  priority: 'P0' | 'P1'
   tabs: Tab[]
   kind: GapKind
   title: string
-  api: string
+  details: string
+  needed?: string
   here: string
-  needed: string
 }
 
 export const GAPS: Gap[] = [
   {
-    id: 'period',
-    tabs: ['review', 'payroll'],
-    kind: 'workaround',
-    title: 'No pay period filter on shifts',
-    api: 'Shifts filter by people and UTC timestamps only. The appendix workaround: resolve the period dates and the people on the schedule, fetch with broad bounds, then keep shifts by their local start date.',
-    here: 'Fetches one day either side in UTC, then filters by each shift’s own time zone. Planned: a pay schedule and period filter (work starts mid-Dec to early Jan).',
-    needed:
-      'A pay schedule and period filter on time sheets. Agreed; work starts mid-Dec to early Jan.',
-  },
-  {
-    id: 'membership',
-    tabs: ['review', 'payroll'],
-    kind: 'workaround',
-    title: 'Who is on this schedule is reconstructed',
-    api: 'Nothing on a shift says which pay schedule it belongs to. Schedule membership comes from current assignments, so anyone who changed schedule mid-period is placed by where they are today.',
-    here: 'Resolves each employee from pay_schedules/assignments, the same way the Pay Period Shifts explorer does.',
-    needed:
-      'The schedule filter resolving who’s on a schedule server-side, including people who moved mid-period.',
-  },
-  {
-    id: 'overtime',
-    tabs: ['review'],
-    kind: 'planned',
-    title: 'No overtime or regular split',
-    api: 'Shifts only carry Unclassified worked hours. Classification runs at sync time, per person per period, and isn’t returned on reads.',
-    here: 'The overtime column stays empty. Planned: classified hours (the overtime preview). Its design isn’t confirmed.',
-    needed:
-      'A classification preview: regular, overtime and double time per person for a period. Agreed; design not confirmed.',
-  },
-  {
-    id: 'which-payroll',
-    tabs: ['review', 'payroll'],
-    kind: 'planned',
-    title: 'Which shifts went to which payroll',
-    api: 'A sync doesn’t list the shifts it used. Each shift only gets synced_to_payroll_at.',
-    here: '“Sent” means the shift has a synced_to_payroll_at timestamp. Planned: a payroll UUID on each shift, set on completion and cleared on change. Not confirmed.',
-    needed:
-      'A payroll UUID on each shift, set when a sync completes and cleared when hours change. Planned, not confirmed.',
-  },
-  {
-    id: 'changed',
-    tabs: ['review'],
-    kind: 'question',
-    title: '“Changed since send” is a guess',
-    api: 'Whether editing a shift clears synced_to_payroll_at is still being checked.',
-    here: 'Flags a shift when updated_at is later than synced_to_payroll_at. A status change also bumps updated_at, so this can over-flag.',
-    needed:
-      'Confirmation that synced_to_payroll_at (or the payroll UUID) clears when hours or breaks change.',
-  },
-  {
-    id: 'receipt',
-    tabs: ['review'],
-    kind: 'none',
-    title: 'No sync history to build a receipt from',
-    api: 'There’s no endpoint that lists past syncs (GET …/time_tracking/payroll_syncs returns 404). A sync’s status can only be read by its UUID.',
-    here: 'The receipt is inferred from the latest synced_to_payroll_at in the period. A partner would have to store sync UUIDs themselves.',
-    needed:
-      'A list of a company’s syncs, with each result naming the shifts and versions it applied.',
-  },
-  {
-    id: 'payroll-hours',
-    tabs: ['review', 'payroll'],
-    kind: 'none',
-    title: 'Can’t read what payroll currently has',
-    api: 'GET payroll returns no employee_compensations until the payroll is prepared, and preparing it is a PUT.',
-    here: 'The send preview can’t show what each person’s hours will change from, or spot hand edits that a send would overwrite.',
-    needed: 'A way to read each person’s current hours on a payroll without preparing it.',
-  },
-  {
-    id: 'scope',
-    tabs: ['review'],
-    kind: 'none',
-    title: 'A send covers everyone on the schedule',
-    api: 'Sync takes a pay schedule and dates. It recalculates everyone and overwrites payroll hours, including hand edits. Filters and selections on this page don’t narrow it.',
-    here: 'The send preview lists everyone it would include and skip, whatever the filters show.',
-    needed:
-      'A sync result that says whose hours changed, so the overwrite can be confirmed afterwards.',
-  },
-  {
-    id: 'flsa',
-    tabs: ['review'],
-    kind: 'workaround',
-    title: 'Whose hours actually land in payroll',
-    api: 'Hourly nonexempt hours sync. Salaried nonexempt regular hours are filtered out; their overtime still syncs. The appendix doesn’t say what happens to exempt employees. There’s no FLSA filter on employees yet.',
-    here: 'Reads FLSA status from each person’s current compensation and labels the effect. Planned: an FLSA filter on the employees endpoint.',
-    needed:
-      'An FLSA filter on employees (planned, Embedded API team), and documented behavior for exempt employees.',
-  },
-  {
-    id: 'approval',
-    tabs: ['review'],
-    kind: 'question',
-    title: 'Approval doesn’t mean reviewed',
-    api: 'New shifts can be created approved, and edits don’t reset approval. Approval only makes a shift eligible for a future sync.',
-    here: 'Shows the real status. In this demo company every shift is already approved, so there’s nothing to review.',
-    needed:
-      'A decision on what approval means: for example, partner-created shifts start pending, or edits reset approval.',
-  },
-  {
-    id: 'batch',
-    tabs: ['review'],
-    kind: 'workaround',
-    title: 'Bulk approve is batches of explicit shifts',
-    api: 'Batches take up to 500 shifts with uuid and version, and partial successes persist.',
-    here: 'Select shifts, or use a person’s “Approve all pending”. The batch is built from those shifts and split at 500.',
-    needed:
-      'A period-level bulk action (approve everything pending for a schedule and dates), so the client doesn’t gather IDs.',
-  },
-  {
-    id: 'lock-bug',
-    tabs: ['review', 'payroll'],
-    kind: 'bug',
-    title: 'Any processed overlapping payroll blocks status changes',
-    api: 'Status changes are blocked when any company pay period that overlaps has a processed payroll, not just the one this shift went to.',
-    here: 'Warns when another schedule’s overlapping period is processed.',
-    needed: 'A fix: only block status changes for shifts that were in a processed payroll.',
-  },
-  {
-    id: 'transition',
-    tabs: ['review', 'payroll'],
-    kind: 'none',
-    title: 'Transition and termination payrolls',
-    api: 'Sync doesn’t target transition or termination payrolls. Shifts in those periods can land on an overlapping regular payroll or on none.',
-    here: 'Only regular pay periods appear in the picker.',
-    needed:
-      'Sync support for transition and termination payrolls, or a clear rule for where those shifts go.',
-  },
-  {
-    id: 'state',
+    id: 'ot-state',
+    priority: 'P0',
     tabs: ['policies'],
     kind: 'none',
-    title: 'No state on overtime policies',
-    api: 'Break policies have a jurisdiction (this company’s is CA). Overtime policies don’t, so the SDK can’t say whether overtime rules meet a state’s law.',
-    here: 'Shows each person’s policies by name only.',
-    needed: 'A jurisdiction field on overtime policies.',
+    title: 'Policy creation: state designation for OT',
+    details: 'Overtime (OT) policies do not have a jurisdiction field.',
+    here: 'Shows overtime policies by name only. Break policies do have a jurisdiction.',
   },
   {
-    id: 'grouped-rows',
+    id: 'state-reminders',
+    priority: 'P1',
+    tabs: ['policies'],
+    kind: 'none',
+    title: 'State reminders: identify missing compliant policies',
+    details:
+      'The APIs do not provide the requirements needed to identify missing compliant policies, and OT policies do not have a jurisdiction field.',
+    here: 'Only checks coverage: it warns when an eligible person has no overtime or no break policy. That says nothing about the law.',
+  },
+  {
+    id: 'rules-applied',
+    priority: 'P0',
     tabs: ['review'],
-    kind: 'sdk',
-    title: 'The SDK table can’t group rows',
-    api: 'Not an API gap. Partners bring their own table through the component adapter, which has no grouped or expandable rows.',
-    here: 'Uses the SDK table as it is: a row per person, and the “N shifts” link opens that person’s shifts. Grouped rows would need new table props that every partner adapter supports.',
+    kind: 'none',
+    title: 'Timesheet viewing: see rules applied for the date',
+    details:
+      'Timesheet reads do not expose classified regular, overtime, or double-overtime (DT) hours. Classification is calculated in a pay-period context, rather than returned as a per-shift result.',
+    here: 'The overtime column is the page’s own estimate from each person’s overtime policy, marked ≈.',
+  },
+  {
+    id: 'auto-sync',
+    priority: 'P0',
+    tabs: ['review', 'payroll'],
+    kind: 'none',
+    title: 'Payroll sync: automatically sync hours after approval',
+    details:
+      'Approval changes the status of individual shifts. Payroll sync is a separate operation scoped to a pay schedule and date range; it does not trigger automatically on approval. Payroll admins will manually sync hours before running payroll.',
+    here: 'Send to payroll is its own step. Run payroll reminds the admin when a period has approved hours that haven’t been sent.',
+  },
+  {
+    id: 'which-timesheets',
+    priority: 'P0',
+    tabs: ['review'],
+    kind: 'planned',
+    title: 'Payroll sync: see which timesheets were factored in',
+    details:
+      'Missing result detail: no definitive list of successfully applied source shifts/versions.',
     needed:
-      'An SDK change, not an API one: grouped or expandable row props in the component adapter.',
+      'Planned: add a payroll UUID to time sheets to associate current shifts with a payroll. Proposed: set it on confirmed completion and clear it when hours or breaks change. Confirm those semantics and how failed or partial syncs are represented.',
+    here: '“Sent” means the shift has synced_to_payroll_at, and “changed since sent” means updated_at is later. The receipt is inferred from those timestamps.',
   },
   {
-    id: 'overlap-create',
+    id: 'by-period',
+    priority: 'P0',
     tabs: ['review'],
-    kind: 'workaround',
-    title: 'Overlap is only checked on create',
-    api: 'Creating a shift that overlaps another one for the same person is rejected. Editing a shift into an overlap isn’t.',
-    here: 'Add shift checks against the shifts already loaded, so the clash shows before the request. Edit can only warn.',
-    needed: 'Overlap validation on update, not only on create.',
-  },
-  {
-    id: 'timezone',
-    tabs: ['review'],
-    kind: 'question',
-    title: 'Which time zone a new shift uses',
-    api: 'Every shift needs a time_zone, but nothing on the employee or company says which one to use.',
-    here: 'Uses the time zone of the person’s other shifts, or the most common one in the period.',
-    needed: 'A default time zone on the employee or their work location.',
-  },
-  {
-    id: 'delete',
-    tabs: ['review'],
-    kind: 'workaround',
-    title: 'Deleting is one shift at a time',
-    api: 'Batches only create and update. Each delete is its own request with the shift’s version.',
-    here: 'Delete shows a single DELETE request.',
-    needed: 'Delete support in time sheet batches.',
+    kind: 'plannedWorkaround',
+    title: 'Main page / history: view employee timesheets by pay period',
+    details:
+      'Requires client reconstruction: shifts accept date/person filters, not a period identifier.',
+    needed:
+      'Workaround: resolve period dates and historical employee membership, fetch shifts using broad timestamp bounds, and filter by each shift’s local start date. Planned: filter time sheets by pay schedule and period dates.',
+    here: 'Fetches one day either side in UTC and keeps shifts by their local start date. People come from current schedule assignments, without history.',
   },
   {
     id: 'eligibility',
+    priority: 'P0',
     tabs: ['policies'],
-    kind: 'workaround',
-    title: 'Eligibility is derived, and rejections have no reasons',
-    api: 'There’s no eligibility filter on employees. Assigning someone ineligible fails for the whole request, without saying who or why.',
-    here: 'Derives eligibility from each person’s current FLSA status (the same rules as the first prototype) and disables ineligible people with a reason. Planned: an FLSA filter on employees.',
+    kind: 'plannedWorkaround',
+    title: 'Employee assignment: show eligible employees and explain exclusions',
+    details: 'Requires client reconstruction: no eligibility filter for employees.',
     needed:
-      'An eligibility filter on employees, and per-person reasons when an assignment is rejected.',
+      'Workaround: fetch all employee pages, resolve current compensation, and derive eligibility/reasons. Planned: an FLSA status filter on the company employees endpoint.',
+    here: 'Derives eligibility from each person’s current FLSA status and disables ineligible people with a reason.',
   },
   {
-    id: 'missing-policy',
-    tabs: ['policies'],
-    kind: 'none',
-    title: 'No way to tell if policies are compliant',
-    api: 'The API has no list of required policies by state, so it can’t warn about missing or non-compliant ones.',
-    here: 'Only checks coverage: it warns when an eligible person has no overtime or no break policy. That says nothing about the law.',
-    needed: 'Policy requirements by state, so the API can flag missing or non-compliant policies.',
-  },
-  {
-    id: 'ot-required',
-    tabs: ['policies'],
-    kind: 'workaround',
-    title: 'Overtime policies can’t be removed, only replaced',
-    api: 'Overtime policies have assign but no remove. Someone leaves a policy by being assigned to another one.',
-    here: 'People already on the policy are locked in the picker, with “move them from the other policy” as the way out.',
+    id: 'period-totals',
+    priority: 'P0',
+    tabs: ['review'],
+    kind: 'plannedPartial',
+    title: 'Timesheet viewing: per-person pay-period totals',
+    details: 'Requires client reconstruction: no period aggregate response.',
     needed:
-      'A remove endpoint for overtime policies, or documentation that reassigning is the only way.',
+      'Workaround: aggregate matching shift hours using the same period scope as review and bulk approval. This does not reproduce classified regular, overtime, and double-overtime totals. Planned: schedule/period filters and classified hours. Confirm the classification design and whether it provides per-person period totals.',
+    here: 'Worked adds up each person’s shift hours in the period.',
   },
   {
-    id: 'ot-effective',
-    tabs: ['policies'],
-    kind: 'workaround',
-    title: 'Overtime changes reach back to the start of the workweek',
-    api: 'An overtime change applies to the current workweek. The workweek comes from each pay schedule, and here they differ (Saturday on one, Monday on the others). Nothing says which payrolls already include that week.',
-    here: 'The edit form lists each schedule’s current workweek start.',
+    id: 'bulk-approval',
+    priority: 'P0',
+    tabs: ['review'],
+    kind: 'plannedWorkaround',
+    title: 'Bulk approval: approve all employees for a pay period',
+    details: 'Requires client reconstruction: batches need explicit shift UUIDs/versions.',
     needed:
-      'The effective date per employee for a policy change, and which payrolls already cover that week.',
+      'Workaround: resolve every shift in the selected period and submit/reconcile update batches via client-side pagination. Planned: schedule/period filters should help identify shifts in scope; batches will still require explicit shift UUIDs/versions and reconciliation of partial outcomes.',
+    here: 'Select people or shifts, or use a person’s “Approve all shifts”. The batch is built from those shifts and split at 500.',
   },
   {
-    id: 'break-today',
-    tabs: ['policies'],
-    kind: 'workaround',
-    title: 'A break taken today blocks the change',
-    api: 'Changing someone’s break policy, or deleting a policy they’re on, fails if they took a break today. The error doesn’t say who.',
-    here: 'Loads today’s shifts and flags anyone with a break today before you try.',
-    needed: 'An error that names the blocked people, or a way to read who took a break today.',
-  },
-  {
-    id: 'break-replace',
-    tabs: ['policies'],
-    kind: 'workaround',
-    title: 'Editing a break policy replaces it',
-    api: 'Update is a full replacement (PUT) and rejects jurisdiction, which is fixed when the policy is created. Assign and remove are separate requests, and the second needs the version the first returns.',
-    here: 'The edit form locks jurisdiction and sends every rule. Assign changes show both requests in order.',
+    id: 'break-timing',
+    priority: 'P0',
+    tabs: ['review'],
+    kind: 'bug',
+    title: 'Timesheet editing: always block invalid break timing',
+    details: 'Supported, with a known bug.',
     needed:
-      'A partial update (PATCH) for break policies, and one assignment call that adds and removes.',
+      'Known bug: backend validation gap. Shift-boundary-only edits can skip checks on preserved breaks.',
+    here: 'Edit shift checks that existing breaks stay inside the new times before saving.',
   },
   {
-    id: 'min-time',
-    tabs: ['policies'],
-    kind: 'question',
-    title: 'Where does “minimum time required” come from?',
-    api: 'Break rules come back with minimum_time_required_in_minutes (361 and 211 here), but it isn’t in the create body.',
-    here: 'Shows it read-only. Is it derived from the jurisdiction, and what does it mean for an admin?',
-    needed: 'Documentation for minimum_time_required_in_minutes, and whether admins should set it.',
+    id: 'status-lock',
+    priority: 'P0',
+    tabs: ['review', 'payroll'],
+    kind: 'bug',
+    title: 'Approval management: allow status changes until hours reach a processed payroll',
+    details: 'Supported, with a known bug.',
+    needed:
+      'Known bug: the API blocks status changes when any overlapping company pay period has processed payroll, not only when the specific shift was included.',
+    here: 'Warns when another schedule’s overlapping period is processed.',
   },
   {
-    id: 'resync',
-    tabs: ['payroll'],
-    kind: 'none',
-    title: 'Payroll doesn’t know about unsent hours',
-    api: 'Nothing on a payroll says time tracking is in use, or that approved hours haven’t been sent. Payroll never pulls from timesheets.',
-    here: 'Counts approved shifts with no synced_to_payroll_at in each payroll’s period. Run payroll shows the reminder before going on.',
-    needed: 'A payroll-side signal that approved hours haven’t been sent for this period.',
+    id: 'sync-limits',
+    priority: 'P0',
+    tabs: ['review', 'payroll'],
+    kind: 'limited',
+    title: 'Payroll sync: sync approved pay-period hours and see completion',
+    details:
+      'Sync accepts a pay schedule UUID and start/end dates, not a pay-period identifier. Async status reports completion. Sync does not target transition or termination payrolls; shifts in those periods can resolve to an overlapping regular payroll or to no payroll.',
+    here: 'A send covers everyone on the schedule for the period. Only regular pay periods appear in the picker.',
   },
 ]
 
-export const GAP_NUMBER: Record<string, number> = Object.fromEntries(
+export const GAP_NUMBER: Record<GapId, number> = Object.fromEntries(
   GAPS.map((gap, index) => [gap.id, index + 1]),
-)
+) as Record<GapId, number>

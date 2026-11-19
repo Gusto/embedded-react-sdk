@@ -148,7 +148,7 @@ export function PoliciesTab({
           path: `/v1/time_tracking/${kind === 'overtime' ? 'overtime_policies' : 'break_policies'}/${policy.uuid}?version=${policy.version}`,
         },
       ],
-      gapIds: kind === 'break' ? ['break-today'] : ['ot-required'],
+      gapIds: ['eligibility'],
     }
     setDeleting(null)
     if (blocked.length) {
@@ -247,7 +247,7 @@ export function PoliciesTab({
           status="warning"
           label={`${uncovered.length} eligible people are missing a policy`}
         >
-          {uncovered.map(p => p.name).join(', ')} <GapPin id="missing-policy" />
+          {uncovered.map(p => p.name).join(', ')} <GapPin id="state-reminders" />
         </Components.Alert>
       )}
 
@@ -256,7 +256,7 @@ export function PoliciesTab({
           <Components.BoxHeader
             title={
               <>
-                Overtime policies <GapPin id="state" />
+                Overtime policies <GapPin id="ot-state" />
               </>
             }
             action={
@@ -280,7 +280,7 @@ export function PoliciesTab({
           <Components.BoxHeader
             title={
               <>
-                Break policies <GapPin id="missing-policy" />
+                Break policies <GapPin id="state-reminders" />
               </>
             }
             action={
@@ -456,7 +456,7 @@ function OvertimeFormModal({
                     body,
                   },
                 ],
-                gapIds: policy ? ['ot-effective', 'state'] : ['state'],
+                gapIds: ['ot-state'],
               },
             )
           }}
@@ -492,7 +492,7 @@ function OvertimeFormModal({
       />
       <Components.Text size="sm" variant="supporting">
         There’s no field for which state this is for, so it can’t be checked against state law.{' '}
-        <GapPin id="state" />
+        <GapPin id="ot-state" />
       </Components.Text>
       <Problems problems={problems} />
       {policy && (
@@ -501,7 +501,6 @@ function OvertimeFormModal({
             .map(w => `${scheduleLabel(w.schedule)} from ${w.start ? formatDay(w.start) : '?'}`)
             .join('; ')}
           . A payroll that already covers part of that week may need a correction.{' '}
-          <GapPin id="ot-effective" />
         </Components.Alert>
       )}
     </PrototypeModal>
@@ -608,7 +607,7 @@ function BreakFormModal({
                     body,
                   },
                 ],
-                gapIds: policy ? ['break-replace', 'min-time'] : ['min-time'],
+                gapIds: [],
               },
             )
           }}
@@ -699,9 +698,7 @@ function BreakFormModal({
       </Flex>
       <Components.Text size="sm" variant="supporting">
         The API also returns a minimum shift length for each rule, which isn’t set here.{' '}
-        <GapPin id="min-time" />
         {policy && ' Saving replaces the whole policy.'}
-        {policy && <GapPin id="break-replace" />}
       </Components.Text>
       <Problems problems={problems} />
     </PrototypeModal>
@@ -804,10 +801,7 @@ function AssignModal({
             onSave([...selected], {
               title: `Assign people to ${policy.name}`,
               requests,
-              gapIds:
-                kind === 'overtime'
-                  ? ['eligibility', 'ot-required']
-                  : ['eligibility', 'break-today', 'break-replace'],
+              gapIds: ['eligibility'],
             })
           }}
         />
@@ -816,7 +810,6 @@ function AssignModal({
       <Components.Text size="sm" variant="supporting">
         Each person can be on one {kind} policy, so picking someone moves them here. Ineligible
         people can’t be picked. <GapPin id="eligibility" />
-        {kind === 'overtime' ? <GapPin id="ot-required" /> : <GapPin id="break-today" />}
       </Components.Text>
       <DataView label="People" {...dataView} />
       {blocked && (

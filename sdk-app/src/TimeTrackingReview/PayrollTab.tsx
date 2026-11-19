@@ -141,7 +141,7 @@ export function PayrollTab({
       {
         title: (
           <>
-            Timesheets <GapPin id="resync" />
+            Timesheets <GapPin id="auto-sync" />
           </>
         ),
         render: row =>
@@ -185,7 +185,7 @@ export function PayrollTab({
           { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/submit` },
         ],
         notes: ['Payroll’s own flow. It uses whatever hours payroll already has.'],
-        gapIds: ['resync', 'lock-bug'],
+        gapIds: ['auto-sync', 'status-lock'],
       },
     )
   }
@@ -195,7 +195,7 @@ export function PayrollTab({
       <Components.Text size="sm" variant="supporting">
         A stand-in for the payroll screen, which is a different flow. It shows where the reminder to
         send hours first would appear. Transition and off-cycle payrolls aren’t listed.{' '}
-        <GapPin id="transition" />
+        <GapPin id="sync-limits" />
       </Components.Text>
       <DataView label="Upcoming payrolls" {...dataView} />
 
@@ -244,7 +244,6 @@ export function PayrollTab({
           )}
           <Components.Text size="sm" variant="supporting">
             Payroll’s current hours per person can’t be read until it’s prepared.{' '}
-            <GapPin id="payroll-hours" />
           </Components.Text>
         </PrototypeModal>
       )}
