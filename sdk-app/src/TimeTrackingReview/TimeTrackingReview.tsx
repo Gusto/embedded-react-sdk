@@ -9,6 +9,7 @@ import {
   REVIEW_STATE_LABEL,
   addDays,
   crossesMidnight,
+  estimateOvertime,
   employeeName,
   flsaStatus,
   formatDateTime,
@@ -43,8 +44,9 @@ import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
 import { SendModal } from './SendModal'
 import { GapContext } from './gapContext'
-import { GapPin, PrototypeModal, ReadOnlyNote, RequestBlock } from './parts'
-import type { Preview } from './preview'
+import { GapPin, PrototypeModal, RequestBlock } from './parts'
+import { nowIso, type NoticeStatus, type Preview } from './preview'
+import type { PolicyData } from './PoliciesTab'
 import styles from './TimeTrackingReview.module.scss'
 import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -171,6 +173,16 @@ function TimeTrackingPrototype() {
   const [activeGap, setActiveGap] = useState<string | null>(null)
 
   const [preview, setPreview] = useState<Preview | null>(null)
+  const [sim, setSim] = useState<{ shifts: Record<string, ApiShift | null>; added: ApiShift[] }>({
+    shifts: {},
+    added: [],
+  })
+  const [changes, setChanges] = useState(0)
+  const [notice, setNotice] = useState<{
+    message: string
+    preview: Preview
+    status: NoticeStatus
+  } | null>(null)
   const [editing, setEditing] = useState<ApiShift | null>(null)
   const [adding, setAdding] = useState<{ personUuid: string | null } | null>(null)
   const [sendOpen, setSendOpen] = useState(false)
@@ -375,7 +387,69 @@ function TimeTrackingPrototype() {
     document.getElementById(`gap-${id}`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }, [])
 
-  const periodShifts = useMemo(() => (shifts.kind === 'done' ? shifts.data : []), [shifts])
+  const applySim = useCallback(
+    (loaded: ApiShift[]) => [
+      ...loaded
+        .map(shift => (shift.uuid in sim.shifts ? sim.shifts[shift.uuid] : shift))
+        .filter((shift): shift is ApiShift => shift !== null),
+      ...sim.added,
+    ],
+    [sim],
+  )
+
+  const periodShifts = useMemo(() => {
+    if (shifts.kind !== 'done' || !period) return []
+    const onSchedule = new Set(schedulePeople.map(p => p.employee.uuid))
+    const loaded = shifts.data
+      .map(shift => (shift.uuid in sim.shifts ? sim.shifts[shift.uuid] : shift))
+      .filter((shift): shift is ApiShift => shift !== null)
+    const added = sim.added.filter(shift => {
+      const date = localStartDate(shift)
+      return (
+        onSchedule.has(shift.entity_uuid) && date >= period.start_date && date <= period.end_date
+      )
+    })
+    return [...loaded, ...added].sort((a, b) =>
+      a.shift_started_at.localeCompare(b.shift_started_at),
+    )
+  }, [shifts, sim, period, schedulePeople])
+
+  const notify = (message: string, nextPreview: Preview, status: NoticeStatus = 'success') => {
+    setNotice({ message, preview: nextPreview, status })
+    if (status === 'success') setChanges(c => c + 1)
+  }
+
+  const putShifts = (next: ApiShift[]) => {
+    setSim(prev => {
+      const added = [...prev.added]
+      const replaced = { ...prev.shifts }
+      for (const shift of next) {
+        const index = added.findIndex(a => a.uuid === shift.uuid)
+        if (index >= 0) added[index] = shift
+        else replaced[shift.uuid] = shift
+      }
+      return { shifts: replaced, added }
+    })
+  }
+
+  const removeShift = (uuid: string) => {
+    setSim(prev =>
+      prev.added.some(a => a.uuid === uuid)
+        ? { ...prev, added: prev.added.filter(a => a.uuid !== uuid) }
+        : { ...prev, shifts: { ...prev.shifts, [uuid]: null } },
+    )
+  }
+
+  const updateData = (update: (current: BaseData) => BaseData) => {
+    setBase(prev => (prev.kind === 'done' ? { kind: 'done', data: update(prev.data) } : prev))
+  }
+
+  const resetSimulation = () => {
+    setSim({ shifts: {}, added: [] })
+    setChanges(0)
+    setNotice(null)
+    setReloadToken(t => t + 1)
+  }
   const syncedShifts = periodShifts.filter(s => s.synced_to_payroll_at)
   const lastSyncAt = syncedShifts.reduce<string | null>(
     (latest, s) => (!latest || s.synced_to_payroll_at! > latest ? s.synced_to_payroll_at! : latest),
@@ -393,10 +467,10 @@ function TimeTrackingPrototype() {
     latestShiftDate &&
     schedulePeriods.find(p => p.start_date <= latestShiftDate && latestShiftDate <= p.end_date)
 
-  const statusPreview = (targets: ApiShift[], status: ShiftStatus, title: string) => {
+  const statusRequest = (targets: ApiShift[], status: ShiftStatus, title: string): Preview => {
     if (targets.length === 1) {
       const shift = targets[0]!
-      setPreview({
+      return {
         title,
         requests: [
           {
@@ -406,8 +480,7 @@ function TimeTrackingPrototype() {
           },
         ],
         gapIds: shift.synced_to_payroll_at ? ['changed', 'lock-bug'] : ['approval', 'lock-bug'],
-      })
-      return
+      }
     }
     const chunks = Math.ceil(targets.length / BATCH_LIMIT)
     const firstChunk = targets.slice(0, BATCH_LIMIT)
@@ -417,7 +490,7 @@ function TimeTrackingPrototype() {
       version: shift.version,
       status,
     }))
-    setPreview({
+    return {
       title,
       requests: [
         {
@@ -433,7 +506,28 @@ function TimeTrackingPrototype() {
         },
       ],
       gapIds: ['batch', 'lock-bug'],
-    })
+    }
+  }
+
+  const changeStatus = (targets: ApiShift[], status: ShiftStatus, title: string) => {
+    if (!targets.length) return
+    const request = statusRequest(targets, status, title)
+    if (period?.payroll?.processed) {
+      notify('Couldn’t change status: this period’s payroll is processed.', request, 'error')
+      return
+    }
+    const now = nowIso()
+    putShifts(targets.map(shift => ({ ...shift, status, updated_at: now })))
+    const count = targets.length === 1 ? 'Shift' : `${targets.length} shifts`
+    const wasSent = targets.some(t => t.synced_to_payroll_at)
+    notify(
+      status === 'approved'
+        ? `${count} approved. ${targets.length === 1 ? 'It goes' : 'They go'} to payroll the next time you send this period.`
+        : status === 'rejected'
+          ? `${count} rejected. ${targets.length === 1 ? 'It won’t' : 'They won’t'} be sent to payroll.${wasSent ? ' Hours already sent stay on payroll until you update it.' : ''}`
+          : `${count} set back to pending.${wasSent ? ' Hours already sent stay on payroll until you update it.' : ''}`,
+      request,
+    )
   }
 
   const byPerson = useMemo(() => {
@@ -554,12 +648,13 @@ function TimeTrackingPrototype() {
       {shifts.kind === 'done' && periodShifts.length > 0 && !focused && (
         <PeopleTable
           rows={personRows}
+          workweekStartDay={schedule?.workweek_start_day ?? null}
           shiftsHref={shiftsHref}
           selected={selectedPeople}
           onSelectedChange={setSelectedPeople}
-          onBulk={statusPreview}
+          onBulk={changeStatus}
           onApproveAll={(person, pending) => {
-            statusPreview(
+            changeStatus(
               pending,
               'approved',
               `Approve ${person.name}’s ${pending.length} pending shifts`,
@@ -580,7 +675,7 @@ function TimeTrackingPrototype() {
           onBack={() => {
             setFocusPerson(null)
           }}
-          onStatus={statusPreview}
+          onStatus={changeStatus}
           onEdit={setEditing}
         />
       )}
@@ -629,6 +724,37 @@ function TimeTrackingPrototype() {
             </Components.Alert>
           )}
 
+          {changes > 0 && (
+            <Flex alignItems="center" gap={8}>
+              <span className={styles.simTag}>
+                Simulated · {changes} {changes === 1 ? 'change' : 'changes'}, nothing sent
+              </span>
+              <Components.Button variant="tertiary" onClick={resetSimulation}>
+                Reset to real data
+              </Components.Button>
+            </Flex>
+          )}
+
+          {notice && (
+            <Components.Alert
+              status={notice.status}
+              label={notice.message}
+              onDismiss={() => {
+                setNotice(null)
+              }}
+              action={
+                <Components.Button
+                  variant="secondary"
+                  onClick={() => {
+                    setPreview(notice.preview)
+                  }}
+                >
+                  View request
+                </Components.Button>
+              }
+            />
+          )}
+
           {data && (
             <Components.Tabs
               aria-label="Time tracking"
@@ -646,7 +772,10 @@ function TimeTrackingPrototype() {
                       schedules={data.schedules}
                       overtimePolicies={data.overtimePolicies}
                       breakPolicies={data.breakPolicies}
-                      onPreview={setPreview}
+                      onPoliciesChange={(next: PolicyData) => {
+                        updateData(current => ({ ...current, ...next }))
+                      }}
+                      onNotify={notify}
                     />
                   ),
                 },
@@ -659,7 +788,18 @@ function TimeTrackingPrototype() {
                       people={people}
                       schedules={data.schedules}
                       periods={data.periods}
-                      onPreview={setPreview}
+                      applySim={applySim}
+                      onNotify={notify}
+                      onProcess={processed => {
+                        updateData(current => ({
+                          ...current,
+                          periods: current.periods.map(p =>
+                            p === processed && p.payroll
+                              ? { ...p, payroll: { ...p.payroll, processed: true } }
+                              : p,
+                          ),
+                        }))
+                      }}
                       onReview={(nextSchedule, key) => {
                         setScheduleUuid(nextSchedule)
                         setSelectedPeriodKey(key)
@@ -690,7 +830,8 @@ function TimeTrackingPrototype() {
               </button>
             </div>
             <p className={styles.muted}>
-              From the real API and the Tspec appendix (Nov 19). Click a numbered pin to jump here.
+              Each numbered badge marks a gap. “Needs” is the backend or API change that would close
+              it.
             </p>
             <ol className={styles.gapList}>
               {GAPS.filter(gap => gap.tabs.includes(tab)).map(gap => (
@@ -706,6 +847,9 @@ function TimeTrackingPrototype() {
                   <span className={`${styles.gapKind} ${styles[`kind_${gap.kind}`]}`}>
                     {GAP_KIND_LABEL[gap.kind]}
                   </span>
+                  <p className={styles.needed}>
+                    <strong>Needs:</strong> {gap.needed}
+                  </p>
                   <p>
                     <strong>API:</strong> {gap.api}
                   </p>
@@ -720,7 +864,7 @@ function TimeTrackingPrototype() {
 
         {preview && (
           <PrototypeModal
-            title={preview.title}
+            title={`What “${preview.title}” would send`}
             onClose={() => {
               setPreview(null)
             }}
@@ -739,7 +883,9 @@ function TimeTrackingPrototype() {
                 {note}
               </Components.Text>
             ))}
-            <ReadOnlyNote />
+            <Components.Text size="sm" variant="supporting">
+              Not sent. The page applied this change locally.
+            </Components.Text>
             <Components.Text size="sm" variant="supporting">
               Related gaps:{' '}
               {preview.gapIds.map(id => (
@@ -757,6 +903,26 @@ function TimeTrackingPrototype() {
             onClose={() => {
               setEditing(null)
             }}
+            onSave={(next, request) => {
+              setEditing(null)
+              putShifts([next])
+              notify(
+                next.synced_to_payroll_at
+                  ? 'Saved. Still approved, but not on payroll until you update this period.'
+                  : 'Shift saved.',
+                request,
+              )
+            }}
+            onDelete={(deleted, request) => {
+              setEditing(null)
+              removeShift(deleted.uuid)
+              notify(
+                deleted.synced_to_payroll_at
+                  ? 'Shift deleted. Its hours stay on payroll until you update this period.'
+                  : 'Shift deleted.',
+                request,
+              )
+            }}
           />
         )}
 
@@ -769,6 +935,16 @@ function TimeTrackingPrototype() {
             initialPersonUuid={adding.personUuid}
             onClose={() => {
               setAdding(null)
+            }}
+            onSave={(shift, request) => {
+              setAdding(null)
+              setSim(prev => ({ ...prev, added: [...prev.added, shift] }))
+              notify(
+                shift.status === 'approved'
+                  ? 'Shift added as approved. It goes to payroll the next time you send this period.'
+                  : 'Shift added as pending.',
+                request,
+              )
             }}
           />
         )}
@@ -787,6 +963,11 @@ function TimeTrackingPrototype() {
             onReview={personUuid => {
               setSendOpen(false)
               setFocusPerson(personUuid)
+            }}
+            onSent={(sent, request) => {
+              const now = nowIso()
+              putShifts(sent.map(shift => ({ ...shift, synced_to_payroll_at: now })))
+              notify(`Hours for ${sent.length} shifts sent to payroll.`, request)
             }}
           />
         )}
@@ -818,6 +999,7 @@ interface PersonRow {
 
 function PeopleTable({
   rows,
+  workweekStartDay,
   shiftsHref,
   selected,
   onSelectedChange,
@@ -826,6 +1008,7 @@ function PeopleTable({
   onAddShift,
 }: {
   rows: PersonRow[]
+  workweekStartDay: string | null
   shiftsHref: (personUuid: string) => string
   selected: Set<string>
   onSelectedChange: (next: Set<string>) => void
@@ -879,11 +1062,20 @@ function PeopleTable({
       {
         title: (
           <>
-            Overtime <GapPin id="overtime" />
+            Overtime (est.) <GapPin id="overtime" />
           </>
         ),
         justify: 'end',
-        render: () => '—',
+        render: ({ person, shifts }) => {
+          const estimate = estimateOvertime(shifts, person.overtimePolicy, workweekStartDay)
+          if (!estimate) return '—'
+          return (
+            <span className={styles.estimate}>
+              ≈ {formatHours(estimate.overtime)}
+              {estimate.double > 0 && ` + ${formatHours(estimate.double)} DT`}
+            </span>
+          )
+        },
       },
       { title: 'Status', render: ({ shifts }) => <StatusBadges shifts={shifts} /> },
     ],

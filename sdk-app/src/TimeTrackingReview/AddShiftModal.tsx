@@ -13,7 +13,8 @@ import {
   type Person,
   type ShiftStatus,
 } from './model'
-import { GapPin, PrototypeModal, ReadOnlyNote, RequestBlock } from './parts'
+import { GapPin, PrototypeModal } from './parts'
+import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -41,6 +42,7 @@ export function AddShiftModal({
   shifts,
   initialPersonUuid,
   onClose,
+  onSave,
 }: {
   companyId: string
   people: Person[]
@@ -48,6 +50,7 @@ export function AddShiftModal({
   shifts: ApiShift[]
   initialPersonUuid: string | null
   onClose: () => void
+  onSave: (shift: ApiShift, preview: Preview) => void
 }) {
   const Components = useComponentContext()
   const sorted = useMemo(() => [...people].sort((a, b) => a.name.localeCompare(b.name)), [people])
@@ -126,8 +129,54 @@ export function AddShiftModal({
     })),
   }
 
+  const save = () => {
+    if (!start || !end) return
+    const uuid = simId()
+    const now = nowIso()
+    onSave(
+      {
+        uuid,
+        version: 'simulated',
+        status,
+        time_zone: timeZone,
+        entity_type: 'Employee',
+        entity_uuid: personUuid,
+        job_uuid: job?.uuid ?? null,
+        shift_started_at: start,
+        shift_ended_at: end,
+        synced_to_payroll_at: null,
+        created_at: now,
+        updated_at: now,
+        entries: [
+          { uuid: simId(), hours_worked: hours.toFixed(3), pay_classification: 'Unclassified' },
+        ],
+        breaks: body.breaks.map(b => ({ ...b, uuid: simId() })),
+      },
+      {
+        title: 'Add shift',
+        requests: [
+          { method: 'POST', path: `/v1/companies/${companyId}/time_tracking/time_sheets`, body },
+        ],
+        gapIds: ['overlap-create', 'timezone', 'approval'],
+      },
+    )
+  }
+
   return (
-    <PrototypeModal title="Add shift" onClose={onClose}>
+    <PrototypeModal
+      title="Add shift"
+      onClose={onClose}
+      footer={
+        <Flex justifyContent="flex-end" gap={12}>
+          <Components.Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Components.Button>
+          <Components.Button isDisabled={!start || !end || problems.length > 0} onClick={save}>
+            Add shift
+          </Components.Button>
+        </Flex>
+      }
+    >
       <Grid gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }} gap={12}>
         <Components.Select
           label="Person"
@@ -206,15 +255,9 @@ export function AddShiftModal({
           {problems.join(' ')} <GapPin id="overlap-create" />
         </Components.Alert>
       )}
-      <RequestBlock
-        method="POST"
-        path={`/v1/companies/${companyId}/time_tracking/time_sheets`}
-        body={body}
-      />
       <Components.Text size="sm" variant="supporting">
         Admins can add shifts already approved. They go with the next send. <GapPin id="approval" />
       </Components.Text>
-      <ReadOnlyNote />
     </PrototypeModal>
   )
 }

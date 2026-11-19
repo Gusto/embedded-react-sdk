@@ -11,3 +11,15 @@ export interface Preview {
   notes?: string[]
   gapIds: string[]
 }
+
+export type NoticeStatus = 'success' | 'error'
+
+export type Notify = (message: string, preview: Preview, status?: NoticeStatus) => void
+
+export function simId() {
+  return `sim-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
+}
+
+export function nowIso() {
+  return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
+}

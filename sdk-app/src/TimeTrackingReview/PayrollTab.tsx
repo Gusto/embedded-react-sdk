@@ -15,7 +15,7 @@ import {
   type Person,
 } from './model'
 import { GapPin, PrototypeModal } from './parts'
-import type { Preview } from './preview'
+import type { Notify } from './preview'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -34,15 +34,19 @@ export function PayrollTab({
   people,
   schedules,
   periods,
+  applySim,
   onReview,
-  onPreview,
+  onProcess,
+  onNotify,
 }: {
   companyId: string
   people: Person[]
   schedules: ApiPaySchedule[]
   periods: ApiPayPeriod[]
   onReview: (scheduleUuid: string, key: string) => void
-  onPreview: (preview: Preview) => void
+  applySim: (shifts: ApiShift[]) => ApiShift[]
+  onProcess: (period: ApiPayPeriod) => void
+  onNotify: Notify
 }) {
   const Components = useComponentContext()
   const today = new Date().toISOString().slice(0, 10)
@@ -50,13 +54,7 @@ export function PayrollTab({
     () =>
       schedules.flatMap(schedule =>
         periods
-          .filter(
-            p =>
-              p.pay_schedule_uuid === schedule.uuid &&
-              p.payroll &&
-              !p.payroll.processed &&
-              p.start_date <= today,
-          )
+          .filter(p => p.pay_schedule_uuid === schedule.uuid && p.payroll && p.start_date <= today)
           .sort((a, b) => b.start_date.localeCompare(a.start_date))
           .slice(0, PERIODS_PER_SCHEDULE)
           .map(period => ({ schedule, period })),
@@ -100,7 +98,7 @@ export function PayrollTab({
 
   const rows: PayrollRow[] = upcoming
     .map(({ schedule, period }) => {
-      const mine = (shifts ?? []).filter(s => {
+      const mine = applySim(shifts ?? []).filter(s => {
         const date = localStartDate(s)
         return (
           scheduleOf.get(s.entity_uuid) === schedule.uuid &&
@@ -147,7 +145,9 @@ export function PayrollTab({
           </>
         ),
         render: row =>
-          shifts === null ? (
+          row.period.payroll?.processed ? (
+            <Components.Badge status="success">Processed</Components.Badge>
+          ) : shifts === null ? (
             '…'
           ) : row.unsent > 0 ? (
             <Components.Badge status="warning">{row.unsent} not sent</Components.Badge>
@@ -158,33 +158,36 @@ export function PayrollTab({
           ),
       },
     ],
-    itemMenu: row => (
-      <Components.Button
-        variant="secondary"
-        onClick={() => {
-          setRunning(row)
-        }}
-      >
-        Run payroll
-      </Components.Button>
-    ),
+    itemMenu: row =>
+      row.period.payroll?.processed ? null : (
+        <Components.Button
+          variant="secondary"
+          onClick={() => {
+            setRunning(row)
+          }}
+        >
+          Run payroll
+        </Components.Button>
+      ),
   })
 
-  const runAnyway = (period: ApiPayPeriod) => {
-    const payrollUuid = period.payroll!.payroll_uuid
+  const runPayroll = (row: PayrollRow) => {
+    const payrollUuid = row.period.payroll!.payroll_uuid
     setRunning(null)
-    onPreview({
-      title: `Run payroll: ${formatPeriod(period)}`,
-      requests: [
-        { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/prepare` },
-        { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/calculate` },
-        { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/submit` },
-      ],
-      notes: [
-        'This is payroll’s own flow. It uses whatever hours payroll has, so approved shifts that were never sent aren’t in them.',
-      ],
-      gapIds: ['resync', 'lock-bug'],
-    })
+    onProcess(row.period)
+    onNotify(
+      `Payroll for ${formatPeriod(row.period)} submitted.${row.unsent ? ` ${row.unsent} approved shifts weren’t in it.` : ''}`,
+      {
+        title: `Run payroll: ${formatPeriod(row.period)}`,
+        requests: [
+          { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/prepare` },
+          { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/calculate` },
+          { method: 'PUT', path: `/v1/companies/${companyId}/payrolls/${payrollUuid}/submit` },
+        ],
+        notes: ['Payroll’s own flow. It uses whatever hours payroll already has.'],
+        gapIds: ['resync', 'lock-bug'],
+      },
+    )
   }
 
   return (
@@ -207,10 +210,10 @@ export function PayrollTab({
               <Components.Button
                 variant="secondary"
                 onClick={() => {
-                  runAnyway(running.period)
+                  runPayroll(running)
                 }}
               >
-                {running.unsent > 0 ? 'Run without sending' : 'Continue'}
+                {running.unsent > 0 ? 'Run without sending' : 'Submit payroll'}
               </Components.Button>
               {running.unsent > 0 && (
                 <Components.Button

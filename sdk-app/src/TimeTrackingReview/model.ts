@@ -365,3 +365,43 @@ export function hoursLabel(minutes: number) {
   const m = minutes % 60
   return m ? `${h}h ${m}m` : `${h}h`
 }
+
+export interface OvertimeEstimate {
+  regular: number
+  overtime: number
+  double: number
+}
+
+/** Client-side guess at the classification the API only does at sync time. Ignores the 7th-day rule. */
+export function estimateOvertime(
+  shifts: ApiShift[],
+  policy: ApiOvertimePolicy | undefined,
+  workweekStartDay: string | null,
+): OvertimeEstimate | null {
+  if (!policy) return null
+  const byDay = new Map<string, number>()
+  for (const shift of shifts) {
+    if (!shift.shift_ended_at) continue
+    const day = localStartDate(shift)
+    byDay.set(day, (byDay.get(day) ?? 0) + workedHours(shift))
+  }
+  const daily = policy.daily_overtime_hours_threshold
+  const double = policy.double_overtime_hours_threshold
+  const weeklyRegular = new Map<string, number>()
+  const total: OvertimeEstimate = { regular: 0, overtime: 0, double: 0 }
+  for (const [day, hours] of byDay) {
+    const dt = double ? Math.max(0, hours - double) : 0
+    const ot = daily ? Math.max(0, Math.min(hours, double ?? Infinity) - daily) : 0
+    total.double += dt
+    total.overtime += ot
+    const week = (workweekStartDay && currentWorkweekStart(workweekStartDay, day)) || day
+    weeklyRegular.set(week, (weeklyRegular.get(week) ?? 0) + hours - ot - dt)
+  }
+  const weekly = policy.weekly_overtime_hours_threshold
+  for (const regular of weeklyRegular.values()) {
+    const over = weekly ? Math.max(0, regular - weekly) : 0
+    total.overtime += over
+    total.regular += regular - over
+  }
+  return total
+}

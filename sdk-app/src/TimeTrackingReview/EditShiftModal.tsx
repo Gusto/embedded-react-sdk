@@ -10,7 +10,8 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { GapPin, PrototypeModal, ReadOnlyNote, RequestBlock } from './parts'
+import { GapPin, PrototypeModal } from './parts'
+import { nowIso, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -18,10 +19,14 @@ export function EditShiftModal({
   shift,
   person,
   onClose,
+  onSave,
+  onDelete,
 }: {
   shift: ApiShift
   person: Person | undefined
   onClose: () => void
+  onSave: (next: ApiShift, preview: Preview) => void
+  onDelete: (shift: ApiShift, preview: Preview) => void
 }) {
   const Components = useComponentContext()
   const tz = shift.time_zone
@@ -76,24 +81,76 @@ export function EditShiftModal({
     body.entries = [{ uuid: shift.entries[0].uuid, hours_worked: Number(nextHours.toFixed(3)) }]
   }
 
+  const save = () => {
+    const next: ApiShift = {
+      ...shift,
+      shift_started_at: nextStart ?? shift.shift_started_at,
+      shift_ended_at: nextEnd ?? shift.shift_ended_at,
+      entries:
+        nextHours !== null && shift.entries[0]
+          ? [{ ...shift.entries[0], hours_worked: nextHours.toFixed(3) }]
+          : shift.entries,
+      updated_at: nowIso(),
+    }
+    onSave(next, {
+      title: 'Edit shift',
+      requests: [{ method: 'PATCH', path: `/v1/time_tracking/time_sheets/${shift.uuid}`, body }],
+      gapIds: shift.synced_to_payroll_at ? ['changed', 'approval'] : ['approval'],
+    })
+  }
+
+  const deleteShift = () => {
+    onDelete(shift, {
+      title: 'Delete shift',
+      requests: [
+        {
+          method: 'DELETE',
+          path: `/v1/time_tracking/time_sheets/${shift.uuid}?version=${shift.version}`,
+        },
+      ],
+      gapIds: ['delete'],
+    })
+  }
+
   return (
     <PrototypeModal
       title={`Edit shift: ${person?.name ?? 'Unknown'}, ${formatDay(localStartDate(shift))}`}
       onClose={onClose}
       footer={
-        <Flex justifyContent="space-between" gap={12}>
-          <Components.Button
-            variant="error"
-            onClick={() => {
-              setConfirmDelete(true)
-            }}
-          >
-            Delete shift
-          </Components.Button>
-          <Components.Button variant="secondary" onClick={onClose}>
-            Close
-          </Components.Button>
-        </Flex>
+        confirmDelete ? (
+          <Flex justifyContent="flex-end" gap={12}>
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                setConfirmDelete(false)
+              }}
+            >
+              Keep shift
+            </Components.Button>
+            <Components.Button variant="error" onClick={deleteShift}>
+              Delete shift
+            </Components.Button>
+          </Flex>
+        ) : (
+          <Flex justifyContent="space-between" gap={12}>
+            <Components.Button
+              variant="tertiary"
+              onClick={() => {
+                setConfirmDelete(true)
+              }}
+            >
+              Delete
+            </Components.Button>
+            <Flex gap={12} justifyContent="flex-end">
+              <Components.Button variant="secondary" onClick={onClose}>
+                Cancel
+              </Components.Button>
+              <Components.Button isDisabled={!changed || problems.length > 0} onClick={save}>
+                Save
+              </Components.Button>
+            </Flex>
+          </Flex>
+        )
       }
     >
       <Grid gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }} gap={12}>
@@ -129,13 +186,6 @@ export function EditShiftModal({
           {problems.join(' ')}
         </Components.Alert>
       )}
-      {changed && (
-        <RequestBlock
-          method="PATCH"
-          path={`/v1/time_tracking/time_sheets/${shift.uuid}`}
-          body={body}
-        />
-      )}
       <Components.Text size="sm" variant="supporting">
         Stays “{shift.status}” after the edit. <GapPin id="approval" />
         {shift.synced_to_payroll_at &&
@@ -143,17 +193,13 @@ export function EditShiftModal({
         {shift.synced_to_payroll_at && <GapPin id="changed" />}
       </Components.Text>
       {confirmDelete && (
-        <RequestBlock
-          method="DELETE"
-          path={`/v1/time_tracking/time_sheets/${shift.uuid}?version=${shift.version}`}
-          caption={
-            <>
-              One request per shift. <GapPin id="delete" />
-            </>
-          }
-        />
+        <Components.Alert status="warning" label="Delete this shift?">
+          {shift.synced_to_payroll_at
+            ? 'It was already sent. Its hours stay on payroll until you update this period.'
+            : 'It won’t be sent to payroll.'}{' '}
+          <GapPin id="delete" />
+        </Components.Alert>
       )}
-      <ReadOnlyNote />
     </PrototypeModal>
   )
 }

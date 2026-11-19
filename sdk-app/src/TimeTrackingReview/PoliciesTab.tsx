@@ -15,12 +15,17 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { GapPin, PrototypeModal, ReadOnlyNote, RequestBlock } from './parts'
-import type { Preview } from './preview'
+import { GapPin, PrototypeModal } from './parts'
+import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type PolicyKind = 'overtime' | 'break'
+
+export interface PolicyData {
+  overtimePolicies: ApiOvertimePolicy[]
+  breakPolicies: ApiBreakPolicy[]
+}
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10)
@@ -32,19 +37,25 @@ export function PoliciesTab({
   schedules,
   overtimePolicies,
   breakPolicies,
-  onPreview,
+  onPoliciesChange,
+  onNotify,
 }: {
   companyId: string
   people: Person[]
   schedules: ApiPaySchedule[]
   overtimePolicies: ApiOvertimePolicy[]
   breakPolicies: ApiBreakPolicy[]
-  onPreview: (preview: Preview) => void
+  onPoliciesChange: (next: PolicyData) => void
+  onNotify: Notify
 }) {
   const Components = useComponentContext()
   const [todayShifts, setTodayShifts] = useState<ApiShift[]>([])
   const [overtimeForm, setOvertimeForm] = useState<ApiOvertimePolicy | 'new' | null>(null)
   const [breakForm, setBreakForm] = useState<ApiBreakPolicy | 'new' | null>(null)
+  const [deleting, setDeleting] = useState<{
+    kind: PolicyKind
+    policy: ApiOvertimePolicy | ApiBreakPolicy
+  } | null>(null)
   const [assigning, setAssigning] = useState<{
     kind: PolicyKind
     policy: ApiOvertimePolicy | ApiBreakPolicy
@@ -85,10 +96,51 @@ export function PoliciesTab({
       : null,
   }))
 
+  const current: PolicyData = { overtimePolicies, breakPolicies }
+
+  const savePolicy = (
+    kind: PolicyKind,
+    policy: ApiOvertimePolicy | ApiBreakPolicy,
+    preview: Preview,
+  ) => {
+    const isNew = !(kind === 'overtime' ? overtimePolicies : breakPolicies).some(
+      p => p.uuid === policy.uuid,
+    )
+    const upsert = <T extends { uuid: string }>(list: T[], item: T) =>
+      isNew ? [...list, item] : list.map(p => (p.uuid === item.uuid ? item : p))
+    onPoliciesChange(
+      kind === 'overtime'
+        ? { ...current, overtimePolicies: upsert(overtimePolicies, policy as ApiOvertimePolicy) }
+        : { ...current, breakPolicies: upsert(breakPolicies, policy as ApiBreakPolicy) },
+    )
+    onNotify(`${policy.name} ${isNew ? 'created' : 'saved'}.`, preview)
+  }
+
+  const assignPeople = (
+    kind: PolicyKind,
+    policy: ApiOvertimePolicy | ApiBreakPolicy,
+    uuids: string[],
+    preview: Preview,
+  ) => {
+    const chosen = new Set(uuids)
+    const reassign = <T extends ApiOvertimePolicy | ApiBreakPolicy>(list: T[]) =>
+      list.map(p =>
+        p.uuid === policy.uuid
+          ? { ...p, assigned_employees: uuids.map(uuid => ({ uuid })) }
+          : { ...p, assigned_employees: p.assigned_employees.filter(a => !chosen.has(a.uuid)) },
+      )
+    onPoliciesChange(
+      kind === 'overtime'
+        ? { ...current, overtimePolicies: reassign(overtimePolicies) }
+        : { ...current, breakPolicies: reassign(breakPolicies) },
+    )
+    onNotify(`${uuids.length} people are on ${policy.name}.`, preview)
+  }
+
   const deletePolicy = (kind: PolicyKind, policy: ApiOvertimePolicy | ApiBreakPolicy) => {
     const blocked =
       kind === 'break' ? policy.assigned_employees.filter(a => breakToday.has(a.uuid)) : []
-    onPreview({
+    const preview: Preview = {
       title: `Delete ${policy.name}`,
       requests: [
         {
@@ -96,16 +148,23 @@ export function PoliciesTab({
           path: `/v1/time_tracking/${kind === 'overtime' ? 'overtime_policies' : 'break_policies'}/${policy.uuid}?version=${policy.version}`,
         },
       ],
-      notes: [
-        `${policy.assigned_employees.length} people are on this policy.`,
-        kind === 'overtime'
-          ? 'Eligible people need an overtime policy before their hours can be submitted. Move them first.'
-          : blocked.length
-            ? `This will fail: ${blocked.map(b => nameOf(b.uuid)).join(', ')} took a break today.`
-            : 'Nobody on it has taken a break today, so this would be allowed.',
-      ],
       gapIds: kind === 'break' ? ['break-today'] : ['ot-required'],
-    })
+    }
+    setDeleting(null)
+    if (blocked.length) {
+      onNotify(
+        `Couldn’t delete ${policy.name}: someone on it took a break today. (The API’s error doesn’t say who: ${blocked.map(b => nameOf(b.uuid)).join(', ')}.)`,
+        preview,
+        'error',
+      )
+      return
+    }
+    onPoliciesChange(
+      kind === 'overtime'
+        ? { ...current, overtimePolicies: overtimePolicies.filter(p => p.uuid !== policy.uuid) }
+        : { ...current, breakPolicies: breakPolicies.filter(p => p.uuid !== policy.uuid) },
+    )
+    onNotify(`${policy.name} deleted.`, preview)
   }
 
   const menu = (kind: PolicyKind, policy: ApiOvertimePolicy | ApiBreakPolicy) => (
@@ -128,7 +187,7 @@ export function PoliciesTab({
         {
           label: 'Delete',
           onClick: () => {
-            deletePolicy(kind, policy)
+            setDeleting({ kind, policy })
           },
         },
       ]}
@@ -251,6 +310,10 @@ export function PoliciesTab({
           onClose={() => {
             setOvertimeForm(null)
           }}
+          onSave={(policy, preview) => {
+            setOvertimeForm(null)
+            savePolicy('overtime', policy, preview)
+          }}
         />
       )}
       {breakForm && (
@@ -260,6 +323,10 @@ export function PoliciesTab({
           existingNames={breakPolicies.filter(p => p !== breakForm).map(p => p.name.toLowerCase())}
           onClose={() => {
             setBreakForm(null)
+          }}
+          onSave={(policy, preview) => {
+            setBreakForm(null)
+            savePolicy('break', policy, preview)
           }}
         />
       )}
@@ -272,7 +339,32 @@ export function PoliciesTab({
           onClose={() => {
             setAssigning(null)
           }}
+          onSave={(uuids, preview) => {
+            const target = assigning
+            setAssigning(null)
+            assignPeople(target.kind, target.policy, uuids, preview)
+          }}
         />
+      )}
+      {deleting && (
+        <Components.Dialog
+          isOpen
+          isDestructive
+          title={`Delete ${deleting.policy.name}?`}
+          primaryActionLabel="Delete policy"
+          closeActionLabel="Cancel"
+          onClose={() => {
+            setDeleting(null)
+          }}
+          onPrimaryActionClick={() => {
+            deletePolicy(deleting.kind, deleting.policy)
+          }}
+        >
+          {deleting.policy.assigned_employees.length} people are on it.{' '}
+          {deleting.kind === 'overtime'
+            ? 'Eligible people need an overtime policy before their hours can be submitted, so move them first.'
+            : 'It can’t be deleted if anyone on it took a break today.'}
+        </Components.Dialog>
       )}
     </Flex>
   )
@@ -294,12 +386,14 @@ function OvertimeFormModal({
   existingNames,
   workweeks,
   onClose,
+  onSave,
 }: {
   companyId: string
   policy: ApiOvertimePolicy | null
   existingNames: string[]
   workweeks: Array<{ schedule: ApiPaySchedule; start: string | null }>
   onClose: () => void
+  onSave: (policy: ApiOvertimePolicy, preview: Preview) => void
 }) {
   const Components = useComponentContext()
   const [name, setName] = useState(policy?.name ?? '')
@@ -339,6 +433,35 @@ function OvertimeFormModal({
     <PrototypeModal
       title={policy ? `Edit ${policy.name}` : 'New overtime policy'}
       onClose={onClose}
+      footer={
+        <SaveFooter
+          onCancel={onClose}
+          isDisabled={problems.length > 0}
+          onSave={() => {
+            onSave(
+              {
+                uuid: policy?.uuid ?? simId(),
+                version: 'simulated',
+                assigned_employees: policy?.assigned_employees ?? [],
+                ...body,
+              },
+              {
+                title: policy ? `Edit ${policy.name}` : 'New overtime policy',
+                requests: [
+                  {
+                    method: policy ? 'PATCH' : 'POST',
+                    path: policy
+                      ? `/v1/time_tracking/overtime_policies/${policy.uuid}`
+                      : `/v1/companies/${companyId}/time_tracking/overtime_policies`,
+                    body,
+                  },
+                ],
+                gapIds: policy ? ['ot-effective', 'state'] : ['state'],
+              },
+            )
+          }}
+        />
+      }
     >
       <Components.TextInput label="Name" value={name} onChange={setName} />
       <Components.NumberInput
@@ -381,16 +504,6 @@ function OvertimeFormModal({
           <GapPin id="ot-effective" />
         </Components.Alert>
       )}
-      <RequestBlock
-        method={policy ? 'PATCH' : 'POST'}
-        path={
-          policy
-            ? `/v1/time_tracking/overtime_policies/${policy.uuid}`
-            : `/v1/companies/${companyId}/time_tracking/overtime_policies`
-        }
-        body={body}
-      />
-      <ReadOnlyNote />
     </PrototypeModal>
   )
 }
@@ -411,11 +524,13 @@ function BreakFormModal({
   policy,
   existingNames,
   onClose,
+  onSave,
 }: {
   companyId: string
   policy: ApiBreakPolicy | null
   existingNames: string[]
   onClose: () => void
+  onSave: (policy: ApiBreakPolicy, preview: Preview) => void
 }) {
   const Components = useComponentContext()
   const [name, setName] = useState(policy?.name ?? '')
@@ -458,7 +573,48 @@ function BreakFormModal({
   }
 
   return (
-    <PrototypeModal title={policy ? `Edit ${policy.name}` : 'New break policy'} onClose={onClose}>
+    <PrototypeModal
+      title={policy ? `Edit ${policy.name}` : 'New break policy'}
+      onClose={onClose}
+      footer={
+        <SaveFooter
+          onCancel={onClose}
+          isDisabled={problems.length > 0}
+          onSave={() => {
+            onSave(
+              {
+                uuid: policy?.uuid ?? simId(),
+                version: 'simulated',
+                name: body.name,
+                jurisdiction: policy?.jurisdiction ?? (jurisdiction || null),
+                pay_premium: payPremium,
+                assigned_employees: policy?.assigned_employees ?? [],
+                rules: body.rules.map(rule => ({
+                  ...rule,
+                  uuid: rule.uuid ?? simId(),
+                  minimum_time_required_in_minutes:
+                    policy?.rules.find(r => r.uuid === rule.uuid)
+                      ?.minimum_time_required_in_minutes ?? null,
+                })),
+              },
+              {
+                title: policy ? `Edit ${policy.name}` : 'New break policy',
+                requests: [
+                  {
+                    method: policy ? 'PUT' : 'POST',
+                    path: policy
+                      ? `/v1/time_tracking/break_policies/${policy.uuid}`
+                      : `/v1/companies/${companyId}/time_tracking/break_policies`,
+                    body,
+                  },
+                ],
+                gapIds: policy ? ['break-replace', 'min-time'] : ['min-time'],
+              },
+            )
+          }}
+        />
+      }
+    >
       <Components.TextInput label="Name" value={name} onChange={setName} />
       <Components.Select
         label="State"
@@ -548,16 +704,6 @@ function BreakFormModal({
         {policy && <GapPin id="break-replace" />}
       </Components.Text>
       <Problems problems={problems} />
-      <RequestBlock
-        method={policy ? 'PUT' : 'POST'}
-        path={
-          policy
-            ? `/v1/time_tracking/break_policies/${policy.uuid}`
-            : `/v1/companies/${companyId}/time_tracking/break_policies`
-        }
-        body={body}
-      />
-      <ReadOnlyNote />
     </PrototypeModal>
   )
 }
@@ -576,12 +722,14 @@ function AssignModal({
   people,
   breakToday,
   onClose,
+  onSave,
 }: {
   kind: PolicyKind
   policy: ApiOvertimePolicy | ApiBreakPolicy
   people: Person[]
   breakToday: Set<string>
   onClose: () => void
+  onSave: (uuids: string[], preview: Preview) => void
 }) {
   const Components = useComponentContext()
   const initial = useMemo(() => new Set(policy.assigned_employees.map(a => a.uuid)), [policy])
@@ -626,7 +774,7 @@ function AssignModal({
   const toAssign = [...selected].filter(uuid => !initial.has(uuid))
   const toRemove = [...initial].filter(uuid => !selected.has(uuid))
   const resource = kind === 'overtime' ? 'overtime_policies' : 'break_policies'
-  const requests = []
+  const requests: PreviewRequest[] = []
   if (toAssign.length)
     requests.push({
       method: 'PUT',
@@ -645,7 +793,26 @@ function AssignModal({
   const blocked = kind === 'break' && [...toAssign, ...toRemove].some(uuid => breakToday.has(uuid))
 
   return (
-    <PrototypeModal title={`Assign people to ${policy.name}`} onClose={onClose}>
+    <PrototypeModal
+      title={`Assign people to ${policy.name}`}
+      onClose={onClose}
+      footer={
+        <SaveFooter
+          onCancel={onClose}
+          isDisabled={blocked || requests.length === 0}
+          onSave={() => {
+            onSave([...selected], {
+              title: `Assign people to ${policy.name}`,
+              requests,
+              gapIds:
+                kind === 'overtime'
+                  ? ['eligibility', 'ot-required']
+                  : ['eligibility', 'break-today', 'break-replace'],
+            })
+          }}
+        />
+      }
+    >
       <Components.Text size="sm" variant="supporting">
         Each person can be on one {kind} policy, so picking someone moves them here. Ineligible
         people can’t be picked. <GapPin id="eligibility" />
@@ -654,19 +821,31 @@ function AssignModal({
       <DataView label="People" {...dataView} />
       {blocked && (
         <Components.Alert status="warning" label="This would fail">
-          Someone you changed took a break today. The API’s error won’t say who.
+          Someone you changed took a break today, so the API would reject this, without saying who.
         </Components.Alert>
       )}
-      {requests.map((r, i) => (
-        <RequestBlock
-          key={r.path}
-          method={r.method}
-          path={r.path}
-          body={r.body}
-          caption={requests.length > 1 ? `Step ${i + 1} of ${requests.length}` : undefined}
-        />
-      ))}
-      <ReadOnlyNote />
     </PrototypeModal>
+  )
+}
+
+function SaveFooter({
+  onCancel,
+  onSave,
+  isDisabled,
+}: {
+  onCancel: () => void
+  onSave: () => void
+  isDisabled: boolean
+}) {
+  const Components = useComponentContext()
+  return (
+    <Flex justifyContent="flex-end" gap={12}>
+      <Components.Button variant="secondary" onClick={onCancel}>
+        Cancel
+      </Components.Button>
+      <Components.Button isDisabled={isDisabled} onClick={onSave}>
+        Save
+      </Components.Button>
+    </Flex>
   )
 }
