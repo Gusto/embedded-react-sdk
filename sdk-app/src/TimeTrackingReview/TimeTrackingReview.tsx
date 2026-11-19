@@ -653,13 +653,6 @@ function TimeTrackingPrototype() {
           selected={selectedPeople}
           onSelectedChange={setSelectedPeople}
           onBulk={changeStatus}
-          onApproveAll={(person, pending) => {
-            changeStatus(
-              pending,
-              'approved',
-              `Approve ${person.name}’s ${pending.length} pending shifts`,
-            )
-          }}
           onAddShift={uuid => {
             setAdding({ personUuid: uuid })
           }}
@@ -1004,7 +997,6 @@ function PeopleTable({
   selected,
   onSelectedChange,
   onBulk,
-  onApproveAll,
   onAddShift,
 }: {
   rows: PersonRow[]
@@ -1013,7 +1005,6 @@ function PeopleTable({
   selected: Set<string>
   onSelectedChange: (next: Set<string>) => void
   onBulk: (targets: ApiShift[], status: ShiftStatus, title: string) => void
-  onApproveAll: (person: Person, pending: ApiShift[]) => void
   onAddShift: (personUuid: string) => void
 }) {
   const Components = useComponentContext()
@@ -1080,17 +1071,36 @@ function PeopleTable({
       { title: 'Status', render: ({ shifts }) => <StatusBadges shifts={shifts} /> },
     ],
     itemMenu: ({ person, shifts }) => {
-      const pending = shifts.filter(s => s.status === 'pending' && s.shift_ended_at)
+      const toApprove = shifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
+      const toReject = shifts.filter(s => s.status !== 'rejected')
       return (
         <HamburgerMenu
           triggerLabel={`More actions for ${person.name}`}
           items={[
-            ...(pending.length
+            ...(toApprove.length
               ? [
                   {
-                    label: `Approve all pending (${pending.length})`,
+                    label: `Approve all shifts (${toApprove.length})`,
                     onClick: () => {
-                      onApproveAll(person, pending)
+                      onBulk(
+                        toApprove,
+                        'approved',
+                        `Approve ${person.name}’s ${toApprove.length} shifts`,
+                      )
+                    },
+                  },
+                ]
+              : []),
+            ...(toReject.length
+              ? [
+                  {
+                    label: `Reject all shifts (${toReject.length})`,
+                    onClick: () => {
+                      onBulk(
+                        toReject,
+                        'rejected',
+                        `Reject ${person.name}’s ${toReject.length} shifts`,
+                      )
                     },
                   },
                 ]
