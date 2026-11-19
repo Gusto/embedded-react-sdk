@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useOutletContext, useSearchParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
 import type { EntityIds } from '../useEntities'
 import { useResolvedTheme } from '../useThemeModeContext'
 import { darkTheme } from '../darkTheme'
@@ -129,7 +129,41 @@ function TimeTrackingPrototype() {
   const [selectedPeriodKey, setSelectedPeriodKey] = useState('')
   const [shifts, setShifts] = useState<Load<ApiShift[]>>({ kind: 'loading' })
   const [reloadToken, setReloadToken] = useState(0)
-  const [focusPerson, setFocusPerson] = useState<string | null>(null)
+  const focusPerson = searchParams.get('person')
+  const setFocusPerson = (uuid: string | null) => {
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev)
+      if (uuid) params.set('person', uuid)
+      else params.delete('person')
+      return params
+    })
+  }
+  const shiftsHref = (uuid: string) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('tab', 'review')
+    params.set('person', uuid)
+    return `?${params.toString()}`
+  }
+  const loadedPeriodKey = useRef<string | null>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+
+  // The SDK Link only takes an href, and react-aria's RouterProvider can't be used outside the UI
+  // folder, so same-page links are routed here instead of reloading the page.
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0) return
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+      const anchor = (event.target as Element | null)?.closest('a[href^="?"]')
+      if (!anchor || !rootRef.current?.contains(anchor)) return
+      event.preventDefault()
+      void navigate(anchor.getAttribute('href') ?? '')
+    }
+    document.addEventListener('click', onClick, true)
+    return () => {
+      document.removeEventListener('click', onClick, true)
+    }
+  }, [navigate])
   const [selectedShifts, setSelectedShifts] = useState<Set<string>>(new Set())
 
   const [gapsOn, setGapsOn] = useState(true)
@@ -266,8 +300,14 @@ function TimeTrackingPrototype() {
 
   useEffect(() => {
     if (!companyId || !period) return
-    setFocusPerson(null)
-    setSelectedShifts(new Set())
+    if (loadedPeriodKey.current && loadedPeriodKey.current !== periodKey(period)) {
+      setSearchParams(prev => {
+        const params = new URLSearchParams(prev)
+        params.delete('person')
+        return params
+      })
+    }
+    loadedPeriodKey.current = periodKey(period)
     if (!schedulePeople.length) {
       setShifts({ kind: 'done', data: [] })
       return
@@ -299,7 +339,11 @@ function TimeTrackingPrototype() {
     return () => {
       controller.abort()
     }
-  }, [companyId, period, schedulePeople])
+  }, [companyId, period, schedulePeople, setSearchParams])
+
+  useEffect(() => {
+    setSelectedShifts(new Set())
+  }, [focusPerson, selectedPeriodKey])
 
   useEffect(() => {
     if (sendWhenLoaded && shifts.kind === 'done') {
@@ -505,10 +549,7 @@ function TimeTrackingPrototype() {
       {shifts.kind === 'done' && periodShifts.length > 0 && !focused && (
         <PeopleTable
           rows={personRows}
-          onSeeShifts={uuid => {
-            setFocusPerson(uuid)
-            setSelectedShifts(new Set())
-          }}
+          shiftsHref={shiftsHref}
           onApproveAll={(person, pending) => {
             statusPreview(
               pending,
@@ -540,7 +581,7 @@ function TimeTrackingPrototype() {
 
   return (
     <GapContext.Provider value={{ on: gapsOn, active: activeGap, setActive: selectGap }}>
-      <div className={`${styles.root} ${gapsOn ? styles.withGaps : ''}`}>
+      <div ref={rootRef} className={`${styles.root} ${gapsOn ? styles.withGaps : ''}`}>
         <div className={styles.main}>
           <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
             <Flex flexDirection="column" gap={4}>
@@ -769,12 +810,12 @@ interface PersonRow {
 
 function PeopleTable({
   rows,
-  onSeeShifts,
+  shiftsHref,
   onApproveAll,
   onAddShift,
 }: {
   rows: PersonRow[]
-  onSeeShifts: (personUuid: string) => void
+  shiftsHref: (personUuid: string) => string
   onApproveAll: (person: Person, pending: ApiShift[]) => void
   onAddShift: (personUuid: string) => void
 }) {
@@ -800,14 +841,9 @@ function PeopleTable({
       {
         title: 'Shifts',
         render: ({ person, shifts }) => (
-          <Components.Button
-            variant="tertiary"
-            onClick={() => {
-              onSeeShifts(person.employee.uuid)
-            }}
-          >
-            See {shifts.length} shifts
-          </Components.Button>
+          <Components.Link href={shiftsHref(person.employee.uuid)}>
+            {shifts.length} shifts
+          </Components.Link>
         ),
       },
       {

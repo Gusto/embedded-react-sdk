@@ -139,7 +139,7 @@ export const GAPS: Gap[] = [
     kind: 'sdk',
     title: 'The SDK table can’t group rows',
     api: 'Not an API gap. Partners bring their own table through the component adapter, which has no grouped or expandable rows.',
-    here: 'Uses the SDK table as it is: a row per person, and “See shifts” opens that person’s shifts. Grouped rows would need new table props that every partner adapter supports.',
+    here: 'Uses the SDK table as it is: a row per person, and the “N shifts” link opens that person’s shifts. Grouped rows would need new table props that every partner adapter supports.',
   },
   {
     id: 'overlap-create',
