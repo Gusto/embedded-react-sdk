@@ -667,11 +667,3 @@ still typed here but only populated once that preparer section is added.
 | `usedPreparer` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`boolean`\> | Yes/no radio: whether a preparer or translator assisted with the form. |
 
 ***
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form) |
-| GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf) |
-| PUT | [`/v1/employees/:employeeId/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employee-form-sign) |

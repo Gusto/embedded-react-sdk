@@ -265,10 +265,3 @@ the hook's `optionalFieldsToRequire` option.
 Union of payment method type values that the form accepts.
 
 ***
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-payment_method) |
-| PUT | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-payment_method) |

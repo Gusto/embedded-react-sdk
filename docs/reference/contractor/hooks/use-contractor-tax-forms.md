@@ -100,9 +100,3 @@ Ready-state shape returned by [useContractorTaxForms](#usecontractortaxforms) on
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
 | `status.isFetching` | `boolean` | - |
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/contractors/:contractorUuid/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-forms) |

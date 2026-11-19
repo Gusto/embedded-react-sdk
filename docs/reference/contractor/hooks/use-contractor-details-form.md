@@ -833,11 +833,3 @@ Contractor wage type enum (`Fixed` / `Hourly`) re-exported from the API model.
 | ------ | ------ |
 | `Fixed` | `"Fixed"` |
 | `Hourly` | `"Hourly"` |
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| POST | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors) |
-| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
-| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |

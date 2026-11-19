@@ -420,11 +420,3 @@ Optional overrides passed to [onSubmit](#usecontractoraddressformready).
 | `contractorId?` | `string` | Override the contractor identifier supplied to the hook. |
 
 ***
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
-| GET | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address) |
-| PUT | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address) |

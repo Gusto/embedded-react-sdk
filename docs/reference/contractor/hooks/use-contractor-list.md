@@ -221,13 +221,3 @@ A contractor entity extended with the actions permitted on it.
 | `wageType?` | [`ContractorWageType`](../../APIModels/index.md#contractorwagetype-1) | The contractor's wage type, either "Fixed" or "Hourly". |
 | `workEmail?` | `string` \| `null` | The work email address of the contractor. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
 | `workState?` | `string` \| `null` | State where the contractor will be conducting the majority of their work for the company. **Remarks** This value is used when generating the new hire report. |
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors) |
-| DELETE | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid) |
-| PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
-| DELETE | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-rehire) |
-| DELETE | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination) |

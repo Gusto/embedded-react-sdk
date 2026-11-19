@@ -252,10 +252,3 @@ Optional overrides passed to [onSubmit](#useindustryformready).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId?` | `string` | Override the company identifier supplied to the hook. |
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-industry) |
-| PUT | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-industry) |

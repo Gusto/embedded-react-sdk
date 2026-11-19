@@ -391,11 +391,3 @@ required via the hook's `optionalFieldsToRequire` option.
 > `const` **ContractorBankAccountTypes**: readonly \[`"Checking"`, `"Savings"`\]
 
 Supported bank account type values: checking and savings.
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
-| POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
-| GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |

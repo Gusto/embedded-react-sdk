@@ -389,9 +389,3 @@ Optional submit-time overrides for [useBankForm](#usebankform)'s `onSubmit`.
 | `employeeId?` | `string` | Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain. |
 
 ***
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| POST | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-bank_accounts) |

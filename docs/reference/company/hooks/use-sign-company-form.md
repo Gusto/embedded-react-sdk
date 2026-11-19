@@ -304,11 +304,3 @@ Optional fields that may be promoted to required for the sign-company form.
 
 Both fields of this form are already required by default, so passing this
 is typically unnecessary.
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form) |
-| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf) |
-| PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-form-sign) |

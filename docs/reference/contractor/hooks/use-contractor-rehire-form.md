@@ -261,10 +261,3 @@ afterwards can report a value that was never submitted.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `startDate` | `string` | The `YYYY-MM-DD` start date the rehire was scheduled for. |
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
-| POST | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire) |

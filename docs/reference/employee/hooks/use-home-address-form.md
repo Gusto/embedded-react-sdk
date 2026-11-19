@@ -491,11 +491,3 @@ Optional overrides passed to [onSubmit](#usehomeaddressformready).
 | `employeeId?` | `string` | Override the employee identifier supplied to the hook (e.g. after creating a new employee in the same flow). |
 
 ***
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| POST | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-home_addresses) |
-| GET | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-home_addresses-home_address_uuid) |
-| PUT | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-home_addresses-home_address_uuid) |

@@ -446,10 +446,3 @@ household, and exempt from withholding.
 Union of filing status values that the form accepts.
 
 ***
-
-## Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-federal_taxes) |
-| PUT | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-federal_taxes) |
