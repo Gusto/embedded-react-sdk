@@ -1,3 +1,2 @@
-export { FederalTaxes } from './FederalTaxes'
-export type { FederalTaxesProps } from './FederalTaxes'
-export type { FederalTaxesDefaultValues } from './useFederalTaxes'
+export { FederalTaxes } from './onboarding'
+export type { FederalTaxesProps, FederalTaxesDefaultValues } from './onboarding'

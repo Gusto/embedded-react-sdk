@@ -1,4 +1,4 @@
-import type { UseIndustryFormReady } from './shared/useIndustryForm'
+import type { UseIndustryFormReady } from '../shared/useIndustryForm'
 import { createCompoundContext } from '@/components/Base'
 
 const [useIndustryFormContext, IndustryFormProvider] =
