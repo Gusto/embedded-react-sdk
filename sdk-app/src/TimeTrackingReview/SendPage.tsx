@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   EFFECT_LABEL,
   REVIEW_STATE_LABEL,
+  formatDateTime,
   formatDay,
   formatHours,
   formatPeriod,
@@ -9,7 +10,9 @@ import {
   localStartDate,
   reviewState,
   scheduleLabel,
+  sentSummary,
   willSync,
+  type SentSummary,
   workedHours,
   type ApiPayPeriod,
   type ApiPaySchedule,
@@ -18,6 +21,7 @@ import {
 } from './model'
 import { ChangePin, GapPin, SubPage } from './parts'
 import type { Preview } from './preview'
+import styles from './TimeTrackingReview.module.scss'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -32,8 +36,6 @@ interface SkippedRow {
   name: string
 }
 
-type Phase = 'review' | 'sending' | 'sent' | 'failed'
-
 export function SendPage({
   companyId,
   schedule,
@@ -43,7 +45,7 @@ export function SendPage({
   isUpdate,
   onClose,
   onReview,
-  onSent,
+  onSend,
 }: {
   companyId: string
   schedule: ApiPaySchedule
@@ -53,10 +55,9 @@ export function SendPage({
   isUpdate: boolean
   onClose: () => void
   onReview: (personUuid: string) => void
-  onSent: (included: ApiShift[], preview: Preview) => void
+  onSend: (included: ApiShift[], preview: Preview) => void
 }) {
   const Components = useComponentContext()
-  const [phase, setPhase] = useState<Phase>('review')
   const included = shifts.filter(willSync)
   const skipped = shifts.filter(shift => !willSync(shift))
   const rows: IncludedRow[] = people
@@ -72,37 +73,25 @@ export function SendPage({
     ? `${formatShortDate(period.payroll.check_date)} payroll`
     : 'payroll'
 
-  const [included0] = useState(included)
   const [wasUpdate] = useState(isUpdate)
-  useEffect(() => {
-    if (phase !== 'sending') return
-    const timer = window.setTimeout(() => {
-      if (period.payroll?.processed) {
-        setPhase('failed')
-        return
-      }
-      onSent(included0, {
-        title: wasUpdate ? 'Update payroll' : 'Send to payroll',
-        requests: [
-          {
-            method: 'POST',
-            path: `/v1/companies/${companyId}/time_tracking/payroll_syncs`,
-            body: {
-              pay_schedule_uuid: schedule.uuid,
-              start_date: period.start_date,
-              end_date: period.end_date,
-            },
-            caption: 'Then poll the sync by its UUID until it finishes. The path is a best guess.',
+  const send = () => {
+    onSend(included, {
+      title: wasUpdate ? 'Update payroll' : 'Send to payroll',
+      requests: [
+        {
+          method: 'POST',
+          path: `/v1/companies/${companyId}/time_tracking/payroll_syncs`,
+          body: {
+            pay_schedule_uuid: schedule.uuid,
+            start_date: period.start_date,
+            end_date: period.end_date,
           },
-        ],
-        gapIds: ['sync-limits', 'which-timesheets'],
-      })
-      setPhase('sent')
-    }, 1500)
-    return () => {
-      window.clearTimeout(timer)
-    }
-  }, [phase, period, included0, wasUpdate, companyId, schedule, onSent])
+          caption: 'Then poll the sync by its UUID until it finishes. The path is a best guess.',
+        },
+      ],
+      gapIds: ['sync-limits', 'which-timesheets'],
+    })
+  }
 
   const dataView = useDataView<IncludedRow>({
     data: rows,
@@ -145,43 +134,6 @@ export function SendPage({
 
   const title = `${wasUpdate ? 'Update payroll' : 'Send to payroll'}: ${formatPeriod(period)}`
 
-  if (phase === 'sent' || phase === 'failed') {
-    return (
-      <SubPage
-        narrow
-        backLabel="Timesheets"
-        onBack={onClose}
-        title={
-          <>
-            {title} <ChangePin id="send-page" />
-          </>
-        }
-        footer={
-          <Components.Button variant="secondary" onClick={onClose}>
-            Back to timesheets
-          </Components.Button>
-        }
-      >
-        {phase === 'sent' ? (
-          <Components.Alert status="success" label={`Hours sent to the ${payrollName}`}>
-            {included0.length} shifts for {rows.length} people, {formatHours(totalHours)} hours. Run
-            that payroll when you’re ready; sending again replaces these hours.
-          </Components.Alert>
-        ) : (
-          <Components.Alert status="error" label="Couldn’t send hours">
-            The {payrollName} was already processed, so its hours can’t change.
-          </Components.Alert>
-        )}
-        {phase === 'sent' && (
-          <Components.Text size="sm" variant="supporting">
-            This receipt is built from what this page sent. The API can’t list what a sync included,
-            or say which payroll it landed on. <GapPin id="which-timesheets" />
-          </Components.Text>
-        )}
-      </SubPage>
-    )
-  }
-
   return (
     <SubPage
       backLabel="Timesheets"
@@ -194,16 +146,10 @@ export function SendPage({
       description={`${scheduleLabel(schedule)} · ${included.length} approved, finished shifts · ${formatHours(totalHours)} hours → ${payrollName}`}
       footer={
         <Flex justifyContent="flex-end" gap={12}>
-          <Components.Button variant="secondary" onClick={onClose} isDisabled={phase === 'sending'}>
+          <Components.Button variant="secondary" onClick={onClose}>
             Cancel
           </Components.Button>
-          <Components.Button
-            isLoading={phase === 'sending'}
-            isDisabled={included.length === 0}
-            onClick={() => {
-              setPhase('sending')
-            }}
-          >
+          <Components.Button isDisabled={included.length === 0} onClick={send}>
             {wasUpdate ? 'Update payroll' : 'Send to payroll'}
           </Components.Button>
         </Flex>
@@ -225,6 +171,172 @@ export function SendPage({
           <DataView label="Won’t be sent" {...skippedView} />
         </Flex>
       )}
+    </SubPage>
+  )
+}
+
+export function ReceiptPage({
+  schedule,
+  period,
+  people,
+  shifts,
+  workweekStartDay,
+  snapshot,
+  sendingSince,
+  failed,
+  onBack,
+  onUpdate,
+  onRunPayroll,
+}: {
+  schedule: ApiPaySchedule
+  period: ApiPayPeriod
+  people: Person[]
+  shifts: ApiShift[]
+  workweekStartDay: string | null
+  snapshot: SentSummary | null
+  sendingSince: string | null
+  failed: boolean
+  onBack: () => void
+  onUpdate: () => void
+  onRunPayroll: () => void
+}) {
+  const Components = useComponentContext()
+  const live = sentSummary(shifts, people, workweekStartDay)
+  const summary = snapshot ?? live
+  const payrollName = period.payroll
+    ? `${formatShortDate(period.payroll.check_date)} payroll`
+    : 'payroll'
+
+  const rowsView = useDataView({
+    data: summary.rows,
+    columns: [
+      { title: 'Person', render: row => row.person.name },
+      { title: 'Shifts', justify: 'end', render: row => row.count },
+      { title: 'Hours', justify: 'end', render: row => formatHours(row.hours) },
+      {
+        title: (
+          <>
+            Overtime (est.) <GapPin id="rules-applied" />
+          </>
+        ),
+        justify: 'end',
+        render: row =>
+          row.overtime ? (
+            <span className={styles.estimate}>
+              ≈ {formatHours(row.overtime.overtime)}
+              {row.overtime.double > 0 && ` + ${formatHours(row.overtime.double)} DT`}
+            </span>
+          ) : (
+            '—'
+          ),
+      },
+      {
+        title: (
+          <>
+            Payroll <GapPin id="which-timesheets" />
+          </>
+        ),
+        render: () => <span className={styles.unsure}>{payrollName}?</span>,
+      },
+    ],
+  })
+
+  const back = (
+    <Components.Button variant="secondary" onClick={onBack}>
+      Back to timesheets
+    </Components.Button>
+  )
+
+  if (sendingSince) {
+    return (
+      <SubPage
+        narrow
+        backLabel="Timesheets"
+        onBack={onBack}
+        title={`Sending hours for ${formatPeriod(period)}`}
+        description={`${scheduleLabel(schedule)} → ${payrollName}`}
+        footer={back}
+      >
+        <Components.Alert status="info" label="Sending hours to payroll…">
+          Started {formatDateTime(sendingSince)}. You can keep working; the result shows here and on
+          Timesheets. <GapPin id="sync-limits" />
+        </Components.Alert>
+        <Components.LoadingSpinner />
+      </SubPage>
+    )
+  }
+
+  if (failed) {
+    return (
+      <SubPage
+        narrow
+        backLabel="Timesheets"
+        onBack={onBack}
+        title="Couldn’t send hours"
+        description="Nothing was changed on payroll."
+        footer={
+          <Flex justifyContent="flex-end" gap={12}>
+            {back}
+            <Components.Button onClick={onUpdate}>Try again</Components.Button>
+          </Flex>
+        }
+      >
+        <Components.Alert status="error" label={`The ${payrollName} was already processed`}>
+          There’s no open payroll for {scheduleLabel(schedule)}, {formatPeriod(period)}, so its
+          hours can’t change. <GapPin id="sync-limits" />
+        </Components.Alert>
+      </SubPage>
+    )
+  }
+
+  return (
+    <SubPage
+      backLabel="Timesheets"
+      onBack={onBack}
+      title={
+        <>
+          Hours sent for {formatPeriod(period)} <ChangePin id="receipt" />
+        </>
+      }
+      description={
+        summary.lastAt
+          ? `Last sent ${formatDateTime(summary.lastAt)} to the ${payrollName}. ${summary.sent.length} shifts for ${summary.rows.length} people on ${scheduleLabel(schedule)}. If anything changes before payroll runs, update it again.`
+          : 'Nothing has been sent for this period.'
+      }
+      footer={
+        <Flex justifyContent="flex-end" gap={12}>
+          <Components.Button variant="secondary" onClick={onRunPayroll}>
+            See it in Run payroll
+          </Components.Button>
+          <Components.Button onClick={onBack}>Done</Components.Button>
+        </Flex>
+      }
+    >
+      {live.changed > 0 && (
+        <Components.Alert
+          status="warning"
+          label={`${live.changed} ${live.changed === 1 ? 'shift has' : 'shifts have'} changed since this send`}
+          action={
+            <Components.Button variant="secondary" onClick={onUpdate}>
+              Update payroll
+            </Components.Button>
+          }
+        >
+          Payroll still has the old hours until you update it. Spotted by comparing each shift’s
+          updated_at with its synced_to_payroll_at. <GapPin id="which-timesheets" />
+        </Components.Alert>
+      )}
+      <Components.Heading as="h3" styledAs="h5">
+        What was sent
+      </Components.Heading>
+      <DataView label="What was sent" {...rowsView} />
+      <Components.Text size="sm" variant="supporting">
+        Read-only.{' '}
+        {snapshot
+          ? 'Saved by this page when it sent, because the API can’t list what a sync included or say which payroll it landed on.'
+          : 'Rebuilt from each shift’s synced_to_payroll_at, because the API can’t list what a sync included or say which payroll it landed on. Edits since the send show in these totals.'}{' '}
+        <GapPin id="which-timesheets" />
+      </Components.Text>
     </SubPage>
   )
 }

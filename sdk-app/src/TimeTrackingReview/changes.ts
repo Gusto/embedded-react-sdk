@@ -9,6 +9,7 @@ export type ChangeId =
   | 'clock-out'
   | 'row-icons'
   | 'shift-window'
+  | 'receipt'
 
 export interface Change {
   id: ChangeId
@@ -87,6 +88,14 @@ export const CHANGES: Change[] = [
     feedback: 'Dang why are all the modals so narrow? We have so much real estate and it’s wasted.',
     what: 'Every popup (Add shift, Edit shift, View request, Run payroll) uses a new “medium” size on the SDK Modal: 41.75rem wide (up from 34rem) and nearly the full window height, matching the Workbench Dialog’s medium size. Shift times sit in one row, each break’s start and end sit beside it, and repeated notes were merged. The delete confirmation stays small. The size option is an SDK change, not in the published SDK.',
     where: 'Add shift, Edit shift, View request and Run payroll.',
+  },
+  {
+    id: 'receipt',
+    tabs: ['review'],
+    title: 'Receipt after sending, and View what was sent',
+    feedback: null,
+    what: 'Brought over from the HTML prototype. Sending no longer blocks: a “Sending hours to payroll…” strip shows while it runs. Afterwards a “Last sent” strip stays on Timesheets with totals and “View what was sent”, which opens a read-only receipt with a per-person table. It flags shifts changed since the send, and offers “See it in Run payroll”.',
+    where: 'Timesheets › under the pay period; Send to payroll.',
   },
 ]
 

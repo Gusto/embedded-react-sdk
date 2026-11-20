@@ -293,6 +293,22 @@ export function breakIssues(shift: ApiShift, policy: ApiBreakPolicy | undefined)
   })
 }
 
+export function breakIssueKind(issues: BreakIssue[]): BreakIssue['kind'] {
+  return issues.some(i => i.kind === 'missing') ? 'missing' : 'short'
+}
+
+export function breakIssueDetail(issues: BreakIssue[]) {
+  const counts = (kind: BreakIssue['kind']) => {
+    const byType = new Map<string, number>()
+    for (const issue of issues.filter(i => i.kind === kind))
+      byType.set(issue.rule.break_type, (byType.get(issue.rule.break_type) ?? 0) + 1)
+    return [...byType].map(([type, n]) => `${n} ${type}`).join(', ')
+  }
+  const primary = breakIssueKind(issues)
+  const secondary = primary === 'missing' && issues.some(i => i.kind === 'short')
+  return secondary ? `${counts('missing')} · ${counts('short')} short` : counts(primary)
+}
+
 export function breakIssueLabel(issues: BreakIssue[]) {
   const counts = new Map<string, number>()
   for (const issue of issues) {
@@ -441,4 +457,44 @@ export function estimateOvertime(
     total.regular += regular - over
   }
   return total
+}
+
+export interface SentRow {
+  person: Person
+  count: number
+  hours: number
+  overtime: OvertimeEstimate | null
+}
+
+export type SentSummary = ReturnType<typeof sentSummary>
+
+export function sentSummary(shifts: ApiShift[], people: Person[], workweekStartDay: string | null) {
+  const sent = shifts.filter(s => s.synced_to_payroll_at)
+  const lastAt = sent.reduce<string | null>(
+    (latest, s) => (!latest || s.synced_to_payroll_at! > latest ? s.synced_to_payroll_at! : latest),
+    null,
+  )
+  const rows: SentRow[] = people
+    .map(person => {
+      const mine = sent.filter(s => s.entity_uuid === person.employee.uuid)
+      return {
+        person,
+        count: mine.length,
+        hours: mine.reduce((sum, s) => sum + workedHours(s), 0),
+        overtime: estimateOvertime(mine, person.overtimePolicy, workweekStartDay),
+      }
+    })
+    .filter(row => row.count > 0)
+    .sort((a, b) => a.person.name.localeCompare(b.person.name))
+  return {
+    sent,
+    lastAt,
+    rows,
+    hours: rows.reduce((sum, r) => sum + r.hours, 0),
+    overtime: rows.reduce(
+      (sum, r) => sum + (r.overtime?.overtime ?? 0) + (r.overtime?.double ?? 0),
+      0,
+    ),
+    changed: sent.filter(s => reviewState(s) === 'changed').length,
+  }
 }

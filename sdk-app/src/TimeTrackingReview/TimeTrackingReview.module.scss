@@ -322,3 +322,27 @@
   display: flex;
   gap: 0.25rem;
 }
+
+.breaksCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 9.5rem;
+}
+
+.breakIssue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+}
+
+.breakIssueDetail {
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  color: var(--g-colorBodySubContent);
+}
+
+.unsure {
+  color: var(--g-colorBodySubContent);
+}
