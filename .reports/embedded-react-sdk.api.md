@@ -1685,6 +1685,9 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED: "company/management/signatory/editCancelled";
     readonly COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED: "company/management/signatory/alertDismissed";
     readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: "company/management/companyForms/editRequested";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_UPDATED: "company/management/companyForms/updated";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_CANCELLED: "company/management/companyForms/editCancelled";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_ALERT_DISMISSED: "company/management/companyForms/alertDismissed";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
