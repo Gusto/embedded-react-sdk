@@ -9,6 +9,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.CompanyFormsCard': ['companyId'],
   'CompanyManagement.Dashboard': ['companyId'],
   'CompanyManagement.DashboardFlow': ['companyId'],
+  'CompanyManagement.FederalTaxes': ['companyId'],
   'CompanyManagement.FederalTaxesCard': ['companyId'],
   'CompanyManagement.Industry': ['companyId'],
   'CompanyManagement.IndustryCard': ['companyId'],

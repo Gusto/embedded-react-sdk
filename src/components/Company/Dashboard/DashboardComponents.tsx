@@ -3,7 +3,7 @@ import { Dashboard, type DashboardTab } from './Dashboard'
 import { useViewerSignatoryId } from './ViewerSignatoryContext'
 import { IndustryEditScreen } from '@/components/Company/Industry/management/IndustryEditScreen'
 import { Locations } from '@/components/Company/Locations'
-import { FederalTaxes } from '@/components/Company/FederalTaxes'
+import { FederalTaxesEditScreen } from '@/components/Company/FederalTaxes/management/FederalTaxesEditScreen'
 import { BankAccount } from '@/components/Company/BankAccount'
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/management'
@@ -110,7 +110,7 @@ export function LocationsContextual() {
 /** @internal */
 export function FederalTaxesContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
-  return <FederalTaxes companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <FederalTaxesEditScreen companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */
