@@ -1011,6 +1011,7 @@ function PeopleTable({
   onAddShift: (personUuid: string) => void
 }) {
   const Components = useComponentContext()
+  const navigate = useNavigate()
   const dataView = useDataView<PersonRow>({
     data: rows,
     selectionMode: 'multiple',
@@ -1080,6 +1081,12 @@ function PeopleTable({
         <HamburgerMenu
           triggerLabel={`More actions for ${person.name}`}
           items={[
+            {
+              label: 'View shifts',
+              onClick: () => {
+                void navigate(shiftsHref(person.employee.uuid))
+              },
+            },
             ...(toApprove.length
               ? [
                   {
