@@ -58,6 +58,117 @@ export function PrototypeModal({
   )
 }
 
+function CheckIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M4.5 10.5L8.5 14.5L15.5 6"
+        style={{ stroke: 'var(--row-icon-color)' }}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function XIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M14.5 5.5L5.5 14.5M5.5 5.5L14.5 14.5"
+        style={{ stroke: 'var(--row-icon-color)' }}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function ApproveReject({
+  label,
+  onApprove,
+  onReject,
+}: {
+  label: string
+  onApprove?: () => void
+  onReject?: () => void
+}) {
+  const Components = useComponentContext()
+  return (
+    <div className={styles.approveReject}>
+      <Components.ButtonIcon
+        variant="tertiary"
+        aria-label={`Approve ${label}`}
+        isDisabled={!onApprove}
+        onClick={onApprove}
+      >
+        <span className={styles.approveIcon}>
+          <CheckIcon />
+        </span>
+      </Components.ButtonIcon>
+      <Components.ButtonIcon
+        variant="tertiary"
+        aria-label={`Reject ${label}`}
+        isDisabled={!onReject}
+        onClick={onReject}
+      >
+        <span className={styles.rejectIcon}>
+          <XIcon />
+        </span>
+      </Components.ButtonIcon>
+    </div>
+  )
+}
+
+export function SubPage({
+  backLabel,
+  onBack,
+  title,
+  description,
+  actions,
+  footer,
+  narrow,
+  children,
+}: {
+  backLabel: string
+  onBack: () => void
+  title: ReactNode
+  description?: ReactNode
+  actions?: ReactNode
+  footer?: ReactNode
+  narrow?: boolean
+  children: ReactNode
+}) {
+  const Components = useComponentContext()
+  const width = narrow ? `${styles.subPageBody} ${styles.formPage}` : styles.subPageBody
+  return (
+    <Flex flexDirection="column" gap={20}>
+      <div>
+        <Components.Button variant="secondary" onClick={onBack}>
+          ‹ {backLabel}
+        </Components.Button>
+      </div>
+      <Flex justifyContent="space-between" alignItems="flex-start" gap={12} flexWrap="wrap">
+        <Flex flexDirection="column" gap={4}>
+          <Components.Heading as="h2" styledAs="h3">
+            {title}
+          </Components.Heading>
+          {description && <Components.Text variant="supporting">{description}</Components.Text>}
+        </Flex>
+        {actions && <Flex gap={8}>{actions}</Flex>}
+      </Flex>
+      <div className={width}>
+        <Flex flexDirection="column" gap={16}>
+          {children}
+        </Flex>
+      </div>
+      {footer && <div className={width}>{footer}</div>}
+    </Flex>
+  )
+}
+
 export function RequestBlock({
   method,
   path,

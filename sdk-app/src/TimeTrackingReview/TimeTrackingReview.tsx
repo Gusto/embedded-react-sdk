@@ -44,9 +44,9 @@ import { AddShiftModal } from './AddShiftModal'
 import { EditShiftModal } from './EditShiftModal'
 import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
-import { SendModal } from './SendModal'
+import { SendPage } from './SendPage'
 import { GapContext } from './gapContext'
-import { GapPin, PrototypeModal, RequestBlock } from './parts'
+import { ApproveReject, GapPin, PrototypeModal, RequestBlock } from './parts'
 import { nowIso, type NoticeStatus, type Preview } from './preview'
 import type { PolicyData } from './PoliciesTab'
 import styles from './TimeTrackingReview.module.scss'
@@ -186,6 +186,7 @@ function TimeTrackingPrototype() {
     status: NoticeStatus
   } | null>(null)
   const [editing, setEditing] = useState<ApiShift | null>(null)
+  const [clockingOut, setClockingOut] = useState(false)
   const [adding, setAdding] = useState<{ personUuid: string | null } | null>(null)
   const [sendOpen, setSendOpen] = useState(false)
   const [sendWhenLoaded, setSendWhenLoaded] = useState(false)
@@ -672,7 +673,14 @@ function TimeTrackingPrototype() {
             setFocusPerson(null)
           }}
           onStatus={changeStatus}
-          onEdit={setEditing}
+          onEdit={shift => {
+            setClockingOut(false)
+            setEditing(shift)
+          }}
+          onClockOut={shift => {
+            setClockingOut(true)
+            setEditing(shift)
+          }}
         />
       )}
     </Flex>
@@ -757,7 +765,35 @@ function TimeTrackingPrototype() {
               selectedId={tab}
               onSelectionChange={setTab}
               tabs={[
-                { id: 'review', label: 'Timesheets', content: review },
+                {
+                  id: 'review',
+                  label: 'Timesheets',
+                  content:
+                    sendOpen && period && schedule ? (
+                      <SendPage
+                        companyId={companyId}
+                        schedule={schedule}
+                        period={period}
+                        people={schedulePeople}
+                        shifts={periodShifts}
+                        isUpdate={Boolean(lastSyncAt)}
+                        onClose={() => {
+                          setSendOpen(false)
+                        }}
+                        onReview={personUuid => {
+                          setSendOpen(false)
+                          setFocusPerson(personUuid)
+                        }}
+                        onSent={(sent, request) => {
+                          const now = nowIso()
+                          putShifts(sent.map(shift => ({ ...shift, synced_to_payroll_at: now })))
+                          notify(`Hours for ${sent.length} shifts sent to payroll.`, request)
+                        }}
+                      />
+                    ) : (
+                      review
+                    ),
+                },
                 {
                   id: 'policies',
                   label: 'Policies',
@@ -897,6 +933,7 @@ function TimeTrackingPrototype() {
         {editing && (
           <EditShiftModal
             shift={editing}
+            clockOut={clockingOut}
             person={people.find(p => p.employee.uuid === editing.entity_uuid)}
             onClose={() => {
               setEditing(null)
@@ -946,29 +983,6 @@ function TimeTrackingPrototype() {
             }}
           />
         )}
-
-        {sendOpen && period && schedule && (
-          <SendModal
-            companyId={companyId}
-            schedule={schedule}
-            period={period}
-            people={schedulePeople}
-            shifts={periodShifts}
-            isUpdate={Boolean(lastSyncAt)}
-            onClose={() => {
-              setSendOpen(false)
-            }}
-            onReview={personUuid => {
-              setSendOpen(false)
-              setFocusPerson(personUuid)
-            }}
-            onSent={(sent, request) => {
-              const now = nowIso()
-              putShifts(sent.map(shift => ({ ...shift, synced_to_payroll_at: now })))
-              notify(`Hours for ${sent.length} shifts sent to payroll.`, request)
-            }}
-          />
-        )}
       </div>
     </GapContext.Provider>
   )
@@ -980,13 +994,13 @@ function StatusBadges({ shifts }: { shifts: ApiShift[] }) {
   for (const shift of shifts)
     counts.set(reviewState(shift), (counts.get(reviewState(shift)) ?? 0) + 1)
   return (
-    <Flex gap={4} flexWrap="wrap">
+    <div className={styles.statusBadges}>
       {[...counts.entries()].map(([state, count]) => (
         <Components.Badge key={state} status={BADGE_STATUS[state]}>
           {count} {SHORT_STATE_LABEL[state]}
         </Components.Badge>
       ))}
-    </Flex>
+    </div>
   )
 }
 
@@ -1075,58 +1089,60 @@ function PeopleTable({
         },
       },
       { title: 'Status', render: ({ shifts }) => <StatusBadges shifts={shifts} /> },
-    ],
-    itemMenu: ({ person, shifts }) => {
-      const toApprove = shifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
-      const toReject = shifts.filter(s => s.status !== 'rejected')
-      return (
-        <HamburgerMenu
-          triggerLabel={`More actions for ${person.name}`}
-          items={[
-            {
-              label: 'View shifts',
-              onClick: () => {
-                void navigate(shiftsHref(person.employee.uuid))
-              },
-            },
-            ...(toApprove.length
-              ? [
-                  {
-                    label: `Approve all shifts (${toApprove.length})`,
-                    onClick: () => {
+      {
+        title: <span className={styles.srOnly}>Approve or reject</span>,
+        render: ({ person, shifts }) => {
+          const toApprove = shifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
+          const toReject = shifts.filter(s => s.status !== 'rejected')
+          return (
+            <ApproveReject
+              label={`all of ${person.name}’s shifts`}
+              onApprove={
+                toApprove.length
+                  ? () => {
                       onBulk(
                         toApprove,
                         'approved',
                         `Approve ${person.name}’s ${toApprove.length} shifts`,
                       )
-                    },
-                  },
-                ]
-              : []),
-            ...(toReject.length
-              ? [
-                  {
-                    label: `Reject all shifts (${toReject.length})`,
-                    onClick: () => {
+                    }
+                  : undefined
+              }
+              onReject={
+                toReject.length
+                  ? () => {
                       onBulk(
                         toReject,
                         'rejected',
                         `Reject ${person.name}’s ${toReject.length} shifts`,
                       )
-                    },
-                  },
-                ]
-              : []),
-            {
-              label: 'Add shift',
-              onClick: () => {
-                onAddShift(person.employee.uuid)
-              },
+                    }
+                  : undefined
+              }
+            />
+          )
+        },
+      },
+    ],
+    itemMenu: ({ person }) => (
+      <HamburgerMenu
+        triggerLabel={`More actions for ${person.name}`}
+        items={[
+          {
+            label: 'View shifts',
+            onClick: () => {
+              void navigate(shiftsHref(person.employee.uuid))
             },
-          ]}
-        />
-      )
-    },
+          },
+          {
+            label: 'Add shift',
+            onClick: () => {
+              onAddShift(person.employee.uuid)
+            },
+          },
+        ]}
+      />
+    ),
   })
   const selectedRows = rows.filter(row => selected.has(row.person.employee.uuid))
   const selectedShifts = selectedRows.flatMap(row => row.shifts)
@@ -1175,6 +1191,7 @@ function ShiftsTable({
   onBack,
   onStatus,
   onEdit,
+  onClockOut,
 }: {
   person: Person
   shifts: ApiShift[]
@@ -1183,6 +1200,7 @@ function ShiftsTable({
   onBack: () => void
   onStatus: (targets: ApiShift[], status: ShiftStatus, title: string) => void
   onEdit: (shift: ApiShift) => void
+  onClockOut: (shift: ApiShift) => void
 }) {
   const Components = useComponentContext()
   const rules = new Map(person.breakPolicy?.rules.map(rule => [rule.uuid, rule]))
@@ -1259,31 +1277,33 @@ function ShiftsTable({
           )
         },
       },
+      {
+        title: <span className={styles.srOnly}>Approve or reject</span>,
+        render: shift => (
+          <ApproveReject
+            label={label(shift)}
+            onApprove={
+              shift.status !== 'approved' && shift.shift_ended_at
+                ? () => {
+                    onStatus([shift], 'approved', `Approve: ${label(shift)}`)
+                  }
+                : undefined
+            }
+            onReject={
+              shift.status !== 'rejected'
+                ? () => {
+                    onStatus([shift], 'rejected', `Reject: ${label(shift)}`)
+                  }
+                : undefined
+            }
+          />
+        ),
+      },
     ],
     itemMenu: shift => (
       <HamburgerMenu
         triggerLabel={`Actions for ${label(shift)}`}
         items={[
-          ...(shift.status !== 'approved' && shift.shift_ended_at
-            ? [
-                {
-                  label: 'Approve',
-                  onClick: () => {
-                    onStatus([shift], 'approved', `Approve: ${label(shift)}`)
-                  },
-                },
-              ]
-            : []),
-          ...(shift.status !== 'rejected'
-            ? [
-                {
-                  label: 'Reject',
-                  onClick: () => {
-                    onStatus([shift], 'rejected', `Reject: ${label(shift)}`)
-                  },
-                },
-              ]
-            : []),
           ...(shift.status !== 'pending'
             ? [
                 {
@@ -1300,6 +1320,16 @@ function ShiftsTable({
               onEdit(shift)
             },
           },
+          ...(shift.shift_ended_at
+            ? []
+            : [
+                {
+                  label: 'Clock out now',
+                  onClick: () => {
+                    onClockOut(shift)
+                  },
+                },
+              ]),
         ]}
       />
     ),

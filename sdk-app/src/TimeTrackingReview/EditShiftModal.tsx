@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import {
   formatDay,
-  formatTime,
   localStartDate,
   minutesBetween,
   workedHours,
@@ -12,19 +11,30 @@ import {
   breakIssueLabel,
   breakIssues,
 } from './model'
+import { BreaksEditor } from './BreaksEditor'
+import {
+  breakProblems,
+  breaksBody,
+  draftsFromShift,
+  draftsToBreaks,
+  unpaidMinutes,
+  type BreakDraft,
+} from './breaks'
 import { GapPin, PrototypeModal } from './parts'
-import { nowIso, type Preview } from './preview'
+import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function EditShiftModal({
   shift,
+  clockOut = false,
   person,
   onClose,
   onSave,
   onDelete,
 }: {
   shift: ApiShift
+  clockOut?: boolean
   person: Person | undefined
   onClose: () => void
   onSave: (next: ApiShift, preview: Preview) => void
@@ -33,7 +43,11 @@ export function EditShiftModal({
   const Components = useComponentContext()
   const tz = shift.time_zone
   const start = zonedParts(shift.shift_started_at, tz)
-  const end = shift.shift_ended_at ? zonedParts(shift.shift_ended_at, tz) : null
+  const end = shift.shift_ended_at
+    ? zonedParts(shift.shift_ended_at, tz)
+    : clockOut
+      ? zonedParts(new Date().toISOString(), tz)
+      : null
 
   const [startDate, setStartDate] = useState(start.date)
   const [startTime, setStartTime] = useState(start.time)
@@ -45,15 +59,13 @@ export function EditShiftModal({
     () => new Map(person?.breakPolicy?.rules.map(rule => [rule.uuid, rule])),
     [person],
   )
+  const [breaks, setBreaks] = useState<BreakDraft[]>(() => draftsFromShift(shift, rules))
 
   const nextStart = startDate && startTime ? zonedToUtcIso(startDate, startTime, tz) : null
   const nextEnd = endDate && endTime ? zonedToUtcIso(endDate, endTime, tz) : null
 
-  const unpaidBreakMinutes = shift.breaks.reduce((sum, b) => {
-    if (!b.end_time) return sum
-    const rule = b.break_rule_uuid ? rules.get(b.break_rule_uuid) : undefined
-    return rule?.is_paid ? sum : sum + minutesBetween(b.start_time, b.end_time)
-  }, 0)
+  const unpaidBreakMinutes = unpaidMinutes(breaks)
+  const nextBreaks = draftsToBreaks(breaks, () => '')
   const nextHours =
     nextStart && nextEnd
       ? Math.max(0, (minutesBetween(nextStart, nextEnd) - unpaidBreakMinutes) / 60)
@@ -61,8 +73,8 @@ export function EditShiftModal({
 
   const issues = breakIssues(
     nextStart && nextEnd
-      ? { ...shift, shift_started_at: nextStart, shift_ended_at: nextEnd }
-      : shift,
+      ? { ...shift, shift_started_at: nextStart, shift_ended_at: nextEnd, breaks: nextBreaks }
+      : { ...shift, breaks: nextBreaks },
     person?.breakPolicy,
   )
   const problems: string[] = []
@@ -72,18 +84,13 @@ export function EditShiftModal({
     (nextEnd && Date.parse(nextEnd) > Date.now())
   )
     problems.push('Times can’t be in the future.')
-  if (
-    nextStart &&
-    nextEnd &&
-    !shift.breaks.every(b => b.start_time >= nextStart && (!b.end_time || b.end_time <= nextEnd))
-  )
-    problems.push(
-      'A break would fall outside the shift. The API can miss this on edits (known bug).',
-    )
+  if (nextStart && nextEnd) problems.push(...breakProblems(breaks, nextStart, nextEnd))
 
   const body: Record<string, unknown> = { version: shift.version }
   if (nextStart && nextStart !== shift.shift_started_at) body.shift_started_at = nextStart
   if (nextEnd && nextEnd !== shift.shift_ended_at) body.shift_ended_at = nextEnd
+  const breakChanges = breaksBody(shift, breaks)
+  if (breakChanges) body.breaks = breakChanges
   const changed = Object.keys(body).length > 1
   if (changed && nextHours !== null && shift.entries[0]) {
     body.entries = [{ uuid: shift.entries[0].uuid, hours_worked: Number(nextHours.toFixed(3)) }]
@@ -98,6 +105,7 @@ export function EditShiftModal({
         nextHours !== null && shift.entries[0]
           ? [{ ...shift.entries[0], hours_worked: nextHours.toFixed(3) }]
           : shift.entries,
+      breaks: draftsToBreaks(breaks, simId),
       updated_at: nowIso(),
     }
     onSave(next, {
@@ -122,7 +130,7 @@ export function EditShiftModal({
 
   return (
     <PrototypeModal
-      title={`Edit shift: ${person?.name ?? 'Unknown'}, ${formatDay(localStartDate(shift))}`}
+      title={`${clockOut ? 'Clock out' : 'Edit shift'}: ${person?.name ?? 'Unknown'}, ${formatDay(localStartDate(shift))}`}
       onClose={onClose}
       footer={
         confirmDelete ? (
@@ -179,15 +187,19 @@ export function EditShiftModal({
       </Grid>
       <Components.Text size="sm" variant="supporting">
         Times are in {tz}. Worked {workedHours(shift).toFixed(2)} hours
-        {nextHours !== null && changed && `, ${nextHours.toFixed(2)} after this edit`}. Breaks:{' '}
-        {shift.breaks
-          .map(b => {
-            const rule = b.break_rule_uuid ? rules.get(b.break_rule_uuid) : undefined
-            const kind = rule ? (rule.break_type === 'meal' ? 'meal' : 'rest') : 'unlinked'
-            return `${kind} ${formatTime(b.start_time, tz)}`
-          })
-          .join(', ') || 'none'}
-        . <GapPin id="break-timing" />
+        {nextHours !== null && changed && `, ${nextHours.toFixed(2)} after this edit`}.
+      </Components.Text>
+      <BreaksEditor
+        breaks={breaks}
+        onChange={setBreaks}
+        rules={person?.breakPolicy?.rules ?? []}
+        shiftStart={nextStart}
+        shiftEnd={nextEnd}
+        timeZone={tz}
+      />
+      <Components.Text size="sm" variant="supporting">
+        Moving only the shift’s start or end can skip the API’s checks on breaks you keep, so the
+        page checks them here. <GapPin id="break-timing" />
       </Components.Text>
       {issues.length > 0 && person?.breakPolicy && (
         <Components.Alert status="warning" label={breakIssueLabel(issues)}>

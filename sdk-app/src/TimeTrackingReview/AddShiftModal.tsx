@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react'
+import { BreaksEditor } from './BreaksEditor'
+import { breakProblems, unpaidMinutes, type BreakDraft } from './breaks'
 import {
   addDays,
-  breakRuleLabel,
   formatPeriod,
   formatTime,
   minutesBetween,
   primaryJob,
   zonedToUtcIso,
-  type ApiBreakRule,
   type ApiPayPeriod,
   type ApiShift,
   type Person,
@@ -18,21 +18,10 @@ import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-interface BreakDraft {
-  key: string
-  rule: ApiBreakRule | null
-  start: string
-  minutes: number
-}
-
 function mostCommon(values: string[]) {
   const counts = new Map<string, number>()
   for (const v of values) counts.set(v, (counts.get(v) ?? 0) + 1)
   return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
-}
-
-function addMinutes(iso: string, minutes: number) {
-  return new Date(Date.parse(iso) + minutes * 60000).toISOString().replace('.000Z', 'Z')
 }
 
 export function AddShiftModal({
@@ -77,23 +66,7 @@ export function AddShiftModal({
 
   const rules = person?.breakPolicy?.rules ?? []
 
-  const placeBreak = (rule: ApiBreakRule | null) => {
-    if (!start || !end) return
-    const minutes = rule?.break_duration_in_minutes ?? 30
-    const half = minutesBetween(start, end) / 2
-    const target = rule ? Math.min(rule.for_hours_worked_in_minutes - minutes, half) : half
-    let offset = Math.max(0, Math.round(target / 5) * 5)
-    const taken = breaks.map(
-      b => [minutesBetween(start, b.start), minutesBetween(start, b.start) + b.minutes] as const,
-    )
-    while (taken.some(([a, b]) => offset < b && offset + minutes > a)) offset += 5
-    setBreaks(prev => [
-      ...prev,
-      { key: `${Date.now()}`, rule, start: addMinutes(start, offset), minutes },
-    ])
-  }
-
-  const unpaid = breaks.reduce((sum, b) => (b.rule?.is_paid ? sum : sum + b.minutes), 0)
+  const unpaid = unpaidMinutes(breaks)
   const hours = start && end ? (minutesBetween(start, end) - unpaid) / 60 : 0
   const clash =
     start && end
@@ -109,8 +82,7 @@ export function AddShiftModal({
     problems.push(
       `It overlaps ${person?.name ?? 'their'} shift ${formatTime(clash.shift_started_at, clash.time_zone)} – ${clash.shift_ended_at ? formatTime(clash.shift_ended_at, clash.time_zone) : 'now'}.`,
     )
-  if (!breaks.every(b => start && end && b.start >= start && addMinutes(b.start, b.minutes) <= end))
-    problems.push('A break falls outside the shift.')
+  if (start && end) problems.push(...breakProblems(breaks, start, end))
 
   const job = person ? primaryJob(person.employee) : undefined
   const body = {
@@ -124,7 +96,7 @@ export function AddShiftModal({
     entries: [{ hours_worked: Number(hours.toFixed(3)), pay_classification: 'Unclassified' }],
     breaks: breaks.map(b => ({
       start_time: b.start,
-      end_time: addMinutes(b.start, b.minutes),
+      end_time: b.end,
       break_rule_uuid: b.rule?.uuid ?? null,
     })),
   }
@@ -203,39 +175,14 @@ export function AddShiftModal({
         {outsidePeriod && ` This date is outside ${formatPeriod(period)}.`}
       </Components.Text>
 
-      <Flex flexDirection="column" gap={8}>
-        <Components.Text weight="medium">Breaks</Components.Text>
-        {breaks.map(b => (
-          <Flex key={b.key} alignItems="center" gap={8}>
-            <Components.Text size="sm">
-              {b.rule ? breakRuleLabel(b.rule) : 'Unlinked break · unpaid'} ·{' '}
-              {formatTime(b.start, timeZone)} –{' '}
-              {formatTime(addMinutes(b.start, b.minutes), timeZone)}
-            </Components.Text>
-            <Components.Button
-              variant="tertiary"
-              onClick={() => {
-                setBreaks(prev => prev.filter(x => x.key !== b.key))
-              }}
-            >
-              Remove
-            </Components.Button>
-          </Flex>
-        ))}
-        <Flex gap={8} flexWrap="wrap">
-          {rules.map(rule => (
-            <Components.Button
-              key={rule.uuid}
-              variant="secondary"
-              onClick={() => {
-                placeBreak(rule)
-              }}
-            >
-              Add {rule.break_type} break
-            </Components.Button>
-          ))}
-        </Flex>
-      </Flex>
+      <BreaksEditor
+        breaks={breaks}
+        onChange={setBreaks}
+        rules={rules}
+        shiftStart={start}
+        shiftEnd={end}
+        timeZone={timeZone}
+      />
 
       <Components.Select
         label="Add as"

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { getAllPages, withQuery } from './api'
 import {
   addDays,
@@ -15,12 +16,36 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { GapPin, PrototypeModal } from './parts'
+import { GapPin, SubPage } from './parts'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type PolicyKind = 'overtime' | 'break'
+type PolicyView = 'details' | 'edit' | 'assign'
+type AnyPolicy = ApiOvertimePolicy | ApiBreakPolicy
+
+const KIND_LABEL: Record<PolicyKind, string> = {
+  overtime: 'Overtime policy',
+  break: 'Break policy',
+}
+
+function overtimeRules(p: ApiOvertimePolicy) {
+  return [
+    `Weekly over ${p.weekly_overtime_hours_threshold ?? '—'}h`,
+    p.daily_overtime_hours_threshold && `daily over ${p.daily_overtime_hours_threshold}h`,
+    p.double_overtime_hours_threshold && `double over ${p.double_overtime_hours_threshold}h`,
+    p.work_week_consecutive_days_threshold && '7th day rule',
+  ]
+    .filter(Boolean)
+    .join(' · ')
+}
+
+function breakRules(p: ApiBreakPolicy) {
+  return p.rules
+    .map(r => `${breakRuleLabel(r)} per ${hoursLabel(r.for_hours_worked_in_minutes)}`)
+    .join('; ')
+}
 
 export interface PolicyData {
   overtimePolicies: ApiOvertimePolicy[]
@@ -50,16 +75,47 @@ export function PoliciesTab({
 }) {
   const Components = useComponentContext()
   const [todayShifts, setTodayShifts] = useState<ApiShift[]>([])
-  const [overtimeForm, setOvertimeForm] = useState<ApiOvertimePolicy | 'new' | null>(null)
-  const [breakForm, setBreakForm] = useState<ApiBreakPolicy | 'new' | null>(null)
-  const [deleting, setDeleting] = useState<{
-    kind: PolicyKind
-    policy: ApiOvertimePolicy | ApiBreakPolicy
-  } | null>(null)
-  const [assigning, setAssigning] = useState<{
-    kind: PolicyKind
-    policy: ApiOvertimePolicy | ApiBreakPolicy
-  } | null>(null)
+  const [deleting, setDeleting] = useState<{ kind: PolicyKind; policy: AnyPolicy } | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const [pageKind, pageUuid] = (searchParams.get('policy') ?? '').split(':') as [
+    PolicyKind | '',
+    string | undefined,
+  ]
+  const pageView = searchParams.get('view') as PolicyView | null
+  const cameFromDetails = searchParams.get('from') === 'details'
+  const pagePolicy: AnyPolicy | undefined =
+    pageKind === 'overtime'
+      ? overtimePolicies.find(p => p.uuid === pageUuid)
+      : pageKind === 'break'
+        ? breakPolicies.find(p => p.uuid === pageUuid)
+        : undefined
+
+  const policyHref = (kind: PolicyKind, uuid: string, view: PolicyView, from?: 'details') => {
+    const params = new URLSearchParams(searchParams)
+    params.set('tab', 'policies')
+    params.set('policy', `${kind}:${uuid}`)
+    params.set('view', view)
+    if (from) params.set('from', from)
+    else params.delete('from')
+    return `?${params.toString()}`
+  }
+  const openPage = (kind: PolicyKind, uuid: string, view: PolicyView, from?: 'details') => {
+    setSearchParams(new URLSearchParams(policyHref(kind, uuid, view, from).slice(1)))
+  }
+  const closePage = () => {
+    if (cameFromDetails && pageKind && pageUuid && pageUuid !== 'new') {
+      openPage(pageKind, pageUuid, 'details')
+      return
+    }
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev)
+      params.delete('policy')
+      params.delete('view')
+      params.delete('from')
+      return params
+    })
+  }
 
   useEffect(() => {
     const controller = new AbortController()
@@ -164,24 +220,38 @@ export function PoliciesTab({
         ? { ...current, overtimePolicies: overtimePolicies.filter(p => p.uuid !== policy.uuid) }
         : { ...current, breakPolicies: breakPolicies.filter(p => p.uuid !== policy.uuid) },
     )
+    if (pageUuid === policy.uuid) {
+      setSearchParams(prev => {
+        const params = new URLSearchParams(prev)
+        params.delete('policy')
+        params.delete('view')
+        params.delete('from')
+        return params
+      })
+    }
     onNotify(`${policy.name} deleted.`, preview)
   }
 
-  const menu = (kind: PolicyKind, policy: ApiOvertimePolicy | ApiBreakPolicy) => (
+  const menu = (kind: PolicyKind, policy: AnyPolicy) => (
     <HamburgerMenu
       triggerLabel={`Actions for ${policy.name}`}
       items={[
         {
+          label: 'View details',
+          onClick: () => {
+            openPage(kind, policy.uuid, 'details')
+          },
+        },
+        {
           label: 'Edit',
           onClick: () => {
-            if (kind === 'overtime') setOvertimeForm(policy as ApiOvertimePolicy)
-            else setBreakForm(policy as ApiBreakPolicy)
+            openPage(kind, policy.uuid, 'edit')
           },
         },
         {
           label: 'Assign people',
           onClick: () => {
-            setAssigning({ kind, policy })
+            openPage(kind, policy.uuid, 'assign')
           },
         },
         {
@@ -197,20 +267,15 @@ export function PoliciesTab({
   const overtimeView = useDataView<ApiOvertimePolicy>({
     data: overtimePolicies,
     columns: [
-      { title: 'Name', render: p => p.name },
       {
-        title: 'Rules',
-        render: p =>
-          [
-            `Weekly over ${p.weekly_overtime_hours_threshold ?? '—'}h`,
-            p.daily_overtime_hours_threshold && `daily over ${p.daily_overtime_hours_threshold}h`,
-            p.double_overtime_hours_threshold &&
-              `double over ${p.double_overtime_hours_threshold}h`,
-            p.work_week_consecutive_days_threshold && '7th day rule',
-          ]
-            .filter(Boolean)
-            .join(' · '),
+        title: 'Name',
+        render: p => (
+          <Components.Link href={policyHref('overtime', p.uuid, 'details')}>
+            {p.name}
+          </Components.Link>
+        ),
       },
+      { title: 'Rules', render: overtimeRules },
       { title: 'People', justify: 'end', render: p => p.assigned_employees.length },
     ],
     itemMenu: p => menu('overtime', p),
@@ -223,22 +288,108 @@ export function PoliciesTab({
         title: 'Name',
         render: p => (
           <Flex gap={8} alignItems="center">
-            {p.name}
+            <Components.Link href={policyHref('break', p.uuid, 'details')}>
+              {p.name}
+            </Components.Link>
             {p.jurisdiction && <Components.Badge>{p.jurisdiction}</Components.Badge>}
           </Flex>
         ),
       },
-      {
-        title: 'Rules',
-        render: p =>
-          p.rules
-            .map(r => `${breakRuleLabel(r)} per ${hoursLabel(r.for_hours_worked_in_minutes)}`)
-            .join('; '),
-      },
+      { title: 'Rules', render: breakRules },
       { title: 'People', justify: 'end', render: p => p.assigned_employees.length },
     ],
     itemMenu: p => menu('break', p),
   })
+
+  const deleteDialog = deleting && (
+    <Components.Dialog
+      isOpen
+      isDestructive
+      title={`Delete ${deleting.policy.name}?`}
+      primaryActionLabel="Delete policy"
+      closeActionLabel="Cancel"
+      onClose={() => {
+        setDeleting(null)
+      }}
+      onPrimaryActionClick={() => {
+        deletePolicy(deleting.kind, deleting.policy)
+      }}
+    >
+      {deleting.policy.assigned_employees.length} people are on it.{' '}
+      {deleting.kind === 'overtime'
+        ? 'Eligible people need an overtime policy before their hours can be submitted, so move them first.'
+        : 'It can’t be deleted if anyone on it took a break today.'}
+    </Components.Dialog>
+  )
+
+  const backLabel = cameFromDetails && pagePolicy ? pagePolicy.name : 'Policies'
+  if (pageKind && pageView === 'edit' && (pagePolicy || pageUuid === 'new')) {
+    const afterSave = (policy: AnyPolicy, preview: Preview) => {
+      savePolicy(pageKind, policy, preview)
+      if (pageUuid === 'new') openPage(pageKind, policy.uuid, 'details')
+      else closePage()
+    }
+    return pageKind === 'overtime' ? (
+      <OvertimeForm
+        companyId={companyId}
+        policy={(pagePolicy as ApiOvertimePolicy | undefined) ?? null}
+        existingNames={overtimePolicies
+          .filter(p => p !== pagePolicy)
+          .map(p => p.name.toLowerCase())}
+        workweeks={workweeks}
+        backLabel={backLabel}
+        onClose={closePage}
+        onSave={afterSave}
+      />
+    ) : (
+      <BreakForm
+        companyId={companyId}
+        policy={(pagePolicy as ApiBreakPolicy | undefined) ?? null}
+        existingNames={breakPolicies.filter(p => p !== pagePolicy).map(p => p.name.toLowerCase())}
+        backLabel={backLabel}
+        onClose={closePage}
+        onSave={afterSave}
+      />
+    )
+  }
+  if (pageKind && pageView === 'assign' && pagePolicy) {
+    return (
+      <AssignPeople
+        kind={pageKind}
+        policy={pagePolicy}
+        people={people}
+        breakToday={breakToday}
+        backLabel={backLabel}
+        onClose={closePage}
+        onSave={(uuids, preview) => {
+          assignPeople(pageKind, pagePolicy, uuids, preview)
+          closePage()
+        }}
+      />
+    )
+  }
+  if (pageKind && pageView === 'details' && pagePolicy) {
+    return (
+      <>
+        <PolicyDetail
+          kind={pageKind}
+          policy={pagePolicy}
+          people={people}
+          onBack={closePage}
+          onEdit={() => {
+            openPage(pageKind, pagePolicy.uuid, 'edit', 'details')
+          }}
+          onAssign={() => {
+            openPage(pageKind, pagePolicy.uuid, 'assign', 'details')
+          }}
+          onDelete={() => {
+            setDeleting({ kind: pageKind, policy: pagePolicy })
+          }}
+        />
+        {deleteDialog}
+      </>
+    )
+  }
 
   return (
     <Flex flexDirection="column" gap={24}>
@@ -263,7 +414,7 @@ export function PoliciesTab({
               <Components.Button
                 variant="secondary"
                 onClick={() => {
-                  setOvertimeForm('new')
+                  openPage('overtime', 'new', 'edit')
                 }}
               >
                 New overtime policy
@@ -287,7 +438,7 @@ export function PoliciesTab({
               <Components.Button
                 variant="secondary"
                 onClick={() => {
-                  setBreakForm('new')
+                  openPage('break', 'new', 'edit')
                 }}
               >
                 New break policy
@@ -299,73 +450,7 @@ export function PoliciesTab({
         <DataView label="Break policies" {...breakView} />
       </Components.Box>
 
-      {overtimeForm && (
-        <OvertimeFormModal
-          companyId={companyId}
-          policy={overtimeForm === 'new' ? null : overtimeForm}
-          existingNames={overtimePolicies
-            .filter(p => p !== overtimeForm)
-            .map(p => p.name.toLowerCase())}
-          workweeks={workweeks}
-          onClose={() => {
-            setOvertimeForm(null)
-          }}
-          onSave={(policy, preview) => {
-            setOvertimeForm(null)
-            savePolicy('overtime', policy, preview)
-          }}
-        />
-      )}
-      {breakForm && (
-        <BreakFormModal
-          companyId={companyId}
-          policy={breakForm === 'new' ? null : breakForm}
-          existingNames={breakPolicies.filter(p => p !== breakForm).map(p => p.name.toLowerCase())}
-          onClose={() => {
-            setBreakForm(null)
-          }}
-          onSave={(policy, preview) => {
-            setBreakForm(null)
-            savePolicy('break', policy, preview)
-          }}
-        />
-      )}
-      {assigning && (
-        <AssignModal
-          kind={assigning.kind}
-          policy={assigning.policy}
-          people={people}
-          breakToday={breakToday}
-          onClose={() => {
-            setAssigning(null)
-          }}
-          onSave={(uuids, preview) => {
-            const target = assigning
-            setAssigning(null)
-            assignPeople(target.kind, target.policy, uuids, preview)
-          }}
-        />
-      )}
-      {deleting && (
-        <Components.Dialog
-          isOpen
-          isDestructive
-          title={`Delete ${deleting.policy.name}?`}
-          primaryActionLabel="Delete policy"
-          closeActionLabel="Cancel"
-          onClose={() => {
-            setDeleting(null)
-          }}
-          onPrimaryActionClick={() => {
-            deletePolicy(deleting.kind, deleting.policy)
-          }}
-        >
-          {deleting.policy.assigned_employees.length} people are on it.{' '}
-          {deleting.kind === 'overtime'
-            ? 'Eligible people need an overtime policy before their hours can be submitted, so move them first.'
-            : 'It can’t be deleted if anyone on it took a break today.'}
-        </Components.Dialog>
-      )}
+      {deleteDialog}
     </Flex>
   )
 }
@@ -380,11 +465,12 @@ function Problems({ problems }: { problems: string[] }) {
   )
 }
 
-function OvertimeFormModal({
+function OvertimeForm({
   companyId,
   policy,
   existingNames,
   workweeks,
+  backLabel,
   onClose,
   onSave,
 }: {
@@ -392,6 +478,7 @@ function OvertimeFormModal({
   policy: ApiOvertimePolicy | null
   existingNames: string[]
   workweeks: Array<{ schedule: ApiPaySchedule; start: string | null }>
+  backLabel: string
   onClose: () => void
   onSave: (policy: ApiOvertimePolicy, preview: Preview) => void
 }) {
@@ -430,9 +517,11 @@ function OvertimeFormModal({
   }
 
   return (
-    <PrototypeModal
+    <SubPage
+      narrow
+      backLabel={backLabel}
+      onBack={onClose}
       title={policy ? `Edit ${policy.name}` : 'New overtime policy'}
-      onClose={onClose}
       footer={
         <SaveFooter
           onCancel={onClose}
@@ -503,7 +592,7 @@ function OvertimeFormModal({
           . A payroll that already covers part of that week may need a correction.{' '}
         </Components.Alert>
       )}
-    </PrototypeModal>
+    </SubPage>
   )
 }
 
@@ -518,16 +607,18 @@ interface RuleDraft {
 
 const JURISDICTIONS = ['CA', 'CO', 'IL', 'KY', 'MN', 'NV', 'NY', 'OR', 'WA']
 
-function BreakFormModal({
+function BreakForm({
   companyId,
   policy,
   existingNames,
+  backLabel,
   onClose,
   onSave,
 }: {
   companyId: string
   policy: ApiBreakPolicy | null
   existingNames: string[]
+  backLabel: string
   onClose: () => void
   onSave: (policy: ApiBreakPolicy, preview: Preview) => void
 }) {
@@ -572,9 +663,11 @@ function BreakFormModal({
   }
 
   return (
-    <PrototypeModal
+    <SubPage
+      narrow
+      backLabel={backLabel}
+      onBack={onClose}
       title={policy ? `Edit ${policy.name}` : 'New break policy'}
-      onClose={onClose}
       footer={
         <SaveFooter
           onCancel={onClose}
@@ -701,7 +794,7 @@ function BreakFormModal({
         {policy && ' Saving replaces the whole policy.'}
       </Components.Text>
       <Problems problems={problems} />
-    </PrototypeModal>
+    </SubPage>
   )
 }
 
@@ -713,18 +806,20 @@ interface AssignRow {
   locked: boolean
 }
 
-function AssignModal({
+function AssignPeople({
   kind,
   policy,
   people,
   breakToday,
+  backLabel,
   onClose,
   onSave,
 }: {
   kind: PolicyKind
-  policy: ApiOvertimePolicy | ApiBreakPolicy
+  policy: AnyPolicy
   people: Person[]
   breakToday: Set<string>
+  backLabel: string
   onClose: () => void
   onSave: (uuids: string[], preview: Preview) => void
 }) {
@@ -790,9 +885,26 @@ function AssignModal({
   const blocked = kind === 'break' && [...toAssign, ...toRemove].some(uuid => breakToday.has(uuid))
 
   return (
-    <PrototypeModal
+    <SubPage
+      backLabel={backLabel}
+      onBack={onClose}
       title={`Assign people to ${policy.name}`}
-      onClose={onClose}
+      description={`Each person can be on one ${kind} policy, so picking someone moves them here. Ineligible people can’t be picked.`}
+      actions={
+        <Components.Button
+          variant="secondary"
+          onClick={() => {
+            setSelected(
+              new Set([
+                ...initial,
+                ...rows.filter(r => r.eligible && !r.locked).map(r => r.person.employee.uuid),
+              ]),
+            )
+          }}
+        >
+          Select all eligible
+        </Components.Button>
+      }
       footer={
         <SaveFooter
           onCancel={onClose}
@@ -808,8 +920,8 @@ function AssignModal({
       }
     >
       <Components.Text size="sm" variant="supporting">
-        Each person can be on one {kind} policy, so picking someone moves them here. Ineligible
-        people can’t be picked. <GapPin id="eligibility" />
+        {selected.size} selected · {toAssign.length} to add
+        {kind === 'break' && ` · ${toRemove.length} to remove`} <GapPin id="eligibility" />
       </Components.Text>
       <DataView label="People" {...dataView} />
       {blocked && (
@@ -817,7 +929,136 @@ function AssignModal({
           Someone you changed took a break today, so the API would reject this, without saying who.
         </Components.Alert>
       )}
-    </PrototypeModal>
+    </SubPage>
+  )
+}
+
+function PolicyDetail({
+  kind,
+  policy,
+  people,
+  onBack,
+  onEdit,
+  onAssign,
+  onDelete,
+}: {
+  kind: PolicyKind
+  policy: AnyPolicy
+  people: Person[]
+  onBack: () => void
+  onEdit: () => void
+  onAssign: () => void
+  onDelete: () => void
+}) {
+  const Components = useComponentContext()
+  const [section, setSection] = useState('details')
+  const assigned = new Set(policy.assigned_employees.map(a => a.uuid))
+  const onPolicy = people
+    .filter(p => assigned.has(p.employee.uuid))
+    .sort((a, b) => a.name.localeCompare(b.name))
+  const peopleView = useDataView<Person>({
+    data: onPolicy,
+    columns: [
+      { title: 'Person', render: p => p.name },
+      { title: 'Job', render: p => p.title },
+      { title: 'Pay type', render: p => eligibility(p.employee).label },
+    ],
+  })
+
+  const facts: Array<[string, string]> =
+    kind === 'overtime'
+      ? (() => {
+          const p = policy as ApiOvertimePolicy
+          return [
+            ['Weekly overtime', `After ${p.weekly_overtime_hours_threshold ?? '—'} hours`],
+            [
+              'Daily overtime',
+              p.daily_overtime_hours_threshold
+                ? `After ${p.daily_overtime_hours_threshold} hours in a day`
+                : 'None',
+            ],
+            [
+              'Double time',
+              p.double_overtime_hours_threshold
+                ? `After ${p.double_overtime_hours_threshold} hours in a day`
+                : 'None',
+            ],
+            [
+              'Seventh consecutive day',
+              p.work_week_consecutive_days_threshold ? 'Applies' : 'Doesn’t apply',
+            ],
+          ]
+        })()
+      : (() => {
+          const p = policy as ApiBreakPolicy
+          return [
+            ['State', p.jurisdiction ?? 'None'],
+            ['Missed break premium', p.pay_premium ? 'Paid' : 'Not paid'],
+            ...p.rules.map((r): [string, string] => [
+              r.break_type === 'meal' ? 'Meal break' : 'Rest break',
+              `${breakRuleLabel(r)} per ${hoursLabel(r.for_hours_worked_in_minutes)}`,
+            ]),
+          ]
+        })()
+
+  return (
+    <SubPage
+      backLabel="Policies"
+      onBack={onBack}
+      title={policy.name}
+      description={KIND_LABEL[kind]}
+      actions={
+        <>
+          <Components.Button variant="secondary" onClick={onAssign}>
+            Assign people
+          </Components.Button>
+          <Components.Button variant="secondary" onClick={onEdit}>
+            Edit policy
+          </Components.Button>
+          <Components.Button variant="tertiary" onClick={onDelete}>
+            Delete
+          </Components.Button>
+        </>
+      }
+    >
+      <Components.Tabs
+        aria-label={`${policy.name} sections`}
+        selectedId={section}
+        onSelectionChange={setSection}
+        tabs={[
+          {
+            id: 'details',
+            label: 'Policy details',
+            content: (
+              <Components.Box header={<Components.BoxHeader title="Details" />}>
+                <Flex flexDirection="column" gap={12}>
+                  {facts.map(([label, value]) => (
+                    <Flex key={label} flexDirection="column" gap={0}>
+                      <Components.Text weight="medium">{label}</Components.Text>
+                      <Components.Text variant="supporting">{value}</Components.Text>
+                    </Flex>
+                  ))}
+                  {kind === 'overtime' && (
+                    <Components.Text size="sm" variant="supporting">
+                      No state is recorded for overtime policies. <GapPin id="ot-state" />
+                    </Components.Text>
+                  )}
+                </Flex>
+              </Components.Box>
+            ),
+          },
+          {
+            id: 'people',
+            label: `People (${onPolicy.length})`,
+            content: onPolicy.length ? (
+              <DataView label={`People on ${policy.name}`} {...peopleView} />
+            ) : (
+              <Components.Text variant="supporting">No one is on this policy yet.</Components.Text>
+            ),
+          },
+        ]}
+      />
+    </SubPage>
   )
 }
 

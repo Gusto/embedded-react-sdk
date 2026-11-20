@@ -16,7 +16,7 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { GapPin, PrototypeModal } from './parts'
+import { GapPin, SubPage } from './parts'
 import type { Preview } from './preview'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -27,9 +27,14 @@ interface IncludedRow {
   hours: number
 }
 
+interface SkippedRow {
+  shift: ApiShift
+  name: string
+}
+
 type Phase = 'review' | 'sending' | 'sent' | 'failed'
 
-export function SendModal({
+export function SendPage({
   companyId,
   schedule,
   period,
@@ -103,6 +108,8 @@ export function SendModal({
     data: rows,
     columns: [
       { title: 'Person', render: ({ person }) => person.name },
+      { title: 'Job', render: ({ person }) => person.title },
+      { title: 'Shifts', justify: 'end', render: ({ count }) => count },
       { title: 'Hours', justify: 'end', render: ({ hours }) => formatHours(hours) },
       {
         title: <>Note</>,
@@ -116,11 +123,41 @@ export function SendModal({
     ],
   })
 
+  const skippedView = useDataView<SkippedRow>({
+    data: skipped.map(shift => ({ shift, name: nameOf(shift.entity_uuid) })),
+    columns: [
+      { title: 'Person', render: ({ name }) => name },
+      { title: 'Date', render: ({ shift }) => formatDay(localStartDate(shift)) },
+      { title: 'Why', render: ({ shift }) => REVIEW_STATE_LABEL[reviewState(shift)] },
+    ],
+    itemMenu: ({ shift, name }) => (
+      <Components.Button
+        variant="tertiary"
+        aria-label={`Review ${name}’s shifts`}
+        onClick={() => {
+          onReview(shift.entity_uuid)
+        }}
+      >
+        Review
+      </Components.Button>
+    ),
+  })
+
   const title = `${wasUpdate ? 'Update payroll' : 'Send to payroll'}: ${formatPeriod(period)}`
 
   if (phase === 'sent' || phase === 'failed') {
     return (
-      <PrototypeModal title={title} onClose={onClose}>
+      <SubPage
+        narrow
+        backLabel="Timesheets"
+        onBack={onClose}
+        title={title}
+        footer={
+          <Components.Button variant="secondary" onClick={onClose}>
+            Back to timesheets
+          </Components.Button>
+        }
+      >
         {phase === 'sent' ? (
           <Components.Alert status="success" label={`Hours sent to the ${payrollName}`}>
             {included0.length} shifts for {rows.length} people, {formatHours(totalHours)} hours. Run
@@ -137,14 +174,16 @@ export function SendModal({
             or say which payroll it landed on. <GapPin id="which-timesheets" />
           </Components.Text>
         )}
-      </PrototypeModal>
+      </SubPage>
     )
   }
 
   return (
-    <PrototypeModal
+    <SubPage
+      backLabel="Timesheets"
+      onBack={onClose}
       title={title}
-      onClose={onClose}
+      description={`${scheduleLabel(schedule)} · ${included.length} approved, finished shifts · ${formatHours(totalHours)} hours → ${payrollName}`}
       footer={
         <Flex justifyContent="flex-end" gap={12}>
           <Components.Button variant="secondary" onClick={onClose} isDisabled={phase === 'sending'}>
@@ -162,10 +201,6 @@ export function SendModal({
         </Flex>
       }
     >
-      <Components.Text>
-        {scheduleLabel(schedule)} · {included.length} approved, finished shifts ·{' '}
-        {formatHours(totalHours)} hours → {payrollName}
-      </Components.Text>
       <Components.Alert status="warning" label="This replaces the hours on payroll">
         It recalculates everyone on {scheduleLabel(schedule)} for these dates, including hours fixed
         by hand in payroll. <GapPin id="sync-limits" />
@@ -175,26 +210,13 @@ export function SendModal({
         What each person has on payroll now can’t be read, so the change can’t be shown.{' '}
       </Components.Text>
       {skipped.length > 0 && (
-        <Flex flexDirection="column" gap={4}>
-          <Components.Text weight="medium">{skipped.length} won’t be sent</Components.Text>
-          {skipped.map(shift => (
-            <Flex key={shift.uuid} alignItems="center" gap={8}>
-              <Components.Text size="sm">
-                {nameOf(shift.entity_uuid)}, {formatDay(localStartDate(shift))}:{' '}
-                {REVIEW_STATE_LABEL[reviewState(shift)]}
-              </Components.Text>
-              <Components.Button
-                variant="tertiary"
-                onClick={() => {
-                  onReview(shift.entity_uuid)
-                }}
-              >
-                Review
-              </Components.Button>
-            </Flex>
-          ))}
+        <Flex flexDirection="column" gap={8}>
+          <Components.Heading as="h3" styledAs="h5">
+            {skipped.length} won’t be sent
+          </Components.Heading>
+          <DataView label="Won’t be sent" {...skippedView} />
         </Flex>
       )}
-    </PrototypeModal>
+    </SubPage>
   )
 }
