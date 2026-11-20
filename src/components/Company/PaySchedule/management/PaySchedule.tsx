@@ -12,14 +12,10 @@ import { BaseComponent, useBase } from '@/components/Base'
 import type { BaseComponentKeys } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
+import { pickNamespaceDictionary } from '@/i18n/pickNamespaceDictionary'
 import { Flow } from '@/components/Flow/Flow'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
-import type {
-  DeepPartial,
-  ResourceDictionary,
-  Resources,
-  SupportedLanguages,
-} from '@/types/Helpers'
+import type { DeepPartial, Resources, SupportedLanguages } from '@/types/Helpers'
 
 /**
  * Translation overrides for {@link PaySchedule}, covering both its own namespace and
@@ -35,25 +31,6 @@ export type PayScheduleDictionary = {
       Resources['Company.Management.AutoPilotDialog']
     >
   }
-}
-
-function pickNamespaceDictionary<K extends keyof Resources>(
-  dictionary: PayScheduleDictionary | undefined,
-  ns: K,
-): ResourceDictionary<K> | undefined {
-  if (!dictionary) return undefined
-
-  const picked = {} as Record<SupportedLanguages, DeepPartial<Resources[K]>>
-  for (const lang in dictionary) {
-    const langKey = lang as SupportedLanguages
-    const nsValue = (
-      dictionary[langKey] as Partial<Record<K, DeepPartial<Resources[K]>>> | undefined
-    )?.[ns]
-    if (nsValue) {
-      picked[langKey] = nsValue
-    }
-  }
-  return Object.keys(picked).length > 0 ? (picked as ResourceDictionary<K>) : undefined
 }
 
 /**
