@@ -958,6 +958,7 @@ Renders a modal overlay with body and footer content.
 | `isOpen?` | `boolean` | `false` | Controls whether the modal is open or closed |
 | `onClose?` | () => `void` | | Callback function called when the modal should be closed |
 | `shouldCloseOnBackdropClick?` | `boolean` | `false` | Whether clicking the backdrop should close the modal |
+| `size?` | `"default"` \| `"medium"` \| `"large"` | `'default'` | Maximum size of the modal. `medium` and `large` match the Workbench Dialog sizes and let the modal grow to nearly the full viewport height. |
 
 ***
 
