@@ -31,10 +31,20 @@ describe('dashboardStateMachine — companyForms', () => {
 
   it('surfaces "Documents signed" on leaving after a form was signed', () => {
     const service = createService()
-    send(service, componentEvents.COMPANY_SIGN_FORM)
+    send(service, componentEvents.COMPANY_MANAGEMENT_COMPANY_FORMS_UPDATED)
     send(service, componentEvents.COMPANY_DASHBOARD_BACK)
     expect(service.machine.current).toBe('index')
     expect(service.context.successAlert).toBe('formsSigned')
+  })
+
+  it('ignores the onboarding signature event, which CompanyFormsEditScreen translates', () => {
+    const service = createService()
+    send(service, componentEvents.COMPANY_SIGN_FORM)
+    send(service, componentEvents.COMPANY_DASHBOARD_BACK)
+
+    // Nothing was recorded, so leaving must not claim a form was signed.
+    expect(service.machine.current).toBe('index')
+    expect(service.context.successAlert).toBeNull()
   })
 })
 

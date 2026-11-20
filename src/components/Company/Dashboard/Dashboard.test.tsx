@@ -680,4 +680,39 @@ describe('Company DashboardFlow', () => {
 
     expect(await screen.findByRole('button', { name: 'Sign document' })).toBeInTheDocument()
   })
+
+  it('surfaces the Documents alert when the viewer signs a form and then leaves', async () => {
+    // Guards the event retarget: the spoke now records its alert on
+    // `company/management/companyForms/updated`, which CompanyFormsEditScreen translates from
+    // the signature form's own `company/forms/sign/signForm`. Without that translation no
+    // alert would ever surface, and the route-and-back cases above would still pass.
+    const user = userEvent.setup()
+    renderWithProviders(
+      <DashboardFlow companyId="company-123" onEvent={onEvent} viewerSignatoryId="signatory-1" />,
+      { unstableFeatures },
+    )
+
+    await user.click(await screen.findByRole('tab', { name: 'Documents' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage company documents' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage company documents' }))
+
+    await user.click(await screen.findByRole('button', { name: 'Sign document' }))
+
+    // The signature form requires a typed legal name and the electronic-signature agreement.
+    await user.type(await screen.findByLabelText('Signature'), 'Ada Lovelace')
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: 'I am the signatory and I agree to sign electronically',
+      }),
+    )
+    await user.click(screen.getByRole('button', { name: 'Sign form' }))
+
+    // Signing keeps the surface open — a company signs its forms one at a time — so the
+    // alert only appears once the user actually leaves.
+    await user.click(await screen.findByRole('button', { name: 'Back to company settings' }))
+
+    expect(await screen.findByText('Documents signed')).toBeInTheDocument()
+  })
 })
