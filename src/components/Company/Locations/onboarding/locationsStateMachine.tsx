@@ -1,5 +1,5 @@
-import { LocationsList } from './LocationsList'
-import { LocationForm } from './LocationForm/LocationForm'
+import { LocationsList } from '../LocationsList'
+import { LocationForm } from '../LocationForm/LocationForm'
 import type { companyEvents } from '@/shared/constants'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
