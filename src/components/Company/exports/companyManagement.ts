@@ -22,9 +22,12 @@ export {
 } from '../Industry/management'
 export { LocationsCard, type LocationsCardProps } from '../Locations/management/LocationsCard'
 export {
+  FederalTaxes,
+  type FederalTaxesProps,
+  type FederalTaxesDictionary,
   FederalTaxesCard,
   type FederalTaxesCardProps,
-} from '../FederalTaxes/management/FederalTaxesCard'
+} from '../FederalTaxes/management'
 export {
   BankAccountCard,
   type BankAccountCardProps,
