@@ -35,9 +35,12 @@ export {
   type FederalTaxesCardProps,
 } from '../FederalTaxes/management'
 export {
+  BankAccount,
+  type BankAccountProps,
+  type BankAccountDictionary,
   BankAccountCard,
   type BankAccountCardProps,
-} from '../BankAccount/management/BankAccountCard'
+} from '../BankAccount/management'
 export {
   PaySchedulesCard,
   type PaySchedulesCardProps,

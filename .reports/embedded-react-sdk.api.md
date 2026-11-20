@@ -806,6 +806,9 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 function BankAccount(props: BankAccountProps): JSX;
 
 // @alpha
+function BankAccount_2(input: BankAccountProps_2): JSX;
+
+// @alpha
 function BankAccountCard(props: BankAccountCardProps): JSX;
 
 // @alpha
@@ -815,9 +818,23 @@ interface BankAccountCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// @alpha
+type BankAccountDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.BankAccount'?: DeepPartial<Resources['Company.Management.BankAccount']>;
+        'Company.BankAccount'?: DeepPartial<Resources['Company.BankAccount']>;
+    };
+};
+
 // @public
 interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
     companyId: string;
+}
+
+// @alpha
+interface BankAccountProps_2 extends Omit<BaseComponentInterface<'Company.Management.BankAccount'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: BankAccountDictionary;
 }
 
 // @public
@@ -1166,6 +1183,9 @@ declare namespace CompanyManagement {
         FederalTaxesDictionary,
         FederalTaxesCard_2 as FederalTaxesCard,
         FederalTaxesCardProps_2 as FederalTaxesCardProps,
+        BankAccount_2 as BankAccount,
+        BankAccountProps_2 as BankAccountProps,
+        BankAccountDictionary,
         BankAccountCard,
         BankAccountCardProps,
         PaySchedulesCard,
@@ -1651,6 +1671,9 @@ export const componentEvents: {
     readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
     readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: "company/management/bankAccount/editRequested";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_UPDATED: "company/management/bankAccount/updated";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_CANCELLED: "company/management/bankAccount/editCancelled";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_ALERT_DISMISSED: "company/management/bankAccount/alertDismissed";
     readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
     readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";

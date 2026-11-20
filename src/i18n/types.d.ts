@@ -1136,6 +1136,14 @@ export namespace Translations {
         description: string
       }
     }
+    header: {
+      /** @defaultValue `"Back to bank account"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Bank account updated."` */
+      bankAccountUpdated: string
+    }
   }
   /** Translation keys for the `Company.Management.CompanyForms` i18n namespace. */
   export interface CompanyManagementCompanyForms {
