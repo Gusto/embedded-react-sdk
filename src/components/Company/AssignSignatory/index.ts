@@ -1,2 +1,5 @@
-export { AssignSignatory, type AssignSignatoryProps } from './AssignSignatory'
-export { type AssignSignatoryDefaultValues } from './useAssignSignatory'
+export {
+  AssignSignatory,
+  type AssignSignatoryProps,
+  type AssignSignatoryDefaultValues,
+} from './onboarding'
