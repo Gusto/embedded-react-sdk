@@ -1270,6 +1270,14 @@ export namespace Translations {
         description: string
       }
     }
+    header: {
+      /** @defaultValue `"Back to locations"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Locations updated."` */
+      locationsUpdated: string
+    }
   }
   /** Translation keys for the `Company.Management.PaySchedule` i18n namespace. */
   export interface CompanyManagementPaySchedule {

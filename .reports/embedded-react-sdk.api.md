@@ -1156,6 +1156,9 @@ declare namespace CompanyManagement {
         IndustryDictionary,
         IndustryCard,
         IndustryCardProps,
+        Locations_2 as Locations,
+        LocationsProps_2 as LocationsProps,
+        LocationsDictionary,
         LocationsCard,
         LocationsCardProps,
         FederalTaxes_4 as FederalTaxes,
@@ -1637,6 +1640,9 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_INDUSTRY_EDIT_CANCELLED: "company/management/industry/editCancelled";
     readonly COMPANY_MANAGEMENT_INDUSTRY_ALERT_DISMISSED: "company/management/industry/alertDismissed";
     readonly COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED: "company/management/locations/editRequested";
+    readonly COMPANY_MANAGEMENT_LOCATIONS_UPDATED: "company/management/locations/updated";
+    readonly COMPANY_MANAGEMENT_LOCATIONS_EDIT_CANCELLED: "company/management/locations/editCancelled";
+    readonly COMPANY_MANAGEMENT_LOCATIONS_ALERT_DISMISSED: "company/management/locations/alertDismissed";
     readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED: "company/management/federalTaxes/editRequested";
     readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_UPDATED: "company/management/federalTaxes/updated";
     readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_CANCELLED: "company/management/federalTaxes/editCancelled";
@@ -4073,6 +4079,9 @@ interface LocationFormProps extends BaseComponentInterface<'Company.Locations'> 
 function Locations(input: LocationsProps): JSX;
 
 // @alpha
+function Locations_2(input: LocationsProps_2): JSX;
+
+// @alpha
 function LocationsCard(props: LocationsCardProps): JSX;
 
 // @alpha
@@ -4081,6 +4090,14 @@ interface LocationsCardProps {
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
+
+// @alpha
+type LocationsDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.Locations'?: DeepPartial<Resources['Company.Management.Locations']>;
+        'Company.Locations'?: DeepPartial<Resources['Company.Locations']>;
+    };
+};
 
 // @public
 function LocationsList(props: LocationsListProps): JSX;
@@ -4093,6 +4110,12 @@ interface LocationsListProps extends BaseComponentInterface<'Company.Locations'>
 // @public
 interface LocationsProps extends BaseComponentInterface<'Company.Locations'> {
     companyId: string;
+}
+
+// @alpha
+interface LocationsProps_2 extends Omit<BaseComponentInterface<'Company.Management.Locations'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: LocationsDictionary;
 }
 
 // @public
