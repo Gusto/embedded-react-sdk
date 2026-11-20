@@ -1227,6 +1227,14 @@ export namespace Translations {
         description: string
       }
     }
+    header: {
+      /** @defaultValue `"Back to industry"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Industry updated."` */
+      industryUpdated: string
+    }
   }
   /** Translation keys for the `Company.Management.Locations` i18n namespace. */
   export interface CompanyManagementLocations {
