@@ -784,6 +784,8 @@ Translation keys for the `Company.Management.FederalTaxes` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementfederaltaxesalerts"></a> `alerts` |
+| `alerts.federalTaxesUpdated` |
 | <a id="property-companymanagementfederaltaxescard"></a> `card` |
 | `card.editAriaLabel` |
 | `card.editCta` |
@@ -799,6 +801,8 @@ Translation keys for the `Company.Management.FederalTaxes` i18n namespace.
 | `card.listEmptyPlaceholder` |
 | `card.taxPayerType` |
 | `card.title` |
+| <a id="property-companymanagementfederaltaxesheader"></a> `header` |
+| `header.backCta` |
 
 ***
 

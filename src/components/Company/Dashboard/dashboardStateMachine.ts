@@ -263,11 +263,13 @@ export const dashboardStateMachine = {
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
   federalTaxes: state<MachineTransition>(
-    // COMPANY_FEDERAL_TAXES_UPDATED also fires on save, immediately before
-    // COMPANY_FEDERAL_TAXES_DONE; transitioning on the latter alone keeps the
-    // alert tied to a single, unambiguous completion signal.
+    // Returns on the management event rather than either onboarding event the form raises.
+    // FederalTaxesEditScreen translates COMPANY_FEDERAL_TAXES_UPDATED into it, so the
+    // dashboard and the standalone FederalTaxes block transition on one signal scoped to
+    // the management surface. COMPANY_FEDERAL_TAXES_DONE stays absent: it fires immediately
+    // after on the same save, so declaring it too would transition twice.
     transition(
-      componentEvents.COMPANY_FEDERAL_TAXES_DONE,
+      componentEvents.COMPANY_MANAGEMENT_FEDERAL_TAXES_UPDATED,
       'index',
       returnToIndexWithAlert('federalTaxesUpdated'),
     ),

@@ -217,6 +217,10 @@ export const companyEvents = {
   COMPANY_MANAGEMENT_INDUSTRY_ALERT_DISMISSED: 'company/management/industry/alertDismissed',
   COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED: 'company/management/locations/editRequested',
   COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED: 'company/management/federalTaxes/editRequested',
+  COMPANY_MANAGEMENT_FEDERAL_TAXES_UPDATED: 'company/management/federalTaxes/updated',
+  COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_CANCELLED: 'company/management/federalTaxes/editCancelled',
+  COMPANY_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED:
+    'company/management/federalTaxes/alertDismissed',
   COMPANY_DASHBOARD_TAB_CHANGE: 'company/dashboard/tabChange',
   COMPANY_DASHBOARD_ALERT_DISMISSED: 'company/dashboard/alertDismissed',
   COMPANY_DASHBOARD_BACK: 'company/dashboard/back',

@@ -579,6 +579,29 @@ describe('Company DashboardFlow', () => {
 
   // Covers routing into the spoke only; driving a real federal-taxes save through the
   // form to assert the success alert is out of scope here.
+  it('returns from the Federal taxes spoke with an alert once the details are saved', async () => {
+    // Guards the event retarget: the spoke now returns on
+    // `company/management/federalTaxes/updated`, which FederalTaxesEditScreen translates from
+    // the form's own `company/federalTaxes/updated`. Without that translation the spoke would
+    // become a dead end reachable only by the back header, with no type error — the
+    // route-and-back case below would still pass.
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Taxes' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit federal taxes' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit federal taxes' }))
+
+    await screen.findByText('Federal Tax Information')
+    await user.click(screen.getByRole('button', { name: /Continue/i }))
+
+    expect(await screen.findByText('Federal tax settings updated')).toBeInTheDocument()
+  })
+
   it('routes the Federal taxes card Edit CTA to its spoke from the Taxes tab', async () => {
     const user = userEvent.setup()
     renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {

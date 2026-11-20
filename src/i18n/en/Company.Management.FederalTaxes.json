@@ -15,5 +15,11 @@
       "title": "No federal tax details yet",
       "description": "Add this company's legal name, EIN, and filing form so payroll taxes can be filed."
     }
+  },
+  "header": {
+    "backCta": "Back to federal taxes"
+  },
+  "alerts": {
+    "federalTaxesUpdated": "Federal tax settings updated."
   }
 }

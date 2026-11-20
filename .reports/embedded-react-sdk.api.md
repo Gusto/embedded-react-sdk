@@ -1158,6 +1158,9 @@ declare namespace CompanyManagement {
         IndustryCardProps,
         LocationsCard,
         LocationsCardProps,
+        FederalTaxes_4 as FederalTaxes,
+        FederalTaxesProps_4 as FederalTaxesProps,
+        FederalTaxesDictionary,
         FederalTaxesCard_2 as FederalTaxesCard,
         FederalTaxesCardProps_2 as FederalTaxesCardProps,
         BankAccountCard,
@@ -1635,6 +1638,9 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_INDUSTRY_ALERT_DISMISSED: "company/management/industry/alertDismissed";
     readonly COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED: "company/management/locations/editRequested";
     readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED: "company/management/federalTaxes/editRequested";
+    readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_UPDATED: "company/management/federalTaxes/updated";
+    readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_CANCELLED: "company/management/federalTaxes/editCancelled";
+    readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED: "company/management/federalTaxes/alertDismissed";
     readonly COMPANY_DASHBOARD_TAB_CHANGE: "company/dashboard/tabChange";
     readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
     readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
@@ -3275,6 +3281,9 @@ function FederalTaxes_2(input: FederalTaxesProps_2): JSX;
 // @public
 function FederalTaxes_3(props: FederalTaxesProps_3): JSX;
 
+// @alpha
+function FederalTaxes_4(input: FederalTaxesProps_4): JSX;
+
 // @public
 function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
 
@@ -3301,6 +3310,14 @@ type FederalTaxesDefaultValues = RequireAtLeastOne<{
     filingForm?: string | undefined;
     legalName?: string;
 }>;
+
+// @alpha
+type FederalTaxesDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.FederalTaxes'?: DeepPartial<Resources['Company.Management.FederalTaxes']>;
+        'Company.FederalTaxes'?: DeepPartial<Resources['Company.FederalTaxes']>;
+    };
+};
 
 // @public
 function FederalTaxesEditForm(input: FederalTaxesEditFormProps): JSX;
@@ -3357,6 +3374,12 @@ interface FederalTaxesProps_2 extends BaseComponentInterface<'Employee.Managemen
 interface FederalTaxesProps_3 extends BaseComponentInterface<'Company.FederalTaxes'> {
     companyId: string;
     defaultValues?: FederalTaxesDefaultValues;
+}
+
+// @alpha
+interface FederalTaxesProps_4 extends Omit<BaseComponentInterface<'Company.Management.FederalTaxes'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: FederalTaxesDictionary;
 }
 
 // @public

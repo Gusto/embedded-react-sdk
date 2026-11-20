@@ -1204,6 +1204,14 @@ export namespace Translations {
         description: string
       }
     }
+    header: {
+      /** @defaultValue `"Back to federal taxes"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Federal tax settings updated."` */
+      federalTaxesUpdated: string
+    }
   }
   /** Translation keys for the `Company.Management.Industry` i18n namespace. */
   export interface CompanyManagementIndustry {
