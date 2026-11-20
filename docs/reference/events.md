@@ -93,7 +93,10 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED` | `"company/management/locations/editRequested"` |
 | `COMPANY_MANAGEMENT_LOCATIONS_UPDATED` | `"company/management/locations/updated"` |
 | `COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED` | `"company/management/paySchedule/editRequested"` |
+| `COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED` | `"company/management/signatory/alertDismissed"` |
+| `COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED` | `"company/management/signatory/editCancelled"` |
 | `COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED` | `"company/management/signatory/editRequested"` |
+| `COMPANY_MANAGEMENT_SIGNATORY_UPDATED` | `"company/management/signatory/updated"` |
 | `COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED` | `"company/management/stateTaxes/editRequested"` |
 | `COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED` | `"company/management/taxPayments/editRequested"` |
 | `COMPANY_OVERVIEW_CONTINUE` | `"company/overview/continue"` |

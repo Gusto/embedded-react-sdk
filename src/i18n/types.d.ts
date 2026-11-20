@@ -1572,6 +1572,14 @@ export namespace Translations {
         description: string
       }
     }
+    header: {
+      /** @defaultValue `"Back to signatory"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Signatory updated."` */
+      signatoryUpdated: string
+    }
   }
   /** Translation keys for the `Company.Management.StateTaxes` i18n namespace. */
   export interface CompanyManagementStateTaxes {
