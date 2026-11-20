@@ -8,6 +8,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { EmployeeOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import EyeSvg from '@/assets/icons/eye.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { formatDateLong, formatDateLongWithYear } from '@/helpers/dateFormatting'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
@@ -25,6 +26,7 @@ export interface ManagementEmployeeListViewProps extends Pick<
   onTabChange: (tab: EmployeeTab) => void
   onEdit: (employeeId: string) => void
   onDismiss: (employeeId: string) => void
+  onReview: (employeeId: string) => Promise<void>
   onDelete: (employeeId: string) => Promise<void>
   onAddEmployee: () => void
   /** CSS class name applied to the root element. */
@@ -40,6 +42,7 @@ export function ManagementEmployeeListView({
   status,
   onEdit,
   onDismiss,
+  onReview,
   onDelete,
   onAddEmployee,
   pagination,
@@ -170,6 +173,16 @@ export function ManagementEmployeeListView({
             onEdit(employee.uuid)
           },
           icon: <PencilSvg aria-hidden />,
+        })
+      }
+
+      if (employee.allowedActions.includes('review')) {
+        menuItems.push({
+          label: t('reviewCta'),
+          onClick: () => {
+            void onReview(employee.uuid)
+          },
+          icon: <EyeSvg aria-hidden />,
         })
       }
 

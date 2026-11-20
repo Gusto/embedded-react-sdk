@@ -261,6 +261,49 @@ describe('useEmployeeList', () => {
     })
   })
 
+  describe('Allowed actions for an employee in admin review', () => {
+    const awaitingReviewEmployee = {
+      uuid: 'employee-in-review',
+      first_name: 'Ada',
+      last_name: 'Lovelace',
+      onboarded: false,
+      onboarding_status: 'self_onboarding_awaiting_admin_review',
+    }
+
+    beforeEach(() => {
+      server.use(handleGetCompanyEmployees(() => HttpResponse.json([awaitingReviewEmployee])))
+    })
+
+    it('offers review in place of edit on the onboarding tab', async () => {
+      const { result } = renderHook(
+        () => useEmployeeList({ companyId: 'company-123', employeeType: 'onboarding' }),
+        { wrapper: TestWrapper },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      if (!result.current.isLoading) {
+        expect(result.current.data.employees[0]?.allowedActions).toEqual(['review', 'delete'])
+      }
+    })
+
+    it('keeps edit when no employeeType is given', async () => {
+      const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      if (!result.current.isLoading) {
+        expect(result.current.data.employees[0]?.allowedActions).toEqual(['edit', 'delete'])
+      }
+    })
+  })
+
   describe('Actions', () => {
     describe('onDelete', () => {
       it('should delete an employee successfully', async () => {

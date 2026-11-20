@@ -257,6 +257,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED` | `"employee/management/profile/editCancelled"` |
 | `EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED` | `"employee/management/profile/editRequested"` |
 | `EMPLOYEE_MANAGEMENT_PROFILE_UPDATED` | `"employee/management/profile/updated"` |
+| `EMPLOYEE_MANAGEMENT_REVIEW` | `"employee/management/review"` |
 | `EMPLOYEE_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED` | `"employee/management/stateTaxes/alertDismissed"` |
 | `EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED` | `"employee/management/stateTaxes/editCancelled"` |
 | `EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED` | `"employee/management/stateTaxes/editRequested"` |

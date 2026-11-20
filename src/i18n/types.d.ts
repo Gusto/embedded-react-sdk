@@ -7117,6 +7117,8 @@ export namespace Translations {
     editCta: string
     /** @defaultValue `"Dismiss employee"` */
     dismissCta: string
+    /** @defaultValue `"Review employee"` */
+    reviewCta: string
     /** @defaultValue `"Cancel onboarding"` */
     cancelCta: string
     /** @defaultValue `"Employee actions menu"` */

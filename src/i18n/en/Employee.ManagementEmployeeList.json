@@ -17,6 +17,7 @@
   "pendingDismissalBadge": "Last day {{date}}",
   "editCta": "Edit employee",
   "dismissCta": "Dismiss employee",
+  "reviewCta": "Review employee",
   "cancelCta": "Cancel onboarding",
   "hamburgerTitle": "Employee actions menu",
   "employeeListLabel": "List of employees",

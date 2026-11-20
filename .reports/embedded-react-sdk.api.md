@@ -1648,6 +1648,7 @@ export const componentEvents: {
     readonly EMPLOYEE_PROFILE_DONE: "employee/profile/done";
     readonly EMPLOYEE_HOME_ADDRESS_CREATED: "employee/addresses/home/created";
     readonly EMPLOYEE_HOME_ADDRESS_UPDATED: "employee/addresses/home/updated";
+    readonly EMPLOYEE_MANAGEMENT_REVIEW: "employee/management/review";
     readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED: "employee/management/homeAddress/editRequested";
     readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED: "employee/management/homeAddress/editCancelled";
     readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED: "employee/management/homeAddress/created";

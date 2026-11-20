@@ -6,13 +6,17 @@ import {
   TerminationFlowContextual,
   type EmployeeListFlowContextInterface,
 } from './EmployeeListFlowComponents'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, type EmployeeOnboardingStatus } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: { employeeId: string }
   [componentEvents.EMPLOYEE_DISMISS]: { employeeId: string }
+  [componentEvents.EMPLOYEE_MANAGEMENT_REVIEW]: {
+    employeeId: string
+    onboardingStatus?: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
+  }
 }
 
 const backToListHeader: FlowHeaderConfig = {
@@ -30,6 +34,7 @@ const returnToList = reduce(
     component: EmployeeListContextual,
     header: null,
     employeeId: undefined,
+    onboardingStatus: undefined,
   }),
 )
 
@@ -63,6 +68,22 @@ export const employeeListStateMachine = {
           component: TerminationFlowContextual,
           header: backToListHeader,
           employeeId: ev.payload.employeeId,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_REVIEW,
+      'onboard',
+      reduce(
+        (
+          ctx: EmployeeListFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_MANAGEMENT_REVIEW>,
+        ): EmployeeListFlowContextInterface => ({
+          ...ctx,
+          component: OnboardingExecutionFlowContextual,
+          header: backToListHeader,
+          employeeId: ev.payload.employeeId,
+          onboardingStatus: ev.payload.onboardingStatus,
         }),
       ),
     ),
