@@ -13,9 +13,9 @@ import {
   type FederalTaxesDefaultValues,
 } from './useFederalTaxes'
 import { Form as HtmlForm } from '@/components/Common/Form'
-import { Form } from '@/components/Company/FederalTaxes/Form'
-import { Actions } from '@/components/Company/FederalTaxes/Actions'
-import { Head } from '@/components/Company/FederalTaxes/Head'
+import { Form } from '@/components/Company/FederalTaxes/onboarding/Form'
+import { Actions } from '@/components/Company/FederalTaxes/onboarding/Actions'
+import { Head } from '@/components/Company/FederalTaxes/onboarding/Head'
 import { useI18n } from '@/i18n'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'

@@ -1,6 +1,6 @@
+import { useIndustryForm } from '../shared/useIndustryForm'
 import { IndustryFormProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
-import { useIndustryForm } from './shared/useIndustryForm'
 import { componentEvents } from '@/shared/constants'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
