@@ -1198,6 +1198,9 @@ declare namespace CompanyManagement {
         TaxRateManagementProps,
         TaxPaymentsCard,
         TaxPaymentsCardProps,
+        Signatory_2 as Signatory,
+        SignatoryProps,
+        SignatoryDictionary,
         SignatoryCard,
         SignatoryCardProps,
         CompanyFormsCard,
@@ -1678,6 +1681,9 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
     readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
     readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: "company/management/signatory/editRequested";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_UPDATED: "company/management/signatory/updated";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED: "company/management/signatory/editCancelled";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED: "company/management/signatory/alertDismissed";
     readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: "company/management/companyForms/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
@@ -5813,6 +5819,9 @@ export interface SharedQuestionMetadata {
 }
 
 // @alpha
+function Signatory_2(input: SignatoryProps): JSX;
+
+// @alpha
 function SignatoryCard(props: SignatoryCardProps): JSX;
 
 // @alpha
@@ -5820,6 +5829,20 @@ interface SignatoryCardProps {
     companyId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+type SignatoryDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.Signatory'?: DeepPartial<Resources['Company.Management.Signatory']>;
+        'Company.AssignSignatory'?: DeepPartial<Resources['Company.AssignSignatory']>;
+    };
+};
+
+// @alpha
+interface SignatoryProps extends Omit<BaseComponentInterface<'Company.Management.Signatory'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: SignatoryDictionary;
 }
 
 // @public

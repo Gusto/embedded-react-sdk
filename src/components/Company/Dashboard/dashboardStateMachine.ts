@@ -305,11 +305,15 @@ export const dashboardStateMachine = {
     // COMPANY_ASSIGN_SIGNATORY_MODE_UPDATED are intentionally absent: the first
     // three fire on save, immediately before COMPANY_ASSIGN_SIGNATORY_DONE, and
     // the last fires as the user switches between the create and invite forms
-    // inside the spoke. Transitioning on the single completion event keeps the
-    // alert tied to one unambiguous signal, whichever way the signatory was
-    // assigned.
+    // inside the spoke.
+    //
+    // Returns on the management event rather than COMPANY_ASSIGN_SIGNATORY_DONE itself,
+    // which SignatoryEditScreen translates. That is what removes the cross-spoke hazard
+    // the companyForms state below used to guard by omission: DocumentSigner's own
+    // assign-signatory step raises the onboarding event but does not go through that
+    // wrapper, so it can no longer reach this transition at all.
     transition(
-      componentEvents.COMPANY_ASSIGN_SIGNATORY_DONE,
+      componentEvents.COMPANY_MANAGEMENT_SIGNATORY_UPDATED,
       'index',
       returnToIndexWithAlert('signatoryUpdated'),
     ),

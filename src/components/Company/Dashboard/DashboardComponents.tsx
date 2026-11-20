@@ -8,7 +8,7 @@ import { BankAccountEditScreen } from '@/components/Company/BankAccount/manageme
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/management'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
-import { AssignSignatory } from '@/components/Company/AssignSignatory'
+import { SignatoryEditScreen } from '@/components/Company/AssignSignatory/management/SignatoryEditScreen'
 import { ViewerBoundDocumentSigner } from '@/components/Company/DocumentSigner/onboarding/DocumentSigner'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -167,7 +167,7 @@ export function CompanyFormsContextual() {
 export function AssignSignatoryContextual() {
   const { companyId, signatoryId, onEvent } = useFlow<DashboardContextInterface>()
   return (
-    <AssignSignatory
+    <SignatoryEditScreen
       companyId={ensureRequired(companyId)}
       signatoryId={signatoryId}
       onEvent={onEvent}

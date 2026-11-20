@@ -52,7 +52,13 @@ export {
   TaxPaymentsCard,
   type TaxPaymentsCardProps,
 } from '../TaxPayments/management/TaxPaymentsCard'
-export { SignatoryCard, type SignatoryCardProps } from '../AssignSignatory/management/SignatoryCard'
+export {
+  Signatory,
+  type SignatoryProps,
+  type SignatoryDictionary,
+  SignatoryCard,
+  type SignatoryCardProps,
+} from '../AssignSignatory/management'
 export {
   CompanyFormsCard,
   type CompanyFormsCardProps,
