@@ -1034,6 +1034,8 @@ Translation keys for the `Company.Management.Signatory` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementsignatoryalerts"></a> `alerts` |
+| `alerts.signatoryUpdated` |
 | <a id="property-companymanagementsignatorycard"></a> `card` |
 | `card.assignCta` |
 | `card.editAriaLabel` |
@@ -1052,6 +1054,8 @@ Translation keys for the `Company.Management.Signatory` i18n namespace.
 | `card.listEmptyPlaceholder` |
 | `card.name` |
 | `card.title` |
+| <a id="property-companymanagementsignatoryheader"></a> `header` |
+| `header.backCta` |
 
 ***
 
