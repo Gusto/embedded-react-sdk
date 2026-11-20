@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Dashboard, type DashboardTab } from './Dashboard'
 import { useViewerSignatoryId } from './ViewerSignatoryContext'
 import { IndustryEditScreen } from '@/components/Company/Industry/management/IndustryEditScreen'
-import { Locations } from '@/components/Company/Locations'
+import { LocationsEditScreen } from '@/components/Company/Locations/management/LocationsEditScreen'
 import { FederalTaxesEditScreen } from '@/components/Company/FederalTaxes/management/FederalTaxesEditScreen'
 import { BankAccount } from '@/components/Company/BankAccount'
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
@@ -104,7 +104,7 @@ export function IndustryContextual() {
 /** @internal */
 export function LocationsContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
-  return <Locations companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <LocationsEditScreen companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */

@@ -1,8 +1,8 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { type LocationsContextInterface } from './locationsStateMachine'
-import { locationsStateMachine } from './stateMachine'
-import { LocationsListContextual } from './locationsStateMachine'
+import type { LocationsContextInterface } from '../shared/locationsComponents'
+import { createLocationsMachine } from '../shared/locationsMachine'
+import { LocationsListContextual } from './LocationsListContextual'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -45,7 +45,7 @@ export function Locations({ companyId, onEvent, dictionary }: LocationsProps) {
     () =>
       createMachine(
         'index',
-        locationsStateMachine,
+        createLocationsMachine(LocationsListContextual),
         (initialContext: LocationsContextInterface) => ({
           ...initialContext,
           component: LocationsListContextual,

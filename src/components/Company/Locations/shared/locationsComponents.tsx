@@ -1,4 +1,3 @@
-import { LocationsList } from '../LocationsList'
 import { LocationForm } from '../LocationForm/LocationForm'
 import type { companyEvents } from '@/shared/constants'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -17,12 +16,15 @@ export interface LocationsContextInterface extends FlowContextInterface {
   locationId?: string
 }
 
-/** @internal */
-export function LocationsListContextual() {
-  const { companyId, onEvent } = useFlow<LocationsContextInterface>()
-  return <LocationsList companyId={ensureRequired(companyId)} onEvent={onEvent} />
-}
-/** @internal */
+/**
+ * The create/edit address form, shared by both surfaces.
+ *
+ * @remarks
+ * Onboarding and management differ only in their list screen; the form behind it is the same
+ * in both, including its own Cancel.
+ *
+ * @internal
+ */
 export function LocationFormContextual() {
   const { onEvent, locationId, companyId } = useFlow<LocationsContextInterface>()
   return (

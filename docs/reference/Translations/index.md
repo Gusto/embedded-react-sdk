@@ -843,6 +843,8 @@ Translation keys for the `Company.Management.Locations` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementlocationsalerts"></a> `alerts` |
+| `alerts.locationsUpdated` |
 | <a id="property-companymanagementlocationscard"></a> `card` |
 | `card.addressColumn` |
 | `card.designationsColumn` |
@@ -855,6 +857,8 @@ Translation keys for the `Company.Management.Locations` i18n namespace.
 | `card.manageAriaLabel` |
 | `card.manageCta` |
 | `card.title` |
+| <a id="property-companymanagementlocationsheader"></a> `header` |
+| `header.backCta` |
 
 ***
 

@@ -215,20 +215,19 @@ export const dashboardStateMachine = {
   ),
   locations: state<MachineTransition>(
     // A company usually adds several addresses in one visit, so a save must not
-    // eject the user from the sub-flow. These self-transitions keep the spoke
-    // open and only record that something changed; the alert surfaces when the
-    // user actually leaves, via either exit below.
+    // eject the user from the sub-flow. This self-transition keeps the spoke open
+    // and only records that something changed; the alert surfaces when the user
+    // actually leaves, via the back header.
+    //
+    // One management event stands in for both onboarding save events, translated by
+    // LocationsEditScreen. COMPANY_LOCATION_DONE is gone along with the Continue button
+    // that raised it: the spoke now opens on the Add-only management list, so the back
+    // header is the only way out.
     transition(
-      componentEvents.COMPANY_LOCATION_CREATED,
+      componentEvents.COMPANY_MANAGEMENT_LOCATIONS_UPDATED,
       'locations',
       recordPendingAlert('locationsUpdated'),
     ),
-    transition(
-      componentEvents.COMPANY_LOCATION_UPDATED,
-      'locations',
-      recordPendingAlert('locationsUpdated'),
-    ),
-    transition(componentEvents.COMPANY_LOCATION_DONE, 'index', returnToIndexWithPendingAlert),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
   bankAccount: state<MachineTransition>(
