@@ -9,6 +9,8 @@ import {
   zonedToUtcIso,
   type ApiShift,
   type Person,
+  breakIssueLabel,
+  breakIssues,
 } from './model'
 import { GapPin, PrototypeModal } from './parts'
 import { nowIso, type Preview } from './preview'
@@ -57,6 +59,12 @@ export function EditShiftModal({
       ? Math.max(0, (minutesBetween(nextStart, nextEnd) - unpaidBreakMinutes) / 60)
       : null
 
+  const issues = breakIssues(
+    nextStart && nextEnd
+      ? { ...shift, shift_started_at: nextStart, shift_ended_at: nextEnd }
+      : shift,
+    person?.breakPolicy,
+  )
   const problems: string[] = []
   if (nextStart && nextEnd && nextEnd <= nextStart) problems.push('End must be after start.')
   if (
@@ -181,6 +189,13 @@ export function EditShiftModal({
           .join(', ') || 'none'}
         . <GapPin id="break-timing" />
       </Components.Text>
+      {issues.length > 0 && person?.breakPolicy && (
+        <Components.Alert status="warning" label={breakIssueLabel(issues)}>
+          {person.breakPolicy.pay_premium
+            ? `${person.breakPolicy.name} pays a premium for this, so the shift earns extra pay.`
+            : `${person.breakPolicy.name} doesn’t pay a premium for this.`}
+        </Components.Alert>
+      )}
       {problems.length > 0 && (
         <Components.Alert status="error" label="The API would reject this">
           {problems.join(' ')}

@@ -37,6 +37,8 @@ import {
   type Person,
   type ReviewState,
   type ShiftStatus,
+  breakIssueLabel,
+  breakIssues,
 } from './model'
 import { AddShiftModal } from './AddShiftModal'
 import { EditShiftModal } from './EditShiftModal'
@@ -1186,6 +1188,9 @@ function ShiftsTable({
   const rules = new Map(person.breakPolicy?.rules.map(rule => [rule.uuid, rule]))
   const label = (shift: ApiShift) => `${person.name}, ${formatDay(localStartDate(shift))}`
   const selectedShifts = shifts.filter(s => selected.has(s.uuid))
+  const policy = person.breakPolicy
+  const issuesByShift = new Map(shifts.map(s => [s.uuid, breakIssues(s, policy)]))
+  const shiftsWithIssues = shifts.filter(s => issuesByShift.get(s.uuid)?.length)
 
   const dataView = useDataView<ApiShift>({
     data: shifts,
@@ -1214,17 +1219,30 @@ function ShiftsTable({
       },
       {
         title: 'Breaks',
-        render: shift =>
-          shift.breaks
-            .map(b => {
-              const rule = b.break_rule_uuid ? rules.get(b.break_rule_uuid) : undefined
-              const minutes = b.end_time
-                ? Math.round((Date.parse(b.end_time) - Date.parse(b.start_time)) / 60000)
-                : null
-              const kind = rule ? (rule.break_type === 'meal' ? 'Meal' : 'Rest') : 'Break'
-              return `${kind} ${minutes ?? '…'}m`
-            })
-            .join(', ') || 'None',
+        render: shift => {
+          const taken =
+            shift.breaks
+              .map(b => {
+                const rule = b.break_rule_uuid ? rules.get(b.break_rule_uuid) : undefined
+                const minutes = b.end_time
+                  ? Math.round((Date.parse(b.end_time) - Date.parse(b.start_time)) / 60000)
+                  : null
+                const kind = rule ? (rule.break_type === 'meal' ? 'Meal' : 'Rest') : 'Break'
+                return `${kind} ${minutes ?? '…'}m`
+              })
+              .join(', ') || 'None'
+          const issues = issuesByShift.get(shift.uuid) ?? []
+          if (issues.length === 0) return taken
+          return (
+            <Flex flexDirection="column" gap={4} alignItems="flex-start">
+              {taken}
+              <Components.Badge status="warning">
+                {breakIssueLabel(issues)}
+                {policy?.pay_premium ? ' · premium' : ''}
+              </Components.Badge>
+            </Flex>
+          )
+        },
       },
       { title: 'Worked', justify: 'end', render: shift => formatHours(workedHours(shift)) },
       {
@@ -1319,6 +1337,17 @@ function ShiftsTable({
           </>
         )}
       </Flex>
+      {policy && shiftsWithIssues.length > 0 && (
+        <Components.Alert
+          status="warning"
+          label={`${shiftsWithIssues.length} of these shifts are missing a break or have a short one`}
+        >
+          {policy.pay_premium
+            ? `${policy.name} pays a premium for each missed or short break, so these shifts earn extra pay. Fix the breaks if they were actually taken.`
+            : `${policy.name} doesn’t pay a premium, so this doesn’t change pay. Fix the breaks if they were actually taken.`}{' '}
+          The page checks this against the policy’s rules; the API doesn’t flag it.
+        </Components.Alert>
+      )}
       <DataView label={`${person.name}’s shifts`} {...dataView} />
     </Flex>
   )

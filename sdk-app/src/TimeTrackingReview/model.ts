@@ -265,6 +265,43 @@ export function minutesBetween(a: string, b: string) {
   return Math.round((Date.parse(b) - Date.parse(a)) / 60000)
 }
 
+export interface BreakIssue {
+  rule: ApiBreakRule
+  kind: 'missing' | 'short'
+}
+
+export function breakIssues(shift: ApiShift, policy: ApiBreakPolicy | undefined): BreakIssue[] {
+  if (!policy || !shift.shift_ended_at) return []
+  const shiftMinutes = minutesBetween(shift.shift_started_at, shift.shift_ended_at)
+  return policy.rules.flatMap(rule => {
+    const threshold = rule.minimum_time_required_in_minutes ?? rule.for_hours_worked_in_minutes
+    const required =
+      shiftMinutes < threshold
+        ? 0
+        : Math.max(1, Math.floor(shiftMinutes / rule.for_hours_worked_in_minutes))
+    const taken = shift.breaks.filter(b => b.break_rule_uuid === rule.uuid)
+    return Array.from({ length: required }, (_, index): BreakIssue | null => {
+      const match = taken[index]
+      if (!match) return { rule, kind: 'missing' }
+      if (
+        match.end_time &&
+        minutesBetween(match.start_time, match.end_time) < rule.break_duration_in_minutes
+      )
+        return { rule, kind: 'short' }
+      return null
+    }).filter(issue => issue !== null)
+  })
+}
+
+export function breakIssueLabel(issues: BreakIssue[]) {
+  const counts = new Map<string, number>()
+  for (const issue of issues) {
+    const key = `${issue.kind === 'missing' ? 'Missed' : 'Short'} ${issue.rule.break_type}`
+    counts.set(key, (counts.get(key) ?? 0) + 1)
+  }
+  return [...counts].map(([key, n]) => (n > 1 ? `${key} ×${n}` : key)).join(', ')
+}
+
 export function crossesMidnight(shift: ApiShift) {
   if (!shift.shift_ended_at) return false
   return zonedParts(shift.shift_ended_at, shift.time_zone).date !== localStartDate(shift)
