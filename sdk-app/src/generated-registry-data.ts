@@ -13,6 +13,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.FederalTaxesCard': ['companyId'],
   'CompanyManagement.Industry': ['companyId'],
   'CompanyManagement.IndustryCard': ['companyId'],
+  'CompanyManagement.Locations': ['companyId'],
   'CompanyManagement.LocationsCard': ['companyId'],
   'CompanyManagement.PaySchedule': ['companyId'],
   'CompanyManagement.PayScheduleAssignment': ['companyId'],

@@ -20,7 +20,13 @@ export {
   IndustryCard,
   type IndustryCardProps,
 } from '../Industry/management'
-export { LocationsCard, type LocationsCardProps } from '../Locations/management/LocationsCard'
+export {
+  Locations,
+  type LocationsProps,
+  type LocationsDictionary,
+  LocationsCard,
+  type LocationsCardProps,
+} from '../Locations/management'
 export {
   FederalTaxes,
   type FederalTaxesProps,
