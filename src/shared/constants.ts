@@ -239,6 +239,10 @@ export const companyEvents = {
   COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED: 'company/management/signatory/editCancelled',
   COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED: 'company/management/signatory/alertDismissed',
   COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: 'company/management/companyForms/editRequested',
+  COMPANY_MANAGEMENT_COMPANY_FORMS_UPDATED: 'company/management/companyForms/updated',
+  COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_CANCELLED: 'company/management/companyForms/editCancelled',
+  COMPANY_MANAGEMENT_COMPANY_FORMS_ALERT_DISMISSED:
+    'company/management/companyForms/alertDismissed',
 } as const
 
 /**

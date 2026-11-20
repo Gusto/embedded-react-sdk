@@ -1,7 +1,6 @@
 import type { Form } from '@gusto/embedded-api/models/components/form'
 import type { Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { AssignSignatory as BlockAssignSignatory } from '../../AssignSignatory'
-import { DocumentList as BlockDocumentList } from '../DocumentList'
 import { SignatureForm as BlockSignatureForm } from '../SignatureForm'
 import type { DocumentSignerContextInterface } from './useDocumentSigner'
 import type { companyEvents } from '@/shared/constants'
@@ -20,19 +19,6 @@ export function AssignSignatory() {
   const { companyId, signatoryId, onEvent } = useFlow<DocumentSignerContextInterface>()
   return (
     <BlockAssignSignatory
-      companyId={ensureRequired(companyId)}
-      signatoryId={signatoryId}
-      onEvent={onEvent}
-    />
-  )
-}
-
-/** @internal */
-export function DocumentList() {
-  const { companyId, signatoryId, onEvent } = useFlow<DocumentSignerContextInterface>()
-
-  return (
-    <BlockDocumentList
       companyId={ensureRequired(companyId)}
       signatoryId={signatoryId}
       onEvent={onEvent}
