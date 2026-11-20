@@ -22,7 +22,8 @@ allowed for its current onboarding state.
 
 `employeeType` maps to a server-side filter and changes which actions appear on each row:
 `'active'` adds `dismiss` unless the employee already has a termination scheduled for a future
-date, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it to list every employee.
+date, `'terminated'` adds `rehire`, and `'onboarding'` offers `review` instead of `edit` for
+employees already in `self_onboarding_awaiting_admin_review`. Omit it to list every employee.
 
 An `'active'` row with a pending termination carries its effective date on
 `pendingDismissalDate` instead of the `dismiss` action.

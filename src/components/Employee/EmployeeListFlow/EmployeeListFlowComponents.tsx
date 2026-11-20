@@ -5,6 +5,7 @@ import { OnboardingExecutionFlow } from '../OnboardingExecutionFlow/OnboardingEx
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import type { EmployeeOnboardingStatus } from '@/shared/constants'
 
 /**
  * Props for {@link EmployeeListFlow}.
@@ -24,6 +25,7 @@ export interface EmployeeListFlowProps extends BaseComponentInterface<never> {
 export interface EmployeeListFlowContextInterface extends FlowContextInterface {
   companyId: string
   employeeId?: string
+  onboardingStatus?: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
   isSelfOnboardingEnabled?: boolean
   withEmployeeI9?: boolean
 }
@@ -54,11 +56,19 @@ export function TerminationFlowContextual() {
 
 /** @internal */
 export function OnboardingExecutionFlowContextual() {
-  const { companyId, onEvent, isSelfOnboardingEnabled, withEmployeeI9 } =
-    useFlow<EmployeeListFlowContextInterface>()
+  const {
+    companyId,
+    employeeId,
+    onboardingStatus,
+    onEvent,
+    isSelfOnboardingEnabled,
+    withEmployeeI9,
+  } = useFlow<EmployeeListFlowContextInterface>()
   return (
     <OnboardingExecutionFlow
       companyId={ensureRequired(companyId)}
+      initialEmployeeId={employeeId}
+      initialOnboardingStatus={onboardingStatus}
       onEvent={onEvent}
       isSelfOnboardingEnabled={isSelfOnboardingEnabled}
       withEmployeeI9={withEmployeeI9}

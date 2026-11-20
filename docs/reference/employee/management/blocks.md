@@ -518,8 +518,8 @@ Props for [DocumentsCard](#documentscard).
 ## EmployeeList
 
 Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
-tabs, with per-row actions tailored to each tab (edit, delete, dismiss). Dismissed rows have no
-available actions, so no menu is rendered for them.
+tabs, with per-row actions tailored to each tab (edit, delete, dismiss, review).
+Dismissed rows have no available actions, so no menu is rendered for them.
 
 <br />
 
@@ -548,6 +548,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/update` | Fired when the user selects "Edit" on a row. | `{ employeeId: string }` |
 | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
 | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
+| `employee/onboardingStatus/updated` | Fired after "Review employee" moves an employee who finished self-onboarding into admin review. | The updated `EmployeeOnboardingStatus` record |
+| `employee/management/review` | Fired when the user selects "Review employee" on a row in the Onboarding tab, after `employee/onboardingStatus/updated` when the status changed. Employees already in admin review skip the status update. | `{ employeeId: string, onboardingStatus: OnboardingStatus }` |
 
 <br />
 

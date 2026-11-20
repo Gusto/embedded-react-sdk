@@ -3,7 +3,7 @@ import { useEmployeeList, type EmployeeType } from '../shared/useEmployeeList'
 import { ManagementEmployeeListView } from './ManagementEmployeeListView'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 
 /**
  * The tab currently selected on {@link ManagementEmployeeList | EmployeeList}.
@@ -77,6 +77,27 @@ function ManagementEmployeeListRoot({
     onEvent(componentEvents.EMPLOYEE_DISMISS, { employeeId })
   }
 
+  const handleReview = async (employeeId: string) => {
+    const employee = employeeList.data.employees.find(({ uuid }) => uuid === employeeId)
+    if (
+      employee?.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
+    ) {
+      onEvent(componentEvents.EMPLOYEE_MANAGEMENT_REVIEW, {
+        employeeId,
+        onboardingStatus: employee.onboardingStatus,
+      })
+      return
+    }
+
+    const onboardingStatus = await employeeList.actions.onReview(employeeId)
+    if (!onboardingStatus) return
+    onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, onboardingStatus)
+    onEvent(componentEvents.EMPLOYEE_MANAGEMENT_REVIEW, {
+      employeeId,
+      onboardingStatus: onboardingStatus.onboardingStatus,
+    })
+  }
+
   const handleTabChange = (tab: EmployeeTab) => {
     setSelectedTab(tab)
   }
@@ -92,6 +113,7 @@ function ManagementEmployeeListRoot({
         status={employeeList.status}
         onEdit={handleEdit}
         onDismiss={handleDismiss}
+        onReview={handleReview}
         onDelete={async (employeeId: string) => {
           await employeeList.actions.onDelete(employeeId)
           onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId })
@@ -105,8 +127,8 @@ function ManagementEmployeeListRoot({
 
 /**
  * Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
- * tabs, with per-row actions tailored to each tab (edit, delete, dismiss). Dismissed rows have no
- * available actions, so no menu is rendered for them.
+ * tabs, with per-row actions tailored to each tab (edit, delete, dismiss, review).
+ * Dismissed rows have no available actions, so no menu is rendered for them.
  *
  * @events
  * | Event | Description | Data |
@@ -115,6 +137,8 @@ function ManagementEmployeeListRoot({
  * | `employee/update` | Fired when the user selects "Edit" on a row. | `{ employeeId: string }` |
  * | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
  * | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
+ * | `employee/onboardingStatus/updated` | Fired after "Review employee" moves an employee who finished self-onboarding into admin review. | The updated `EmployeeOnboardingStatus` record |
+ * | `employee/management/review` | Fired when the user selects "Review employee" on a row in the Onboarding tab, after `employee/onboardingStatus/updated` when the status changed. Employees already in admin review skip the status update. | `{ employeeId: string, onboardingStatus: OnboardingStatus }` |
  *
  * @public
  */

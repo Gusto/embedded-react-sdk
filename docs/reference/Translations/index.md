@@ -4333,6 +4333,7 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
 | <a id="property-employeemanagementemployeelistpendingdismissalbadge"></a> `pendingDismissalBadge` | `"Last day {{date}}"` |
 | <a id="property-employeemanagementemployeelistpendingdismissallabel"></a> `pendingDismissalLabel` | `"Pending dismissal"` |
+| <a id="property-employeemanagementemployeelistreviewcta"></a> `reviewCta` | `"Review employee"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |

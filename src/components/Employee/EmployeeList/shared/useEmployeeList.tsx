@@ -103,10 +103,14 @@ function deriveAllowedActions(
   pendingDismissalDate?: string,
 ): EmployeeAction[] {
   const actions: EmployeeAction[] = []
+  const isAwaitingAdminReview =
+    employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
+  const reviewsInPlaceOfEdit = employeeType === 'onboarding' && isAwaitingAdminReview
 
   // Edit action - available for certain onboarding statuses, but not for terminated employees
   if (
     employeeType !== 'terminated' &&
+    !reviewsInPlaceOfEdit &&
     (employee.onboardingStatus === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
       employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
       employee.onboardingStatus ===
@@ -121,9 +125,11 @@ function deriveAllowedActions(
     actions.push('cancel_self_onboarding')
   }
 
-  // Review action - available when employee completed self-onboarding
+  // Review action - available when employee completed self-onboarding, and on the onboarding
+  // tab for employees whose review is already underway
   if (
-    employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE
+    employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ||
+    reviewsInPlaceOfEdit
   ) {
     actions.push('review')
   }
@@ -152,7 +158,8 @@ function deriveAllowedActions(
  * @remarks
  * `employeeType` maps to a server-side filter and changes which actions appear on each row:
  * `'active'` adds `dismiss` unless the employee already has a termination scheduled for a future
- * date, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it to list every employee.
+ * date, `'terminated'` adds `rehire`, and `'onboarding'` offers `review` instead of `edit` for
+ * employees already in `self_onboarding_awaiting_admin_review`. Omit it to list every employee.
  *
  * An `'active'` row with a pending termination carries its effective date on
  * `pendingDismissalDate` instead of the `dismiss` action.
