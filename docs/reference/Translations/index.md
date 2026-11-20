@@ -724,6 +724,8 @@ Translation keys for the `Company.Management.BankAccount` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementbankaccountalerts"></a> `alerts` |
+| `alerts.bankAccountUpdated` |
 | <a id="property-companymanagementbankaccountcard"></a> `card` |
 | `card.accountName` |
 | `card.accountNumber` |
@@ -742,6 +744,8 @@ Translation keys for the `Company.Management.BankAccount` i18n namespace.
 | `card.verificationStatus.awaiting_deposits` |
 | `card.verificationStatus.ready_for_verification` |
 | `card.verificationStatus.verified` |
+| <a id="property-companymanagementbankaccountheader"></a> `header` |
+| `header.backCta` |
 
 ***
 

@@ -490,9 +490,11 @@ describe('Company DashboardFlow', () => {
     })
     await user.click(screen.getByRole('button', { name: 'Manage bank account' }))
 
-    // Continue fires COMPANY_BANK_ACCOUNT_DONE whether or not the account changed, so
-    // a look-and-leave visit must not announce an update that never happened.
-    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+    // The spoke now opens on the Change-only management view, so the back header is the exit
+    // and the Continue button this previously used no longer renders. The pending-alert slot
+    // is only filled by a save, so a look-and-leave visit must not announce an update that
+    // never happened.
+    await user.click(await screen.findByRole('button', { name: 'Back to company settings' }))
 
     expect(await screen.findByRole('tab', { name: 'Pay' })).toBeInTheDocument()
     expect(screen.queryByText('Bank account updated')).toBeNull()

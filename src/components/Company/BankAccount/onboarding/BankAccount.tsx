@@ -4,9 +4,9 @@ import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bank
 import {
   BankAccountFormContextual,
   type BankAccountContextInterface,
-} from './BankAccountComponents'
-import { bankAccountStateMachine } from './stateMachine'
-import { BankAccountListContextual } from './BankAccountComponents'
+} from '../shared/bankAccountComponents'
+import { createBankAccountMachine } from '../shared/bankAccountMachine'
+import { BankAccountListContextual } from './BankAccountListContextual'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -32,7 +32,7 @@ function BankAccountFlow({ companyId, onEvent, dictionary }: BankAccountProps) {
     () =>
       createMachine(
         bankAccount ? 'viewBankAccount' : 'addBankAccount',
-        bankAccountStateMachine,
+        createBankAccountMachine(BankAccountListContextual),
         (initialContext: BankAccountContextInterface) => ({
           ...initialContext,
           component: bankAccount ? BankAccountListContextual : BankAccountFormContextual,
