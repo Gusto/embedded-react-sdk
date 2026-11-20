@@ -1,9 +1,10 @@
 import { createMachine } from 'robot3'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useMemo } from 'react'
-import { AssignSignatory, DocumentList } from './documentSignerStateMachine'
-import { documentSignerMachine } from './stateMachine'
-import type { DocumentSignerContextInterface } from './useDocumentSigner'
+import { AssignSignatory } from '../shared/documentSignerComponents'
+import { createDocumentSignerMachine } from '../shared/documentSignerMachine'
+import type { DocumentSignerContextInterface } from '../shared/useDocumentSigner'
+import { DocumentListContextual } from './DocumentListContextual'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -48,10 +49,10 @@ function DocumentSignerFlow({
     () =>
       createMachine(
         doesSignatoryExist ? 'documentList' : 'index',
-        documentSignerMachine,
+        createDocumentSignerMachine(DocumentListContextual),
         (initialContext: DocumentSignerContextInterface) => ({
           ...initialContext,
-          component: doesSignatoryExist ? DocumentList : AssignSignatory,
+          component: doesSignatoryExist ? DocumentListContextual : AssignSignatory,
           companyId,
           signatoryId,
           adoptsAssignedSignatory,

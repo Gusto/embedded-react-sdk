@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { createMachine, interpret, type SendFunction } from 'robot3'
-import { documentSignerMachine } from './stateMachine'
+import { createDocumentSignerMachine } from './documentSignerMachine'
 import type { DocumentSignerContextInterface } from './useDocumentSigner'
 import { componentEvents } from '@/shared/constants'
 
 function createService(adoptsAssignedSignatory: boolean) {
   const machine = createMachine(
     'assignSignatory',
-    documentSignerMachine,
+    createDocumentSignerMachine(() => null),
     (initialContext: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
       ...initialContext,
       component: () => null,
