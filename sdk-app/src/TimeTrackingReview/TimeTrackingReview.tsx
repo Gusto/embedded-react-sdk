@@ -998,9 +998,7 @@ function TimeTrackingPrototype() {
               ))}
               <Components.Text size="sm" variant="supporting">
                 Not sent. The page applied this change locally.
-              </Components.Text>
-              <Components.Text size="sm" variant="supporting">
-                {preview.gapIds.length > 0 && 'Related gaps: '}
+                {preview.gapIds.length > 0 && ' Related gaps: '}
                 {preview.gapIds.map(id => (
                   <GapPin key={id} id={id} />
                 ))}

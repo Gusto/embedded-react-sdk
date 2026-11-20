@@ -233,7 +233,8 @@ export function PayrollTab({
               {running.unsent} approved {running.unsent === 1 ? 'shift hasn’t' : 'shifts haven’t'}{' '}
               been sent to this payroll. Send them before you run it?
               {running.notReady > 0 &&
-                ` ${running.notReady} more are pending or still clocked in and won’t go.`}
+                ` ${running.notReady} more are pending or still clocked in and won’t go.`}{' '}
+              Payroll’s current hours per person can’t be read until it’s prepared.
             </Components.Alert>
           ) : (
             <Components.Text>
@@ -242,9 +243,6 @@ export function PayrollTab({
                 : 'Every approved shift in this period has been sent.'}
             </Components.Text>
           )}
-          <Components.Text size="sm" variant="supporting">
-            Payroll’s current hours per person can’t be read until it’s prepared.{' '}
-          </Components.Text>
         </PrototypeModal>
       )}
     </Flex>

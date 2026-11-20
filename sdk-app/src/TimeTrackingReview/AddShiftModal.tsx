@@ -136,7 +136,6 @@ export function AddShiftModal({
 
   return (
     <PrototypeModal
-      size="medium"
       title={
         <>
           Add shift <ChangePin id="shift-window" />
@@ -191,6 +190,7 @@ export function AddShiftModal({
 
       <Components.Select
         label="Add as"
+        description="Admins can add shifts already approved. They go with the next send."
         placeholder="Choose a status"
         value={status}
         options={[
@@ -207,9 +207,6 @@ export function AddShiftModal({
           {problems.join(' ')}
         </Components.Alert>
       )}
-      <Components.Text size="sm" variant="supporting">
-        Admins can add shifts already approved. They go with the next send.
-      </Components.Text>
     </PrototypeModal>
   )
 }

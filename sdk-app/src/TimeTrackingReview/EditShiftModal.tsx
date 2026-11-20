@@ -130,7 +130,6 @@ export function EditShiftModal({
 
   return (
     <PrototypeModal
-      size="medium"
       title={
         <>
           {clockOut ? 'Clock out' : 'Edit shift'}: {person?.name ?? 'Unknown'},{' '}
@@ -204,10 +203,6 @@ export function EditShiftModal({
         shiftEnd={nextEnd}
         timeZone={tz}
       />
-      <Components.Text size="sm" variant="supporting">
-        Moving only the shift’s start or end can skip the API’s checks on breaks you keep, so the
-        page checks them here. <GapPin id="break-timing" />
-      </Components.Text>
       {issues.length > 0 && person?.breakPolicy && (
         <Components.Alert status="warning" label={breakIssueLabel(issues)}>
           {person.breakPolicy.pay_premium
@@ -225,7 +220,9 @@ export function EditShiftModal({
         Stays “{shift.status}” after the edit.
         {shift.synced_to_payroll_at &&
           ' Already sent: payroll keeps the old hours until the next send.'}
-        {shift.synced_to_payroll_at && <GapPin id="which-timesheets" />}
+        {shift.synced_to_payroll_at && <GapPin id="which-timesheets" />} The page checks breaks
+        against the new times, since the API can skip that when only the start or end moves.{' '}
+        <GapPin id="break-timing" />
       </Components.Text>
       {confirmDelete && (
         <Components.Alert status="warning" label="Delete this shift?">

@@ -90,7 +90,7 @@ export function BreaksEditor({
         ))}
       </Flex>
       <Components.Text size="sm" variant="supporting">
-        Changing a start keeps the break’s length. Times are in {timeZone}.
+        Changing a start keeps the break’s length.
       </Components.Text>
     </Flex>
   )

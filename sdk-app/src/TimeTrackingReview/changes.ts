@@ -85,8 +85,8 @@ export const CHANGES: Change[] = [
     tabs: ['review'],
     title: 'Wider, taller shift window with times in one row',
     feedback: 'Dang why are all the modals so narrow? We have so much real estate and it’s wasted.',
-    what: 'Add shift and Edit shift use a new “medium” size on the SDK Modal: 41.75rem wide (up from 34rem) and nearly the full window height, matching the Workbench Dialog’s medium size. Shift times sit in one row, and each break’s start and end sit beside it. The size option is an SDK change, not in the published SDK.',
-    where: 'Add shift and Edit shift.',
+    what: 'Every popup (Add shift, Edit shift, View request, Run payroll) uses a new “medium” size on the SDK Modal: 41.75rem wide (up from 34rem) and nearly the full window height, matching the Workbench Dialog’s medium size. Shift times sit in one row, each break’s start and end sit beside it, and repeated notes were merged. The delete confirmation stays small. The size option is an SDK change, not in the published SDK.',
+    where: 'Add shift, Edit shift, View request and Run payroll.',
   },
 ]
 

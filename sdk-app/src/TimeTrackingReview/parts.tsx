@@ -47,7 +47,7 @@ export function PrototypeModal({
   onClose,
   children,
   footer,
-  size,
+  size = 'medium',
 }: {
   title: ReactNode
   onClose: () => void
