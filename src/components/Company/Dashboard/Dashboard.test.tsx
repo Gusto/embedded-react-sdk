@@ -383,6 +383,38 @@ describe('Company DashboardFlow', () => {
     expect(await screen.findByRole('tab', { name: 'Company details' })).toBeInTheDocument()
   })
 
+  it('returns from the Industry spoke with an alert once the classification is saved', async () => {
+    // Guards the event retarget: the spoke now returns on
+    // `company/management/industry/updated`, which IndustryEditScreen translates from the
+    // form's own `company/industry/selected`. If that translation were missing the spoke
+    // would become a dead end reachable only by the back header, with no type error — the
+    // route-and-back case above would still pass.
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit industry' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit industry' }))
+
+    const comboBox = await screen.findByRole('combobox', {
+      name: /Select your company's industry/i,
+    })
+    await waitFor(() => {
+      expect(comboBox).toHaveDisplayValue(/Custom Computer Programming Services\s*$/)
+    })
+    await user.clear(comboBox)
+    await user.type(comboBox, 'Orange Groves')
+    await user.click(await screen.findByRole('option', { name: 'Orange Groves' }))
+
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    expect(await screen.findByText('Industry updated')).toBeInTheDocument()
+    expect(await screen.findByRole('tab', { name: 'Company details' })).toBeInTheDocument()
+  }, 20000)
+
   it('routes the Locations card Manage CTA to the Locations spoke', async () => {
     const user = userEvent.setup()
     renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {

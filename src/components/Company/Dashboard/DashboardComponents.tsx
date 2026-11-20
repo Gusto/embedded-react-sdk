@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Dashboard, type DashboardTab } from './Dashboard'
 import { useViewerSignatoryId } from './ViewerSignatoryContext'
-import { Industry } from '@/components/Company/Industry'
+import { IndustryEditScreen } from '@/components/Company/Industry/management/IndustryEditScreen'
 import { Locations } from '@/components/Company/Locations'
 import { FederalTaxes } from '@/components/Company/FederalTaxes'
 import { BankAccount } from '@/components/Company/BankAccount'
@@ -98,7 +98,7 @@ export function DashboardViewContextual() {
 /** @internal */
 export function IndustryContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
-  return <Industry companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <IndustryEditScreen companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */
