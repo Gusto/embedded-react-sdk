@@ -13,7 +13,7 @@ import {
   type Person,
   type ShiftStatus,
 } from './model'
-import { PrototypeModal } from './parts'
+import { ChangePin, PrototypeModal } from './parts'
 import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -136,7 +136,12 @@ export function AddShiftModal({
 
   return (
     <PrototypeModal
-      title="Add shift"
+      size="medium"
+      title={
+        <>
+          Add shift <ChangePin id="shift-window" />
+        </>
+      }
       onClose={onClose}
       footer={
         <Flex justifyContent="flex-end" gap={12}>
@@ -149,7 +154,7 @@ export function AddShiftModal({
         </Flex>
       }
     >
-      <Grid gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }} gap={12}>
+      <Grid gridTemplateColumns={{ base: '2fr 1.4fr 1fr 1fr' }} gap={12}>
         <Components.Select
           label="Person"
           placeholder="Choose a person"

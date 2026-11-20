@@ -45,8 +45,9 @@ import { EditShiftModal } from './EditShiftModal'
 import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
 import { SendPage } from './SendPage'
-import { GapContext } from './gapContext'
-import { ApproveReject, GapPin, PrototypeModal, RequestBlock } from './parts'
+import { CHANGES, CHANGE_NUMBER } from './changes'
+import { ChangeContext, GapContext } from './gapContext'
+import { ApproveReject, ChangePin, GapPin, PrototypeModal, RequestBlock } from './parts'
 import { nowIso, type NoticeStatus, type Preview } from './preview'
 import type { PolicyData } from './PoliciesTab'
 import styles from './TimeTrackingReview.module.scss'
@@ -171,8 +172,14 @@ function TimeTrackingPrototype() {
   const [selectedShifts, setSelectedShifts] = useState<Set<string>>(new Set())
   const [selectedPeople, setSelectedPeople] = useState<Set<string>>(new Set())
 
-  const [gapsOn, setGapsOn] = useState(true)
+  const [overlay, setOverlay] = useState<'gaps' | 'changes' | null>('gaps')
+  const gapsOn = overlay === 'gaps'
+  const changesOn = overlay === 'changes'
+  const toggleOverlay = (next: 'gaps' | 'changes') => {
+    setOverlay(current => (current === next ? null : next))
+  }
   const [activeGap, setActiveGap] = useState<string | null>(null)
+  const [activeChange, setActiveChange] = useState<string | null>(null)
 
   const [preview, setPreview] = useState<Preview | null>(null)
   const [sim, setSim] = useState<{ shifts: Record<string, ApiShift | null>; added: ApiShift[] }>({
@@ -376,7 +383,10 @@ function TimeTrackingPrototype() {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement
       if (target.closest('input, textarea, select, [role="dialog"]')) return
-      if (event.key === 'g' || event.key === 'G') setGapsOn(on => !on)
+      if (event.key === 'g' || event.key === 'G')
+        setOverlay(current => (current === 'gaps' ? null : 'gaps'))
+      if (event.key === 'c' || event.key === 'C')
+        setOverlay(current => (current === 'changes' ? null : 'changes'))
     }
     window.addEventListener('keydown', onKey)
     return () => {
@@ -385,9 +395,16 @@ function TimeTrackingPrototype() {
   }, [])
 
   const selectGap = useCallback((id: string) => {
-    setGapsOn(true)
+    setOverlay('gaps')
     setActiveGap(id)
     document.getElementById(`gap-${id}`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, [])
+  const selectChange = useCallback((id: string) => {
+    setOverlay('changes')
+    setActiveChange(id)
+    document
+      .getElementById(`change-${id}`)
+      ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }, [])
 
   const applySim = useCallback(
@@ -602,6 +619,7 @@ function TimeTrackingPrototype() {
         >
           Add shift
         </Components.Button>
+        <ChangePin id="send-page" />
         <GapPin id="auto-sync" />
         <GapPin id="sync-limits" />
         <GapPin id="by-period" />
@@ -688,302 +706,364 @@ function TimeTrackingPrototype() {
 
   return (
     <GapContext.Provider value={{ on: gapsOn, active: activeGap, setActive: selectGap }}>
-      <div ref={rootRef} className={`${styles.root} ${gapsOn ? styles.withGaps : ''}`}>
-        <div className={styles.main}>
-          <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
-            <Flex flexDirection="column" gap={4}>
-              <Components.Heading as="h1">Time tracking</Components.Heading>
+      <ChangeContext.Provider
+        value={{ on: changesOn, active: activeChange, setActive: selectChange }}
+      >
+        <div ref={rootRef} className={`${styles.root} ${overlay ? styles.withGaps : ''}`}>
+          <div className={styles.main}>
+            <Flex justifyContent="space-between" alignItems="flex-start" gap={16} flexWrap="wrap">
+              <Flex flexDirection="column" gap={4}>
+                <Components.Heading as="h1">Time tracking</Components.Heading>
+                <Components.Text size="sm" variant="supporting">
+                  Prototype on real API data. It only reads; every action shows the request it would
+                  send.
+                </Components.Text>
+              </Flex>
+              <div className={styles.overlayToggle}>
+                <Components.Button
+                  variant={gapsOn ? 'secondary' : 'tertiary'}
+                  onClick={() => {
+                    toggleOverlay('gaps')
+                  }}
+                >
+                  {gapsOn ? 'Hide gaps' : 'Show gaps'} (G)
+                </Components.Button>
+                <Components.Button
+                  variant={changesOn ? 'secondary' : 'tertiary'}
+                  onClick={() => {
+                    toggleOverlay('changes')
+                  }}
+                >
+                  {changesOn ? 'Hide changes' : 'Show changes'} (C)
+                </Components.Button>
+              </div>
+            </Flex>
+
+            {base.kind === 'loading' && <Components.LoadingSpinner />}
+            {base.kind === 'error' && (
+              <Components.Alert
+                status="error"
+                label="Couldn’t load the company"
+                action={
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      setReloadToken(t => t + 1)
+                    }}
+                  >
+                    Try again
+                  </Components.Button>
+                }
+              >
+                {base.message}
+              </Components.Alert>
+            )}
+
+            {changes > 0 && (
+              <Flex alignItems="center" gap={8}>
+                <span className={styles.simTag}>
+                  Simulated · {changes} {changes === 1 ? 'change' : 'changes'}, nothing sent
+                </span>
+                <Components.Button variant="tertiary" onClick={resetSimulation}>
+                  Reset to real data
+                </Components.Button>
+              </Flex>
+            )}
+
+            {notice && (
+              <Components.Alert
+                status={notice.status}
+                label={notice.message}
+                onDismiss={() => {
+                  setNotice(null)
+                }}
+                action={
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      setPreview(notice.preview)
+                    }}
+                  >
+                    View request
+                  </Components.Button>
+                }
+              />
+            )}
+
+            {data && (
+              <Components.Tabs
+                aria-label="Time tracking"
+                selectedId={tab}
+                onSelectionChange={setTab}
+                tabs={[
+                  {
+                    id: 'review',
+                    label: 'Timesheets',
+                    content:
+                      sendOpen && period && schedule ? (
+                        <SendPage
+                          companyId={companyId}
+                          schedule={schedule}
+                          period={period}
+                          people={schedulePeople}
+                          shifts={periodShifts}
+                          isUpdate={Boolean(lastSyncAt)}
+                          onClose={() => {
+                            setSendOpen(false)
+                          }}
+                          onReview={personUuid => {
+                            setSendOpen(false)
+                            setFocusPerson(personUuid)
+                          }}
+                          onSent={(sent, request) => {
+                            const now = nowIso()
+                            putShifts(sent.map(shift => ({ ...shift, synced_to_payroll_at: now })))
+                            notify(`Hours for ${sent.length} shifts sent to payroll.`, request)
+                          }}
+                        />
+                      ) : (
+                        review
+                      ),
+                  },
+                  {
+                    id: 'policies',
+                    label: 'Policies',
+                    content: (
+                      <PoliciesTab
+                        companyId={companyId}
+                        people={people}
+                        schedules={data.schedules}
+                        overtimePolicies={data.overtimePolicies}
+                        breakPolicies={data.breakPolicies}
+                        onPoliciesChange={(next: PolicyData) => {
+                          updateData(current => ({ ...current, ...next }))
+                        }}
+                        onNotify={notify}
+                      />
+                    ),
+                  },
+                  {
+                    id: 'payroll',
+                    label: 'Run payroll (another flow)',
+                    content: (
+                      <PayrollTab
+                        companyId={companyId}
+                        people={people}
+                        schedules={data.schedules}
+                        periods={data.periods}
+                        applySim={applySim}
+                        onNotify={notify}
+                        onProcess={processed => {
+                          updateData(current => ({
+                            ...current,
+                            periods: current.periods.map(p =>
+                              p === processed && p.payroll
+                                ? { ...p, payroll: { ...p.payroll, processed: true } }
+                                : p,
+                            ),
+                          }))
+                        }}
+                        onReview={(nextSchedule, key) => {
+                          setScheduleUuid(nextSchedule)
+                          setSelectedPeriodKey(key)
+                          setTab('review')
+                          setSendWhenLoaded(true)
+                        }}
+                      />
+                    ),
+                  },
+                ]}
+              />
+            )}
+          </div>
+
+          {gapsOn && (
+            <aside className={styles.gapsPanel} aria-label="API gaps">
+              <div className={styles.gapsHeader}>
+                <h2>API gaps on this tab</h2>
+                <button
+                  type="button"
+                  className={styles.iconButton}
+                  onClick={() => {
+                    setOverlay(null)
+                  }}
+                  aria-label="Hide gaps"
+                >
+                  ×
+                </button>
+              </div>
+              <p className={styles.muted}>
+                One badge for each row of “Appendix: Time Tracking SDK PRD and REST API Comparison”
+                that isn’t fully supported, in its order and wording.
+              </p>
+              <ol className={styles.gapList}>
+                {GAPS.filter(gap => gap.tabs.includes(tab)).map(gap => (
+                  <li
+                    key={gap.id}
+                    id={`gap-${gap.id}`}
+                    className={`${styles.gap} ${activeGap === gap.id ? styles.gapActive : ''}`}
+                  >
+                    <div className={styles.gapTitle}>
+                      <span className={styles.gapNumber}>{GAP_NUMBER[gap.id]}</span>
+                      <span>{gap.title}</span>
+                    </div>
+                    <span className={`${styles.gapKind} ${styles[`kind_${gap.kind}`]}`}>
+                      {gap.priority} · {GAP_KIND_LABEL[gap.kind]}
+                    </span>
+                    <p>
+                      <strong>Details:</strong> {gap.details}
+                    </p>
+                    {gap.needed && (
+                      <p className={styles.needed}>
+                        <strong>Needed to meet the PRD:</strong> {gap.needed}
+                      </p>
+                    )}
+                    <p>
+                      <strong>Here:</strong> {gap.here}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+          )}
+
+          {changesOn && (
+            <aside className={`${styles.gapsPanel} ${styles.changesPanel}`} aria-label="Changes">
+              <div className={styles.gapsHeader}>
+                <h2>Changes from review on this tab</h2>
+                <button
+                  type="button"
+                  className={styles.iconButton}
+                  onClick={() => {
+                    setOverlay(null)
+                  }}
+                  aria-label="Hide changes"
+                >
+                  ×
+                </button>
+              </div>
+              <p className={styles.muted}>
+                Each pink badge marks something that changed after the Nov 19 review. Badges inside
+                windows and pages show when you open them.
+              </p>
+              <ol className={styles.gapList}>
+                {CHANGES.filter(change => change.tabs.includes(tab)).map(change => (
+                  <li
+                    key={change.id}
+                    id={`change-${change.id}`}
+                    className={`${styles.gap} ${activeChange === change.id ? styles.changeActive : ''}`}
+                  >
+                    <div className={styles.gapTitle}>
+                      <span className={`${styles.gapNumber} ${styles.changeNumber}`}>
+                        {CHANGE_NUMBER[change.id]}
+                      </span>
+                      <span>{change.title}</span>
+                    </div>
+                    <span className={styles.changeSource}>
+                      {change.feedback ? 'Review feedback' : 'Added after review'}
+                    </span>
+                    {change.feedback && <p className={styles.quote}>“{change.feedback}”</p>}
+                    <p>
+                      <strong>What changed:</strong> {change.what}
+                    </p>
+                    <p>
+                      <strong>Where:</strong> {change.where}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+          )}
+
+          {preview && (
+            <PrototypeModal
+              title={`What “${preview.title}” would send`}
+              onClose={() => {
+                setPreview(null)
+              }}
+            >
+              {preview.requests.map((r, i) => (
+                <RequestBlock
+                  key={`${r.method}-${r.path}-${i}`}
+                  method={r.method}
+                  path={r.path}
+                  body={r.body}
+                  caption={r.caption}
+                />
+              ))}
+              {preview.notes?.map(note => (
+                <Components.Text key={note} size="sm">
+                  {note}
+                </Components.Text>
+              ))}
               <Components.Text size="sm" variant="supporting">
-                Prototype on real API data. It only reads; every action shows the request it would
-                send.
+                Not sent. The page applied this change locally.
               </Components.Text>
-            </Flex>
-            <Components.Button
-              variant="tertiary"
-              onClick={() => {
-                setGapsOn(on => !on)
-              }}
-            >
-              {gapsOn ? 'Hide gaps' : 'Show gaps'} (G)
-            </Components.Button>
-          </Flex>
-
-          {base.kind === 'loading' && <Components.LoadingSpinner />}
-          {base.kind === 'error' && (
-            <Components.Alert
-              status="error"
-              label="Couldn’t load the company"
-              action={
-                <Components.Button
-                  variant="secondary"
-                  onClick={() => {
-                    setReloadToken(t => t + 1)
-                  }}
-                >
-                  Try again
-                </Components.Button>
-              }
-            >
-              {base.message}
-            </Components.Alert>
+              <Components.Text size="sm" variant="supporting">
+                {preview.gapIds.length > 0 && 'Related gaps: '}
+                {preview.gapIds.map(id => (
+                  <GapPin key={id} id={id} />
+                ))}
+                {!gapsOn && preview.gapIds.map(id => `#${GAP_NUMBER[id]}`).join(', ')}
+              </Components.Text>
+            </PrototypeModal>
           )}
 
-          {changes > 0 && (
-            <Flex alignItems="center" gap={8}>
-              <span className={styles.simTag}>
-                Simulated · {changes} {changes === 1 ? 'change' : 'changes'}, nothing sent
-              </span>
-              <Components.Button variant="tertiary" onClick={resetSimulation}>
-                Reset to real data
-              </Components.Button>
-            </Flex>
-          )}
-
-          {notice && (
-            <Components.Alert
-              status={notice.status}
-              label={notice.message}
-              onDismiss={() => {
-                setNotice(null)
+          {editing && (
+            <EditShiftModal
+              shift={editing}
+              clockOut={clockingOut}
+              person={people.find(p => p.employee.uuid === editing.entity_uuid)}
+              onClose={() => {
+                setEditing(null)
               }}
-              action={
-                <Components.Button
-                  variant="secondary"
-                  onClick={() => {
-                    setPreview(notice.preview)
-                  }}
-                >
-                  View request
-                </Components.Button>
-              }
+              onSave={(next, request) => {
+                setEditing(null)
+                putShifts([next])
+                notify(
+                  next.synced_to_payroll_at
+                    ? 'Saved. Still approved, but not on payroll until you update this period.'
+                    : 'Shift saved.',
+                  request,
+                )
+              }}
+              onDelete={(deleted, request) => {
+                setEditing(null)
+                removeShift(deleted.uuid)
+                notify(
+                  deleted.synced_to_payroll_at
+                    ? 'Shift deleted. Its hours stay on payroll until you update this period.'
+                    : 'Shift deleted.',
+                  request,
+                )
+              }}
             />
           )}
 
-          {data && (
-            <Components.Tabs
-              aria-label="Time tracking"
-              selectedId={tab}
-              onSelectionChange={setTab}
-              tabs={[
-                {
-                  id: 'review',
-                  label: 'Timesheets',
-                  content:
-                    sendOpen && period && schedule ? (
-                      <SendPage
-                        companyId={companyId}
-                        schedule={schedule}
-                        period={period}
-                        people={schedulePeople}
-                        shifts={periodShifts}
-                        isUpdate={Boolean(lastSyncAt)}
-                        onClose={() => {
-                          setSendOpen(false)
-                        }}
-                        onReview={personUuid => {
-                          setSendOpen(false)
-                          setFocusPerson(personUuid)
-                        }}
-                        onSent={(sent, request) => {
-                          const now = nowIso()
-                          putShifts(sent.map(shift => ({ ...shift, synced_to_payroll_at: now })))
-                          notify(`Hours for ${sent.length} shifts sent to payroll.`, request)
-                        }}
-                      />
-                    ) : (
-                      review
-                    ),
-                },
-                {
-                  id: 'policies',
-                  label: 'Policies',
-                  content: (
-                    <PoliciesTab
-                      companyId={companyId}
-                      people={people}
-                      schedules={data.schedules}
-                      overtimePolicies={data.overtimePolicies}
-                      breakPolicies={data.breakPolicies}
-                      onPoliciesChange={(next: PolicyData) => {
-                        updateData(current => ({ ...current, ...next }))
-                      }}
-                      onNotify={notify}
-                    />
-                  ),
-                },
-                {
-                  id: 'payroll',
-                  label: 'Run payroll (another flow)',
-                  content: (
-                    <PayrollTab
-                      companyId={companyId}
-                      people={people}
-                      schedules={data.schedules}
-                      periods={data.periods}
-                      applySim={applySim}
-                      onNotify={notify}
-                      onProcess={processed => {
-                        updateData(current => ({
-                          ...current,
-                          periods: current.periods.map(p =>
-                            p === processed && p.payroll
-                              ? { ...p, payroll: { ...p.payroll, processed: true } }
-                              : p,
-                          ),
-                        }))
-                      }}
-                      onReview={(nextSchedule, key) => {
-                        setScheduleUuid(nextSchedule)
-                        setSelectedPeriodKey(key)
-                        setTab('review')
-                        setSendWhenLoaded(true)
-                      }}
-                    />
-                  ),
-                },
-              ]}
+          {adding && period && (
+            <AddShiftModal
+              companyId={companyId}
+              people={schedulePeople}
+              period={period}
+              shifts={periodShifts}
+              initialPersonUuid={adding.personUuid}
+              onClose={() => {
+                setAdding(null)
+              }}
+              onSave={(shift, request) => {
+                setAdding(null)
+                setSim(prev => ({ ...prev, added: [...prev.added, shift] }))
+                notify(
+                  shift.status === 'approved'
+                    ? 'Shift added as approved. It goes to payroll the next time you send this period.'
+                    : 'Shift added as pending.',
+                  request,
+                )
+              }}
             />
           )}
         </div>
-
-        {gapsOn && (
-          <aside className={styles.gapsPanel} aria-label="API gaps">
-            <div className={styles.gapsHeader}>
-              <h2>API gaps on this tab</h2>
-              <button
-                type="button"
-                className={styles.iconButton}
-                onClick={() => {
-                  setGapsOn(false)
-                }}
-                aria-label="Hide gaps"
-              >
-                ×
-              </button>
-            </div>
-            <p className={styles.muted}>
-              One badge for each row of “Appendix: Time Tracking SDK PRD and REST API Comparison”
-              that isn’t fully supported, in its order and wording.
-            </p>
-            <ol className={styles.gapList}>
-              {GAPS.filter(gap => gap.tabs.includes(tab)).map(gap => (
-                <li
-                  key={gap.id}
-                  id={`gap-${gap.id}`}
-                  className={`${styles.gap} ${activeGap === gap.id ? styles.gapActive : ''}`}
-                >
-                  <div className={styles.gapTitle}>
-                    <span className={styles.gapNumber}>{GAP_NUMBER[gap.id]}</span>
-                    <span>{gap.title}</span>
-                  </div>
-                  <span className={`${styles.gapKind} ${styles[`kind_${gap.kind}`]}`}>
-                    {gap.priority} · {GAP_KIND_LABEL[gap.kind]}
-                  </span>
-                  <p>
-                    <strong>Details:</strong> {gap.details}
-                  </p>
-                  {gap.needed && (
-                    <p className={styles.needed}>
-                      <strong>Needed to meet the PRD:</strong> {gap.needed}
-                    </p>
-                  )}
-                  <p>
-                    <strong>Here:</strong> {gap.here}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </aside>
-        )}
-
-        {preview && (
-          <PrototypeModal
-            title={`What “${preview.title}” would send`}
-            onClose={() => {
-              setPreview(null)
-            }}
-          >
-            {preview.requests.map((r, i) => (
-              <RequestBlock
-                key={`${r.method}-${r.path}-${i}`}
-                method={r.method}
-                path={r.path}
-                body={r.body}
-                caption={r.caption}
-              />
-            ))}
-            {preview.notes?.map(note => (
-              <Components.Text key={note} size="sm">
-                {note}
-              </Components.Text>
-            ))}
-            <Components.Text size="sm" variant="supporting">
-              Not sent. The page applied this change locally.
-            </Components.Text>
-            <Components.Text size="sm" variant="supporting">
-              {preview.gapIds.length > 0 && 'Related gaps: '}
-              {preview.gapIds.map(id => (
-                <GapPin key={id} id={id} />
-              ))}
-              {!gapsOn && preview.gapIds.map(id => `#${GAP_NUMBER[id]}`).join(', ')}
-            </Components.Text>
-          </PrototypeModal>
-        )}
-
-        {editing && (
-          <EditShiftModal
-            shift={editing}
-            clockOut={clockingOut}
-            person={people.find(p => p.employee.uuid === editing.entity_uuid)}
-            onClose={() => {
-              setEditing(null)
-            }}
-            onSave={(next, request) => {
-              setEditing(null)
-              putShifts([next])
-              notify(
-                next.synced_to_payroll_at
-                  ? 'Saved. Still approved, but not on payroll until you update this period.'
-                  : 'Shift saved.',
-                request,
-              )
-            }}
-            onDelete={(deleted, request) => {
-              setEditing(null)
-              removeShift(deleted.uuid)
-              notify(
-                deleted.synced_to_payroll_at
-                  ? 'Shift deleted. Its hours stay on payroll until you update this period.'
-                  : 'Shift deleted.',
-                request,
-              )
-            }}
-          />
-        )}
-
-        {adding && period && (
-          <AddShiftModal
-            companyId={companyId}
-            people={schedulePeople}
-            period={period}
-            shifts={periodShifts}
-            initialPersonUuid={adding.personUuid}
-            onClose={() => {
-              setAdding(null)
-            }}
-            onSave={(shift, request) => {
-              setAdding(null)
-              setSim(prev => ({ ...prev, added: [...prev.added, shift] }))
-              notify(
-                shift.status === 'approved'
-                  ? 'Shift added as approved. It goes to payroll the next time you send this period.'
-                  : 'Shift added as pending.',
-                request,
-              )
-            }}
-          />
-        )}
-      </div>
+      </ChangeContext.Provider>
     </GapContext.Provider>
   )
 }
@@ -1054,7 +1134,11 @@ function PeopleTable({
         ),
       },
       {
-        title: 'Shifts',
+        title: (
+          <>
+            Shifts <ChangePin id="view-shifts" />
+          </>
+        ),
         render: ({ person, shifts }) => (
           <Components.Link href={shiftsHref(person.employee.uuid)}>
             {shifts.length} shifts
@@ -1090,7 +1174,12 @@ function PeopleTable({
       },
       { title: 'Status', render: ({ shifts }) => <StatusBadges shifts={shifts} /> },
       {
-        title: <span className={styles.srOnly}>Approve or reject</span>,
+        title: (
+          <>
+            <span className={styles.srOnly}>Approve or reject</span>
+            <ChangePin id="row-icons" />
+          </>
+        ),
         render: ({ person, shifts }) => {
           const toApprove = shifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
           const toReject = shifts.filter(s => s.status !== 'rejected')
@@ -1226,7 +1315,11 @@ function ShiftsTable({
     columns: [
       { title: 'Date', render: shift => formatDay(localStartDate(shift)) },
       {
-        title: 'Time',
+        title: (
+          <>
+            Time <ChangePin id="clock-out" />
+          </>
+        ),
         render: shift => (
           <span className={styles.nowrap}>
             {formatTime(shift.shift_started_at, shift.time_zone)} –{' '}
@@ -1236,7 +1329,11 @@ function ShiftsTable({
         ),
       },
       {
-        title: 'Breaks',
+        title: (
+          <>
+            Breaks <ChangePin id="missed-breaks" />
+          </>
+        ),
         render: shift => {
           const taken =
             shift.breaks
@@ -1278,7 +1375,12 @@ function ShiftsTable({
         },
       },
       {
-        title: <span className={styles.srOnly}>Approve or reject</span>,
+        title: (
+          <>
+            <span className={styles.srOnly}>Approve or reject</span>
+            <ChangePin id="row-icons" />
+          </>
+        ),
         render: shift => (
           <ApproveReject
             label={label(shift)}
@@ -1375,7 +1477,8 @@ function ShiftsTable({
           {policy.pay_premium
             ? `${policy.name} pays a premium for each missed or short break, so these shifts earn extra pay. Fix the breaks if they were actually taken.`
             : `${policy.name} doesn’t pay a premium, so this doesn’t change pay. Fix the breaks if they were actually taken.`}{' '}
-          The page checks this against the policy’s rules; the API doesn’t flag it.
+          The page checks this against the policy’s rules; the API doesn’t flag it.{' '}
+          <ChangePin id="missed-breaks" />
         </Components.Alert>
       )}
       <DataView label={`${person.name}’s shifts`} {...dataView} />

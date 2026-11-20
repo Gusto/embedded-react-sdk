@@ -1,3 +1,4 @@
+import { ChangePin } from './parts'
 import { addMinutes, placeBreak, timeOnShift, type BreakDraft } from './breaks'
 import { breakRuleLabel, minutesBetween, zonedParts, type ApiBreakRule } from './model'
 import { Flex, Grid } from '@/components/Common'
@@ -25,7 +26,9 @@ export function BreaksEditor({
 
   return (
     <Flex flexDirection="column" gap={8}>
-      <Components.Text weight="medium">Breaks</Components.Text>
+      <Components.Text weight="medium">
+        Breaks <ChangePin id="break-times" />
+      </Components.Text>
       {breaks.length === 0 && (
         <Components.Text size="sm" variant="supporting">
           No breaks.
@@ -34,7 +37,7 @@ export function BreaksEditor({
       {breaks.map(b => (
         <Grid
           key={b.key}
-          gridTemplateColumns={{ base: '1fr', small: '2fr 1fr 1fr auto' }}
+          gridTemplateColumns={{ base: '2fr 1fr 1fr auto' }}
           gap={8}
           alignItems="end"
         >

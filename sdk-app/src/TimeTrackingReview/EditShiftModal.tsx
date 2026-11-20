@@ -20,7 +20,7 @@ import {
   unpaidMinutes,
   type BreakDraft,
 } from './breaks'
-import { GapPin, PrototypeModal } from './parts'
+import { ChangePin, GapPin, PrototypeModal } from './parts'
 import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -130,7 +130,14 @@ export function EditShiftModal({
 
   return (
     <PrototypeModal
-      title={`${clockOut ? 'Clock out' : 'Edit shift'}: ${person?.name ?? 'Unknown'}, ${formatDay(localStartDate(shift))}`}
+      size="medium"
+      title={
+        <>
+          {clockOut ? 'Clock out' : 'Edit shift'}: {person?.name ?? 'Unknown'},{' '}
+          {formatDay(localStartDate(shift))} <ChangePin id="shift-window" />
+          {clockOut && <ChangePin id="clock-out" />}
+        </>
+      }
       onClose={onClose}
       footer={
         confirmDelete ? (
@@ -169,7 +176,7 @@ export function EditShiftModal({
         )
       }
     >
-      <Grid gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }} gap={12}>
+      <Grid gridTemplateColumns={{ base: '1.3fr 1fr 1.3fr 1fr' }} gap={12}>
         <Components.TextInput
           type="date"
           label="Start date"
@@ -205,7 +212,8 @@ export function EditShiftModal({
         <Components.Alert status="warning" label={breakIssueLabel(issues)}>
           {person.breakPolicy.pay_premium
             ? `${person.breakPolicy.name} pays a premium for this, so the shift earns extra pay.`
-            : `${person.breakPolicy.name} doesn’t pay a premium for this.`}
+            : `${person.breakPolicy.name} doesn’t pay a premium for this.`}{' '}
+          <ChangePin id="missed-breaks" />
         </Components.Alert>
       )}
       {problems.length > 0 && (

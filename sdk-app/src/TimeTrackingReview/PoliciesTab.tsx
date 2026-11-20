@@ -16,7 +16,7 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { GapPin, SubPage } from './parts'
+import { ChangePin, GapPin, SubPage } from './parts'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -268,7 +268,11 @@ export function PoliciesTab({
     data: overtimePolicies,
     columns: [
       {
-        title: 'Name',
+        title: (
+          <>
+            Name <ChangePin id="policy-pages" />
+          </>
+        ),
         render: p => (
           <Components.Link href={policyHref('overtime', p.uuid, 'details')}>
             {p.name}
@@ -285,7 +289,11 @@ export function PoliciesTab({
     data: breakPolicies,
     columns: [
       {
-        title: 'Name',
+        title: (
+          <>
+            Name <ChangePin id="policy-pages" />
+          </>
+        ),
         render: p => (
           <Flex gap={8} alignItems="center">
             <Components.Link href={policyHref('break', p.uuid, 'details')}>
@@ -888,7 +896,11 @@ function AssignPeople({
     <SubPage
       backLabel={backLabel}
       onBack={onClose}
-      title={`Assign people to ${policy.name}`}
+      title={
+        <>
+          Assign people to {policy.name} <ChangePin id="policy-pages" />
+        </>
+      }
       description={`Each person can be on one ${kind} policy, so picking someone moves them here. Ineligible people can’t be picked.`}
       actions={
         <Components.Button
@@ -1005,7 +1017,11 @@ function PolicyDetail({
     <SubPage
       backLabel="Policies"
       onBack={onBack}
-      title={policy.name}
+      title={
+        <>
+          {policy.name} <ChangePin id="policy-pages" />
+        </>
+      }
       description={KIND_LABEL[kind]}
       actions={
         <>

@@ -1,5 +1,6 @@
 import { useContext, type ReactNode } from 'react'
-import { GapContext } from './gapContext'
+import { ChangeContext, GapContext } from './gapContext'
+import { CHANGE_NUMBER, type ChangeId } from './changes'
 import { GAP_NUMBER, type GapId } from './gaps'
 import styles from './TimeTrackingReview.module.scss'
 import { Flex } from '@/components/Common'
@@ -23,16 +24,36 @@ export function GapPin({ id }: { id: GapId }) {
   )
 }
 
+export function ChangePin({ id }: { id: ChangeId }) {
+  const { on, active, setActive } = useContext(ChangeContext)
+  if (!on) return null
+  return (
+    <button
+      type="button"
+      className={`${styles.pin} ${styles.changePin} ${active === id ? styles.changePinActive : ''}`}
+      onClick={event => {
+        event.stopPropagation()
+        setActive(id)
+      }}
+      aria-label={`Change ${CHANGE_NUMBER[id]}`}
+    >
+      {CHANGE_NUMBER[id]}
+    </button>
+  )
+}
+
 export function PrototypeModal({
   title,
   onClose,
   children,
   footer,
+  size,
 }: {
   title: ReactNode
   onClose: () => void
   children: ReactNode
   footer?: ReactNode
+  size?: 'default' | 'medium' | 'large'
 }) {
   const Components = useComponentContext()
   return (
@@ -40,6 +61,7 @@ export function PrototypeModal({
       isOpen
       onClose={onClose}
       shouldCloseOnBackdropClick
+      size={size}
       footer={
         footer ?? (
           <Components.Button variant="secondary" onClick={onClose}>

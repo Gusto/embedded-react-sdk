@@ -284,3 +284,41 @@
   gap: 0.25rem;
   min-width: max-content;
 }
+
+.changePin,
+.changeNumber {
+  background: #db2777;
+}
+
+.changePinActive {
+  box-shadow: 0 0 0 0.1875rem rgba(219, 39, 119, 0.35);
+}
+
+.changesPanel {
+  border-color: #db2777;
+}
+
+.changeActive {
+  border-color: #db2777;
+  box-shadow: 0 0 0 0.125rem rgba(219, 39, 119, 0.35);
+}
+
+.changeSource {
+  display: inline-block;
+  margin-top: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  padding: 0.0625rem 0.375rem;
+  background: rgba(219, 39, 119, 0.14);
+  color: #db2777;
+}
+
+.quote {
+  font-style: italic;
+}
+
+.overlayToggle {
+  display: flex;
+  gap: 0.25rem;
+}

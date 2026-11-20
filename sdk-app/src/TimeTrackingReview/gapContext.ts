@@ -11,3 +11,9 @@ export const GapContext = createContext<GapContextValue>({
   active: null,
   setActive: () => {},
 })
+
+export const ChangeContext = createContext<GapContextValue>({
+  on: false,
+  active: null,
+  setActive: () => {},
+})

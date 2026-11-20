@@ -16,7 +16,7 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { GapPin, SubPage } from './parts'
+import { ChangePin, GapPin, SubPage } from './parts'
 import type { Preview } from './preview'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -151,7 +151,11 @@ export function SendPage({
         narrow
         backLabel="Timesheets"
         onBack={onClose}
-        title={title}
+        title={
+          <>
+            {title} <ChangePin id="send-page" />
+          </>
+        }
         footer={
           <Components.Button variant="secondary" onClick={onClose}>
             Back to timesheets
@@ -182,7 +186,11 @@ export function SendPage({
     <SubPage
       backLabel="Timesheets"
       onBack={onClose}
-      title={title}
+      title={
+        <>
+          {title} <ChangePin id="send-page" />
+        </>
+      }
       description={`${scheduleLabel(schedule)} · ${included.length} approved, finished shifts · ${formatHours(totalHours)} hours → ${payrollName}`}
       footer={
         <Flex justifyContent="flex-end" gap={12}>
