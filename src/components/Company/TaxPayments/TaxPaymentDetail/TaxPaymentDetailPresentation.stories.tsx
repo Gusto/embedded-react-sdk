@@ -18,6 +18,7 @@ const payment: TaxPayment = {
   paymentSentOn: null,
   amount: '14661.36',
   amountPaid: '0.00',
+  taxFilingUuid: 'uuid',
   lineItems: [
     { payrollUuid: 'payroll-1', uniqueTaxId: '00-000-0000-FIT-000', amount: '2980.27' },
     { payrollUuid: 'payroll-1', uniqueTaxId: '00-000-0000-FICA-000', amount: '1762.91' },

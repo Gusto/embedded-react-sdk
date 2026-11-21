@@ -22,6 +22,7 @@ const createPayment = (overrides: Partial<TaxPayment>): TaxPayment => ({
   paymentSentOn: null,
   amount: '14661.36',
   amountPaid: '0.00',
+  taxFilingUuid: 'uuid',
   ...overrides,
 })
 
