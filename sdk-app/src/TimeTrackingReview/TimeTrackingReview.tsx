@@ -6,7 +6,6 @@ import { darkTheme } from '../darkTheme'
 import { getAllPages, getJson, withQuery } from './api'
 import { GAPS, GAP_KIND_LABEL, GAP_NUMBER, type Tab } from './gaps'
 import {
-  REVIEW_STATE_LABEL,
   addDays,
   crossesMidnight,
   estimateOvertime,
@@ -35,12 +34,10 @@ import {
   type ApiOvertimePolicy,
   type ApiPayPeriod,
   type ApiPaySchedule,
+  type ApiBreakRule,
   type ApiShift,
   type Person,
-  type ReviewState,
   type ShiftStatus,
-  breakIssueDetail,
-  breakIssueKind,
   breakIssues,
 } from './model'
 import { PayrollTab } from './PayrollTab'
@@ -75,13 +72,23 @@ const TABS: Array<{ value: Tab; label: string }> = [
   { value: 'payroll', label: 'Run payroll (another flow)' },
 ]
 
-const BADGE_STATUS: Record<ReviewState, 'success' | 'warning' | 'error' | 'info'> = {
-  open: 'warning',
+const BREAK_TYPE_ORDER: Array<ApiBreakRule['break_type']> = ['meal', 'rest']
+
+const BREAK_TYPE_LABEL: Record<ApiBreakRule['break_type'], string> = {
+  meal: 'Meal',
+  rest: 'Rest',
+}
+
+const APPROVAL_LABEL: Record<ShiftStatus, string> = {
+  pending: 'Pending',
+  approved: 'Approved',
+  rejected: 'Rejected',
+}
+
+const APPROVAL_BADGE: Record<ShiftStatus, 'success' | 'warning' | 'error'> = {
   pending: 'warning',
+  approved: 'success',
   rejected: 'error',
-  unsent: 'info',
-  sent: 'success',
-  changed: 'warning',
 }
 
 const BATCH_LIMIT = 500
@@ -1450,7 +1457,7 @@ function PeopleTable({
           />
         </Flex>
       )}
-      <div className={styles.reviewTable}>
+      <div className={`${styles.reviewTable} ${styles.peopleTable}`}>
         <DataView label="People with shifts this period" {...dataView} />
       </div>
     </Flex>
@@ -1485,6 +1492,9 @@ function ShiftsTable({
   const policy = person.breakPolicy
   const issuesByShift = new Map(shifts.map(s => [s.uuid, breakIssues(s, policy)]))
   const shiftsWithIssues = shifts.filter(s => issuesByShift.get(s.uuid)?.length)
+  const breakTypes = BREAK_TYPE_ORDER.filter(type =>
+    policy?.rules.some(rule => rule.break_type === type),
+  )
 
   const dataView = useDataView<ApiShift>({
     data: shifts,
@@ -1533,37 +1543,48 @@ function ShiftsTable({
                 return `${kind} ${minutes ?? '…'}m`
               })
               .join(', ') || 'None'
-          const issues = issuesByShift.get(shift.uuid) ?? []
-          if (issues.length === 0) return taken
+          return taken
+        },
+      },
+      ...breakTypes.map(type => ({
+        title: `${BREAK_TYPE_LABEL[type]} breaks`,
+        render: (shift: ApiShift) => {
+          if (!shift.shift_ended_at) return '—'
+          const issues = (issuesByShift.get(shift.uuid) ?? []).filter(
+            issue => issue.rule.break_type === type,
+          )
+          if (issues.length === 0) return <Components.Badge status="success">OK</Components.Badge>
+          const missed = issues.filter(issue => issue.kind === 'missing').length
           return (
-            <div className={styles.breaksCell}>
-              <span>{taken}</span>
-              <span className={styles.breakIssue}>
-                <Components.Badge status="warning">
-                  {breakIssueKind(issues) === 'missing' ? 'Missed' : 'Short'}
-                </Components.Badge>
-                <span className={styles.breakIssueDetail}>
-                  {breakIssueDetail(issues)}
-                  {policy?.pay_premium ? ' · premium' : ''}
-                </span>
-              </span>
-            </div>
+            <Components.Badge status="warning">
+              {missed > 0 ? `Missed (${missed})` : `Short (${issues.length})`}
+            </Components.Badge>
+          )
+        },
+      })),
+      { title: 'Worked', justify: 'end', render: shift => formatHours(workedHours(shift)) },
+      {
+        title: 'Approval',
+        render: shift => {
+          if (!shift.shift_ended_at)
+            return <Components.Badge status="info">Clocked in</Components.Badge>
+          return (
+            <Components.Badge status={APPROVAL_BADGE[shift.status]}>
+              {APPROVAL_LABEL[shift.status]}
+            </Components.Badge>
           )
         },
       },
-      { title: 'Worked', justify: 'end', render: shift => formatHours(workedHours(shift)) },
       {
-        title: 'Status',
+        title: 'Payroll',
         render: shift => {
           const state = reviewState(shift)
-          return (
-            <Components.Badge status={BADGE_STATUS[state]}>
-              {REVIEW_STATE_LABEL[state]}
-              {state === 'sent' && shift.synced_to_payroll_at
-                ? ` ${formatShortDate(shift.synced_to_payroll_at.slice(0, 10))}`
-                : ''}
-            </Components.Badge>
-          )
+          if (state === 'unsent') return 'Not sent'
+          if (state === 'sent' && shift.synced_to_payroll_at)
+            return `Sent ${formatShortDate(shift.synced_to_payroll_at.slice(0, 10))}`
+          if (state === 'changed')
+            return <Components.Badge status="warning">Changed since send</Components.Badge>
+          return '—'
         },
       },
       {
@@ -1684,7 +1705,7 @@ function ShiftsTable({
           <ChangePin id="missed-breaks" />
         </Components.Alert>
       )}
-      <div className={styles.reviewTable}>
+      <div className={`${styles.reviewTable} ${styles.shiftsTable}`}>
         <DataView label={`${person.name}’s shifts`} {...dataView} />
       </div>
     </Flex>

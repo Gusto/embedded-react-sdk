@@ -323,26 +323,6 @@
   gap: 0.25rem;
 }
 
-.breaksCell {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  min-width: 9.5rem;
-}
-
-.breakIssue {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 0.5rem;
-}
-
-.breakIssueDetail {
-  white-space: nowrap;
-  font-size: 0.8125rem;
-  color: var(--g-colorBodySubContent);
-}
-
 .unsure {
   color: var(--g-colorBodySubContent);
 }
@@ -417,7 +397,16 @@
   &.reviewTable :global(.react-aria-Table) :global(.react-aria-Cell):first-child {
     padding-inline: 0.5rem;
   }
+}
 
+.drillIn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.peopleTable {
   :global(.react-aria-Column):nth-child(2),
   :global(.react-aria-Cell):nth-child(2) {
     width: auto;
@@ -435,9 +424,9 @@
   }
 }
 
-.drillIn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  white-space: nowrap;
+.shiftsTable {
+  :global(.react-aria-Column):nth-child(4),
+  :global(.react-aria-Cell):nth-child(4) {
+    width: auto;
+  }
 }
