@@ -65,7 +65,7 @@ export const GAPS: Gap[] = [
     title: 'Timesheet viewing: see rules applied for the date',
     details:
       'Timesheet reads do not expose classified regular, overtime, or double-overtime (DT) hours. Classification is calculated in a pay-period context, rather than returned as a per-shift result.',
-    here: 'The overtime column is the page’s own estimate from each person’s overtime policy, marked ≈.',
+    here: 'The overtime column is the page’s own estimate from each person’s overtime policy, marked “est.” in the column header.',
   },
   {
     id: 'auto-sync',

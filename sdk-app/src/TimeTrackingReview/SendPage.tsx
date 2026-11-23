@@ -410,5 +410,5 @@ export function ReceiptPage({
 
 function Estimate({ hours }: { hours: number | undefined }) {
   if (!hours) return <>—</>
-  return <span className={styles.estimate}>≈ {formatHours(hours)}</span>
+  return <span className={styles.estimate}>{formatHours(hours)}</span>
 }

@@ -710,7 +710,7 @@ function TimeTrackingPrototype() {
             }
           >
             {sent.sent.length} shifts · {sent.rows.length} people · {formatHours(sent.hours)} hours
-            · ≈ {formatHours(sent.overtime)} overtime <GapPin id="rules-applied" />
+            · {formatHours(sent.overtime)} estimated overtime <GapPin id="rules-applied" />
             {changedCount > 0 && ` · ${changedCount} changed since`}{' '}
             <GapPin id="which-timesheets" /> <ChangePin id="receipt" />
           </Components.Alert>
@@ -1333,7 +1333,7 @@ function PeopleTable({
           if (!estimate) return '—'
           return (
             <span className={styles.estimate}>
-              ≈ {formatHours(estimate.overtime)}
+              {formatHours(estimate.overtime)}
               {estimate.double > 0 && ` + ${formatHours(estimate.double)} DT`}
             </span>
           )
