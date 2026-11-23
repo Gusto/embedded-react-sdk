@@ -362,3 +362,10 @@
   letter-spacing: 0.04em;
   color: var(--g-colorBodySubContent);
 }
+
+.prototypeSwitch {
+  display: inline-flex;
+  align-items: center;
+  border: 1px dashed #7c3aed;
+  border-radius: 0.5rem;
+}

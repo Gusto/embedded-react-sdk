@@ -14,6 +14,7 @@ export type ChangeId =
   | 'policy-cards'
   | 'send-outcomes'
   | 'receipt-totals'
+  | 'row-actions-text'
 
 export type ChangeRound = 'nov-19' | 'nov-20'
 
@@ -158,6 +159,16 @@ export const CHANGES: Change[] = [
       'At the very least we’d be able to tell you: Amelia, 100 hours regular, 49 hours overtime, zero double time for the pay period.',
     what: 'The receipt lists regular, overtime, double time and total hours per person. The shift count and the guessed payroll column are gone, since neither can be read from the API yet. Overtime and double time stay marked as estimates.',
     where: 'Timesheets › View what was sent.',
+  },
+  {
+    id: 'row-actions-text',
+    round: 'nov-20',
+    tabs: ['review'],
+    title: 'Try approve and reject as text buttons',
+    feedback:
+      'Without the tooltip it’s hard: does X mean I’m deleting the entry? Maybe I’ll experiment with making it a real button and see how badly it breaks the experience.',
+    what: 'A prototype-only “Row actions” switch in the header swaps the ✓ and ✕ icons for “Approve” and “Reject” text buttons on every person and shift row, so both can be compared. The choice stays in the URL. The SDK icon button has no tooltip, which is a question for Steve.',
+    where: 'Header › Row actions; Timesheets › person rows and shift rows.',
   },
 ]
 

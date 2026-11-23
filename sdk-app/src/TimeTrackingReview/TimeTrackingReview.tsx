@@ -120,6 +120,7 @@ function TimeTrackingPrototype() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const companyId = entities.companyId
   const [searchParams, setSearchParams] = useSearchParams()
+  const textRowActions = searchParams.get('rowActions') === 'text'
   const tab: Tab = TABS.some(t => t.value === searchParams.get('tab'))
     ? (searchParams.get('tab') as Tab)
     : 'review'
@@ -848,6 +849,22 @@ function TimeTrackingPrototype() {
                 >
                   {changesOn ? 'Hide changes' : 'Show changes'} (C)
                 </Components.Button>
+                <span className={styles.prototypeSwitch}>
+                  <Components.Button
+                    variant="tertiary"
+                    onClick={() => {
+                      setSearchParams(prev => {
+                        const params = new URLSearchParams(prev)
+                        if (textRowActions) params.delete('rowActions')
+                        else params.set('rowActions', 'text')
+                        return params
+                      })
+                    }}
+                  >
+                    Row actions: {textRowActions ? 'text' : 'icons'}
+                  </Components.Button>
+                  <ChangePin id="row-actions-text" />
+                </span>
               </div>
             </Flex>
 

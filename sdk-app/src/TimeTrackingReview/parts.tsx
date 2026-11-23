@@ -1,4 +1,5 @@
 import { useContext, type ReactNode } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ChangeContext, GapContext } from './gapContext'
 import { CHANGE_NUMBER, type ChangeId } from './changes'
 import { GAP_NUMBER, type GapId } from './gaps'
@@ -115,6 +116,29 @@ export function ApproveReject({
   onReject?: () => void
 }) {
   const Components = useComponentContext()
+  const [searchParams] = useSearchParams()
+  if (searchParams.get('rowActions') === 'text') {
+    return (
+      <div className={styles.approveReject}>
+        <Components.Button
+          variant="tertiary"
+          aria-label={`Approve ${label}`}
+          isDisabled={!onApprove}
+          onClick={onApprove}
+        >
+          Approve
+        </Components.Button>
+        <Components.Button
+          variant="tertiary"
+          aria-label={`Reject ${label}`}
+          isDisabled={!onReject}
+          onClick={onReject}
+        >
+          Reject
+        </Components.Button>
+      </div>
+    )
+  }
   return (
     <div className={styles.approveReject}>
       <Components.ButtonIcon
