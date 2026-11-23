@@ -18,6 +18,7 @@ import {
 } from './model'
 import { ChangePin, GapPin, SubPage, type Crumb } from './parts'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
+import styles from './TimeTrackingReview.module.scss'
 import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -576,32 +577,41 @@ function OvertimeForm({
       }
     >
       <Components.TextInput label="Name" value={name} onChange={setName} />
-      <Components.NumberInput
-        label="Weekly overtime after (hours)"
-        value={weekly}
-        onChange={setWeekly}
-      />
-      <Grid gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }} gap={12}>
-        <Components.Switch label="Daily overtime" value={hasDaily} onChange={setHasDaily} />
-        <Components.NumberInput
-          label="After (hours in a day)"
-          value={daily}
-          onChange={setDaily}
-          isDisabled={!hasDaily}
-        />
-        <Components.Switch label="Double time" value={hasDouble} onChange={setHasDouble} />
-        <Components.NumberInput
-          label="After (hours in a day)"
-          value={double}
-          onChange={setDouble}
-          isDisabled={!hasDouble}
-        />
-      </Grid>
-      <Components.Switch
-        label="Seventh consecutive day rule"
-        value={consecutive}
-        onChange={setConsecutive}
-      />
+      <div className={styles.ruleList}>
+        <div className={styles.ruleRow}>
+          <Components.Text weight="medium">Weekly overtime</Components.Text>
+          <Components.NumberInput
+            label="After (hours in a week)"
+            value={weekly}
+            onChange={setWeekly}
+          />
+        </div>
+        <div className={styles.ruleRow}>
+          <Components.Switch label="Daily overtime" value={hasDaily} onChange={setHasDaily} />
+          <Components.NumberInput
+            label="After (hours in a day)"
+            value={daily}
+            onChange={setDaily}
+            isDisabled={!hasDaily}
+          />
+        </div>
+        <div className={styles.ruleRow}>
+          <Components.Switch label="Double time" value={hasDouble} onChange={setHasDouble} />
+          <Components.NumberInput
+            label="After (hours in a day)"
+            value={double}
+            onChange={setDouble}
+            isDisabled={!hasDouble}
+          />
+        </div>
+        <div className={styles.ruleRow}>
+          <Components.Switch
+            label="Seventh consecutive day rule"
+            value={consecutive}
+            onChange={setConsecutive}
+          />
+        </div>
+      </div>
       <Components.Text size="sm" variant="supporting">
         There’s no field for which state this is for, so it can’t be checked against state law.{' '}
         <GapPin id="ot-state" />

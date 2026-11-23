@@ -439,3 +439,22 @@
     height: 1.125rem;
   }
 }
+
+.ruleList {
+  display: flex;
+  flex-direction: column;
+}
+
+.ruleRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  padding-block: 1rem;
+  border-top: 1px solid var(--g-colorBorderSecondary);
+
+  &:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+}
