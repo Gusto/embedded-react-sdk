@@ -45,8 +45,13 @@ export {
   PaySchedulesCard,
   type PaySchedulesCardProps,
 } from '../PaySchedule/management/PaySchedulesCard'
-export { StateTaxesCard, type StateTaxesCardProps } from '../StateTaxes/management/StateTaxesCard'
-export { StateTaxes, type StateTaxesProps } from '../StateTaxes/management'
+export {
+  StateTaxes,
+  type StateTaxesProps,
+  type StateTaxesDictionary,
+  StateTaxesCard,
+  type StateTaxesCardProps,
+} from '../StateTaxes/management'
 export { TaxRateManagement, type TaxRateManagementProps } from '../StateTaxes/TaxRateManagement'
 export {
   TaxPaymentsCard,

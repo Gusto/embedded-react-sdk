@@ -1073,6 +1073,8 @@ Translation keys for the `Company.Management.StateTaxes` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementstatetaxesalerts"></a> `alerts` |
+| `alerts.stateTaxesUpdated` |
 | <a id="property-companymanagementstatetaxescard"></a> `card` |
 | `card.defaultRatesApplied` |
 | `card.emptyState` |
@@ -1090,6 +1092,11 @@ Translation keys for the `Company.Management.StateTaxes` i18n namespace.
 | `card.statusColumn` |
 | `card.title` |
 | `card.unknownState` |
+| <a id="property-companymanagementstatetaxesheader"></a> `header` |
+| `header.backCta` |
+| <a id="property-companymanagementstatetaxesmanage"></a> `manage` |
+| `manage.description` |
+| `manage.title` |
 
 ***
 
@@ -1421,9 +1428,6 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `list.selfOnboardingWarningDescription` |
 | `list.selfOnboardingWarningLabel` |
 | `list.startStateTaxSetupCta` |
-| <a id="property-companystatetaxesmanagement"></a> `management` |
-| `management.description` |
-| `management.title` |
 | <a id="property-companystatetaxesmanagerates"></a> `manageRates` |
 | `manageRates.addRateCta` |
 | `manageRates.addRateDialogDescription` |

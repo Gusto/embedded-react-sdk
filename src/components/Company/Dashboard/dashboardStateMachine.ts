@@ -280,13 +280,10 @@ export const dashboardStateMachine = {
     // Continue — so the back header is the only way out. A company often updates
     // several states, or schedules several rates, in one visit, so saves only
     // record the alert and it surfaces once the user leaves.
+    // One management event stands in for both onboarding save events, translated by
+    // StateTaxesEditScreen.
     transition(
-      componentEvents.COMPANY_STATE_TAX_UPDATED,
-      'stateTaxes',
-      recordPendingAlert('stateTaxesUpdated'),
-    ),
-    transition(
-      componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED,
+      componentEvents.COMPANY_MANAGEMENT_STATE_TAXES_UPDATED,
       'stateTaxes',
       recordPendingAlert('stateTaxesUpdated'),
     ),

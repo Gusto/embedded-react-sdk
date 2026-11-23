@@ -23,7 +23,12 @@ import { useI18n } from '@/i18n'
 export function StateTaxesManagementListContextual() {
   const { companyId, onEvent } = useFlow<StateTaxesContextInterface>()
   useI18n('Company.StateTaxes')
-  const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'management' })
+  useI18n('Company.Management.StateTaxes')
+  // The heading belongs to the management surface, so it lives in that namespace rather than
+  // sharing Company.StateTaxes with the onboarding list. useComponentDictionary merges into a
+  // process-wide i18next instance, so a shared namespace would let a partner's onboarding copy
+  // override retune this heading too.
+  const { t } = useTranslation('Company.Management.StateTaxes', { keyPrefix: 'manage' })
   const Components = useComponentContext()
 
   return (
