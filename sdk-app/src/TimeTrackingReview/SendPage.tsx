@@ -166,17 +166,20 @@ export function SendPage({
       description={`${scheduleLabel(schedule)} · ${included.length} approved, finished shifts · ${formatHours(totalHours)} hours → ${payrollName}`}
       footer={
         <Flex justifyContent="space-between" alignItems="flex-end" gap={12} flexWrap="wrap">
-          <div className={styles.simulate}>
-            <Components.Select
-              label="Prototype only: simulate the result"
-              placeholder="Choose a result"
-              value={outcome}
-              options={OUTCOME_OPTIONS}
-              onChange={value => {
-                if (isOutcome(value)) setOutcome(value)
-              }}
-            />
-          </div>
+          <Flex alignItems="flex-end" gap={8}>
+            <div className={styles.simulate}>
+              <Components.Select
+                label="Prototype only: simulate the result"
+                placeholder="Choose a result"
+                value={outcome}
+                options={OUTCOME_OPTIONS}
+                onChange={value => {
+                  if (isOutcome(value)) setOutcome(value)
+                }}
+              />
+            </div>
+            <ChangePin id="send-outcomes" />
+          </Flex>
           <Flex gap={12} justifyContent="flex-end">
             <Components.Button variant="secondary" onClick={onClose}>
               Cancel
@@ -245,7 +248,11 @@ export function ReceiptPage({
     columns: [
       { title: 'Person', render: row => row.person.name },
       {
-        title: 'Regular',
+        title: (
+          <>
+            Regular <ChangePin id="receipt-totals" />
+          </>
+        ),
         justify: 'end',
         render: row =>
           formatHours(row.hours - (row.overtime?.overtime ?? 0) - (row.overtime?.double ?? 0)),
@@ -287,7 +294,7 @@ export function ReceiptPage({
         <Components.Alert status="info" label="Waiting for payroll to confirm…">
           Started {formatDateTime(sendingSince)}. The send runs in the background, so this page
           checks on it until it finishes. You can keep working; the result shows here and on
-          Timesheets. <GapPin id="sync-limits" />
+          Timesheets. <GapPin id="sync-limits" /> <ChangePin id="send-outcomes" />
         </Components.Alert>
         <Components.LoadingSpinner />
       </SubPage>
@@ -300,7 +307,11 @@ export function ReceiptPage({
         narrow
         trail={[{ label: 'Timesheets', onClick: onBack }]}
         current="Couldn’t send"
-        title="Couldn’t send hours"
+        title={
+          <>
+            Couldn’t send hours <ChangePin id="send-outcomes" />
+          </>
+        }
         description="Nothing was changed on payroll."
         footer={
           <Flex justifyContent="flex-end" gap={12}>
@@ -360,7 +371,8 @@ export function ReceiptPage({
         >
           {failure.shifts} {failure.shifts === 1 ? 'shift' : 'shifts'} for{' '}
           {failure.names.join(', ')} didn’t reach payroll. Everyone else below was sent. What the
-          API reports for a partial send isn’t defined yet. <GapPin id="which-timesheets" />
+          API reports for a partial send isn’t defined yet. <GapPin id="which-timesheets" />{' '}
+          <ChangePin id="send-outcomes" />
         </Components.Alert>
       ) : (
         summary.lastAt && (

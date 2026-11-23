@@ -47,7 +47,7 @@ import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
 import { ReceiptPage, SendPage, type SendFailure, type SendOutcome } from './SendPage'
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
-import { CHANGES, CHANGE_NUMBER } from './changes'
+import { CHANGES, CHANGE_NUMBER, ROUND_LABEL, type ChangeRound } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
 import { ApproveReject, ChangePin, GapPin, PrototypeModal, RequestBlock, Trail } from './parts'
 import { nowIso, type NoticeStatus, type Preview } from './preview'
@@ -682,7 +682,9 @@ function TimeTrackingPrototype() {
               View details
             </Components.Button>
           }
-        />
+        >
+          <ChangePin id="send-outcomes" />
+        </Components.Alert>
       )}
       {sendingHere ? (
         <Components.Alert status="info" label="Sending hours to payroll…">
@@ -1132,35 +1134,50 @@ function TimeTrackingPrototype() {
                 </button>
               </div>
               <p className={styles.muted}>
-                Each pink badge marks something that changed after the Nov 19 review. Badges inside
-                windows and pages show when you open them.
+                Each pink badge marks something that changed after a review, newest first. Badges
+                inside pages show when you open them.
               </p>
-              <ol className={styles.gapList}>
-                {CHANGES.filter(change => change.tabs.includes(tab)).map(change => (
-                  <li
-                    key={change.id}
-                    id={`change-${change.id}`}
-                    className={`${styles.gap} ${activeChange === change.id ? styles.changeActive : ''}`}
-                  >
-                    <div className={styles.gapTitle}>
-                      <span className={`${styles.gapNumber} ${styles.changeNumber}`}>
-                        {CHANGE_NUMBER[change.id]}
-                      </span>
-                      <span>{change.title}</span>
-                    </div>
-                    <span className={styles.changeSource}>
-                      {change.feedback ? 'Review feedback' : 'Added after review'}
-                    </span>
-                    {change.feedback && <p className={styles.quote}>“{change.feedback}”</p>}
-                    <p>
-                      <strong>What changed:</strong> {change.what}
-                    </p>
-                    <p>
-                      <strong>Where:</strong> {change.where}
-                    </p>
-                  </li>
-                ))}
-              </ol>
+              {(['nov-20', 'nov-19'] satisfies ChangeRound[]).map(round => {
+                const changes = CHANGES.filter(
+                  change => change.round === round && change.tabs.includes(tab),
+                )
+                if (changes.length === 0) return null
+                return (
+                  <section key={round}>
+                    <h3 className={styles.roundHeading}>{ROUND_LABEL[round]}</h3>
+                    <ol className={styles.gapList}>
+                      {changes.map(change => (
+                        <li
+                          key={change.id}
+                          id={`change-${change.id}`}
+                          className={`${styles.gap} ${activeChange === change.id ? styles.changeActive : ''}`}
+                        >
+                          <div className={styles.gapTitle}>
+                            <span className={`${styles.gapNumber} ${styles.changeNumber}`}>
+                              {CHANGE_NUMBER[change.id]}
+                            </span>
+                            <span>{change.title}</span>
+                          </div>
+                          <span className={styles.changeSource}>
+                            {change.feedback
+                              ? round === 'nov-20'
+                                ? 'Call feedback'
+                                : 'Review feedback'
+                              : 'Added after review'}
+                          </span>
+                          {change.feedback && <p className={styles.quote}>“{change.feedback}”</p>}
+                          <p>
+                            <strong>What changed:</strong> {change.what}
+                          </p>
+                          <p>
+                            <strong>Where:</strong> {change.where}
+                          </p>
+                        </li>
+                      ))}
+                    </ol>
+                  </section>
+                )
+              })}
             </aside>
           )}
 

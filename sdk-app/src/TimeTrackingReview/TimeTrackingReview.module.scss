@@ -353,3 +353,12 @@
   border: 1px dashed #7c3aed;
   border-radius: 0.5rem;
 }
+
+.roundHeading {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--g-colorBodySubContent);
+}

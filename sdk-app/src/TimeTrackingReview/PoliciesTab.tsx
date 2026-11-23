@@ -1033,7 +1033,7 @@ function PolicyDetail({
       current={policy.name}
       title={
         <>
-          {policy.name} <ChangePin id="policy-pages" />
+          {policy.name} <ChangePin id="policy-pages" /> <ChangePin id="policy-cards" />
         </>
       }
       description={KIND_LABEL[kind]}

@@ -152,7 +152,15 @@ export function Trail({ trail, current }: { trail: Crumb[]; current: string }) {
     <Components.Breadcrumbs
       breadcrumbs={[
         ...trail.map((crumb, index) => ({ id: String(index), label: crumb.label })),
-        { id: 'current', label: current, isClickable: false },
+        {
+          id: 'current',
+          label: (
+            <>
+              {current} <ChangePin id="breadcrumbs" />
+            </>
+          ),
+          isClickable: false,
+        },
       ]}
       currentBreadcrumbId="current"
       onClick={id => {
