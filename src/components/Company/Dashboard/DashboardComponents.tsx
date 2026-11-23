@@ -4,7 +4,7 @@ import { useViewerSignatoryId } from './ViewerSignatoryContext'
 import { IndustryEditScreen } from '@/components/Company/Industry/management/IndustryEditScreen'
 import { LocationsEditScreen } from '@/components/Company/Locations/management/LocationsEditScreen'
 import { FederalTaxesEditScreen } from '@/components/Company/FederalTaxes/management/FederalTaxesEditScreen'
-import { BankAccount } from '@/components/Company/BankAccount'
+import { BankAccountEditScreen } from '@/components/Company/BankAccount/management/BankAccountEditScreen'
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/management'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
@@ -116,7 +116,7 @@ export function FederalTaxesContextual() {
 /** @internal */
 export function BankAccountContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
-  return <BankAccount companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <BankAccountEditScreen companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */

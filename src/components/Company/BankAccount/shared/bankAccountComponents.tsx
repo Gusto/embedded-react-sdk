@@ -1,5 +1,4 @@
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
-import { BankAccountList } from '../BankAccountList/BankAccountList'
 import { BankAccountForm } from '../BankAccountForm/BankAccountForm'
 import { BankAccountVerify } from '../BankAccountVerify/BankAccountVerify'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -23,17 +22,6 @@ export interface BankAccountContextInterface extends FlowContextInterface {
   showVerifiedMessage?: boolean
 }
 
-/** @internal */
-export function BankAccountListContextual() {
-  const { companyId, showVerifiedMessage, onEvent } = useFlow<BankAccountContextInterface>()
-  return (
-    <BankAccountList
-      onEvent={onEvent}
-      companyId={ensureRequired(companyId)}
-      showVerifiedMessage={showVerifiedMessage}
-    />
-  )
-}
 /** @internal */
 export function BankAccountFormContextual() {
   const { companyId, onEvent, bankAccount } = useFlow<BankAccountContextInterface>()

@@ -240,17 +240,15 @@ export const dashboardStateMachine = {
     // anything, and would stay silent when they left via the back header after a
     // real change. The component's own COMPANY_BANK_ACCOUNT_CANCEL stays absent: it
     // fires on screens inside the sub-flow and must not eject the user either.
+    // One management event stands in for both onboarding save events, translated by
+    // BankAccountEditScreen. COMPANY_BANK_ACCOUNT_DONE is gone along with the Continue
+    // button that raised it: the spoke now opens on the Change-only management view, so
+    // the back header is the only way out.
     transition(
-      componentEvents.COMPANY_BANK_ACCOUNT_CREATED,
+      componentEvents.COMPANY_MANAGEMENT_BANK_ACCOUNT_UPDATED,
       'bankAccount',
       recordPendingAlert('bankAccountUpdated'),
     ),
-    transition(
-      componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED,
-      'bankAccount',
-      recordPendingAlert('bankAccountUpdated'),
-    ),
-    transition(componentEvents.COMPANY_BANK_ACCOUNT_DONE, 'index', returnToIndexWithPendingAlert),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
   paySchedule: state<MachineTransition>(
