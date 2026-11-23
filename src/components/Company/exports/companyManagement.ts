@@ -60,9 +60,12 @@ export {
   type SignatoryCardProps,
 } from '../AssignSignatory/management'
 export {
+  CompanyForms,
+  type CompanyFormsProps,
+  type CompanyFormsDictionary,
   CompanyFormsCard,
   type CompanyFormsCardProps,
-} from '../DocumentSigner/management/CompanyFormsCard'
+} from '../DocumentSigner/management'
 export {
   Dashboard,
   DashboardFlow,

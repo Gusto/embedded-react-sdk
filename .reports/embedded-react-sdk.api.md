@@ -1146,6 +1146,9 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
 }
 
 // @alpha
+function CompanyForms(input: CompanyFormsProps): JSX;
+
+// @alpha
 function CompanyFormsCard(props: CompanyFormsCardProps): JSX;
 
 // @alpha
@@ -1153,6 +1156,22 @@ interface CompanyFormsCardProps {
     companyId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+type CompanyFormsDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.CompanyForms'?: DeepPartial<Resources['Company.Management.CompanyForms']>;
+        'Company.DocumentList'?: DeepPartial<Resources['Company.DocumentList']>;
+        'Company.SignatureForm'?: DeepPartial<Resources['Company.SignatureForm']>;
+    };
+};
+
+// @alpha
+interface CompanyFormsProps extends Omit<BaseComponentInterface<'Company.Management.CompanyForms'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: CompanyFormsDictionary;
+    viewerSignatoryId?: string;
 }
 
 declare namespace CompanyManagement {
@@ -1203,6 +1222,9 @@ declare namespace CompanyManagement {
         SignatoryDictionary,
         SignatoryCard,
         SignatoryCardProps,
+        CompanyForms,
+        CompanyFormsProps,
+        CompanyFormsDictionary,
         CompanyFormsCard,
         CompanyFormsCardProps,
         Dashboard_2 as Dashboard,
