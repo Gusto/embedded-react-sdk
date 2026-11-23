@@ -3,6 +3,7 @@ import { ChangeContext, GapContext } from './gapContext'
 import { CHANGE_NUMBER, type ChangeId } from './changes'
 import { GAP_NUMBER, type GapId } from './gaps'
 import styles from './TimeTrackingReview.module.scss'
+import SlashCircleIcon from '@/assets/icons/slash-circle.svg?react'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -109,18 +110,37 @@ export function ApproveReject({
   label,
   approveCount,
   rejectCount,
+  pendingCount,
   onApprove,
   onReject,
+  onPending,
 }: {
   label: string
   approveCount?: number
   rejectCount?: number
+  pendingCount?: number
+  onPending?: () => void
   onApprove?: () => void
   onReject?: () => void
 }) {
   const Components = useComponentContext()
   return (
     <div className={styles.approveReject}>
+      {pendingCount !== undefined && (
+        <Components.Button
+          variant="tertiary"
+          aria-label={`Return ${label} to pending`}
+          isDisabled={!onPending}
+          onClick={onPending}
+          icon={
+            <span className={styles.pendingIcon}>
+              <SlashCircleIcon />
+            </span>
+          }
+        >
+          Return to pending ({pendingCount})
+        </Components.Button>
+      )}
       <Components.Button
         variant="tertiary"
         aria-label={`Approve ${label}`}

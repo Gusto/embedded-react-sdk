@@ -1489,6 +1489,7 @@ function ShiftsTable({
   const selectedShifts = shifts.filter(s => selected.has(s.uuid))
   const selectedToApprove = selectedShifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
   const selectedToReject = selectedShifts.filter(s => s.status !== 'rejected')
+  const selectedToPending = selectedShifts.filter(s => s.status !== 'pending')
   const policy = person.breakPolicy
   const issuesByShift = new Map(shifts.map(s => [s.uuid, breakIssues(s, policy)]))
   const shiftsWithIssues = shifts.filter(s => issuesByShift.get(s.uuid)?.length)
@@ -1669,8 +1670,20 @@ function ShiftsTable({
             <GapPin id="bulk-approval" />
             <ApproveReject
               label={`${selectedShifts.length} selected shifts`}
+              pendingCount={selectedToPending.length}
               approveCount={selectedToApprove.length}
               rejectCount={selectedToReject.length}
+              onPending={
+                selectedToPending.length
+                  ? () => {
+                      onStatus(
+                        selectedToPending,
+                        'pending',
+                        `Return ${selectedToPending.length} shifts to pending`,
+                      )
+                    }
+                  : undefined
+              }
               onApprove={
                 selectedToApprove.length
                   ? () => {
