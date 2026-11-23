@@ -1,1 +1,1 @@
-export * from './PaySchedule'
+export * from './onboarding'

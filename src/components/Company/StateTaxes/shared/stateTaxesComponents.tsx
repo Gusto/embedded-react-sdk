@@ -1,6 +1,6 @@
-import { StateTaxesList } from './StateTaxesList/StateTaxesList'
-import { StateTaxesForm } from './StateTaxesForm/StateTaxesForm'
-import { TaxRateManagement } from './TaxRateManagement/TaxRateManagement'
+import { StateTaxesList } from '../StateTaxesList/StateTaxesList'
+import { StateTaxesForm } from '../StateTaxesForm/StateTaxesForm'
+import { TaxRateManagement } from '../TaxRateManagement/TaxRateManagement'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 

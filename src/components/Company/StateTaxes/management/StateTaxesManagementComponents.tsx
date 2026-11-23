@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { StateTaxesList } from '../StateTaxesList/StateTaxesList'
 import { List } from '../StateTaxesList/List'
-import type { StateTaxesContextInterface } from '../StateTaxesComponents'
+import type { StateTaxesContextInterface } from '../shared/stateTaxesComponents'
 import { Flex } from '@/components/Common'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

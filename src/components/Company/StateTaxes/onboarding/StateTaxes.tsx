@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { createStateTaxesMachine } from './stateTaxesStateMachine'
-import { StateTaxesListContextual } from './StateTaxesComponents'
+import { createStateTaxesMachine } from '../shared/stateTaxesMachine'
+import { StateTaxesListContextual } from '../shared/stateTaxesComponents'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'

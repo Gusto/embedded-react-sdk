@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { createStateTaxesMachine } from '../stateTaxesStateMachine'
+import { createStateTaxesMachine } from '../shared/stateTaxesMachine'
 import { StateTaxesManagementListContextual } from './StateTaxesManagementComponents'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'

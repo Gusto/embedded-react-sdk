@@ -27,7 +27,7 @@ export {
   type FederalTaxesProps,
   type FederalTaxesDefaultValues,
 } from '../FederalTaxes'
-export { StateTaxes, type StateTaxesProps } from '../StateTaxes/StateTaxes'
+export { StateTaxes, type StateTaxesProps } from '../StateTaxes'
 export { StateTaxesForm, type StateTaxesFormProps } from '../StateTaxes/StateTaxesForm'
 export { StateTaxesList, type StateTaxesListProps } from '../StateTaxes/StateTaxesList'
 export { TaxRateManagement, type TaxRateManagementProps } from '../StateTaxes/TaxRateManagement'
