@@ -84,15 +84,6 @@ const BADGE_STATUS: Record<ReviewState, 'success' | 'warning' | 'error' | 'info'
   changed: 'warning',
 }
 
-const SHORT_STATE_LABEL: Record<ReviewState, string> = {
-  open: 'clocked in',
-  pending: 'pending',
-  rejected: 'rejected',
-  unsent: 'not sent',
-  sent: 'sent',
-  changed: 'changed',
-}
-
 const BATCH_LIMIT = 500
 
 function errorMessage(error: unknown) {
@@ -1247,20 +1238,8 @@ function PlusIcon() {
   )
 }
 
-function StatusBadges({ shifts }: { shifts: ApiShift[] }) {
-  const Components = useComponentContext()
-  const counts = new Map<ReviewState, number>()
-  for (const shift of shifts)
-    counts.set(reviewState(shift), (counts.get(reviewState(shift)) ?? 0) + 1)
-  return (
-    <div className={styles.statusBadges}>
-      {[...counts.entries()].map(([state, count]) => (
-        <Components.Badge key={state} status={BADGE_STATUS[state]}>
-          {count} {SHORT_STATE_LABEL[state]}
-        </Components.Badge>
-      ))}
-    </div>
-  )
+function countStatus(shifts: ApiShift[], status: ShiftStatus) {
+  return shifts.filter(shift => shift.status === status).length
 }
 
 interface PersonRow {
@@ -1360,7 +1339,21 @@ function PeopleTable({
           )
         },
       },
-      { title: 'Status', render: ({ shifts }) => <StatusBadges shifts={shifts} /> },
+      {
+        title: 'Pending',
+        justify: 'end',
+        render: ({ shifts }) => countStatus(shifts, 'pending'),
+      },
+      {
+        title: 'Approved',
+        justify: 'end',
+        render: ({ shifts }) => countStatus(shifts, 'approved'),
+      },
+      {
+        title: 'Rejected',
+        justify: 'end',
+        render: ({ shifts }) => countStatus(shifts, 'rejected'),
+      },
       {
         title: (
           <>

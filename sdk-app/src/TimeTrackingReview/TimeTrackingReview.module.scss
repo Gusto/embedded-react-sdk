@@ -407,8 +407,14 @@
     white-space: nowrap;
   }
 
-  :global(.react-aria-Column):first-child,
-  :global(.react-aria-Cell):first-child {
+  // Doubled class to outrank the SDK Table's `.root .react-aria-Table .react-aria-Cell` padding.
+  &.reviewTable :global(.react-aria-Table) :global(.react-aria-Column),
+  &.reviewTable :global(.react-aria-Table) :global(.react-aria-Cell) {
+    padding-inline: 0.75rem;
+  }
+
+  &.reviewTable :global(.react-aria-Table) :global(.react-aria-Column):first-child,
+  &.reviewTable :global(.react-aria-Table) :global(.react-aria-Cell):first-child {
     padding-inline: 0.5rem;
   }
 
