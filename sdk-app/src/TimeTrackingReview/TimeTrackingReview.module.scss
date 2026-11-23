@@ -545,6 +545,8 @@
 }
 
 .trashIcon {
+  --g-colorButtonIcon: currentColor;
+
   display: inline-flex;
 
   svg {
@@ -562,4 +564,13 @@
 .subPageActions {
   display: flex;
   gap: 8px;
+}
+
+// Outranks the SDK Button's `[data-variant='secondary']` colours, hover included.
+.outlineDestructive.outlineDestructive.outlineDestructive[data-variant] {
+  &,
+  &:hover {
+    color: var(--g-colorErrorAccent);
+    border-color: var(--g-colorErrorAccent);
+  }
 }

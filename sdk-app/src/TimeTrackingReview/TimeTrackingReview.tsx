@@ -208,6 +208,7 @@ function TimeTrackingPrototype() {
   const [sendView, setSendView] = useState<'review' | 'receipt' | null>(null)
   const [sending, setSending] = useState<{ key: string; startedAt: string } | null>(null)
   const [sendFailures, setSendFailures] = useState<Record<string, SendFailure>>({})
+  const [dismissedDates, setDismissedDates] = useState<Set<string>>(new Set())
   const [sendSnapshots, setSendSnapshots] = useState<Record<string, SentSummary>>({})
   const sendTimer = useRef<number | null>(null)
   useEffect(
@@ -697,12 +698,17 @@ function TimeTrackingPrototype() {
           </Components.Button>
         </div>
       </div>
-      {period?.payroll && (
-        <Components.Text size="sm" variant="supporting">
-          Hours for this period are paid {formatShortDate(period.payroll.check_date)}. Send them by{' '}
-          {formatDateTime(period.payroll.payroll_deadline)}.
-          {!lastSyncAt && !sendingHere && ' Nothing sent yet.'}
-        </Components.Text>
+      {period?.payroll && !dismissedDates.has(sendKey) && (
+        <Components.Alert
+          status="info"
+          label={`Hours for this period are paid ${formatShortDate(period.payroll.check_date)}`}
+          onDismiss={() => {
+            setDismissedDates(prev => new Set(prev).add(sendKey))
+          }}
+        >
+          Send them by {formatDateTime(period.payroll.payroll_deadline)}.
+          {!lastSyncAt && !sendingHere && ' Nothing has been sent yet.'}
+        </Components.Alert>
       )}
       {!sendingHere && sendFailures[sendKey] && (
         <Components.Alert

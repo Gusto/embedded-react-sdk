@@ -918,7 +918,7 @@ function AssignPeople({
       const locked = kind === 'overtime' && initial.has(uuid)
       const current = kind === 'overtime' ? person.overtimePolicy?.name : person.breakPolicy?.name
       let note = current && current !== policy.name ? `On ${current}` : ''
-      if (!elig.eligible) note = `Not eligible: ${elig.reason ?? ''}`
+      if (!elig.eligible) note = elig.reason ?? ''
       else if (locked) note = 'Move them to another overtime policy to take them off'
       else if (kind === 'break' && breakToday.has(uuid))
         note = 'Took a break today: can’t change until tomorrow'
@@ -942,6 +942,14 @@ function AssignPeople({
     columns: [
       { title: 'Person', render: row => row.person.name },
       { title: 'Pay type', render: row => row.label },
+      {
+        title: 'Eligibility',
+        render: row => (
+          <Components.Badge status={row.eligible ? 'success' : 'error'}>
+            {row.eligible ? 'Eligible' : 'Not eligible'}
+          </Components.Badge>
+        ),
+      },
       { title: 'Note', render: row => row.note },
     ],
   })
@@ -1099,7 +1107,8 @@ function PolicyDetail({
       description={KIND_LABEL[kind]}
       actions={
         <Components.Button
-          variant="error"
+          variant="secondary"
+          className={styles.outlineDestructive}
           icon={
             <span className={styles.trashIcon}>
               <TrashIcon />
