@@ -18,5 +18,15 @@
       "title": "No state taxes yet",
       "description": "State tax requirements appear once this company has a work address in a state."
     }
+  },
+  "manage": {
+    "title": "State taxes",
+    "description": "Review each state's tax setup and schedule upcoming tax rate changes."
+  },
+  "header": {
+    "backCta": "Back to state taxes"
+  },
+  "alerts": {
+    "stateTaxesUpdated": "State tax settings updated."
   }
 }

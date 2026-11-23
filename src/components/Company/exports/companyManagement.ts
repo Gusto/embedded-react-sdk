@@ -2,6 +2,8 @@ export {
   PaySchedule,
   type PayScheduleProps,
   type PayScheduleDictionary,
+  PaySchedulesCard,
+  type PaySchedulesCardProps,
 } from '../PaySchedule/management'
 export {
   PayScheduleAssignment,
@@ -42,11 +44,12 @@ export {
   type BankAccountCardProps,
 } from '../BankAccount/management'
 export {
-  PaySchedulesCard,
-  type PaySchedulesCardProps,
-} from '../PaySchedule/management/PaySchedulesCard'
-export { StateTaxesCard, type StateTaxesCardProps } from '../StateTaxes/management/StateTaxesCard'
-export { StateTaxes, type StateTaxesProps } from '../StateTaxes/management'
+  StateTaxes,
+  type StateTaxesProps,
+  type StateTaxesDictionary,
+  StateTaxesCard,
+  type StateTaxesCardProps,
+} from '../StateTaxes/management'
 export { TaxRateManagement, type TaxRateManagementProps } from '../StateTaxes/TaxRateManagement'
 export {
   TaxPaymentsCard,
@@ -60,9 +63,12 @@ export {
   type SignatoryCardProps,
 } from '../AssignSignatory/management'
 export {
+  CompanyForms,
+  type CompanyFormsProps,
+  type CompanyFormsDictionary,
   CompanyFormsCard,
   type CompanyFormsCardProps,
-} from '../DocumentSigner/management/CompanyFormsCard'
+} from '../DocumentSigner/management'
 export {
   Dashboard,
   DashboardFlow,

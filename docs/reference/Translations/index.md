@@ -759,6 +759,8 @@ Translation keys for the `Company.Management.CompanyForms` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementcompanyformsalerts"></a> `alerts` |
+| `alerts.formsSigned` |
 | <a id="property-companymanagementcompanyformscard"></a> `card` |
 | `card.allSigned` |
 | `card.awaitingCount_one` |
@@ -775,6 +777,8 @@ Translation keys for the `Company.Management.CompanyForms` i18n namespace.
 | `card.signatures` |
 | `card.title` |
 | `card.untitledForm` |
+| <a id="property-companymanagementcompanyformsheader"></a> `header` |
+| `header.backCta` |
 
 ***
 
@@ -899,6 +903,8 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | <a id="property-companymanagementpayscheduleemployeecount_other"></a> `employeeCount_other` | `"{{count}} employees"` |
 | <a id="property-companymanagementpayscheduleemployeedescription"></a> `employeeDescription` | `"You have assigned pay schedules per employee."` |
 | <a id="property-companymanagementpayscheduleemployeetablelabel"></a> `employeeTableLabel` | `"Pay schedules by employee"` |
+| <a id="property-companymanagementpayscheduleheader"></a> `header` | |
+| `header.backCta` | `"Back to pay schedules"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
 | `labels.department` | `"Department"` |
 | `labels.employees` | `"Employees"` |
@@ -1069,6 +1075,8 @@ Translation keys for the `Company.Management.StateTaxes` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementstatetaxesalerts"></a> `alerts` |
+| `alerts.stateTaxesUpdated` |
 | <a id="property-companymanagementstatetaxescard"></a> `card` |
 | `card.defaultRatesApplied` |
 | `card.emptyState` |
@@ -1086,6 +1094,11 @@ Translation keys for the `Company.Management.StateTaxes` i18n namespace.
 | `card.statusColumn` |
 | `card.title` |
 | `card.unknownState` |
+| <a id="property-companymanagementstatetaxesheader"></a> `header` |
+| `header.backCta` |
+| <a id="property-companymanagementstatetaxesmanage"></a> `manage` |
+| `manage.description` |
+| `manage.title` |
 
 ***
 
@@ -1417,9 +1430,6 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `list.selfOnboardingWarningDescription` |
 | `list.selfOnboardingWarningLabel` |
 | `list.startStateTaxSetupCta` |
-| <a id="property-companystatetaxesmanagement"></a> `management` |
-| `management.description` |
-| `management.title` |
 | <a id="property-companystatetaxesmanagerates"></a> `manageRates` |
 | `manageRates.addRateCta` |
 | `manageRates.addRateDialogDescription` |

@@ -5,11 +5,11 @@ import { IndustryEditScreen } from '@/components/Company/Industry/management/Ind
 import { LocationsEditScreen } from '@/components/Company/Locations/management/LocationsEditScreen'
 import { FederalTaxesEditScreen } from '@/components/Company/FederalTaxes/management/FederalTaxesEditScreen'
 import { BankAccountEditScreen } from '@/components/Company/BankAccount/management/BankAccountEditScreen'
-import { PaySchedule } from '@/components/Company/PaySchedule/management'
-import { StateTaxes } from '@/components/Company/StateTaxes/management'
+import { PayScheduleEditScreen } from '@/components/Company/PaySchedule/management/PayScheduleEditScreen'
+import { StateTaxesEditScreen } from '@/components/Company/StateTaxes/management/StateTaxesEditScreen'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
 import { SignatoryEditScreen } from '@/components/Company/AssignSignatory/management/SignatoryEditScreen'
-import { ViewerBoundDocumentSigner } from '@/components/Company/DocumentSigner/onboarding/DocumentSigner'
+import { CompanyFormsEditScreen } from '@/components/Company/DocumentSigner/management/CompanyFormsEditScreen'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -124,7 +124,7 @@ export function PayScheduleContextual() {
   const { companyId, onEvent, enableAutoPilot, enableMultipleSchedules } =
     useFlow<DashboardContextInterface>()
   return (
-    <PaySchedule
+    <PayScheduleEditScreen
       companyId={ensureRequired(companyId)}
       onEvent={onEvent}
       enableAutoPilot={enableAutoPilot}
@@ -136,7 +136,7 @@ export function PayScheduleContextual() {
 /** @internal */
 export function StateTaxesContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
-  return <StateTaxes companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <StateTaxesEditScreen companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */
@@ -154,7 +154,7 @@ export function CompanyFormsContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
   const viewerSignatoryId = useViewerSignatoryId()
   return (
-    <ViewerBoundDocumentSigner
+    <CompanyFormsEditScreen
       key={viewerSignatoryId}
       companyId={ensureRequired(companyId)}
       signatoryId={viewerSignatoryId}

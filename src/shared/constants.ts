@@ -232,13 +232,21 @@ export const companyEvents = {
   COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_CANCELLED: 'company/management/bankAccount/editCancelled',
   COMPANY_MANAGEMENT_BANK_ACCOUNT_ALERT_DISMISSED: 'company/management/bankAccount/alertDismissed',
   COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: 'company/management/paySchedule/editRequested',
+  COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_CANCELLED: 'company/management/paySchedule/editCancelled',
   COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: 'company/management/stateTaxes/editRequested',
+  COMPANY_MANAGEMENT_STATE_TAXES_UPDATED: 'company/management/stateTaxes/updated',
+  COMPANY_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: 'company/management/stateTaxes/editCancelled',
+  COMPANY_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED: 'company/management/stateTaxes/alertDismissed',
   COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: 'company/management/taxPayments/editRequested',
   COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: 'company/management/signatory/editRequested',
   COMPANY_MANAGEMENT_SIGNATORY_UPDATED: 'company/management/signatory/updated',
   COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED: 'company/management/signatory/editCancelled',
   COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED: 'company/management/signatory/alertDismissed',
   COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: 'company/management/companyForms/editRequested',
+  COMPANY_MANAGEMENT_COMPANY_FORMS_UPDATED: 'company/management/companyForms/updated',
+  COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_CANCELLED: 'company/management/companyForms/editCancelled',
+  COMPANY_MANAGEMENT_COMPANY_FORMS_ALERT_DISMISSED:
+    'company/management/companyForms/alertDismissed',
 } as const
 
 /**

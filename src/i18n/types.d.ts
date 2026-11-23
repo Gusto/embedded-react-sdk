@@ -1179,6 +1179,14 @@ export namespace Translations {
         description: string
       }
     }
+    header: {
+      /** @defaultValue `"Back to company documents"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Documents signed."` */
+      formsSigned: string
+    }
   }
   /** Translation keys for the `Company.Management.FederalTaxes` i18n namespace. */
   export interface CompanyManagementFederalTaxes {
@@ -1363,6 +1371,10 @@ export namespace Translations {
     employeeCount_other: string
     /** @defaultValue `"Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator."` */
     employeeAccessDenied: string
+    header: {
+      /** @defaultValue `"Back to pay schedules"` */
+      backCta: string
+    }
   }
   /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
   export interface CompanyManagementPayScheduleAssignment {
@@ -1616,6 +1628,20 @@ export namespace Translations {
         /** @defaultValue `"State tax requirements appear once this company has a work address in a state."` */
         description: string
       }
+    }
+    manage: {
+      /** @defaultValue `"State taxes"` */
+      title: string
+      /** @defaultValue `"Review each state's tax setup and schedule upcoming tax rate changes."` */
+      description: string
+    }
+    header: {
+      /** @defaultValue `"Back to state taxes"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"State tax settings updated."` */
+      stateTaxesUpdated: string
     }
   }
   /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
@@ -2159,12 +2185,6 @@ export namespace Translations {
       noEditableFieldsDescription: string
       /** @defaultValue `"Tax rate scheduled to take effect on {{date}}."` */
       rateScheduledSuccess: string
-    }
-    management: {
-      /** @defaultValue `"State taxes"` */
-      title: string
-      /** @defaultValue `"Review each state's tax setup and schedule upcoming tax rate changes."` */
-      description: string
     }
   }
   /** Translation keys for the `Company.TimeOff.CreateTimeOffPolicy` i18n namespace. */

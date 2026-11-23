@@ -280,13 +280,10 @@ export const dashboardStateMachine = {
     // Continue — so the back header is the only way out. A company often updates
     // several states, or schedules several rates, in one visit, so saves only
     // record the alert and it surfaces once the user leaves.
+    // One management event stands in for both onboarding save events, translated by
+    // StateTaxesEditScreen.
     transition(
-      componentEvents.COMPANY_STATE_TAX_UPDATED,
-      'stateTaxes',
-      recordPendingAlert('stateTaxesUpdated'),
-    ),
-    transition(
-      componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED,
+      componentEvents.COMPANY_MANAGEMENT_STATE_TAXES_UPDATED,
       'stateTaxes',
       recordPendingAlert('stateTaxesUpdated'),
     ),
@@ -320,24 +317,28 @@ export const dashboardStateMachine = {
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
   companyForms: state<MachineTransition>(
-    // DocumentSigner is a hub in its own right, and one that contains an
-    // assign-signatory screen of its own: COMPANY_VIEW_FORM_TO_SIGN,
-    // COMPANY_SIGN_FORM_DONE, COMPANY_SIGN_FORM_BACK, COMPANY_FORM_EDIT_SIGNATORY
-    // and — note — COMPANY_ASSIGN_SIGNATORY_DONE all move between its own
-    // screens. That last one is the subtle hazard: it is the very event the
-    // `signatory` spoke above returns to the dashboard on, so declaring it here
-    // too would eject a user who merely changed the signatory from inside the
-    // document list.
+    // The document surface is a hub in its own right: COMPANY_VIEW_FORM_TO_SIGN,
+    // COMPANY_SIGN_FORM_DONE, COMPANY_SIGN_FORM_BACK, COMPANY_FORM_EDIT_SIGNATORY and
+    // COMPANY_ASSIGN_SIGNATORY_DONE all move between its own screens, and none of them
+    // appear here.
     //
-    // A company signs its forms one at a time, so a signature must not end the
-    // visit either. The self-transition records that something was signed and
-    // the alert surfaces when the user actually leaves, via either exit below.
+    // COMPANY_ASSIGN_SIGNATORY_DONE used to be the subtle one — it is raised by the
+    // assign-signatory screen this spoke contains *and* by the signatory spoke, which
+    // returned to the dashboard on it, so declaring it here would have ejected a user who
+    // merely changed the signatory while reviewing documents. The signatory spoke now
+    // returns on its own management event instead, so that collision is no longer
+    // reachable rather than merely avoided here.
+    //
+    // A company signs its forms one at a time, so a signature must not end the visit. The
+    // self-transition records that something was signed and the alert surfaces when the
+    // user actually leaves. COMPANY_FORMS_DONE is gone along with the Continue button that
+    // raised it: the spoke now opens on the management document list, so the back header is
+    // the only way out.
     transition(
-      componentEvents.COMPANY_SIGN_FORM,
+      componentEvents.COMPANY_MANAGEMENT_COMPANY_FORMS_UPDATED,
       'companyForms',
       recordPendingAlert('formsSigned'),
     ),
-    transition(componentEvents.COMPANY_FORMS_DONE, 'index', returnToIndexWithPendingAlert),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
 }

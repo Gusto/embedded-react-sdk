@@ -7,6 +7,7 @@ import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.BankAccount': ['companyId'],
   'CompanyManagement.BankAccountCard': ['companyId'],
+  'CompanyManagement.CompanyForms': ['companyId'],
   'CompanyManagement.CompanyFormsCard': ['companyId'],
   'CompanyManagement.Dashboard': ['companyId'],
   'CompanyManagement.DashboardFlow': ['companyId'],

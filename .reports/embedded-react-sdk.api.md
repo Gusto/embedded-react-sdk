@@ -1146,6 +1146,9 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
 }
 
 // @alpha
+function CompanyForms(input: CompanyFormsProps): JSX;
+
+// @alpha
 function CompanyFormsCard(props: CompanyFormsCardProps): JSX;
 
 // @alpha
@@ -1155,11 +1158,29 @@ interface CompanyFormsCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// @alpha
+type CompanyFormsDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.CompanyForms'?: DeepPartial<Resources['Company.Management.CompanyForms']>;
+        'Company.DocumentList'?: DeepPartial<Resources['Company.DocumentList']>;
+        'Company.SignatureForm'?: DeepPartial<Resources['Company.SignatureForm']>;
+    };
+};
+
+// @alpha
+interface CompanyFormsProps extends Omit<BaseComponentInterface<'Company.Management.CompanyForms'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: CompanyFormsDictionary;
+    viewerSignatoryId?: string;
+}
+
 declare namespace CompanyManagement {
     export {
         PaySchedule_2 as PaySchedule,
         PayScheduleProps_2 as PayScheduleProps,
         PayScheduleDictionary,
+        PaySchedulesCard,
+        PaySchedulesCardProps,
         PayScheduleAssignment_2 as PayScheduleAssignment,
         PayScheduleAssignmentProps,
         TaxPaymentsFlow,
@@ -1188,12 +1209,11 @@ declare namespace CompanyManagement {
         BankAccountDictionary,
         BankAccountCard,
         BankAccountCardProps,
-        PaySchedulesCard,
-        PaySchedulesCardProps,
-        StateTaxesCard_2 as StateTaxesCard,
-        StateTaxesCardProps_2 as StateTaxesCardProps,
         StateTaxes_4 as StateTaxes,
         StateTaxesProps_4 as StateTaxesProps,
+        StateTaxesDictionary,
+        StateTaxesCard_2 as StateTaxesCard,
+        StateTaxesCardProps_2 as StateTaxesCardProps,
         TaxRateManagement,
         TaxRateManagementProps,
         TaxPaymentsCard,
@@ -1203,6 +1223,9 @@ declare namespace CompanyManagement {
         SignatoryDictionary,
         SignatoryCard,
         SignatoryCardProps,
+        CompanyForms,
+        CompanyFormsProps,
+        CompanyFormsDictionary,
         CompanyFormsCard,
         CompanyFormsCardProps,
         Dashboard_2 as Dashboard,
@@ -1678,13 +1701,20 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_CANCELLED: "company/management/bankAccount/editCancelled";
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_ALERT_DISMISSED: "company/management/bankAccount/alertDismissed";
     readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
+    readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_CANCELLED: "company/management/paySchedule/editCancelled";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_UPDATED: "company/management/stateTaxes/updated";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: "company/management/stateTaxes/editCancelled";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED: "company/management/stateTaxes/alertDismissed";
     readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
     readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: "company/management/signatory/editRequested";
     readonly COMPANY_MANAGEMENT_SIGNATORY_UPDATED: "company/management/signatory/updated";
     readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED: "company/management/signatory/editCancelled";
     readonly COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED: "company/management/signatory/alertDismissed";
     readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: "company/management/companyForms/editRequested";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_UPDATED: "company/management/companyForms/updated";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_CANCELLED: "company/management/companyForms/editCancelled";
+    readonly COMPANY_MANAGEMENT_COMPANY_FORMS_ALERT_DISMISSED: "company/management/companyForms/alertDismissed";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -4910,7 +4940,7 @@ interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollRe
 const PaySchedule: (input: PayScheduleProps) => JSX;
 
 // @alpha
-const PaySchedule_2: (input: PayScheduleProps_2) => JSX;
+function PaySchedule_2(input: PayScheduleProps_2): JSX;
 
 // @alpha
 const PayScheduleAssignment_2: (input: PayScheduleAssignmentProps) => JSX;
@@ -6088,6 +6118,14 @@ interface StateTaxesCardProps_2 {
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// @alpha
+type StateTaxesDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.StateTaxes'?: DeepPartial<Resources['Company.Management.StateTaxes']>;
+        'Company.StateTaxes'?: DeepPartial<Resources['Company.StateTaxes']>;
+    };
+};
+
 // @public
 function StateTaxesEditForm(input: StateTaxesEditFormProps): JSX;
 
@@ -6132,8 +6170,9 @@ interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'>
 }
 
 // @alpha
-interface StateTaxesProps_4 extends BaseComponentInterface<'Company.StateTaxes'> {
+interface StateTaxesProps_4 extends Omit<BaseComponentInterface<'Company.Management.StateTaxes'>, 'dictionary'> {
     companyId: string;
+    dictionary?: StateTaxesDictionary;
 }
 
 // @public
