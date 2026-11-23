@@ -11,6 +11,7 @@ import {
   handleDeletePayroll,
   handleSkipPayroll,
 } from './__fixtures__/payrollListMocks'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -623,14 +624,21 @@ describe('PayrollList', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
-      await enterDate(user, 'Start Date', '02012030')
-      await enterDate(user, 'End Date', '03012030')
+      const rangeStart = new Date()
+      rangeStart.setMonth(rangeStart.getMonth() + 1, 1)
+      const rangeEnd = new Date()
+      rangeEnd.setMonth(rangeEnd.getMonth() + 2, 1)
+      const toDigits = (date: Date) =>
+        `${String(date.getMonth() + 1).padStart(2, '0')}01${date.getFullYear()}`
+
+      await enterDate(user, 'Start Date', toDigits(rangeStart))
+      await enterDate(user, 'End Date', toDigits(rangeEnd))
       await user.click(screen.getByRole('button', { name: 'Apply' }))
 
       await waitFor(() => {
         const latest = requests.at(-1)!.searchParams
-        expect(latest.get('start_date')).toBe('2030-02-01')
-        expect(latest.get('end_date')).toBe('2030-03-01')
+        expect(latest.get('start_date')).toBe(formatDateToStringDate(rangeStart))
+        expect(latest.get('end_date')).toBe(formatDateToStringDate(rangeEnd))
       })
       expect(requests.at(-1)!.searchParams.get('page')).toBe('1')
     })
