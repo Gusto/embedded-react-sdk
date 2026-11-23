@@ -42,7 +42,7 @@ import {
 } from './model'
 import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
-import { ReceiptPage, SendPage, type SendFailure, type SendOutcome } from './SendPage'
+import { SendPage, type SendFailure, type SendOutcome } from './SendPage'
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER, ROUND_LABEL, type ChangeRound } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
@@ -996,36 +996,19 @@ function TimeTrackingPrototype() {
                             )
                           }}
                         />
-                      ) : sendView === 'receipt' && period && schedule ? (
-                        <ReceiptPage
-                          schedule={schedule}
-                          period={period}
-                          people={schedulePeople}
-                          shifts={periodShifts}
-                          workweekStartDay={schedule.workweek_start_day}
-                          snapshot={sendSnapshots[sendKey] ?? null}
-                          sendingSince={sendingHere?.startedAt ?? null}
-                          failure={sendFailures[sendKey] ?? null}
-                          onBack={() => {
-                            setSendView(null)
-                          }}
-                          onUpdate={() => {
-                            setSendFailure(sendKey, null)
-                            setSendView('review')
-                          }}
-                          onRunPayroll={() => {
-                            setSendView(null)
-                            setTab('payroll')
-                          }}
-                        />
-                      ) : sendView === 'review' && period && schedule ? (
+                      ) : sendView && period && schedule ? (
                         <SendPage
+                          key={sendKey}
                           companyId={companyId}
                           schedule={schedule}
                           period={period}
                           people={schedulePeople}
                           shifts={periodShifts}
+                          phase={sendView === 'receipt' ? 'result' : 'review'}
                           isUpdate={Boolean(lastSyncAt)}
+                          snapshot={sendSnapshots[sendKey] ?? null}
+                          sendingSince={sendingHere?.startedAt ?? null}
+                          failure={sendFailures[sendKey] ?? null}
                           onClose={() => {
                             setSendView(null)
                           }}
@@ -1034,6 +1017,14 @@ function TimeTrackingPrototype() {
                             setFocusPerson(personUuid)
                           }}
                           onSend={startSend}
+                          onSendAgain={() => {
+                            setSendFailure(sendKey, null)
+                            setSendView('review')
+                          }}
+                          onRunPayroll={() => {
+                            setSendView(null)
+                            setTab('payroll')
+                          }}
                         />
                       ) : (
                         review

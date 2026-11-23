@@ -15,6 +15,7 @@ export type ChangeId =
   | 'send-outcomes'
   | 'receipt-totals'
   | 'row-actions-text'
+  | 'one-send-page'
 
 export type ChangeRound = 'nov-19' | 'nov-20'
 
@@ -147,8 +148,8 @@ export const CHANGES: Change[] = [
     title: 'Send waits for a result: sent, partly sent, or failed',
     feedback:
       'Sync is async. At the very least we need a place to sit here letting it spin and then either say “yay, everything went” or “boo, something failed.”',
-    what: 'After Send, the receipt waits on the send, then shows success, a partial failure naming who wasn’t sent (with Try again), or a failed send. Timesheets flags a send that didn’t finish. A dashed “Prototype only” picker on the send page chooses the outcome, since the demo can’t fail on its own.',
-    where: 'Timesheets › Send to payroll, and the receipt it opens.',
+    what: 'After Send, the page waits on the send, then shows success, a partial failure naming who wasn’t sent (with Try again), or a failed send. Timesheets flags a send that didn’t finish. A dashed “Prototype only” picker on the send page chooses the outcome, since the demo can’t fail on its own.',
+    where: 'Timesheets › Send to payroll.',
   },
   {
     id: 'receipt-totals',
@@ -169,6 +170,16 @@ export const CHANGES: Change[] = [
       'Without the tooltip it’s hard: does X mean I’m deleting the entry? Maybe I’ll experiment with making it a real button and see how badly it breaks the experience.',
     what: 'To keep the tables clean, every row’s Approve, Reject and Return to pending sit in its ⋮ menu with a check, X and slash icon, and a count on person rows. Selecting rows brings up a bulk bar with the same three actions as labelled, counted buttons. Clicking a person’s name or “View shifts (n)” opens their shifts. The SDK icon button has no tooltip, which is still an open question for the SDK components.',
     where: 'Timesheets › every row’s ⋮ menu, both bulk bars, and person names.',
+  },
+  {
+    id: 'one-send-page',
+    round: 'nov-20',
+    tabs: ['review'],
+    title: 'One page for sending: review, wait, result',
+    feedback:
+      'Send, here’s the thing, send it. And then when you’re done, one more time, a receipt of what has been sent. Maybe this is overkill.',
+    what: 'Send to payroll is now a single page. It lists what will be sent by person and type of hours, then after Send the same page waits on the sync and shows the result in place. The separate receipt page is gone; “View what was sent” on Timesheets opens this page in its result state.',
+    where: 'Timesheets › Send to payroll, and View what was sent.',
   },
 ]
 

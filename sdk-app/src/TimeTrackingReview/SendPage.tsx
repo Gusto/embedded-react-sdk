@@ -13,7 +13,6 @@ import {
   sentSummary,
   willSync,
   type SentSummary,
-  workedHours,
   type ApiPayPeriod,
   type ApiPaySchedule,
   type ApiShift,
@@ -40,16 +39,13 @@ function isOutcome(value: string): value is SendOutcome {
   return OUTCOME_OPTIONS.some(option => option.value === value)
 }
 
-interface IncludedRow {
-  person: Person
-  count: number
-  hours: number
-}
-
 interface SkippedRow {
   shift: ApiShift
   name: string
 }
+
+/** Which state of the one send page to show: deciding what to send, or the outcome of a send. */
+export type SendPhase = 'review' | 'result'
 
 export function SendPage({
   companyId,
@@ -57,39 +53,58 @@ export function SendPage({
   period,
   people,
   shifts,
+  phase,
   isUpdate,
+  snapshot,
+  sendingSince,
+  failure,
   onClose,
   onReview,
   onSend,
+  onSendAgain,
+  onRunPayroll,
 }: {
   companyId: string
   schedule: ApiPaySchedule
   period: ApiPayPeriod
   people: Person[]
   shifts: ApiShift[]
+  phase: SendPhase
   isUpdate: boolean
+  snapshot: SentSummary | null
+  sendingSince: string | null
+  failure: SendFailure | null
   onClose: () => void
   onReview: (personUuid: string) => void
   onSend: (included: ApiShift[], preview: Preview, outcome: SendOutcome) => void
+  onSendAgain: () => void
+  onRunPayroll: () => void
 }) {
   const Components = useComponentContext()
+  const [wasUpdate] = useState(isUpdate)
+  const [outcome, setOutcome] = useState<SendOutcome>('success')
+  const workweekStartDay = schedule.workweek_start_day
   const included = shifts.filter(willSync)
   const skipped = shifts.filter(shift => !willSync(shift))
-  const rows: IncludedRow[] = people
-    .map(person => {
-      const mine = included.filter(s => s.entity_uuid === person.employee.uuid)
-      return { person, count: mine.length, hours: mine.reduce((sum, s) => sum + workedHours(s), 0) }
-    })
-    .filter(row => row.count > 0)
-    .sort((a, b) => a.person.name.localeCompare(b.person.name))
-  const totalHours = rows.reduce((sum, r) => sum + r.hours, 0)
   const nameOf = (uuid: string) => people.find(p => p.employee.uuid === uuid)?.name ?? uuid
   const payrollName = period.payroll
     ? `${formatShortDate(period.payroll.check_date)} payroll`
     : 'payroll'
 
-  const [wasUpdate] = useState(isUpdate)
-  const [outcome, setOutcome] = useState<SendOutcome>('success')
+  const toSend = sentSummary(
+    included.map(shift => ({
+      ...shift,
+      synced_to_payroll_at: shift.synced_to_payroll_at ?? 'now',
+    })),
+    people,
+    workweekStartDay,
+  )
+  const live = sentSummary(shifts, people, workweekStartDay)
+  const sent = snapshot ?? live
+  const isSending = Boolean(sendingSince)
+  const isResult = phase === 'result' && !isSending
+  const summary = isResult ? sent : toSend
+
   const send = () => {
     onSend(
       included,
@@ -112,136 +127,6 @@ export function SendPage({
       outcome,
     )
   }
-
-  const dataView = useDataView<IncludedRow>({
-    data: rows,
-    columns: [
-      { title: 'Person', render: ({ person }) => person.name },
-      { title: 'Job', render: ({ person }) => person.title },
-      { title: 'Shifts', justify: 'end', render: ({ count }) => count },
-      { title: 'Hours', justify: 'end', render: ({ hours }) => formatHours(hours) },
-      {
-        title: <>Note</>,
-        render: ({ person }) =>
-          person.effect === 'all' ? (
-            ''
-          ) : (
-            <Components.Badge status="warning">{EFFECT_LABEL[person.effect]}</Components.Badge>
-          ),
-      },
-    ],
-  })
-
-  const skippedView = useDataView<SkippedRow>({
-    data: skipped.map(shift => ({ shift, name: nameOf(shift.entity_uuid) })),
-    columns: [
-      { title: 'Person', render: ({ name }) => name },
-      { title: 'Date', render: ({ shift }) => formatDay(localStartDate(shift)) },
-      { title: 'Why', render: ({ shift }) => REVIEW_STATE_LABEL[reviewState(shift)] },
-    ],
-    itemMenu: ({ shift, name }) => (
-      <Components.Button
-        variant="tertiary"
-        aria-label={`Review ${name}’s shifts`}
-        onClick={() => {
-          onReview(shift.entity_uuid)
-        }}
-      >
-        Review
-      </Components.Button>
-    ),
-  })
-
-  const title = `${wasUpdate ? 'Update payroll' : 'Send to payroll'}: ${formatPeriod(period)}`
-
-  return (
-    <SubPage
-      trail={[{ label: 'Timesheets', onClick: onClose }]}
-      current={wasUpdate ? 'Update payroll' : 'Send to payroll'}
-      title={
-        <>
-          {title} <ChangePin id="send-page" />
-        </>
-      }
-      description={`${scheduleLabel(schedule)} · ${included.length} approved, finished shifts · ${formatHours(totalHours)} hours → ${payrollName}`}
-      footer={
-        <Flex justifyContent="space-between" alignItems="flex-end" gap={12} flexWrap="wrap">
-          <Flex alignItems="flex-end" gap={8}>
-            <div className={styles.simulate}>
-              <Components.Select
-                label="Prototype only: simulate the result"
-                placeholder="Choose a result"
-                value={outcome}
-                options={OUTCOME_OPTIONS}
-                onChange={value => {
-                  if (isOutcome(value)) setOutcome(value)
-                }}
-              />
-            </div>
-            <ChangePin id="send-outcomes" />
-          </Flex>
-          <Flex gap={12} justifyContent="flex-end">
-            <Components.Button variant="secondary" onClick={onClose}>
-              Cancel
-            </Components.Button>
-            <Components.Button isDisabled={included.length === 0} onClick={send}>
-              {wasUpdate ? 'Update payroll' : 'Send to payroll'}
-            </Components.Button>
-          </Flex>
-        </Flex>
-      }
-    >
-      <Components.Alert status="warning" label="This replaces the hours on payroll">
-        It recalculates everyone on {scheduleLabel(schedule)} for these dates, including hours fixed
-        by hand in payroll. <GapPin id="sync-limits" />
-      </Components.Alert>
-      <DataView label="Included" {...dataView} />
-      <Components.Text size="sm" variant="supporting">
-        What each person has on payroll now can’t be read, so the change can’t be shown.{' '}
-      </Components.Text>
-      {skipped.length > 0 && (
-        <Flex flexDirection="column" gap={8}>
-          <Components.Heading as="h3" styledAs="h5">
-            {skipped.length} won’t be sent
-          </Components.Heading>
-          <DataView label="Won’t be sent" {...skippedView} />
-        </Flex>
-      )}
-    </SubPage>
-  )
-}
-
-export function ReceiptPage({
-  schedule,
-  period,
-  people,
-  shifts,
-  workweekStartDay,
-  snapshot,
-  sendingSince,
-  failure,
-  onBack,
-  onUpdate,
-  onRunPayroll,
-}: {
-  schedule: ApiPaySchedule
-  period: ApiPayPeriod
-  people: Person[]
-  shifts: ApiShift[]
-  workweekStartDay: string | null
-  snapshot: SentSummary | null
-  sendingSince: string | null
-  failure: SendFailure | null
-  onBack: () => void
-  onUpdate: () => void
-  onRunPayroll: () => void
-}) {
-  const Components = useComponentContext()
-  const live = sentSummary(shifts, people, workweekStartDay)
-  const summary = snapshot ?? live
-  const payrollName = period.payroll
-    ? `${formatShortDate(period.payroll.check_date)} payroll`
-    : 'payroll'
 
   const rowsView = useDataView({
     data: summary.rows,
@@ -272,99 +157,138 @@ export function ReceiptPage({
         render: row => <Estimate hours={row.overtime?.double} />,
       },
       { title: 'Total', justify: 'end', render: row => formatHours(row.hours) },
+      {
+        title: 'Note',
+        render: row =>
+          row.person.effect === 'all' ? (
+            ''
+          ) : (
+            <Components.Badge status="warning">{EFFECT_LABEL[row.person.effect]}</Components.Badge>
+          ),
+      },
     ],
   })
 
-  const back = (
-    <Components.Button variant="secondary" onClick={onBack}>
-      Back to timesheets
-    </Components.Button>
+  const skippedView = useDataView<SkippedRow>({
+    data: skipped.map(shift => ({ shift, name: nameOf(shift.entity_uuid) })),
+    columns: [
+      { title: 'Person', render: ({ name }) => name },
+      { title: 'Date', render: ({ shift }) => formatDay(localStartDate(shift)) },
+      { title: 'Why', render: ({ shift }) => REVIEW_STATE_LABEL[reviewState(shift)] },
+    ],
+    itemMenu: ({ shift, name }) => (
+      <Components.Button
+        variant="tertiary"
+        aria-label={`Review ${name}’s shifts`}
+        onClick={() => {
+          onReview(shift.entity_uuid)
+        }}
+      >
+        Review
+      </Components.Button>
+    ),
+  })
+
+  const action = wasUpdate ? 'Update payroll' : 'Send to payroll'
+  const reviewFooter = (
+    <Flex justifyContent="space-between" alignItems="flex-end" gap={12} flexWrap="wrap">
+      <Flex alignItems="flex-end" gap={8}>
+        <div className={styles.simulate}>
+          <Components.Select
+            label="Prototype only: simulate the result"
+            placeholder="Choose a result"
+            value={outcome}
+            options={OUTCOME_OPTIONS}
+            onChange={value => {
+              if (isOutcome(value)) setOutcome(value)
+            }}
+          />
+        </div>
+        <ChangePin id="send-outcomes" />
+      </Flex>
+      <Flex gap={12} justifyContent="flex-end">
+        <Components.Button variant="secondary" onClick={onClose}>
+          Cancel
+        </Components.Button>
+        <Components.Button isDisabled={included.length === 0} onClick={send}>
+          {action}
+        </Components.Button>
+      </Flex>
+    </Flex>
+  )
+  const doneFooter = (
+    <Flex justifyContent="flex-end" gap={12}>
+      {isResult && !failure && (
+        <Components.Button variant="secondary" onClick={onRunPayroll}>
+          See it in Run payroll
+        </Components.Button>
+      )}
+      {failure && failure.kind !== 'partial' && (
+        <Components.Button variant="secondary" onClick={onSendAgain}>
+          Try again
+        </Components.Button>
+      )}
+      <Components.Button onClick={onClose}>
+        {isSending ? 'Back to timesheets' : 'Done'}
+      </Components.Button>
+    </Flex>
   )
 
-  if (sendingSince) {
-    return (
-      <SubPage
-        narrow
-        trail={[{ label: 'Timesheets', onClick: onBack }]}
-        current="Sending hours"
-        title={`Sending hours for ${formatPeriod(period)}`}
-        description={`${scheduleLabel(schedule)} → ${payrollName}`}
-        footer={back}
-      >
-        <Components.Alert status="info" label="Waiting for payroll to confirm…">
-          Started {formatDateTime(sendingSince)}. The send runs in the background, so this page
-          checks on it until it finishes. You can keep working; the result shows here and on
-          Timesheets. <GapPin id="sync-limits" /> <ChangePin id="send-outcomes" />
-        </Components.Alert>
-        <Components.LoadingSpinner size="sm" />
-      </SubPage>
-    )
-  }
-
-  if (failure && failure.kind !== 'partial') {
-    return (
-      <SubPage
-        narrow
-        trail={[{ label: 'Timesheets', onClick: onBack }]}
-        current="Couldn’t send"
-        title={
-          <>
-            Couldn’t send hours <ChangePin id="send-outcomes" />
-          </>
-        }
-        description="Nothing was changed on payroll."
-        footer={
-          <Flex justifyContent="flex-end" gap={12}>
-            {back}
-            <Components.Button onClick={onUpdate}>Try again</Components.Button>
-          </Flex>
-        }
-      >
-        {failure.kind === 'processed' ? (
-          <Components.Alert status="error" label={`The ${payrollName} was already processed`}>
-            There’s no open payroll for {scheduleLabel(schedule)}, {formatPeriod(period)}, so its
-            hours can’t change. <GapPin id="sync-limits" />
-          </Components.Alert>
-        ) : (
-          <Components.Alert status="error" label="The send failed">
-            Payroll didn’t accept any hours for {formatPeriod(period)}. Try again, and if it keeps
-            failing, contact support. What the API reports for a failed send isn’t defined yet.{' '}
-            <GapPin id="which-timesheets" />
-          </Components.Alert>
-        )}
-      </SubPage>
-    )
-  }
+  const isFailedOutright = isResult && failure !== null && failure.kind !== 'partial'
+  const description = isResult
+    ? isFailedOutright
+      ? 'Nothing was changed on payroll.'
+      : sent.lastAt
+        ? `Last sent ${formatDateTime(sent.lastAt)} to the ${payrollName}. ${sent.sent.length} shifts for ${sent.rows.length} people on ${scheduleLabel(schedule)}.`
+        : 'Nothing has been sent for this period.'
+    : `${scheduleLabel(schedule)} · ${included.length} approved, finished shifts · ${formatHours(toSend.hours)} hours → ${payrollName}`
 
   return (
     <SubPage
-      trail={[{ label: 'Timesheets', onClick: onBack }]}
-      current="Hours sent"
+      trail={[{ label: 'Timesheets', onClick: onClose }]}
+      current={action}
       title={
         <>
-          Hours sent for {formatPeriod(period)} <ChangePin id="receipt" />
+          {action}: {formatPeriod(period)} <ChangePin id="send-page" />{' '}
+          <ChangePin id="one-send-page" />
         </>
       }
-      description={
-        summary.lastAt
-          ? `Last sent ${formatDateTime(summary.lastAt)} to the ${payrollName}. ${summary.sent.length} shifts for ${summary.rows.length} people on ${scheduleLabel(schedule)}. If anything changes before payroll runs, update it again.`
-          : 'Nothing has been sent for this period.'
-      }
-      footer={
-        <Flex justifyContent="flex-end" gap={12}>
-          <Components.Button variant="secondary" onClick={onRunPayroll}>
-            See it in Run payroll
-          </Components.Button>
-          <Components.Button onClick={onBack}>Done</Components.Button>
-        </Flex>
-      }
+      description={description}
+      footer={phase === 'review' && !isSending ? reviewFooter : doneFooter}
     >
-      {failure?.kind === 'partial' ? (
+      {isSending ? (
+        <Components.Alert status="info" label="Waiting for payroll to confirm…">
+          <Flex alignItems="center" gap={8}>
+            <Components.LoadingSpinner size="sm" style="inline" />
+            <span>
+              Started {formatDateTime(sendingSince ?? '')}. The send runs in the background, so this
+              page checks on it until it finishes. You can keep working; the result shows here and
+              on Timesheets. <GapPin id="sync-limits" /> <ChangePin id="send-outcomes" />
+            </span>
+          </Flex>
+        </Components.Alert>
+      ) : !isResult ? (
+        <Components.Alert status="warning" label="This replaces the hours on payroll">
+          It recalculates everyone on {scheduleLabel(schedule)} for these dates, including hours
+          fixed by hand in payroll. <GapPin id="sync-limits" />
+        </Components.Alert>
+      ) : failure?.kind === 'processed' ? (
+        <Components.Alert status="error" label={`The ${payrollName} was already processed`}>
+          There’s no open payroll for {scheduleLabel(schedule)}, {formatPeriod(period)}, so its
+          hours can’t change. <GapPin id="sync-limits" />
+        </Components.Alert>
+      ) : failure?.kind === 'error' ? (
+        <Components.Alert status="error" label="The send failed">
+          Payroll didn’t accept any hours for {formatPeriod(period)}. Try again, and if it keeps
+          failing, contact support. What the API reports for a failed send isn’t defined yet.{' '}
+          <GapPin id="which-timesheets" /> <ChangePin id="send-outcomes" />
+        </Components.Alert>
+      ) : failure?.kind === 'partial' ? (
         <Components.Alert
           status="error"
           label={`${failure.names.length} ${failure.names.length === 1 ? 'person wasn’t' : 'people weren’t'} sent`}
           action={
-            <Components.Button variant="secondary" onClick={onUpdate}>
+            <Components.Button variant="secondary" onClick={onSendAgain}>
               Try again
             </Components.Button>
           }
@@ -375,18 +299,19 @@ export function ReceiptPage({
           <ChangePin id="send-outcomes" />
         </Components.Alert>
       ) : (
-        summary.lastAt && (
+        sent.lastAt && (
           <Components.Alert status="success" label={`Sent to the ${payrollName}`}>
-            Everyone below is on payroll for {formatPeriod(period)}.
+            Everyone below is on payroll for {formatPeriod(period)}. <ChangePin id="receipt" />
           </Components.Alert>
         )
       )}
-      {live.changed > 0 && (
+
+      {isResult && live.changed > 0 && (
         <Components.Alert
           status="warning"
           label={`${live.changed} ${live.changed === 1 ? 'shift has' : 'shifts have'} changed since this send`}
           action={
-            <Components.Button variant="secondary" onClick={onUpdate}>
+            <Components.Button variant="secondary" onClick={onSendAgain}>
               Update payroll
             </Components.Button>
           }
@@ -395,15 +320,29 @@ export function ReceiptPage({
           updated_at with its synced_to_payroll_at. <GapPin id="which-timesheets" />
         </Components.Alert>
       )}
-      <Components.Heading as="h3" styledAs="h5">
-        What was sent
-      </Components.Heading>
-      <DataView label="What was sent" {...rowsView} />
-      <Components.Text size="sm" variant="supporting">
-        Overtime and double time are this page’s estimates until the API returns how hours were
-        classified. <GapPin id="rules-applied" /> Which payroll they landed on can’t be read yet
-        either. <GapPin id="which-timesheets" />
-      </Components.Text>
+
+      {!isFailedOutright && (
+        <>
+          <Components.Heading as="h3" styledAs="h5">
+            {isResult ? 'What was sent' : 'What will be sent'}
+          </Components.Heading>
+          <DataView label={isResult ? 'What was sent' : 'What will be sent'} {...rowsView} />
+          <Components.Text size="sm" variant="supporting">
+            Overtime and double time are this page’s estimates until the API returns how hours were
+            classified. <GapPin id="rules-applied" /> Which payroll they land on can’t be read yet
+            either. <GapPin id="which-timesheets" />
+          </Components.Text>
+        </>
+      )}
+
+      {phase === 'review' && !isSending && skipped.length > 0 && (
+        <Flex flexDirection="column" gap={8}>
+          <Components.Heading as="h3" styledAs="h5">
+            {skipped.length} won’t be sent
+          </Components.Heading>
+          <DataView label="Won’t be sent" {...skippedView} />
+        </Flex>
+      )}
     </SubPage>
   )
 }
