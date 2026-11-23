@@ -46,7 +46,17 @@ import { ReceiptPage, SendPage, type SendFailure, type SendOutcome } from './Sen
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER, ROUND_LABEL, type ChangeRound } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
-import { ApproveReject, ChangePin, GapPin, PrototypeModal, RequestBlock, Trail } from './parts'
+import {
+  ApproveIcon,
+  ApproveReject,
+  ChangePin,
+  PendingIcon,
+  RejectIcon,
+  GapPin,
+  PrototypeModal,
+  RequestBlock,
+  Trail,
+} from './parts'
 import { nowIso, type NoticeStatus, type Preview } from './preview'
 import type { PolicyData } from './PoliciesTab'
 import styles from './TimeTrackingReview.module.scss'
@@ -1245,8 +1255,14 @@ function PlusIcon() {
   )
 }
 
-function countStatus(shifts: ApiShift[], status: ShiftStatus) {
-  return shifts.filter(shift => shift.status === status).length
+function StatusCount({ shifts, status }: { shifts: ApiShift[]; status: ShiftStatus }) {
+  const Components = useComponentContext()
+  const count = shifts.filter(shift => shift.status === status).length
+  return (
+    <Components.Badge status={count === 0 ? 'info' : APPROVAL_BADGE[status]}>
+      {APPROVAL_LABEL[status]} ({count})
+    </Components.Badge>
+  )
 }
 
 interface PersonRow {
@@ -1349,84 +1365,77 @@ function PeopleTable({
       {
         title: 'Pending',
         justify: 'end',
-        render: ({ shifts }) => countStatus(shifts, 'pending'),
+        render: ({ shifts }) => <StatusCount shifts={shifts} status="pending" />,
       },
       {
         title: 'Approved',
         justify: 'end',
-        render: ({ shifts }) => countStatus(shifts, 'approved'),
+        render: ({ shifts }) => <StatusCount shifts={shifts} status="approved" />,
       },
       {
         title: 'Rejected',
         justify: 'end',
-        render: ({ shifts }) => countStatus(shifts, 'rejected'),
-      },
-      {
-        title: (
-          <>
-            <span className={styles.srOnly}>Approve or reject</span>
-            <ChangePin id="row-icons" /> <ChangePin id="row-actions-text" />
-          </>
-        ),
-        render: ({ person, shifts }) => {
-          const toApprove = shifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
-          const toReject = shifts.filter(s => s.status !== 'rejected')
-          return (
-            <ApproveReject
-              label={`all of ${person.name}’s shifts`}
-              approveCount={toApprove.length}
-              rejectCount={toReject.length}
-              onApprove={
-                toApprove.length
-                  ? () => {
-                      onBulk(
-                        toApprove,
-                        'approved',
-                        `Approve ${person.name}’s ${toApprove.length} shifts`,
-                      )
-                    }
-                  : undefined
-              }
-              onReject={
-                toReject.length
-                  ? () => {
-                      onBulk(
-                        toReject,
-                        'rejected',
-                        `Reject ${person.name}’s ${toReject.length} shifts`,
-                      )
-                    }
-                  : undefined
-              }
-            />
-          )
-        },
+        render: ({ shifts }) => <StatusCount shifts={shifts} status="rejected" />,
       },
     ],
-    itemMenu: ({ person }) => (
-      <HamburgerMenu
-        triggerLabel={`More actions for ${person.name}`}
-        items={[
-          {
-            label: 'View shifts',
-            onClick: () => {
-              void navigate(shiftsHref(person.employee.uuid))
+    itemMenu: ({ person, shifts }) => {
+      const toApprove = shifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
+      const toReject = shifts.filter(s => s.status !== 'rejected')
+      const toPending = shifts.filter(s => s.status !== 'pending')
+      return (
+        <HamburgerMenu
+          triggerLabel={`More actions for ${person.name}`}
+          items={[
+            {
+              label: 'View shifts',
+              onClick: () => {
+                void navigate(shiftsHref(person.employee.uuid))
+              },
             },
-          },
-          {
-            label: 'Add shift',
-            onClick: () => {
-              onAddShift(person.employee.uuid)
+            {
+              label: `Approve (${toApprove.length})`,
+              icon: <ApproveIcon />,
+              isDisabled: toApprove.length === 0,
+              onClick: () => {
+                onBulk(toApprove, 'approved', `Approve ${person.name}’s ${toApprove.length} shifts`)
+              },
             },
-          },
-        ]}
-      />
-    ),
+            {
+              label: `Reject (${toReject.length})`,
+              icon: <RejectIcon />,
+              isDisabled: toReject.length === 0,
+              onClick: () => {
+                onBulk(toReject, 'rejected', `Reject ${person.name}’s ${toReject.length} shifts`)
+              },
+            },
+            {
+              label: `Return to pending (${toPending.length})`,
+              icon: <PendingIcon />,
+              isDisabled: toPending.length === 0,
+              onClick: () => {
+                onBulk(
+                  toPending,
+                  'pending',
+                  `Return ${person.name}’s ${toPending.length} shifts to pending`,
+                )
+              },
+            },
+            {
+              label: 'Add shift',
+              onClick: () => {
+                onAddShift(person.employee.uuid)
+              },
+            },
+          ]}
+        />
+      )
+    },
   })
   const selectedRows = rows.filter(row => selected.has(row.person.employee.uuid))
   const selectedShifts = selectedRows.flatMap(row => row.shifts)
   const toApprove = selectedShifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
   const toReject = selectedShifts.filter(s => s.status !== 'rejected')
+  const toPending = selectedShifts.filter(s => s.status !== 'pending')
   const who = `${selectedRows.length} ${selectedRows.length === 1 ? 'person' : 'people'}`
 
   return (
@@ -1438,6 +1447,18 @@ function PeopleTable({
           </Components.Text>
           <ApproveReject
             label={`the selected shifts for ${who}`}
+            pendingCount={toPending.length}
+            onPending={
+              toPending.length
+                ? () => {
+                    onBulk(
+                      toPending,
+                      'pending',
+                      `Return ${toPending.length} shifts for ${who} to pending`,
+                    )
+                  }
+                : undefined
+            }
             approveCount={toApprove.length}
             rejectCount={toReject.length}
             onApprove={

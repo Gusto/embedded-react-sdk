@@ -167,8 +167,8 @@ export const CHANGES: Change[] = [
     title: 'Approve and reject are labelled buttons',
     feedback:
       'Without the tooltip it’s hard: does X mean I’m deleting the entry? Maybe I’ll experiment with making it a real button and see how badly it breaks the experience.',
-    what: 'The bare ✓ and ✕ icons became “✓ Approve” and “✕ Reject” buttons on every person and shift row, so the action is clear without a tooltip. The SDK icon button has no tooltip, which is still a question for Steve.',
-    where: 'Timesheets › person rows and shift rows.',
+    what: 'Shift rows have “✓ Approve” and “✕ Reject” buttons, so the action is clear without a tooltip. Person rows keep the table clean: Approve (n), Reject (n) and Return to pending (n) sit in the ⋮ menu with the same icons, and the bulk bars use the same counted actions. The SDK icon button has no tooltip, which is still a question for Steve.',
+    where: 'Timesheets › person row ⋮ menus, shift rows, and both bulk bars.',
   },
 ]
 

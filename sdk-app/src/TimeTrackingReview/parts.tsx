@@ -106,6 +106,30 @@ function XIcon() {
   )
 }
 
+export function ApproveIcon() {
+  return (
+    <span className={styles.approveIcon}>
+      <CheckIcon />
+    </span>
+  )
+}
+
+export function RejectIcon() {
+  return (
+    <span className={styles.rejectIcon}>
+      <XIcon />
+    </span>
+  )
+}
+
+export function PendingIcon() {
+  return (
+    <span className={styles.pendingIcon}>
+      <SlashCircleIcon />
+    </span>
+  )
+}
+
 export function ApproveReject({
   label,
   approveCount,
@@ -132,11 +156,7 @@ export function ApproveReject({
           aria-label={`Return ${label} to pending`}
           isDisabled={!onPending}
           onClick={onPending}
-          icon={
-            <span className={styles.pendingIcon}>
-              <SlashCircleIcon />
-            </span>
-          }
+          icon={<PendingIcon />}
         >
           Return to pending ({pendingCount})
         </Components.Button>
@@ -146,11 +166,7 @@ export function ApproveReject({
         aria-label={`Approve ${label}`}
         isDisabled={!onApprove}
         onClick={onApprove}
-        icon={
-          <span className={styles.approveIcon}>
-            <CheckIcon />
-          </span>
-        }
+        icon={<ApproveIcon />}
       >
         Approve{approveCount === undefined ? '' : ` (${approveCount})`}
       </Components.Button>
@@ -159,11 +175,7 @@ export function ApproveReject({
         aria-label={`Reject ${label}`}
         isDisabled={!onReject}
         onClick={onReject}
-        icon={
-          <span className={styles.rejectIcon}>
-            <XIcon />
-          </span>
-        }
+        icon={<RejectIcon />}
       >
         Reject{rejectCount === undefined ? '' : ` (${rejectCount})`}
       </Components.Button>
