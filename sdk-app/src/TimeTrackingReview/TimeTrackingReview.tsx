@@ -1374,7 +1374,8 @@ function PeopleTable({
           return (
             <ApproveReject
               label={`all of ${person.name}’s shifts`}
-              forAll
+              approveCount={toApprove.length}
+              rejectCount={toReject.length}
               onApprove={
                 toApprove.length
                   ? () => {
@@ -1431,29 +1432,29 @@ function PeopleTable({
   return (
     <Flex flexDirection="column" gap={8}>
       {selectedRows.length > 0 && (
-        <Flex alignItems="center" gap={12} flexWrap="wrap">
+        <Flex alignItems="center" justifyContent="space-between" gap={12} flexWrap="wrap">
           <Components.Text size="sm" weight="medium">
-            {who} selected · {selectedShifts.length} shifts
+            {who} selected · {selectedShifts.length} shifts <GapPin id="bulk-approval" />
           </Components.Text>
-          <Components.Button
-            variant="secondary"
-            isDisabled={toApprove.length === 0}
-            onClick={() => {
-              onBulk(toApprove, 'approved', `Approve ${toApprove.length} shifts for ${who}`)
-            }}
-          >
-            {toApprove.length ? `Approve ${toApprove.length} shifts` : 'All approved'}
-          </Components.Button>
-          <Components.Button
-            variant="secondary"
-            isDisabled={toReject.length === 0}
-            onClick={() => {
-              onBulk(toReject, 'rejected', `Reject ${toReject.length} shifts for ${who}`)
-            }}
-          >
-            Reject {toReject.length} shifts
-          </Components.Button>
-          <GapPin id="bulk-approval" />
+          <ApproveReject
+            label={`the selected shifts for ${who}`}
+            approveCount={toApprove.length}
+            rejectCount={toReject.length}
+            onApprove={
+              toApprove.length
+                ? () => {
+                    onBulk(toApprove, 'approved', `Approve ${toApprove.length} shifts for ${who}`)
+                  }
+                : undefined
+            }
+            onReject={
+              toReject.length
+                ? () => {
+                    onBulk(toReject, 'rejected', `Reject ${toReject.length} shifts for ${who}`)
+                  }
+                : undefined
+            }
+          />
         </Flex>
       )}
       <div className={styles.reviewTable}>
@@ -1486,6 +1487,8 @@ function ShiftsTable({
   const rules = new Map(person.breakPolicy?.rules.map(rule => [rule.uuid, rule]))
   const label = (shift: ApiShift) => `${person.name}, ${formatDay(localStartDate(shift))}`
   const selectedShifts = shifts.filter(s => selected.has(s.uuid))
+  const selectedToApprove = selectedShifts.filter(s => s.status !== 'approved' && s.shift_ended_at)
+  const selectedToReject = selectedShifts.filter(s => s.status !== 'rejected')
   const policy = person.breakPolicy
   const issuesByShift = new Map(shifts.map(s => [s.uuid, breakIssues(s, policy)]))
   const shiftsWithIssues = shifts.filter(s => issuesByShift.get(s.uuid)?.length)
@@ -1645,23 +1648,34 @@ function ShiftsTable({
         <span className={styles.spacer} />
         {selectedShifts.length > 0 && (
           <>
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                onStatus(selectedShifts, 'approved', `Approve ${selectedShifts.length} shifts`)
-              }}
-            >
-              Approve selected ({selectedShifts.length})
-            </Components.Button>
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                onStatus(selectedShifts, 'rejected', `Reject ${selectedShifts.length} shifts`)
-              }}
-            >
-              Reject selected
-            </Components.Button>
             <GapPin id="bulk-approval" />
+            <ApproveReject
+              label={`${selectedShifts.length} selected shifts`}
+              approveCount={selectedToApprove.length}
+              rejectCount={selectedToReject.length}
+              onApprove={
+                selectedToApprove.length
+                  ? () => {
+                      onStatus(
+                        selectedToApprove,
+                        'approved',
+                        `Approve ${selectedToApprove.length} shifts`,
+                      )
+                    }
+                  : undefined
+              }
+              onReject={
+                selectedToReject.length
+                  ? () => {
+                      onStatus(
+                        selectedToReject,
+                        'rejected',
+                        `Reject ${selectedToReject.length} shifts`,
+                      )
+                    }
+                  : undefined
+              }
+            />
           </>
         )}
       </Flex>
