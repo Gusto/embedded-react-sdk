@@ -6,7 +6,7 @@ import { LocationsEditScreen } from '@/components/Company/Locations/management/L
 import { FederalTaxesEditScreen } from '@/components/Company/FederalTaxes/management/FederalTaxesEditScreen'
 import { BankAccountEditScreen } from '@/components/Company/BankAccount/management/BankAccountEditScreen'
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
-import { StateTaxes } from '@/components/Company/StateTaxes/management'
+import { StateTaxesEditScreen } from '@/components/Company/StateTaxes/management/StateTaxesEditScreen'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
 import { SignatoryEditScreen } from '@/components/Company/AssignSignatory/management/SignatoryEditScreen'
 import { CompanyFormsEditScreen } from '@/components/Company/DocumentSigner/management/CompanyFormsEditScreen'
@@ -136,7 +136,7 @@ export function PayScheduleContextual() {
 /** @internal */
 export function StateTaxesContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
-  return <StateTaxes companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <StateTaxesEditScreen companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */

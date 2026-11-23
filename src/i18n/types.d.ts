@@ -1625,6 +1625,20 @@ export namespace Translations {
         description: string
       }
     }
+    manage: {
+      /** @defaultValue `"State taxes"` */
+      title: string
+      /** @defaultValue `"Review each state's tax setup and schedule upcoming tax rate changes."` */
+      description: string
+    }
+    header: {
+      /** @defaultValue `"Back to state taxes"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"State tax settings updated."` */
+      stateTaxesUpdated: string
+    }
   }
   /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
   export interface CompanyManagementTaxPaymentDetail {
@@ -2167,12 +2181,6 @@ export namespace Translations {
       noEditableFieldsDescription: string
       /** @defaultValue `"Tax rate scheduled to take effect on {{date}}."` */
       rateScheduledSuccess: string
-    }
-    management: {
-      /** @defaultValue `"State taxes"` */
-      title: string
-      /** @defaultValue `"Review each state's tax setup and schedule upcoming tax rate changes."` */
-      description: string
     }
   }
   /** Translation keys for the `Company.TimeOff.CreateTimeOffPolicy` i18n namespace. */

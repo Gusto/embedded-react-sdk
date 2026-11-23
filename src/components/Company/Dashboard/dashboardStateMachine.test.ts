@@ -72,17 +72,27 @@ describe('dashboardStateMachine — signatory', () => {
 describe('dashboardStateMachine — stateTaxes', () => {
   it('stays on the state taxes spoke as states are saved and rates scheduled', () => {
     const service = createService('stateTaxes')
-    send(service, componentEvents.COMPANY_STATE_TAX_UPDATED)
-    send(service, componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED)
+    send(service, componentEvents.COMPANY_MANAGEMENT_STATE_TAXES_UPDATED)
     expect(service.machine.current).toBe('stateTaxes')
   })
 
   it('surfaces "State tax settings updated" on leaving after a rate was scheduled', () => {
     const service = createService('stateTaxes')
-    send(service, componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED)
+    send(service, componentEvents.COMPANY_MANAGEMENT_STATE_TAXES_UPDATED)
     send(service, componentEvents.COMPANY_DASHBOARD_BACK)
     expect(service.machine.current).toBe('index')
     expect(service.context.successAlert).toBe('stateTaxesUpdated')
+  })
+
+  it('ignores the onboarding save events, which StateTaxesEditScreen translates', () => {
+    const service = createService('stateTaxes')
+    send(service, componentEvents.COMPANY_STATE_TAX_UPDATED)
+    send(service, componentEvents.COMPANY_STATE_TAX_RATE_SCHEDULED)
+    send(service, componentEvents.COMPANY_DASHBOARD_BACK)
+
+    // Nothing was recorded, so leaving must not claim a change.
+    expect(service.machine.current).toBe('index')
+    expect(service.context.successAlert).toBeNull()
   })
 
   it('returns without an alert when nothing was saved during the visit', () => {
