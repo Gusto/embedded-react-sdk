@@ -1546,6 +1546,7 @@ function ShiftsTable({
           return taken
         },
       },
+      { title: 'Worked', justify: 'end', render: shift => formatHours(workedHours(shift)) },
       ...breakTypes.map(type => ({
         title: `${BREAK_TYPE_LABEL[type]} breaks`,
         render: (shift: ApiShift) => {
@@ -1562,7 +1563,6 @@ function ShiftsTable({
           )
         },
       })),
-      { title: 'Worked', justify: 'end', render: shift => formatHours(workedHours(shift)) },
       {
         title: 'Approval',
         render: shift => {
@@ -1579,9 +1579,13 @@ function ShiftsTable({
         title: 'Payroll',
         render: shift => {
           const state = reviewState(shift)
-          if (state === 'unsent') return 'Not sent'
+          if (state === 'unsent') return <Components.Badge status="info">Not sent</Components.Badge>
           if (state === 'sent' && shift.synced_to_payroll_at)
-            return `Sent ${formatShortDate(shift.synced_to_payroll_at.slice(0, 10))}`
+            return (
+              <Components.Badge status="success">
+                Sent {formatShortDate(shift.synced_to_payroll_at.slice(0, 10))}
+              </Components.Badge>
+            )
           if (state === 'changed')
             return <Components.Badge status="warning">Changed since send</Components.Badge>
           return '—'
