@@ -36,13 +36,6 @@ export interface ModalProps {
    * Optional ref to the backdrop container
    */
   containerRef?: React.RefObject<HTMLDivElement | null>
-  /**
-   * Maximum size of the modal. `medium` and `large` match the Workbench Dialog sizes and let the
-   * modal grow to nearly the full viewport height.
-   *
-   * @defaultValue `'default'`
-   */
-  size?: 'default' | 'medium' | 'large'
 }
 
 /**
@@ -53,5 +46,4 @@ export interface ModalProps {
 export const ModalDefaults = {
   isOpen: false,
   shouldCloseOnBackdropClick: false,
-  size: 'default',
 } as const satisfies Partial<ModalProps>

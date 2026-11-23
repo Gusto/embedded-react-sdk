@@ -47,13 +47,11 @@ export function PrototypeModal({
   onClose,
   children,
   footer,
-  size = 'medium',
 }: {
   title: ReactNode
   onClose: () => void
   children: ReactNode
   footer?: ReactNode
-  size?: 'default' | 'medium' | 'large'
 }) {
   const Components = useComponentContext()
   return (
@@ -61,7 +59,6 @@ export function PrototypeModal({
       isOpen
       onClose={onClose}
       shouldCloseOnBackdropClick
-      size={size}
       footer={
         footer ?? (
           <Components.Button variant="secondary" onClick={onClose}>

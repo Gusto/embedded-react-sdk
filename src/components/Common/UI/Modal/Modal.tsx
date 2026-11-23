@@ -20,7 +20,7 @@ import { transitionDuration } from '@/contexts/ThemeProvider/theme'
  */
 export function Modal(rawProps: ModalProps) {
   const resolvedProps = applyMissingDefaults(rawProps, ModalDefaults)
-  const { isOpen, onClose, shouldCloseOnBackdropClick, children, footer, containerRef, size } =
+  const { isOpen, onClose, shouldCloseOnBackdropClick, children, footer, containerRef } =
     resolvedProps
 
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -41,7 +41,7 @@ export function Modal(rawProps: ModalProps) {
 
   const [isExiting, setIsExiting] = useState(false)
   const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const isSmallOrLarger = breakpoints.includes('small') && size === 'default'
+  const isSmallOrLarger = breakpoints.includes('small')
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current
@@ -111,8 +111,6 @@ export function Modal(rawProps: ModalProps) {
           className={classNames(styles.modal, {
             [styles.modalSmall as string]: isSmallOrLarger,
             [styles.modalOverflowing as string]: isOverflowing,
-            [styles.modalMedium as string]: size === 'medium',
-            [styles.modalLarge as string]: size === 'large',
           })}
         >
           {children && (

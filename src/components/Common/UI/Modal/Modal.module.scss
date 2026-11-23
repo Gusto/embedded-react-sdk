@@ -72,14 +72,6 @@
   max-height: calc(100vh - toRem(180));
 }
 
-.modalMedium {
-  max-width: toRem(668);
-}
-
-.modalLarge {
-  max-width: toRem(960);
-}
-
 .modalOverflowing {
   overflow: hidden;
 }

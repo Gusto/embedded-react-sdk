@@ -3891,7 +3891,6 @@ export interface ModalProps {
     isOpen?: boolean;
     onClose?: () => void;
     shouldCloseOnBackdropClick?: boolean;
-    size?: 'default' | 'medium' | 'large';
 }
 
 // @public
