@@ -346,3 +346,10 @@
 .unsure {
   color: var(--g-colorBodySubContent);
 }
+
+.simulate {
+  min-width: 16rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px dashed #7c3aed;
+  border-radius: 0.5rem;
+}

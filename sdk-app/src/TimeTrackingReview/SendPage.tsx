@@ -25,6 +25,21 @@ import styles from './TimeTrackingReview.module.scss'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+export type SendOutcome = 'success' | 'partial' | 'error'
+
+export type SendFailure =
+  { kind: 'processed' } | { kind: 'error' } | { kind: 'partial'; names: string[]; shifts: number }
+
+const OUTCOME_OPTIONS: Array<{ value: SendOutcome; label: string }> = [
+  { value: 'success', label: 'Everything sends' },
+  { value: 'partial', label: 'Some people fail' },
+  { value: 'error', label: 'The whole send fails' },
+]
+
+function isOutcome(value: string): value is SendOutcome {
+  return OUTCOME_OPTIONS.some(option => option.value === value)
+}
+
 interface IncludedRow {
   person: Person
   count: number
@@ -55,7 +70,7 @@ export function SendPage({
   isUpdate: boolean
   onClose: () => void
   onReview: (personUuid: string) => void
-  onSend: (included: ApiShift[], preview: Preview) => void
+  onSend: (included: ApiShift[], preview: Preview, outcome: SendOutcome) => void
 }) {
   const Components = useComponentContext()
   const included = shifts.filter(willSync)
@@ -74,23 +89,28 @@ export function SendPage({
     : 'payroll'
 
   const [wasUpdate] = useState(isUpdate)
+  const [outcome, setOutcome] = useState<SendOutcome>('success')
   const send = () => {
-    onSend(included, {
-      title: wasUpdate ? 'Update payroll' : 'Send to payroll',
-      requests: [
-        {
-          method: 'POST',
-          path: `/v1/companies/${companyId}/time_tracking/payroll_syncs`,
-          body: {
-            pay_schedule_uuid: schedule.uuid,
-            start_date: period.start_date,
-            end_date: period.end_date,
+    onSend(
+      included,
+      {
+        title: wasUpdate ? 'Update payroll' : 'Send to payroll',
+        requests: [
+          {
+            method: 'POST',
+            path: `/v1/companies/${companyId}/time_tracking/payroll_syncs`,
+            body: {
+              pay_schedule_uuid: schedule.uuid,
+              start_date: period.start_date,
+              end_date: period.end_date,
+            },
+            caption: 'Then poll the sync by its UUID until it finishes. The path is a best guess.',
           },
-          caption: 'Then poll the sync by its UUID until it finishes. The path is a best guess.',
-        },
-      ],
-      gapIds: ['sync-limits', 'which-timesheets'],
-    })
+        ],
+        gapIds: ['sync-limits', 'which-timesheets'],
+      },
+      outcome,
+    )
   }
 
   const dataView = useDataView<IncludedRow>({
@@ -145,13 +165,26 @@ export function SendPage({
       }
       description={`${scheduleLabel(schedule)} · ${included.length} approved, finished shifts · ${formatHours(totalHours)} hours → ${payrollName}`}
       footer={
-        <Flex justifyContent="flex-end" gap={12}>
-          <Components.Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Components.Button>
-          <Components.Button isDisabled={included.length === 0} onClick={send}>
-            {wasUpdate ? 'Update payroll' : 'Send to payroll'}
-          </Components.Button>
+        <Flex justifyContent="space-between" alignItems="flex-end" gap={12} flexWrap="wrap">
+          <div className={styles.simulate}>
+            <Components.Select
+              label="Prototype only: simulate the result"
+              placeholder="Choose a result"
+              value={outcome}
+              options={OUTCOME_OPTIONS}
+              onChange={value => {
+                if (isOutcome(value)) setOutcome(value)
+              }}
+            />
+          </div>
+          <Flex gap={12} justifyContent="flex-end">
+            <Components.Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Components.Button>
+            <Components.Button isDisabled={included.length === 0} onClick={send}>
+              {wasUpdate ? 'Update payroll' : 'Send to payroll'}
+            </Components.Button>
+          </Flex>
         </Flex>
       }
     >
@@ -183,7 +216,7 @@ export function ReceiptPage({
   workweekStartDay,
   snapshot,
   sendingSince,
-  failed,
+  failure,
   onBack,
   onUpdate,
   onRunPayroll,
@@ -195,7 +228,7 @@ export function ReceiptPage({
   workweekStartDay: string | null
   snapshot: SentSummary | null
   sendingSince: string | null
-  failed: boolean
+  failure: SendFailure | null
   onBack: () => void
   onUpdate: () => void
   onRunPayroll: () => void
@@ -211,33 +244,27 @@ export function ReceiptPage({
     data: summary.rows,
     columns: [
       { title: 'Person', render: row => row.person.name },
-      { title: 'Shifts', justify: 'end', render: row => row.count },
-      { title: 'Hours', justify: 'end', render: row => formatHours(row.hours) },
+      {
+        title: 'Regular',
+        justify: 'end',
+        render: row =>
+          formatHours(row.hours - (row.overtime?.overtime ?? 0) - (row.overtime?.double ?? 0)),
+      },
       {
         title: (
           <>
-            Overtime (est.) <GapPin id="rules-applied" />
+            Overtime <GapPin id="rules-applied" />
           </>
         ),
         justify: 'end',
-        render: row =>
-          row.overtime ? (
-            <span className={styles.estimate}>
-              ≈ {formatHours(row.overtime.overtime)}
-              {row.overtime.double > 0 && ` + ${formatHours(row.overtime.double)} DT`}
-            </span>
-          ) : (
-            '—'
-          ),
+        render: row => <Estimate hours={row.overtime?.overtime} />,
       },
       {
-        title: (
-          <>
-            Payroll <GapPin id="which-timesheets" />
-          </>
-        ),
-        render: () => <span className={styles.unsure}>{payrollName}?</span>,
+        title: 'Double time',
+        justify: 'end',
+        render: row => <Estimate hours={row.overtime?.double} />,
       },
+      { title: 'Total', justify: 'end', render: row => formatHours(row.hours) },
     ],
   })
 
@@ -257,8 +284,9 @@ export function ReceiptPage({
         description={`${scheduleLabel(schedule)} → ${payrollName}`}
         footer={back}
       >
-        <Components.Alert status="info" label="Sending hours to payroll…">
-          Started {formatDateTime(sendingSince)}. You can keep working; the result shows here and on
+        <Components.Alert status="info" label="Waiting for payroll to confirm…">
+          Started {formatDateTime(sendingSince)}. The send runs in the background, so this page
+          checks on it until it finishes. You can keep working; the result shows here and on
           Timesheets. <GapPin id="sync-limits" />
         </Components.Alert>
         <Components.LoadingSpinner />
@@ -266,7 +294,7 @@ export function ReceiptPage({
     )
   }
 
-  if (failed) {
+  if (failure && failure.kind !== 'partial') {
     return (
       <SubPage
         narrow
@@ -281,10 +309,18 @@ export function ReceiptPage({
           </Flex>
         }
       >
-        <Components.Alert status="error" label={`The ${payrollName} was already processed`}>
-          There’s no open payroll for {scheduleLabel(schedule)}, {formatPeriod(period)}, so its
-          hours can’t change. <GapPin id="sync-limits" />
-        </Components.Alert>
+        {failure.kind === 'processed' ? (
+          <Components.Alert status="error" label={`The ${payrollName} was already processed`}>
+            There’s no open payroll for {scheduleLabel(schedule)}, {formatPeriod(period)}, so its
+            hours can’t change. <GapPin id="sync-limits" />
+          </Components.Alert>
+        ) : (
+          <Components.Alert status="error" label="The send failed">
+            Payroll didn’t accept any hours for {formatPeriod(period)}. Try again, and if it keeps
+            failing, contact support. What the API reports for a failed send isn’t defined yet.{' '}
+            <GapPin id="which-timesheets" />
+          </Components.Alert>
+        )}
       </SubPage>
     )
   }
@@ -312,6 +348,27 @@ export function ReceiptPage({
         </Flex>
       }
     >
+      {failure?.kind === 'partial' ? (
+        <Components.Alert
+          status="error"
+          label={`${failure.names.length} ${failure.names.length === 1 ? 'person wasn’t' : 'people weren’t'} sent`}
+          action={
+            <Components.Button variant="secondary" onClick={onUpdate}>
+              Try again
+            </Components.Button>
+          }
+        >
+          {failure.shifts} {failure.shifts === 1 ? 'shift' : 'shifts'} for{' '}
+          {failure.names.join(', ')} didn’t reach payroll. Everyone else below was sent. What the
+          API reports for a partial send isn’t defined yet. <GapPin id="which-timesheets" />
+        </Components.Alert>
+      ) : (
+        summary.lastAt && (
+          <Components.Alert status="success" label={`Sent to the ${payrollName}`}>
+            Everyone below is on payroll for {formatPeriod(period)}.
+          </Components.Alert>
+        )
+      )}
       {live.changed > 0 && (
         <Components.Alert
           status="warning"
@@ -331,12 +388,15 @@ export function ReceiptPage({
       </Components.Heading>
       <DataView label="What was sent" {...rowsView} />
       <Components.Text size="sm" variant="supporting">
-        Read-only.{' '}
-        {snapshot
-          ? 'Saved by this page when it sent, because the API can’t list what a sync included or say which payroll it landed on.'
-          : 'Rebuilt from each shift’s synced_to_payroll_at, because the API can’t list what a sync included or say which payroll it landed on. Edits since the send show in these totals.'}{' '}
-        <GapPin id="which-timesheets" />
+        Overtime and double time are this page’s estimates until the API returns how hours were
+        classified. <GapPin id="rules-applied" /> Which payroll they landed on can’t be read yet
+        either. <GapPin id="which-timesheets" />
       </Components.Text>
     </SubPage>
   )
+}
+
+function Estimate({ hours }: { hours: number | undefined }) {
+  if (!hours) return <>—</>
+  return <span className={styles.estimate}>≈ {formatHours(hours)}</span>
 }

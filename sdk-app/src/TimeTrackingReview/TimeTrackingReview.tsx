@@ -45,7 +45,7 @@ import {
 } from './model'
 import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
-import { ReceiptPage, SendPage } from './SendPage'
+import { ReceiptPage, SendPage, type SendFailure, type SendOutcome } from './SendPage'
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
@@ -197,7 +197,7 @@ function TimeTrackingPrototype() {
   const [shiftPage, setShiftPage] = useState<ShiftPageMode | null>(null)
   const [sendView, setSendView] = useState<'review' | 'receipt' | null>(null)
   const [sending, setSending] = useState<{ key: string; startedAt: string } | null>(null)
-  const [sendFailedKey, setSendFailedKey] = useState<string | null>(null)
+  const [sendFailures, setSendFailures] = useState<Record<string, SendFailure>>({})
   const [sendSnapshots, setSendSnapshots] = useState<Record<string, SentSummary>>({})
   const sendTimer = useRef<number | null>(null)
   useEffect(
@@ -493,25 +493,53 @@ function TimeTrackingPrototype() {
     sendSnapshots[sendKey] ??
     sentSummary(periodShifts, schedulePeople, schedule?.workweek_start_day ?? null)
 
-  const startSend = (included: ApiShift[], request: Preview) => {
+  const setSendFailure = (key: string, failure: SendFailure | null) => {
+    setSendFailures(prev =>
+      failure
+        ? { ...prev, [key]: failure }
+        : Object.fromEntries(Object.entries(prev).filter(([k]) => k !== key)),
+    )
+  }
+
+  const startSend = (included: ApiShift[], request: Preview, outcome: SendOutcome) => {
     const key = sendKey
     setSendView('receipt')
     if (period?.payroll?.processed) {
-      setSendFailedKey(key)
+      setSendFailure(key, { kind: 'processed' })
       return
     }
-    setSendFailedKey(null)
+    setSendFailure(key, null)
     setSending({ key, startedAt: nowIso() })
     sendTimer.current = window.setTimeout(() => {
+      setSending(null)
+      if (outcome === 'error') {
+        setSendFailure(key, { kind: 'error' })
+        notify('The send to payroll failed. Nothing changed on payroll.', request, 'error')
+        return
+      }
+      const firstPerson = included[0]?.entity_uuid
+      const failedShifts =
+        outcome === 'partial' ? included.filter(s => s.entity_uuid === firstPerson) : []
       const now = nowIso()
-      const sentShifts = included.map(shift => ({ ...shift, synced_to_payroll_at: now }))
+      const sentShifts = included
+        .filter(shift => !failedShifts.includes(shift))
+        .map(shift => ({ ...shift, synced_to_payroll_at: now }))
       setSendSnapshots(prev => ({
         ...prev,
         [key]: sentSummary(sentShifts, schedulePeople, schedule?.workweek_start_day ?? null),
       }))
       putShifts(sentShifts)
+      if (failedShifts.length > 0) {
+        const name = people.find(p => p.employee.uuid === firstPerson)?.name ?? 'One person'
+        setSendFailure(key, { kind: 'partial', names: [name], shifts: failedShifts.length })
+        notify(
+          `Sent ${sentShifts.length} shifts. ${failedShifts.length} for ${name} didn’t reach payroll.`,
+          request,
+          'error',
+        )
+        return
+      }
       notify(`Hours for ${included.length} shifts sent to payroll.`, request)
-      setSending(null)
     }, 2500)
   }
 
@@ -635,6 +663,26 @@ function TimeTrackingPrototype() {
           {formatDateTime(period.payroll.payroll_deadline)}.
           {!lastSyncAt && !sendingHere && ' Nothing sent to payroll yet.'}
         </Components.Text>
+      )}
+      {!sendingHere && sendFailures[sendKey] && (
+        <Components.Alert
+          status="error"
+          label={
+            sendFailures[sendKey].kind === 'partial'
+              ? 'Some hours didn’t reach payroll'
+              : 'The last send didn’t go through'
+          }
+          action={
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                setSendView('receipt')
+              }}
+            >
+              View details
+            </Components.Button>
+          }
+        />
       )}
       {sendingHere ? (
         <Components.Alert status="info" label="Sending hours to payroll…">
@@ -932,12 +980,12 @@ function TimeTrackingPrototype() {
                           workweekStartDay={schedule.workweek_start_day}
                           snapshot={sendSnapshots[sendKey] ?? null}
                           sendingSince={sendingHere?.startedAt ?? null}
-                          failed={sendFailedKey === sendKey}
+                          failure={sendFailures[sendKey] ?? null}
                           onBack={() => {
                             setSendView(null)
                           }}
                           onUpdate={() => {
-                            setSendFailedKey(null)
+                            setSendFailure(sendKey, null)
                             setSendView('review')
                           }}
                           onRunPayroll={() => {
