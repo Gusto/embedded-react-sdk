@@ -38,6 +38,27 @@ describe('dashboardStateMachine — companyForms', () => {
   })
 })
 
+describe('dashboardStateMachine — signatory', () => {
+  it('ignores the onboarding completion event, which SignatoryEditScreen translates', () => {
+    // This is what structurally removes the cross-spoke hazard the companyForms spoke used
+    // to guard by omission. company/signatory/assignSignatory/done is raised both by the
+    // signatory surface and by DocumentSigner's own assign-signatory step; only saves routed
+    // through SignatoryEditScreen raise the management event, so only those return here.
+    const service = createService('signatory')
+    send(service, componentEvents.COMPANY_ASSIGN_SIGNATORY_DONE)
+
+    expect(service.machine.current).toBe('signatory')
+  })
+
+  it('returns to the cards with an alert on the management event', () => {
+    const service = createService('signatory')
+    send(service, componentEvents.COMPANY_MANAGEMENT_SIGNATORY_UPDATED)
+
+    expect(service.machine.current).toBe('index')
+    expect(service.context.successAlert).toBe('signatoryUpdated')
+  })
+})
+
 describe('dashboardStateMachine — stateTaxes', () => {
   it('stays on the state taxes spoke as states are saved and rates scheduled', () => {
     const service = createService('stateTaxes')
