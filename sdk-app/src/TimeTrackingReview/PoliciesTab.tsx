@@ -20,6 +20,7 @@ import { ChangePin, GapPin, PlusIcon, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import styles from './TimeTrackingReview.module.scss'
+import TrashIcon from '@/assets/icons/trashcan.svg?react'
 import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -1097,7 +1098,15 @@ function PolicyDetail({
       }
       description={KIND_LABEL[kind]}
       actions={
-        <Components.Button variant="tertiary" onClick={onDelete}>
+        <Components.Button
+          variant="error"
+          icon={
+            <span className={styles.trashIcon}>
+              <TrashIcon />
+            </span>
+          }
+          onClick={onDelete}
+        >
           Delete policy
         </Components.Button>
       }

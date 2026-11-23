@@ -244,15 +244,15 @@ export function SubPage({
   return (
     <Flex flexDirection="column" gap={20}>
       <Trail trail={trail} current={current} />
-      <Flex justifyContent="space-between" alignItems="flex-start" gap={12} flexWrap="wrap">
-        <Flex flexDirection="column" gap={4}>
+      <div className={styles.subPageHeader}>
+        <div className={styles.subPageTitle}>
           <Components.Heading as="h2" styledAs="h3">
             {title}
           </Components.Heading>
           {description && <Components.Text variant="supporting">{description}</Components.Text>}
-        </Flex>
-        {actions && <Flex gap={8}>{actions}</Flex>}
-      </Flex>
+        </div>
+        {actions && <div className={styles.subPageActions}>{actions}</div>}
+      </div>
       <div className={width}>
         <Flex flexDirection="column" gap={16}>
           {children}

@@ -1248,7 +1248,7 @@ function ClearSelection({ onClear }: { onClear: () => void }) {
       }
       onClick={onClear}
     >
-      Clear
+      Clear selection
     </Components.Button>
   )
 }
@@ -1457,8 +1457,8 @@ function PeopleTable({
   return (
     <Flex flexDirection="column" gap={8}>
       {selectedRows.length > 0 && (
-        <Flex alignItems="center" justifyContent="space-between" gap={12} flexWrap="wrap">
-          <Flex alignItems="center" gap={8}>
+        <div className={styles.bulkBar}>
+          <div className={styles.bulkSummary}>
             <ClearSelection
               onClear={() => {
                 onSelectedChange(new Set())
@@ -1468,7 +1468,7 @@ function PeopleTable({
               {who} selected · {selectedShifts.length} shifts <GapPin id="bulk-approval" />{' '}
               <ChangePin id="row-actions-text" />
             </Components.Text>
-          </Flex>
+          </div>
           <ApproveReject
             label={`the selected shifts for ${who}`}
             pendingCount={toPending.length}
@@ -1500,7 +1500,7 @@ function PeopleTable({
                 : undefined
             }
           />
-        </Flex>
+        </div>
       )}
       <div className={`${styles.reviewTable} ${styles.peopleTable}`}>
         <DataView label="People with shifts this period" {...dataView} />

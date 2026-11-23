@@ -519,3 +519,47 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.bulkBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.bulkSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subPageHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.trashIcon {
+  display: inline-flex;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.subPageTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.subPageActions {
+  display: flex;
+  gap: 8px;
+}
