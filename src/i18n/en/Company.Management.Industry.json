@@ -10,5 +10,11 @@
       "title": "No industry selected",
       "description": "Choose the industry that best represents this company's primary business activity."
     }
+  },
+  "header": {
+    "backCta": "Back to industry"
+  },
+  "alerts": {
+    "industryUpdated": "Industry updated."
   }
 }

@@ -1151,6 +1151,9 @@ declare namespace CompanyManagement {
         TaxPaymentsFlowProps,
         TaxPaymentsListProps,
         TaxPaymentDetailProps,
+        Industry_3 as Industry,
+        IndustryProps_2 as IndustryProps,
+        IndustryDictionary,
         IndustryCard,
         IndustryCardProps,
         LocationsCard,
@@ -1627,6 +1630,9 @@ export const componentEvents: {
     readonly COMPANY_OVERVIEW_DONE: "company/overview/done";
     readonly COMPANY_OVERVIEW_CONTINUE: "company/overview/continue";
     readonly COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED: "company/management/industry/editRequested";
+    readonly COMPANY_MANAGEMENT_INDUSTRY_UPDATED: "company/management/industry/updated";
+    readonly COMPANY_MANAGEMENT_INDUSTRY_EDIT_CANCELLED: "company/management/industry/editCancelled";
+    readonly COMPANY_MANAGEMENT_INDUSTRY_ALERT_DISMISSED: "company/management/industry/alertDismissed";
     readonly COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED: "company/management/locations/editRequested";
     readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED: "company/management/federalTaxes/editRequested";
     readonly COMPANY_DASHBOARD_TAB_CHANGE: "company/dashboard/tabChange";
@@ -3783,6 +3789,9 @@ interface I9SignatureFormProps extends BaseComponentInterface<'Employee.I9Signat
 function Industry_2(input: IndustryProps): JSX;
 
 // @alpha
+function Industry_3(input: IndustryProps_2): JSX;
+
+// @alpha
 function IndustryCard(props: IndustryCardProps): JSX;
 
 // @alpha
@@ -3791,6 +3800,14 @@ interface IndustryCardProps {
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
+
+// @alpha
+type IndustryDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.Industry'?: DeepPartial<Resources['Company.Management.Industry']>;
+        'Company.Industry'?: DeepPartial<Resources['Company.Industry']>;
+    };
+};
 
 // @public
 export type IndustryErrorCode = (typeof IndustryErrorCodes)[keyof typeof IndustryErrorCodes];
@@ -3820,6 +3837,12 @@ export interface IndustryFormFields {
 // @public
 interface IndustryProps extends BaseComponentInterface<'Company.Industry'> {
     companyId: string;
+}
+
+// @alpha
+interface IndustryProps_2 extends Omit<BaseComponentInterface<'Company.Management.Industry'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: IndustryDictionary;
 }
 
 // @public
