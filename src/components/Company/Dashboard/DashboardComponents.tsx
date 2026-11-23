@@ -5,7 +5,7 @@ import { IndustryEditScreen } from '@/components/Company/Industry/management/Ind
 import { LocationsEditScreen } from '@/components/Company/Locations/management/LocationsEditScreen'
 import { FederalTaxesEditScreen } from '@/components/Company/FederalTaxes/management/FederalTaxesEditScreen'
 import { BankAccountEditScreen } from '@/components/Company/BankAccount/management/BankAccountEditScreen'
-import { PaySchedule } from '@/components/Company/PaySchedule/management'
+import { PayScheduleEditScreen } from '@/components/Company/PaySchedule/management/PayScheduleEditScreen'
 import { StateTaxesEditScreen } from '@/components/Company/StateTaxes/management/StateTaxesEditScreen'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
 import { SignatoryEditScreen } from '@/components/Company/AssignSignatory/management/SignatoryEditScreen'
@@ -124,7 +124,7 @@ export function PayScheduleContextual() {
   const { companyId, onEvent, enableAutoPilot, enableMultipleSchedules } =
     useFlow<DashboardContextInterface>()
   return (
-    <PaySchedule
+    <PayScheduleEditScreen
       companyId={ensureRequired(companyId)}
       onEvent={onEvent}
       enableAutoPilot={enableAutoPilot}

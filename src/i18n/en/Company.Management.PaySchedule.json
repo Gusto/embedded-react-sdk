@@ -40,5 +40,8 @@
   "employeeTableLabel": "Pay schedules by employee",
   "employeeCount_one": "{{count}} employee",
   "employeeCount_other": "{{count}} employees",
-  "employeeAccessDenied": "Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator."
+  "employeeAccessDenied": "Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator.",
+  "header": {
+    "backCta": "Back to pay schedules"
+  }
 }

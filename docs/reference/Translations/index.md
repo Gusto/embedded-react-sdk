@@ -903,6 +903,8 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | <a id="property-companymanagementpayscheduleemployeecount_other"></a> `employeeCount_other` | `"{{count}} employees"` |
 | <a id="property-companymanagementpayscheduleemployeedescription"></a> `employeeDescription` | `"You have assigned pay schedules per employee."` |
 | <a id="property-companymanagementpayscheduleemployeetablelabel"></a> `employeeTableLabel` | `"Pay schedules by employee"` |
+| <a id="property-companymanagementpayscheduleheader"></a> `header` | |
+| `header.backCta` | `"Back to pay schedules"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
 | `labels.department` | `"Department"` |
 | `labels.employees` | `"Employees"` |

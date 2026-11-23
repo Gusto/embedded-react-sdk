@@ -2,6 +2,8 @@ export {
   PaySchedule,
   type PayScheduleProps,
   type PayScheduleDictionary,
+  PaySchedulesCard,
+  type PaySchedulesCardProps,
 } from '../PaySchedule/management'
 export {
   PayScheduleAssignment,
@@ -41,10 +43,6 @@ export {
   BankAccountCard,
   type BankAccountCardProps,
 } from '../BankAccount/management'
-export {
-  PaySchedulesCard,
-  type PaySchedulesCardProps,
-} from '../PaySchedule/management/PaySchedulesCard'
 export {
   StateTaxes,
   type StateTaxesProps,
