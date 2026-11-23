@@ -1,7 +1,7 @@
 import { createMachine, reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
-import type { StateTaxesContextInterface } from './StateTaxesComponents'
-import { StateTaxesFormContextual, TaxRateManagementContextual } from './StateTaxesComponents'
+import type { StateTaxesContextInterface } from './stateTaxesComponents'
+import { StateTaxesFormContextual, TaxRateManagementContextual } from './stateTaxesComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

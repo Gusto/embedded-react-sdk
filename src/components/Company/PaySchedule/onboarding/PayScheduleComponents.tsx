@@ -1,6 +1,6 @@
+import { PayScheduleForm } from '../PayScheduleForm'
 import type { PayScheduleDefaultValues } from './PaySchedule'
 import { PayScheduleList } from './PayScheduleList'
-import { PayScheduleForm } from './PayScheduleForm'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
