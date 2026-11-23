@@ -424,13 +424,6 @@
   }
 }
 
-.shiftsTable {
-  :global(.react-aria-Column):nth-child(4),
-  :global(.react-aria-Cell):nth-child(4) {
-    width: auto;
-  }
-}
-
 .pendingIcon {
   display: inline-flex;
 
@@ -451,6 +444,48 @@
   gap: 12px;
   align-items: center;
   padding-block: 1rem;
+  border-top: 1px solid var(--g-colorBorderSecondary);
+
+  &:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+.clearIcon {
+  display: inline-flex;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.formSection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--g-colorBorderSecondary);
+
+  &:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+.breakList {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.breakRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
   border-top: 1px solid var(--g-colorBorderSecondary);
 
   &:first-child {

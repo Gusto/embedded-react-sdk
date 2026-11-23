@@ -17,6 +17,7 @@ import {
   type Person,
 } from './model'
 import { ChangePin, GapPin, SubPage, type Crumb } from './parts'
+import { useSaveErrors } from './useSaveErrors'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import styles from './TimeTrackingReview.module.scss'
 import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
@@ -479,11 +480,11 @@ export function PoliciesTab({
   )
 }
 
-function Problems({ problems }: { problems: string[] }) {
+function FormErrors({ problems, isShown }: { problems: string[]; isShown: boolean }) {
   const Components = useComponentContext()
-  if (!problems.length) return null
+  if (!isShown || !problems.length) return null
   return (
-    <Components.Alert status="error" label="The API would reject this">
+    <Components.Alert status="error" label="Fix this before saving">
       {problems.join(' ')}
     </Components.Alert>
   )
@@ -519,17 +520,33 @@ function OvertimeForm({
     Boolean(policy?.work_week_consecutive_days_threshold),
   )
 
-  const problems: string[] = []
-  if (!name.trim()) problems.push('Policy name is required.')
-  if (existingNames.includes(name.trim().toLowerCase()))
-    problems.push('Another policy has this name.')
-  if (!Number.isInteger(weekly) || weekly < 10 || weekly > 168)
-    problems.push('Weekly overtime must be a whole number from 10 to 168 hours.')
-  if (hasDaily && (daily < 1 || daily > 24)) problems.push('Daily overtime must be 1 to 24 hours.')
-  if (hasDouble && (double < 1 || double > 24)) problems.push('Double time must be 1 to 24 hours.')
-  if (hasDouble && !hasDaily) problems.push('Double time needs daily overtime.')
-  if (hasDaily && hasDouble && daily >= double)
-    problems.push('Daily overtime must be less than double time.')
+  const saveErrors = useSaveErrors()
+  const errors = {
+    name: !name.trim()
+      ? 'Enter a policy name.'
+      : existingNames.includes(name.trim().toLowerCase())
+        ? 'Another policy has this name.'
+        : undefined,
+    weekly:
+      !Number.isInteger(weekly) || weekly < 10 || weekly > 168
+        ? 'Enter a whole number from 10 to 168.'
+        : undefined,
+    daily: !hasDaily
+      ? undefined
+      : daily < 1 || daily > 24
+        ? 'Enter 1 to 24 hours.'
+        : hasDouble && daily >= double
+          ? 'Must be less than double time.'
+          : undefined,
+    double: !hasDouble
+      ? undefined
+      : double < 1 || double > 24
+        ? 'Enter 1 to 24 hours.'
+        : !hasDaily
+          ? 'Turn on daily overtime first.'
+          : undefined,
+  }
+  const hasErrors = Object.values(errors).some(Boolean)
 
   const body = {
     name: name.trim(),
@@ -549,34 +566,40 @@ function OvertimeForm({
       footer={
         <SaveFooter
           onCancel={onClose}
-          isDisabled={problems.length > 0}
           onSave={() => {
-            onSave(
-              {
-                uuid: policy?.uuid ?? simId(),
-                version: 'simulated',
-                assigned_employees: policy?.assigned_employees ?? [],
-                ...body,
-              },
-              {
-                title: policy ? `Edit ${policy.name}` : 'New overtime policy',
-                requests: [
-                  {
-                    method: policy ? 'PATCH' : 'POST',
-                    path: policy
-                      ? `/v1/time_tracking/overtime_policies/${policy.uuid}`
-                      : `/v1/companies/${companyId}/time_tracking/overtime_policies`,
-                    body,
-                  },
-                ],
-                gapIds: ['ot-state'],
-              },
-            )
+            saveErrors.attempt(hasErrors, () => {
+              onSave(
+                {
+                  uuid: policy?.uuid ?? simId(),
+                  version: 'simulated',
+                  assigned_employees: policy?.assigned_employees ?? [],
+                  ...body,
+                },
+                {
+                  title: policy ? `Edit ${policy.name}` : 'New overtime policy',
+                  requests: [
+                    {
+                      method: policy ? 'PATCH' : 'POST',
+                      path: policy
+                        ? `/v1/time_tracking/overtime_policies/${policy.uuid}`
+                        : `/v1/companies/${companyId}/time_tracking/overtime_policies`,
+                      body,
+                    },
+                  ],
+                  gapIds: ['ot-state'],
+                },
+              )
+            })
           }}
         />
       }
     >
-      <Components.TextInput label="Name" value={name} onChange={setName} />
+      <Components.TextInput
+        label="Name"
+        value={name}
+        onChange={setName}
+        {...saveErrors.fieldError(errors.name)}
+      />
       <div className={styles.ruleList}>
         <div className={styles.ruleRow}>
           <Components.Text weight="medium">Weekly overtime</Components.Text>
@@ -584,6 +607,7 @@ function OvertimeForm({
             label="After (hours in a week)"
             value={weekly}
             onChange={setWeekly}
+            {...saveErrors.fieldError(errors.weekly)}
           />
         </div>
         <div className={styles.ruleRow}>
@@ -593,6 +617,7 @@ function OvertimeForm({
             value={daily}
             onChange={setDaily}
             isDisabled={!hasDaily}
+            {...saveErrors.fieldError(errors.daily)}
           />
         </div>
         <div className={styles.ruleRow}>
@@ -602,6 +627,7 @@ function OvertimeForm({
             value={double}
             onChange={setDouble}
             isDisabled={!hasDouble}
+            {...saveErrors.fieldError(errors.double)}
           />
         </div>
         <div className={styles.ruleRow}>
@@ -616,7 +642,6 @@ function OvertimeForm({
         There’s no field for which state this is for, so it can’t be checked against state law.{' '}
         <GapPin id="ot-state" />
       </Components.Text>
-      <Problems problems={problems} />
       {policy && (
         <Components.Alert status="warning" label="Changes apply to the current workweek">
           {workweeks
@@ -673,14 +698,20 @@ function BreakForm({
     setRules(prev => prev.map(r => (r.key === key ? { ...r, ...patch } : r)))
   }
 
-  const problems: string[] = []
-  if (!name.trim()) problems.push('Policy name is required.')
-  if (existingNames.includes(name.trim().toLowerCase()))
-    problems.push('Break policy names must be unique.')
-  if (rules.length === 0) problems.push('Add a meal or rest break.')
-  if (rules.some(r => !Number.isInteger(r.duration) || r.duration < 1))
-    problems.push('Break length must be a whole number of minutes.')
-  if (rules.some(r => !(r.everyHours > 0))) problems.push('Enter how often each break is provided.')
+  const saveErrors = useSaveErrors()
+  const nameError = !name.trim()
+    ? 'Enter a policy name.'
+    : existingNames.includes(name.trim().toLowerCase())
+      ? 'Break policy names must be unique.'
+      : undefined
+  const durationError = (rule: RuleDraft) =>
+    !Number.isInteger(rule.duration) || rule.duration < 1 ? 'Enter whole minutes.' : undefined
+  const everyError = (rule: RuleDraft) => (rule.everyHours > 0 ? undefined : 'Enter hours worked.')
+  const formProblems = rules.length === 0 ? ['Add a meal or rest break.'] : []
+  const hasErrors =
+    Boolean(nameError) ||
+    formProblems.length > 0 ||
+    rules.some(rule => durationError(rule) || everyError(rule))
 
   const body = {
     name: name.trim(),
@@ -704,43 +735,49 @@ function BreakForm({
       footer={
         <SaveFooter
           onCancel={onClose}
-          isDisabled={problems.length > 0}
           onSave={() => {
-            onSave(
-              {
-                uuid: policy?.uuid ?? simId(),
-                version: 'simulated',
-                name: body.name,
-                jurisdiction: policy?.jurisdiction ?? (jurisdiction || null),
-                pay_premium: payPremium,
-                assigned_employees: policy?.assigned_employees ?? [],
-                rules: body.rules.map(rule => ({
-                  ...rule,
-                  uuid: rule.uuid ?? simId(),
-                  minimum_time_required_in_minutes:
-                    policy?.rules.find(r => r.uuid === rule.uuid)
-                      ?.minimum_time_required_in_minutes ?? null,
-                })),
-              },
-              {
-                title: policy ? `Edit ${policy.name}` : 'New break policy',
-                requests: [
-                  {
-                    method: policy ? 'PUT' : 'POST',
-                    path: policy
-                      ? `/v1/time_tracking/break_policies/${policy.uuid}`
-                      : `/v1/companies/${companyId}/time_tracking/break_policies`,
-                    body,
-                  },
-                ],
-                gapIds: [],
-              },
-            )
+            saveErrors.attempt(hasErrors, () => {
+              onSave(
+                {
+                  uuid: policy?.uuid ?? simId(),
+                  version: 'simulated',
+                  name: body.name,
+                  jurisdiction: policy?.jurisdiction ?? (jurisdiction || null),
+                  pay_premium: payPremium,
+                  assigned_employees: policy?.assigned_employees ?? [],
+                  rules: body.rules.map(rule => ({
+                    ...rule,
+                    uuid: rule.uuid ?? simId(),
+                    minimum_time_required_in_minutes:
+                      policy?.rules.find(r => r.uuid === rule.uuid)
+                        ?.minimum_time_required_in_minutes ?? null,
+                  })),
+                },
+                {
+                  title: policy ? `Edit ${policy.name}` : 'New break policy',
+                  requests: [
+                    {
+                      method: policy ? 'PUT' : 'POST',
+                      path: policy
+                        ? `/v1/time_tracking/break_policies/${policy.uuid}`
+                        : `/v1/companies/${companyId}/time_tracking/break_policies`,
+                      body,
+                    },
+                  ],
+                  gapIds: [],
+                },
+              )
+            })
           }}
         />
       }
     >
-      <Components.TextInput label="Name" value={name} onChange={setName} />
+      <Components.TextInput
+        label="Name"
+        value={name}
+        onChange={setName}
+        {...saveErrors.fieldError(nameError)}
+      />
       <Components.Select
         label="State"
         placeholder="No state"
@@ -772,6 +809,7 @@ function BreakForm({
           <Components.NumberInput
             label="Minutes"
             value={rule.duration}
+            {...saveErrors.fieldError(durationError(rule))}
             onChange={value => {
               update(rule.key, { duration: value })
             }}
@@ -779,6 +817,7 @@ function BreakForm({
           <Components.NumberInput
             label="Every (hours worked)"
             value={rule.everyHours}
+            {...saveErrors.fieldError(everyError(rule))}
             onChange={value => {
               update(rule.key, { everyHours: value })
             }}
@@ -826,7 +865,7 @@ function BreakForm({
         The API also returns a minimum shift length for each rule, which isn’t set here.{' '}
         {policy && ' Saving replaces the whole policy.'}
       </Components.Text>
-      <Problems problems={problems} />
+      <FormErrors problems={formProblems} isShown={saveErrors.isShown} />
     </SubPage>
   )
 }
@@ -1106,11 +1145,11 @@ function PolicyDetail({
 function SaveFooter({
   onCancel,
   onSave,
-  isDisabled,
+  isDisabled = false,
 }: {
   onCancel: () => void
   onSave: () => void
-  isDisabled: boolean
+  isDisabled?: boolean
 }) {
   const Components = useComponentContext()
   return (

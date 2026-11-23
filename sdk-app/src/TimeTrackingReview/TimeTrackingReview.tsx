@@ -60,6 +60,7 @@ import {
 import { nowIso, type NoticeStatus, type Preview } from './preview'
 import type { PolicyData } from './PoliciesTab'
 import styles from './TimeTrackingReview.module.scss'
+import CloseIcon from '@/assets/icons/close.svg?react'
 import { DataView, Flex, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { GustoProvider } from '@/contexts/GustoProvider/GustoProvider'
@@ -1233,6 +1234,24 @@ function TimeTrackingPrototype() {
   )
 }
 
+function ClearSelection({ onClear }: { onClear: () => void }) {
+  const Components = useComponentContext()
+  return (
+    <Components.Button
+      variant="tertiary"
+      aria-label="Clear selection"
+      icon={
+        <span className={styles.clearIcon}>
+          <CloseIcon />
+        </span>
+      }
+      onClick={onClear}
+    >
+      Clear
+    </Components.Button>
+  )
+}
+
 function ChevronRightIcon() {
   return (
     <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
@@ -1446,10 +1465,17 @@ function PeopleTable({
     <Flex flexDirection="column" gap={8}>
       {selectedRows.length > 0 && (
         <Flex alignItems="center" justifyContent="space-between" gap={12} flexWrap="wrap">
-          <Components.Text size="sm" weight="medium">
-            {who} selected · {selectedShifts.length} shifts <GapPin id="bulk-approval" />{' '}
-            <ChangePin id="row-actions-text" />
-          </Components.Text>
+          <Flex alignItems="center" gap={8}>
+            <ClearSelection
+              onClear={() => {
+                onSelectedChange(new Set())
+              }}
+            />
+            <Components.Text size="sm" weight="medium">
+              {who} selected · {selectedShifts.length} shifts <GapPin id="bulk-approval" />{' '}
+              <ChangePin id="row-actions-text" />
+            </Components.Text>
+          </Flex>
           <ApproveReject
             label={`the selected shifts for ${who}`}
             pendingCount={toPending.length}
@@ -1680,6 +1706,11 @@ function ShiftsTable({
         <span className={styles.spacer} />
         {selectedShifts.length > 0 && (
           <>
+            <ClearSelection
+              onClear={() => {
+                onSelectedChange(new Set())
+              }}
+            />
             <GapPin id="bulk-approval" />
             <ChangePin id="row-actions-text" />
             <ApproveReject
@@ -1736,7 +1767,7 @@ function ShiftsTable({
           <ChangePin id="missed-breaks" />
         </Components.Alert>
       )}
-      <div className={`${styles.reviewTable} ${styles.shiftsTable}`}>
+      <div className={styles.reviewTable}>
         <DataView label={`${person.name}’s shifts`} {...dataView} />
       </div>
     </Flex>

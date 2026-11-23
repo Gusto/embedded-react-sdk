@@ -26,6 +26,8 @@ import {
   type ShiftStatus,
 } from './model'
 import { ChangePin, GapPin, SubPage, type Crumb } from './parts'
+import { useSaveErrors } from './useSaveErrors'
+import styles from './TimeTrackingReview.module.scss'
 import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -130,10 +132,7 @@ export function ShiftPage({
   const hours =
     start && end ? Math.max(0, (minutesBetween(start, end) - unpaidMinutes(breaks)) / 60) : null
 
-  const problems: string[] = []
-  if (start && end && end <= start) problems.push('End must be after start.')
-  if ((start && Date.parse(start) > Date.now()) || (end && Date.parse(end) > Date.now()))
-    problems.push('Times can’t be in the future.')
+  const saveErrors = useSaveErrors()
   const clash =
     !existing && start && end
       ? shifts.find(
@@ -143,11 +142,24 @@ export function ShiftPage({
             (s.shift_ended_at ?? nowIso()) > start,
         )
       : undefined
-  if (clash)
-    problems.push(
-      `It overlaps ${person?.name ?? 'their'} shift ${formatTime(clash.shift_started_at, clash.time_zone)} – ${clash.shift_ended_at ? formatTime(clash.shift_ended_at, clash.time_zone) : 'now'}.`,
-    )
-  if (start && end) problems.push(...breakProblems(breaks, start, end))
+  const timeErrors = {
+    start: !start
+      ? 'Enter a start date and time.'
+      : Date.parse(start) > Date.now()
+        ? 'Can’t be in the future.'
+        : clash
+          ? `Overlaps their ${formatTime(clash.shift_started_at, clash.time_zone)} – ${clash.shift_ended_at ? formatTime(clash.shift_ended_at, clash.time_zone) : 'now'} shift.`
+          : undefined,
+    end: !end
+      ? 'Enter an end date and time.'
+      : start && end <= start
+        ? 'Must be after the start.'
+        : Date.parse(end) > Date.now()
+          ? 'Can’t be in the future.'
+          : undefined,
+  }
+  const breakErrors = start && end ? breakProblems(breaks, start, end) : []
+  const hasErrors = Boolean(timeErrors.start || timeErrors.end) || breakErrors.length > 0
 
   const nextBreaks = draftsToBreaks(breaks, () => '')
   const issues = existing
@@ -285,8 +297,10 @@ export function ShiftPage({
         Cancel
       </Components.Button>
       <Components.Button
-        isDisabled={!start || !end || !changed || problems.length > 0}
-        onClick={save}
+        isDisabled={!changed}
+        onClick={() => {
+          saveErrors.attempt(hasErrors, save)
+        }}
       >
         {saveLabel}
       </Components.Button>
@@ -350,105 +364,114 @@ export function ShiftPage({
       description={`${formatPeriod(period)} · times in ${timeZone}`}
       footer={footer}
     >
-      <Components.Select
-        label="Person"
-        description={existing ? 'A shift can’t move to another person.' : undefined}
-        placeholder="Choose a person"
-        isDisabled={Boolean(existing)}
-        value={personUuid}
-        options={sorted.map(p => ({ value: p.employee.uuid, label: p.name }))}
-        onChange={value => {
-          setPersonUuid(value)
-          setBreaks([])
-        }}
-      />
-      <Grid gridTemplateColumns={{ base: '1fr 1fr' }} gap={12}>
-        <Components.TextInput
-          type="date"
-          label="Start date"
-          value={times.startDate}
-          onChange={setStartDate}
-        />
-        <Components.TextInput
-          type="time"
-          label="Start time"
-          value={times.startTime}
-          onChange={startTime => {
-            setTimes(w => ({ ...w, startTime }))
-          }}
-        />
-        <Components.TextInput
-          type="date"
-          label="End date"
-          value={times.endDate}
-          onChange={endDate => {
-            setTimes(w => ({ ...w, endDate }))
-          }}
-        />
-        <Components.TextInput
-          type="time"
-          label="End time"
-          value={times.endTime}
-          onChange={endTime => {
-            setTimes(w => ({ ...w, endTime }))
-          }}
-        />
-      </Grid>
-      <Components.Text size="sm" variant="supporting">
-        {existing
-          ? `Worked ${workedHours(existing).toFixed(2)} hours${hours !== null && changed ? `, ${hours.toFixed(2)} after this edit` : ''}.`
-          : `${(hours ?? 0).toFixed(2)} hours worked.`}
-        {outsidePeriod && ` This date is outside ${formatPeriod(period)}.`}
-      </Components.Text>
-
-      <BreaksEditor
-        breaks={breaks}
-        onChange={setBreaks}
-        rules={person?.breakPolicy?.rules ?? []}
-        shiftStart={start}
-        shiftEnd={end}
-        timeZone={timeZone}
-      />
-
-      {!existing && (
+      <div className={styles.formSection}>
         <Components.Select
-          label="Add as"
-          description="Admins can add shifts already approved. They go with the next send."
-          placeholder="Choose a status"
-          value={status}
-          options={[
-            { value: 'approved', label: 'Approved' },
-            { value: 'pending', label: 'Pending' },
-          ]}
+          label="Person"
+          description={existing ? 'A shift can’t move to another person.' : undefined}
+          placeholder="Choose a person"
+          isDisabled={Boolean(existing)}
+          value={personUuid}
+          options={sorted.map(p => ({ value: p.employee.uuid, label: p.name }))}
           onChange={value => {
-            if (value === 'approved' || value === 'pending') setStatus(value)
+            setPersonUuid(value)
+            setBreaks([])
           }}
         />
-      )}
-
-      {issues.length > 0 && person?.breakPolicy && (
-        <Components.Alert status="warning" label={breakIssueLabel(issues)}>
-          {person.breakPolicy.pay_premium
-            ? `${person.breakPolicy.name} pays a premium for this, so the shift earns extra pay.`
-            : `${person.breakPolicy.name} doesn’t pay a premium for this.`}{' '}
-          <ChangePin id="missed-breaks" />
-        </Components.Alert>
-      )}
-      {problems.length > 0 && (
-        <Components.Alert status="error" label="The API would reject this">
-          {problems.join(' ')}
-        </Components.Alert>
-      )}
-      {existing && (
+      </div>
+      <div className={styles.formSection}>
+        <Grid gridTemplateColumns={{ base: '1fr 1fr' }} gap={12}>
+          <Components.TextInput
+            type="date"
+            label="Start date"
+            value={times.startDate}
+            onChange={setStartDate}
+          />
+          <Components.TextInput
+            type="time"
+            label="Start time"
+            value={times.startTime}
+            {...saveErrors.fieldError(timeErrors.start)}
+            onChange={startTime => {
+              setTimes(w => ({ ...w, startTime }))
+            }}
+          />
+          <Components.TextInput
+            type="date"
+            label="End date"
+            value={times.endDate}
+            onChange={endDate => {
+              setTimes(w => ({ ...w, endDate }))
+            }}
+          />
+          <Components.TextInput
+            type="time"
+            label="End time"
+            value={times.endTime}
+            {...saveErrors.fieldError(timeErrors.end)}
+            onChange={endTime => {
+              setTimes(w => ({ ...w, endTime }))
+            }}
+          />
+        </Grid>
         <Components.Text size="sm" variant="supporting">
-          Stays “{existing.status}” after the edit.
-          {existing.synced_to_payroll_at &&
-            ' Already sent: payroll keeps the old hours until the next send.'}
-          {existing.synced_to_payroll_at && <GapPin id="which-timesheets" />} The page checks breaks
-          against the new times, since the API can skip that when only the start or end moves.{' '}
-          <GapPin id="break-timing" />
+          {existing
+            ? `Worked ${workedHours(existing).toFixed(2)} hours${hours !== null && changed ? `, ${hours.toFixed(2)} after this edit` : ''}.`
+            : `${(hours ?? 0).toFixed(2)} hours worked.`}
+          {outsidePeriod && ` This date is outside ${formatPeriod(period)}.`}
         </Components.Text>
-      )}
+      </div>
+
+      <div className={styles.formSection}>
+        <BreaksEditor
+          breaks={breaks}
+          onChange={setBreaks}
+          rules={person?.breakPolicy?.rules ?? []}
+          shiftStart={start}
+          shiftEnd={end}
+          timeZone={timeZone}
+        />
+        {issues.length > 0 && person?.breakPolicy && (
+          <Components.Alert status="warning" label={breakIssueLabel(issues)}>
+            {person.breakPolicy.pay_premium
+              ? `${person.breakPolicy.name} pays a premium for this, so the shift earns extra pay.`
+              : `${person.breakPolicy.name} doesn’t pay a premium for this.`}{' '}
+            <ChangePin id="missed-breaks" />
+          </Components.Alert>
+        )}
+        {saveErrors.isShown && breakErrors.length > 0 && (
+          <Components.Alert status="error" label="Fix the breaks before saving">
+            {breakErrors.join(' ')}
+          </Components.Alert>
+        )}
+      </div>
+
+      <div className={styles.formSection}>
+        {!existing && (
+          <Components.Select
+            label="Add as"
+            description="Admins can add shifts already approved. They go with the next send."
+            placeholder="Choose a status"
+            value={status}
+            options={[
+              { value: 'approved', label: 'Approved' },
+              { value: 'pending', label: 'Pending' },
+            ]}
+            onChange={value => {
+              if (value === 'approved' || value === 'pending') setStatus(value)
+            }}
+          />
+        )}
+        {existing && (
+          <Components.Text size="sm" variant="supporting">
+            Stays “{existing.status}” after the edit.
+            {existing.synced_to_payroll_at &&
+              ' Already sent: payroll keeps the old hours until the next send.'}
+            {existing.synced_to_payroll_at && <GapPin id="which-timesheets" />} The page checks
+            breaks against the new times, since the API can skip that when only the start or end
+            moves. <GapPin id="break-timing" />
+          </Components.Text>
+        )}
+      </div>
     </SubPage>
   )
 }

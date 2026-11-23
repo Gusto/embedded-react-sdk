@@ -1,6 +1,7 @@
 import { ChangePin } from './parts'
 import { addMinutes, placeBreak, timeOnShift, type BreakDraft } from './breaks'
 import { breakRuleLabel, minutesBetween, zonedParts, type ApiBreakRule } from './model'
+import styles from './TimeTrackingReview.module.scss'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -34,46 +35,50 @@ export function BreaksEditor({
           No breaks.
         </Components.Text>
       )}
-      {breaks.map(b => (
-        <Grid
-          key={b.key}
-          gridTemplateColumns={{ base: '2fr 1fr 1fr auto' }}
-          gap={8}
-          alignItems="end"
-        >
-          <Components.Text size="sm">
-            {b.rule ? breakRuleLabel(b.rule) : 'Unlinked break · unpaid'}
-          </Components.Text>
-          <Components.TextInput
-            type="time"
-            label="Start"
-            value={zonedParts(b.start, timeZone).time}
-            onChange={value => {
-              if (!value || !shiftStart) return
-              const start = timeOnShift(value, shiftStart, timeZone)
-              const length = b.end ? minutesBetween(b.start, b.end) : null
-              update(b.key, { start, end: length === null ? b.end : addMinutes(start, length) })
-            }}
-          />
-          <Components.TextInput
-            type="time"
-            label="End"
-            value={b.end ? zonedParts(b.end, timeZone).time : ''}
-            onChange={value => {
-              if (!value || !shiftStart) return
-              update(b.key, { end: timeOnShift(value, shiftStart, timeZone) })
-            }}
-          />
-          <Components.Button
-            variant="tertiary"
-            onClick={() => {
-              onChange(breaks.filter(x => x.key !== b.key))
-            }}
-          >
-            Remove
-          </Components.Button>
-        </Grid>
-      ))}
+      {breaks.length > 0 && (
+        <div className={styles.breakList}>
+          {breaks.map(b => (
+            <div key={b.key} className={styles.breakRow}>
+              <Components.Text size="sm" weight="medium">
+                {b.rule ? breakRuleLabel(b.rule) : 'Unlinked break · unpaid'}
+              </Components.Text>
+              <Grid gridTemplateColumns={{ base: '1fr 1fr auto' }} gap={12} alignItems="end">
+                <Components.TextInput
+                  type="time"
+                  label="Start"
+                  value={zonedParts(b.start, timeZone).time}
+                  onChange={value => {
+                    if (!value || !shiftStart) return
+                    const start = timeOnShift(value, shiftStart, timeZone)
+                    const length = b.end ? minutesBetween(b.start, b.end) : null
+                    update(b.key, {
+                      start,
+                      end: length === null ? b.end : addMinutes(start, length),
+                    })
+                  }}
+                />
+                <Components.TextInput
+                  type="time"
+                  label="End"
+                  value={b.end ? zonedParts(b.end, timeZone).time : ''}
+                  onChange={value => {
+                    if (!value || !shiftStart) return
+                    update(b.key, { end: timeOnShift(value, shiftStart, timeZone) })
+                  }}
+                />
+                <Components.Button
+                  variant="tertiary"
+                  onClick={() => {
+                    onChange(breaks.filter(x => x.key !== b.key))
+                  }}
+                >
+                  Remove
+                </Components.Button>
+              </Grid>
+            </div>
+          ))}
+        </div>
+      )}
       <Flex gap={8} flexWrap="wrap">
         {rules.map(rule => (
           <Components.Button
