@@ -53,7 +53,7 @@ export const CHANGES: Change[] = [
     title: 'Policy pages, like TimeOffFlow',
     feedback:
       'Wondering if we should try to keep these more similar in terms of when we open a sub page vs when we use a modal. / It feels like I should be able to do more of a selectable table than these cards.',
-    what: 'Each policy has a detail page with details and people tabs. New, Edit and Assign people are full pages; Assign people is a full-width selectable table with “Select all eligible”. The row menu still opens each one directly.',
+    what: 'Each policy has a detail page with a details card (Edit) and a people card (Assign people), like the employee dashboard. New, Edit and Assign people are full pages; Assign people is a full-width selectable table with “Select all eligible”. The row menu still opens each one directly.',
     where: 'Policies › policy names, row menus, and the pages they open.',
   },
   {

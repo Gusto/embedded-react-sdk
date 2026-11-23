@@ -978,7 +978,6 @@ function PolicyDetail({
   onDelete: () => void
 }) {
   const Components = useComponentContext()
-  const [section, setSection] = useState('details')
   const assigned = new Set(policy.assigned_employees.map(a => a.uuid))
   const onPolicy = people
     .filter(p => assigned.has(p.employee.uuid))
@@ -1039,56 +1038,57 @@ function PolicyDetail({
       }
       description={KIND_LABEL[kind]}
       actions={
-        <>
-          <Components.Button variant="secondary" onClick={onAssign}>
-            Assign people
-          </Components.Button>
-          <Components.Button variant="secondary" onClick={onEdit}>
-            Edit policy
-          </Components.Button>
-          <Components.Button variant="tertiary" onClick={onDelete}>
-            Delete
-          </Components.Button>
-        </>
+        <Components.Button variant="tertiary" onClick={onDelete}>
+          Delete policy
+        </Components.Button>
       }
     >
-      <Components.Tabs
-        aria-label={`${policy.name} sections`}
-        selectedId={section}
-        onSelectionChange={setSection}
-        tabs={[
-          {
-            id: 'details',
-            label: 'Policy details',
-            content: (
-              <Components.Box header={<Components.BoxHeader title="Details" />}>
-                <Flex flexDirection="column" gap={12}>
-                  {facts.map(([label, value]) => (
-                    <Flex key={label} flexDirection="column" gap={0}>
-                      <Components.Text weight="medium">{label}</Components.Text>
-                      <Components.Text variant="supporting">{value}</Components.Text>
-                    </Flex>
-                  ))}
-                  {kind === 'overtime' && (
-                    <Components.Text size="sm" variant="supporting">
-                      No state is recorded for overtime policies. <GapPin id="ot-state" />
-                    </Components.Text>
-                  )}
-                </Flex>
-              </Components.Box>
-            ),
-          },
-          {
-            id: 'people',
-            label: `People (${onPolicy.length})`,
-            content: onPolicy.length ? (
-              <DataView label={`People on ${policy.name}`} {...peopleView} />
-            ) : (
-              <Components.Text variant="supporting">No one is on this policy yet.</Components.Text>
-            ),
-          },
-        ]}
-      />
+      <Flex flexDirection="column" gap={24}>
+        <Components.Box
+          header={
+            <Components.BoxHeader
+              title="Policy details"
+              action={
+                <Components.Button variant="secondary" onClick={onEdit}>
+                  Edit
+                </Components.Button>
+              }
+            />
+          }
+        >
+          <Flex flexDirection="column" gap={12}>
+            {facts.map(([label, value]) => (
+              <Flex key={label} flexDirection="column" gap={0}>
+                <Components.Text weight="medium">{label}</Components.Text>
+                <Components.Text variant="supporting">{value}</Components.Text>
+              </Flex>
+            ))}
+            {kind === 'overtime' && (
+              <Components.Text size="sm" variant="supporting">
+                No state is recorded for overtime policies. <GapPin id="ot-state" />
+              </Components.Text>
+            )}
+          </Flex>
+        </Components.Box>
+        <Components.Box
+          header={
+            <Components.BoxHeader
+              title={`People (${onPolicy.length})`}
+              action={
+                <Components.Button variant="secondary" onClick={onAssign}>
+                  Assign people
+                </Components.Button>
+              }
+            />
+          }
+        >
+          {onPolicy.length ? (
+            <DataView label={`People on ${policy.name}`} {...peopleView} />
+          ) : (
+            <Components.Text variant="supporting">No one is on this policy yet.</Components.Text>
+          )}
+        </Components.Box>
+      </Flex>
     </SubPage>
   )
 }
