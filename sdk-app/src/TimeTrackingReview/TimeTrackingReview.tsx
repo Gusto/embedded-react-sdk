@@ -55,6 +55,7 @@ import {
   GapPin,
   PrototypeModal,
   RequestBlock,
+  PlusIcon,
   Trail,
 } from './parts'
 import { nowIso, type NoticeStatus, type Preview } from './preview'
@@ -698,9 +699,9 @@ function TimeTrackingPrototype() {
       </div>
       {period?.payroll && (
         <Components.Text size="sm" variant="supporting">
-          Payroll check date {formatShortDate(period.payroll.check_date)}, deadline{' '}
+          Hours for this period are paid {formatShortDate(period.payroll.check_date)}. Send them by{' '}
           {formatDateTime(period.payroll.payroll_deadline)}.
-          {!lastSyncAt && !sendingHere && ' Nothing sent to payroll yet.'}
+          {!lastSyncAt && !sendingHere && ' Nothing sent yet.'}
         </Components.Text>
       )}
       {!sendingHere && sendFailures[sendKey] && (
@@ -1262,14 +1263,6 @@ function ChevronRightIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-    </svg>
-  )
-}
-
-function PlusIcon() {
-  return (
-    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
-      <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   )
 }

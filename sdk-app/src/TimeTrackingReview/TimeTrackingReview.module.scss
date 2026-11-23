@@ -493,3 +493,29 @@
     border-top: none;
   }
 }
+
+.policyTable {
+  width: 100%;
+
+  :global(.react-aria-Column):first-child,
+  :global(.react-aria-Cell):first-child {
+    width: 20rem;
+    white-space: nowrap;
+  }
+
+  :global(.react-aria-Cell):first-child > * {
+    display: block;
+  }
+}
+
+.detailLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+  width: 100%;
+
+  @media (max-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

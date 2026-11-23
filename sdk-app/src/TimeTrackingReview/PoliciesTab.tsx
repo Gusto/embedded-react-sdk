@@ -16,7 +16,7 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { ChangePin, GapPin, SubPage, type Crumb } from './parts'
+import { ChangePin, GapPin, PlusIcon, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import styles from './TimeTrackingReview.module.scss'
@@ -279,9 +279,11 @@ export function PoliciesTab({
           </>
         ),
         render: p => (
-          <Components.Link href={policyHref('overtime', p.uuid, 'details')}>
-            {p.name}
-          </Components.Link>
+          <span className={styles.nowrap}>
+            <Components.Link href={policyHref('overtime', p.uuid, 'details')}>
+              {p.name}
+            </Components.Link>
+          </span>
         ),
       },
       { title: 'Rules', render: overtimeRules },
@@ -301,9 +303,11 @@ export function PoliciesTab({
         ),
         render: p => (
           <Flex gap={8} alignItems="center">
-            <Components.Link href={policyHref('break', p.uuid, 'details')}>
-              {p.name}
-            </Components.Link>
+            <span className={styles.nowrap}>
+              <Components.Link href={policyHref('break', p.uuid, 'details')}>
+                {p.name}
+              </Components.Link>
+            </span>
             {p.jurisdiction && <Components.Badge>{p.jurisdiction}</Components.Badge>}
           </Flex>
         ),
@@ -438,6 +442,7 @@ export function PoliciesTab({
             action={
               <Components.Button
                 variant="secondary"
+                icon={<PlusIcon />}
                 onClick={() => {
                   openPage('overtime', 'new', 'edit')
                 }}
@@ -448,7 +453,9 @@ export function PoliciesTab({
           />
         }
       >
-        <DataView label="Overtime policies" {...overtimeView} />
+        <div className={styles.policyTable}>
+          <DataView label="Overtime policies" {...overtimeView} />
+        </div>
       </Components.Box>
 
       <Components.Box
@@ -462,6 +469,7 @@ export function PoliciesTab({
             action={
               <Components.Button
                 variant="secondary"
+                icon={<PlusIcon />}
                 onClick={() => {
                   openPage('break', 'new', 'edit')
                 }}
@@ -472,7 +480,9 @@ export function PoliciesTab({
           />
         }
       >
-        <DataView label="Break policies" {...breakView} />
+        <div className={styles.policyTable}>
+          <DataView label="Break policies" {...breakView} />
+        </div>
       </Components.Box>
 
       {deleteDialog}
@@ -1092,7 +1102,25 @@ function PolicyDetail({
         </Components.Button>
       }
     >
-      <Flex flexDirection="column" gap={24}>
+      <div className={styles.detailLayout}>
+        <Components.Box
+          header={
+            <Components.BoxHeader
+              title={`People (${onPolicy.length})`}
+              action={
+                <Components.Button variant="secondary" onClick={onAssign}>
+                  Assign people
+                </Components.Button>
+              }
+            />
+          }
+        >
+          {onPolicy.length ? (
+            <DataView label={`People on ${policy.name}`} {...peopleView} />
+          ) : (
+            <Components.Text variant="supporting">No one is on this policy yet.</Components.Text>
+          )}
+        </Components.Box>
         <Components.Box
           header={
             <Components.BoxHeader
@@ -1119,25 +1147,7 @@ function PolicyDetail({
             )}
           </Flex>
         </Components.Box>
-        <Components.Box
-          header={
-            <Components.BoxHeader
-              title={`People (${onPolicy.length})`}
-              action={
-                <Components.Button variant="secondary" onClick={onAssign}>
-                  Assign people
-                </Components.Button>
-              }
-            />
-          }
-        >
-          {onPolicy.length ? (
-            <DataView label={`People on ${policy.name}`} {...peopleView} />
-          ) : (
-            <Components.Text variant="supporting">No one is on this policy yet.</Components.Text>
-          )}
-        </Components.Box>
-      </Flex>
+      </div>
     </SubPage>
   )
 }
