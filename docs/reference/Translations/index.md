@@ -759,6 +759,8 @@ Translation keys for the `Company.Management.CompanyForms` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementcompanyformsalerts"></a> `alerts` |
+| `alerts.formsSigned` |
 | <a id="property-companymanagementcompanyformscard"></a> `card` |
 | `card.allSigned` |
 | `card.awaitingCount_one` |
@@ -775,6 +777,8 @@ Translation keys for the `Company.Management.CompanyForms` i18n namespace.
 | `card.signatures` |
 | `card.title` |
 | `card.untitledForm` |
+| <a id="property-companymanagementcompanyformsheader"></a> `header` |
+| `header.backCta` |
 
 ***
 

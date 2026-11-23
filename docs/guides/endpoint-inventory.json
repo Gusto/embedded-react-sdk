@@ -2149,6 +2149,18 @@
         "state"
       ]
     },
+    "CompanyManagement.CompanyForms": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/signatories",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
+        }
+      ],
+      "variables": [
+        "companyUuid"
+      ]
+    },
     "CompanyManagement.Dashboard": {
       "endpoints": [
         {

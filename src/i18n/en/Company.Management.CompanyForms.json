@@ -16,5 +16,11 @@
       "title": "No company documents yet",
       "description": "Documents appear here once this company's tax and authorization forms are generated."
     }
+  },
+  "header": {
+    "backCta": "Back to company documents"
+  },
+  "alerts": {
+    "formsSigned": "Documents signed."
   }
 }

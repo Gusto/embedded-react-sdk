@@ -1179,6 +1179,14 @@ export namespace Translations {
         description: string
       }
     }
+    header: {
+      /** @defaultValue `"Back to company documents"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Documents signed."` */
+      formsSigned: string
+    }
   }
   /** Translation keys for the `Company.Management.FederalTaxes` i18n namespace. */
   export interface CompanyManagementFederalTaxes {
