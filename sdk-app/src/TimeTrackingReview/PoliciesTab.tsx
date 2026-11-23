@@ -920,7 +920,6 @@ function AssignPeople({
       const current = kind === 'overtime' ? person.overtimePolicy?.name : person.breakPolicy?.name
       let note = current && current !== policy.name ? `On ${current}` : ''
       if (!elig.eligible) note = elig.reason ?? ''
-      else if (locked) note = 'Move them to another overtime policy to take them off'
       else if (kind === 'break' && breakToday.has(uuid))
         note = 'Took a break today: can’t change until tomorrow'
       const isFixed = !elig.eligible || locked || (kind === 'break' && breakToday.has(uuid))
@@ -1020,7 +1019,11 @@ function AssignPeople({
           Assign people to {policy.name} <ChangePin id="policy-pages" />
         </>
       }
-      description={`Each person can be on one ${kind} policy, so adding someone moves them here. People who aren’t eligible can’t be added.`}
+      description={
+        kind === 'overtime'
+          ? 'Everyone eligible is on exactly one overtime policy. Adding someone moves them here, and to take someone off, add them to another overtime policy. People who aren’t eligible can’t be added.'
+          : 'Each person can be on one break policy, so adding someone moves them here. People who aren’t eligible can’t be added.'
+      }
     >
       <div className={styles.assignBar}>
         <Components.Text size="sm" variant="supporting">
