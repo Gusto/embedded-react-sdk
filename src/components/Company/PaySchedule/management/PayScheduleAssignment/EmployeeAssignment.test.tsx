@@ -3,7 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { createMachine } from 'robot3'
-import { PaySchedule } from '../PaySchedule'
+import { PayScheduleEditScreen } from '../PayScheduleEditScreen'
 import { PayScheduleAssignment } from './PayScheduleAssignment'
 import { AssignmentScheduleStep } from './PayScheduleAssignmentComponents'
 import { payScheduleAssignmentStateMachine } from './payScheduleAssignmentStateMachine'
@@ -193,9 +193,12 @@ describe('employee pay schedule assignment', () => {
         ]),
       ),
     )
-    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(
+      <PayScheduleEditScreen companyId="123" onEvent={vi.fn()} enableMultipleSchedules />,
+      {
+        unstableFeatures: { managePaySchedules: true },
+      },
+    )
     expect(await screen.findByRole('alert')).toHaveTextContent('compensations:read')
     expect(screen.getByRole('button', { name: /manage/i })).toBeEnabled()
     expect(screen.queryByText('1 employee')).not.toBeInTheDocument()
@@ -560,7 +563,12 @@ describe('employee pay schedule assignment', () => {
   it('groups the overview by schedule with eligible employee counts and routes row editing', async () => {
     const onEvent = vi.fn()
     renderWithProviders(
-      <PaySchedule companyId="123" onEvent={onEvent} enableAutoPilot enableMultipleSchedules />,
+      <PayScheduleEditScreen
+        companyId="123"
+        onEvent={onEvent}
+        enableAutoPilot
+        enableMultipleSchedules
+      />,
       { unstableFeatures: { managePaySchedules: true } },
     )
     await screen.findByRole('grid', { name: /pay schedules by employee/i })
@@ -579,9 +587,12 @@ describe('employee pay schedule assignment', () => {
         HttpResponse.json({ errors: [{ category: 'missing_oauth_scopes' }] }, { status: 403 }),
       ),
     )
-    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(
+      <PayScheduleEditScreen companyId="123" onEvent={vi.fn()} enableMultipleSchedules />,
+      {
+        unstableFeatures: { managePaySchedules: true },
+      },
+    )
     expect(await screen.findByRole('alert')).toBeInTheDocument()
     expect(
       screen.queryByRole('grid', { name: /pay schedules by employee/i }),
@@ -622,7 +633,7 @@ describe('employee pay schedule assignment', () => {
         </BaseComponent>,
       )
     } else {
-      renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />, {
+      renderWithProviders(<PayScheduleEditScreen companyId="123" onEvent={vi.fn()} />, {
         unstableFeatures: { managePaySchedules: true },
       })
     }
@@ -657,16 +668,22 @@ describe('employee pay schedule assignment', () => {
   })
 
   it('honors overview feature options and opens Manage on employee assignment', async () => {
-    const { unmount } = renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    const { unmount } = renderWithProviders(
+      <PayScheduleEditScreen companyId="123" onEvent={vi.fn()} />,
+      {
+        unstableFeatures: { managePaySchedules: true },
+      },
+    )
     await screen.findByRole('grid', { name: /pay schedules by employee/i })
     expect(screen.queryByRole('button', { name: /manage/i })).not.toBeInTheDocument()
     expect(screen.queryByText(/autopilot/i)).not.toBeInTheDocument()
     unmount()
-    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(
+      <PayScheduleEditScreen companyId="123" onEvent={vi.fn()} enableMultipleSchedules />,
+      {
+        unstableFeatures: { managePaySchedules: true },
+      },
+    )
     const user = userEvent.setup()
     await user.click(await screen.findByRole('button', { name: /manage/i }))
     expect(await screen.findByRole('radio', { name: /^by employee/i })).toBeChecked()

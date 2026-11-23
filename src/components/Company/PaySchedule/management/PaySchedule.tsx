@@ -1,40 +1,19 @@
 import { createMachine } from 'robot3'
-import { useMemo, useState } from 'react'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
-import { payScheduleManagementStateMachine } from './payScheduleManagementStateMachine'
-import type { PayScheduleManagementContextInterface } from './PayScheduleManagementComponents'
-import {
-  PayScheduleOverviewContextual,
-  PayScheduleCreateFormContextual,
-} from './PayScheduleManagementComponents'
+import { useMemo } from 'react'
+import { payScheduleBlockStateMachine } from './payScheduleBlockStateMachine'
+import type { PayScheduleBlockContextInterface } from './PayScheduleComponents'
+import { PaySchedulesCardContextual } from './PayScheduleComponents'
+import type { PayScheduleDictionary } from './PayScheduleEditScreen'
 import type { BaseComponentInterface } from '@/components/Base'
-import { BaseComponent, useBase } from '@/components/Base'
-import type { BaseComponentKeys } from '@/components/Base/Base'
+import { BaseBoundaries } from '@/components/Base'
+import { Flow } from '@/components/Flow/Flow'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { pickNamespaceDictionary } from '@/i18n/pickNamespaceDictionary'
-import { Flow } from '@/components/Flow/Flow'
-import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
-import type { DeepPartial, Resources, SupportedLanguages } from '@/types/Helpers'
 
 /**
- * Translation overrides for {@link PaySchedule}, covering both its own namespace and
- * `Company.Management.AutoPilotDialog` — the AutoPilot dialog is an internal spoke of this
- * flow with no standalone `dictionary` prop of its own.
- *
- * @alpha
- */
-export type PayScheduleDictionary = {
-  [Lang in SupportedLanguages]?: {
-    'Company.Management.PaySchedule'?: DeepPartial<Resources['Company.Management.PaySchedule']>
-    'Company.Management.AutoPilotDialog'?: DeepPartial<
-      Resources['Company.Management.AutoPilotDialog']
-    >
-  }
-}
-
-/**
- * Props for {@link PaySchedule}.
+ * Props for the {@link PaySchedule} management block.
  *
  * @alpha
  */
@@ -42,103 +21,108 @@ export interface PayScheduleProps extends Omit<
   BaseComponentInterface<'Company.Management.PaySchedule'>,
   'dictionary'
 > {
-  /** Company whose pay schedule is managed. */
+  /** The associated company identifier. */
   companyId: string
-  /** Shows the AutoPilot row and its Edit action. */
+  /** Adds the AutoPilot row and its Edit action to the schedule surface. */
   enableAutoPilot?: boolean
-  /** Shows the Manage action. */
+  /** Adds the Manage action that opens employee assignment. */
   enableMultipleSchedules?: boolean
-  /** Overrides for this flow's i18n strings, including the AutoPilot dialog's. */
+  /** Translation overrides for this block and the schedule screens it opens. */
   dictionary?: PayScheduleDictionary
 }
 
 /**
- * Manages a company's pay schedule after onboarding.
+ * A company's pay schedules, as a self-contained card and editor.
  *
  * @remarks
- * Renders the overview when the company already has a pay schedule, or the create form
- * directly when it doesn't.
+ * Opens on `PaySchedulesCard` and swaps to the pay schedule surface when its action is used,
+ * returning to the card via the "Back to pay schedules" header. Opening it from the card's
+ * empty state lands on the create form, since the surface opens there when the company has no
+ * schedule yet.
  *
+ * Unlike the other management blocks this one shows no success alert on the card. The surface
+ * behind it is a hub in its own right — its schedule form, employee assignment wizard and
+ * AutoPilot dialog each return to its own overview and it shows its own alerts for each — so
+ * there is nothing to defer to the card and no completion event to return on. The back header
+ * is the only way out.
+ *
+ * Use this when a single pay schedules surface is wanted on its own.
+ * `CompanyManagement.Dashboard` composes `PaySchedulesCard` directly instead, so that a card's
+ * action routes within the dashboard rather than opening a second, nested editor.
+ *
+ * Requires both the `companySettingsDashboard` and `managePaySchedules` unstable feature flags
+ * — the first for the card, the second for the schedule surface. Mounting it without either
+ * throws.
+ *
+ * @events
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/management/paySchedule/editRequested` | The card's action was used | `{ companyId: string }` |
+ * | `company/management/paySchedule/editCancelled` | The surface was left via the back header | — |
+ *
+ * @param props - See {@link PayScheduleProps}.
+ * @returns The rendered pay schedule management block.
  * @alpha
+ *
+ * @example
+ * ```tsx
+ * import { CompanyManagement } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <CompanyManagement.PaySchedule
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
  */
-export const PaySchedule = ({
+export function PaySchedule({
   companyId,
   enableAutoPilot,
   enableMultipleSchedules,
+  onEvent,
   dictionary,
-  ...props
-}: PayScheduleProps) => {
+  FallbackComponent,
+  LoaderComponent,
+}: PayScheduleProps) {
+  // Both gates, so the block fails loudly and immediately rather than deep inside the card or
+  // the surface, which each check one of them.
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
   useUnstableFeature('managePaySchedules', { throwIfDisabled: true })
 
-  return (
-    <BaseComponent {...props}>
-      <Root
-        companyId={companyId}
-        enableAutoPilot={enableAutoPilot}
-        enableMultipleSchedules={enableMultipleSchedules}
-        dictionary={dictionary}
-      />
-    </BaseComponent>
-  )
-}
-
-function Root({
-  companyId,
-  enableAutoPilot,
-  enableMultipleSchedules,
-  dictionary,
-}: Omit<PayScheduleProps, BaseComponentKeys>) {
   useI18n('Company.Management.PaySchedule')
   useComponentDictionary(
     'Company.Management.PaySchedule',
     pickNamespaceDictionary(dictionary, 'Company.Management.PaySchedule'),
   )
-  // AutoPilotDialog is an internal spoke off PayScheduleOverviewContextual, not standalone-
-  // mountable, so PaySchedule's own dictionary covers this namespace too.
-  useI18n('Company.Management.AutoPilotDialog')
-  useComponentDictionary(
-    'Company.Management.AutoPilotDialog',
-    pickNamespaceDictionary(dictionary, 'Company.Management.AutoPilotDialog'),
-  )
-  // The schedule form contextuals reuse the onboarding PayScheduleForm, whose translations
-  // live under its own namespace and are otherwise never loaded from this flow.
-  useI18n('Company.PaySchedule')
-  const { onEvent } = useBase()
-  const { data: paySchedules } = usePaySchedulesGetAllSuspense({ companyId })
-
-  /**
-   * Freeze the initial routing decision. Recomputing it after a later refetch (e.g. once the
-   * first schedule is created) would re-seat the machine and orphan its interpreter.
-   */
-  const [{ initialState, initialComponent }] = useState<{
-    initialState: keyof typeof payScheduleManagementStateMachine
-    initialComponent: typeof PayScheduleOverviewContextual | typeof PayScheduleCreateFormContextual
-  }>(() => {
-    const hasSchedules = (paySchedules.payScheduleShowResponse?.length ?? 0) > 0
-    return {
-      initialState: hasSchedules ? 'overview' : 'createSchedule',
-      initialComponent: hasSchedules
-        ? PayScheduleOverviewContextual
-        : PayScheduleCreateFormContextual,
-    }
-  })
+  useI18n('Company.Management.PaySchedules')
 
   const machine = useMemo(
     () =>
       createMachine(
-        initialState,
-        payScheduleManagementStateMachine,
-        (initialContext: PayScheduleManagementContextInterface) => ({
-          ...initialContext,
-          component: initialComponent,
+        'card',
+        payScheduleBlockStateMachine,
+        (ctx: PayScheduleBlockContextInterface) => ({
+          ...ctx,
+          component: PaySchedulesCardContextual,
           companyId,
           enableAutoPilot,
           enableMultipleSchedules,
-          successAlert: null,
+          LoaderComponent,
         }),
       ),
-    [companyId, enableAutoPilot, enableMultipleSchedules, initialState, initialComponent],
+    [companyId, enableAutoPilot, enableMultipleSchedules, LoaderComponent],
   )
 
-  return <Flow machine={machine} onEvent={onEvent} />
+  return (
+    <BaseBoundaries
+      componentName="Company.Management.PaySchedule"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <Flow machine={machine} onEvent={onEvent} />
+    </BaseBoundaries>
+  )
 }

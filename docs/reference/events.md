@@ -95,6 +95,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `COMPANY_MANAGEMENT_LOCATIONS_EDIT_CANCELLED` | `"company/management/locations/editCancelled"` |
 | `COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED` | `"company/management/locations/editRequested"` |
 | `COMPANY_MANAGEMENT_LOCATIONS_UPDATED` | `"company/management/locations/updated"` |
+| `COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_CANCELLED` | `"company/management/paySchedule/editCancelled"` |
 | `COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED` | `"company/management/paySchedule/editRequested"` |
 | `COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED` | `"company/management/signatory/alertDismissed"` |
 | `COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED` | `"company/management/signatory/editCancelled"` |

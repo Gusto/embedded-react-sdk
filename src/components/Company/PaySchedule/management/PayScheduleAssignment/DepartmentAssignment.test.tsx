@@ -3,7 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { createMachine } from 'robot3'
-import { PaySchedule } from '../PaySchedule'
+import { PayScheduleEditScreen } from '../PayScheduleEditScreen'
 import { PayScheduleAssignment } from './PayScheduleAssignment'
 import { AssignmentScheduleStep } from './PayScheduleAssignmentComponents'
 import { payScheduleAssignmentStateMachine } from './payScheduleAssignmentStateMachine'
@@ -341,7 +341,12 @@ describe('department pay schedule assignment', () => {
 
   it('renders the department overview and routes Manage back to saved assignments', async () => {
     renderWithProviders(
-      <PaySchedule companyId="123" onEvent={vi.fn()} enableAutoPilot enableMultipleSchedules />,
+      <PayScheduleEditScreen
+        companyId="123"
+        onEvent={vi.fn()}
+        enableAutoPilot
+        enableMultipleSchedules
+      />,
       {
         unstableFeatures: { managePaySchedules: true },
       },
@@ -357,7 +362,12 @@ describe('department pay schedule assignment', () => {
   it('edits the schedule selected from a department row', async () => {
     const onEvent = vi.fn()
     renderWithProviders(
-      <PaySchedule companyId="123" onEvent={onEvent} enableAutoPilot enableMultipleSchedules />,
+      <PayScheduleEditScreen
+        companyId="123"
+        onEvent={onEvent}
+        enableAutoPilot
+        enableMultipleSchedules
+      />,
       { unstableFeatures: { managePaySchedules: true } },
     )
     const row = await screen.findByRole('row', { name: 'Engineering' })
@@ -369,7 +379,7 @@ describe('department pay schedule assignment', () => {
   })
 
   it('hides Manage and AutoPilot in the department overview when disabled', async () => {
-    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />, {
+    renderWithProviders(<PayScheduleEditScreen companyId="123" onEvent={vi.fn()} />, {
       unstableFeatures: { managePaySchedules: true },
     })
     const row = await screen.findByRole('row', { name: 'Engineering' })

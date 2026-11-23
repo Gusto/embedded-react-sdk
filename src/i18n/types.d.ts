@@ -1371,6 +1371,10 @@ export namespace Translations {
     employeeCount_other: string
     /** @defaultValue `"Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator."` */
     employeeAccessDenied: string
+    header: {
+      /** @defaultValue `"Back to pay schedules"` */
+      backCta: string
+    }
   }
   /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
   export interface CompanyManagementPayScheduleAssignment {

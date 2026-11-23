@@ -1179,6 +1179,8 @@ declare namespace CompanyManagement {
         PaySchedule_2 as PaySchedule,
         PayScheduleProps_2 as PayScheduleProps,
         PayScheduleDictionary,
+        PaySchedulesCard,
+        PaySchedulesCardProps,
         PayScheduleAssignment_2 as PayScheduleAssignment,
         PayScheduleAssignmentProps,
         TaxPaymentsFlow,
@@ -1207,8 +1209,6 @@ declare namespace CompanyManagement {
         BankAccountDictionary,
         BankAccountCard,
         BankAccountCardProps,
-        PaySchedulesCard,
-        PaySchedulesCardProps,
         StateTaxes_4 as StateTaxes,
         StateTaxesProps_4 as StateTaxesProps,
         StateTaxesDictionary,
@@ -1701,6 +1701,7 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_CANCELLED: "company/management/bankAccount/editCancelled";
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_ALERT_DISMISSED: "company/management/bankAccount/alertDismissed";
     readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
+    readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_CANCELLED: "company/management/paySchedule/editCancelled";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_UPDATED: "company/management/stateTaxes/updated";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: "company/management/stateTaxes/editCancelled";
@@ -4939,7 +4940,7 @@ interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollRe
 const PaySchedule: (input: PayScheduleProps) => JSX;
 
 // @alpha
-const PaySchedule_2: (input: PayScheduleProps_2) => JSX;
+function PaySchedule_2(input: PayScheduleProps_2): JSX;
 
 // @alpha
 const PayScheduleAssignment_2: (input: PayScheduleAssignmentProps) => JSX;

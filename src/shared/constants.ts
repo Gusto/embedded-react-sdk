@@ -232,6 +232,7 @@ export const companyEvents = {
   COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_CANCELLED: 'company/management/bankAccount/editCancelled',
   COMPANY_MANAGEMENT_BANK_ACCOUNT_ALERT_DISMISSED: 'company/management/bankAccount/alertDismissed',
   COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: 'company/management/paySchedule/editRequested',
+  COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_CANCELLED: 'company/management/paySchedule/editCancelled',
   COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: 'company/management/stateTaxes/editRequested',
   COMPANY_MANAGEMENT_STATE_TAXES_UPDATED: 'company/management/stateTaxes/updated',
   COMPANY_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: 'company/management/stateTaxes/editCancelled',
