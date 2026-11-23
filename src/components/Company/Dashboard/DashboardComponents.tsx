@@ -2,13 +2,13 @@ import { useTranslation } from 'react-i18next'
 import { Dashboard, type DashboardTab } from './Dashboard'
 import { useViewerSignatoryId } from './ViewerSignatoryContext'
 import { IndustryEditScreen } from '@/components/Company/Industry/management/IndustryEditScreen'
-import { Locations } from '@/components/Company/Locations'
+import { LocationsEditScreen } from '@/components/Company/Locations/management/LocationsEditScreen'
 import { FederalTaxesEditScreen } from '@/components/Company/FederalTaxes/management/FederalTaxesEditScreen'
-import { BankAccount } from '@/components/Company/BankAccount'
+import { BankAccountEditScreen } from '@/components/Company/BankAccount/management/BankAccountEditScreen'
 import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { StateTaxes } from '@/components/Company/StateTaxes/management'
 import { TaxPaymentsFlow } from '@/components/Company/TaxPayments'
-import { AssignSignatory } from '@/components/Company/AssignSignatory'
+import { SignatoryEditScreen } from '@/components/Company/AssignSignatory/management/SignatoryEditScreen'
 import { ViewerBoundDocumentSigner } from '@/components/Company/DocumentSigner/onboarding/DocumentSigner'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -104,7 +104,7 @@ export function IndustryContextual() {
 /** @internal */
 export function LocationsContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
-  return <Locations companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <LocationsEditScreen companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */
@@ -116,7 +116,7 @@ export function FederalTaxesContextual() {
 /** @internal */
 export function BankAccountContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
-  return <BankAccount companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <BankAccountEditScreen companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */
@@ -167,7 +167,7 @@ export function CompanyFormsContextual() {
 export function AssignSignatoryContextual() {
   const { companyId, signatoryId, onEvent } = useFlow<DashboardContextInterface>()
   return (
-    <AssignSignatory
+    <SignatoryEditScreen
       companyId={ensureRequired(companyId)}
       signatoryId={signatoryId}
       onEvent={onEvent}

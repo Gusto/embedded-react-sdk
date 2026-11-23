@@ -19,5 +19,11 @@
       "title": "No bank account yet",
       "description": "Add a checking account so this company can be debited for wages and taxes."
     }
+  },
+  "header": {
+    "backCta": "Back to bank account"
+  },
+  "alerts": {
+    "bankAccountUpdated": "Bank account updated."
   }
 }

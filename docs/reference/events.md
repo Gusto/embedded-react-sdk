@@ -75,7 +75,10 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `COMPANY_LOCATION_DONE` | `"company/location/done"` |
 | `COMPANY_LOCATION_EDIT` | `"company/location/edit"` |
 | `COMPANY_LOCATION_UPDATED` | `"company/location/edit/done"` |
+| `COMPANY_MANAGEMENT_BANK_ACCOUNT_ALERT_DISMISSED` | `"company/management/bankAccount/alertDismissed"` |
+| `COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_CANCELLED` | `"company/management/bankAccount/editCancelled"` |
 | `COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED` | `"company/management/bankAccount/editRequested"` |
+| `COMPANY_MANAGEMENT_BANK_ACCOUNT_UPDATED` | `"company/management/bankAccount/updated"` |
 | `COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED` | `"company/management/companyForms/editRequested"` |
 | `COMPANY_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED` | `"company/management/federalTaxes/alertDismissed"` |
 | `COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_CANCELLED` | `"company/management/federalTaxes/editCancelled"` |
@@ -85,9 +88,15 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `COMPANY_MANAGEMENT_INDUSTRY_EDIT_CANCELLED` | `"company/management/industry/editCancelled"` |
 | `COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED` | `"company/management/industry/editRequested"` |
 | `COMPANY_MANAGEMENT_INDUSTRY_UPDATED` | `"company/management/industry/updated"` |
+| `COMPANY_MANAGEMENT_LOCATIONS_ALERT_DISMISSED` | `"company/management/locations/alertDismissed"` |
+| `COMPANY_MANAGEMENT_LOCATIONS_EDIT_CANCELLED` | `"company/management/locations/editCancelled"` |
 | `COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED` | `"company/management/locations/editRequested"` |
+| `COMPANY_MANAGEMENT_LOCATIONS_UPDATED` | `"company/management/locations/updated"` |
 | `COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED` | `"company/management/paySchedule/editRequested"` |
+| `COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED` | `"company/management/signatory/alertDismissed"` |
+| `COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED` | `"company/management/signatory/editCancelled"` |
 | `COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED` | `"company/management/signatory/editRequested"` |
+| `COMPANY_MANAGEMENT_SIGNATORY_UPDATED` | `"company/management/signatory/updated"` |
 | `COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED` | `"company/management/stateTaxes/editRequested"` |
 | `COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED` | `"company/management/taxPayments/editRequested"` |
 | `COMPANY_OVERVIEW_CONTINUE` | `"company/overview/continue"` |

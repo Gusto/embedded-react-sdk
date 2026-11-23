@@ -2119,6 +2119,18 @@
         "uuid"
       ]
     },
+    "CompanyManagement.BankAccount": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/bank_accounts",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts"
+        }
+      ],
+      "variables": [
+        "companyId"
+      ]
+    },
     "CompanyManagement.TaxRateManagement": {
       "endpoints": [
         {

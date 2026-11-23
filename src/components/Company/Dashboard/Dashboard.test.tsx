@@ -444,7 +444,6 @@ describe('Company DashboardFlow', () => {
 
     // Saving an address keeps the spoke open rather than returning to the dashboard...
     // The list's rows arrive after its chrome, so wait for the row menu itself.
-    await screen.findByRole('button', { name: 'Continue' })
     await user.click(await screen.findByRole('button', { name: 'Location actions' }))
     await user.click(await screen.findByTestId('edit-location'))
 
@@ -452,8 +451,10 @@ describe('Company DashboardFlow', () => {
     await screen.findByLabelText('Street 1')
     await user.click(await screen.findByTestId('location-submit'))
 
-    // ...so the alert only appears once the user actually leaves it.
-    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+    // ...so the alert only appears once the user actually leaves it. The spoke now opens on
+    // the Add-only management list, so the back header is the exit — the Continue button
+    // this previously used no longer renders.
+    await user.click(await screen.findByRole('button', { name: 'Back to company settings' }))
 
     expect(await screen.findByText('Locations updated')).toBeInTheDocument()
   })
@@ -489,9 +490,11 @@ describe('Company DashboardFlow', () => {
     })
     await user.click(screen.getByRole('button', { name: 'Manage bank account' }))
 
-    // Continue fires COMPANY_BANK_ACCOUNT_DONE whether or not the account changed, so
-    // a look-and-leave visit must not announce an update that never happened.
-    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+    // The spoke now opens on the Change-only management view, so the back header is the exit
+    // and the Continue button this previously used no longer renders. The pending-alert slot
+    // is only filled by a save, so a look-and-leave visit must not announce an update that
+    // never happened.
+    await user.click(await screen.findByRole('button', { name: 'Back to company settings' }))
 
     expect(await screen.findByRole('tab', { name: 'Pay' })).toBeInTheDocument()
     expect(screen.queryByText('Bank account updated')).toBeNull()

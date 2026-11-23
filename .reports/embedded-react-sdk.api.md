@@ -806,6 +806,9 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 function BankAccount(props: BankAccountProps): JSX;
 
 // @alpha
+function BankAccount_2(input: BankAccountProps_2): JSX;
+
+// @alpha
 function BankAccountCard(props: BankAccountCardProps): JSX;
 
 // @alpha
@@ -815,9 +818,23 @@ interface BankAccountCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// @alpha
+type BankAccountDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.BankAccount'?: DeepPartial<Resources['Company.Management.BankAccount']>;
+        'Company.BankAccount'?: DeepPartial<Resources['Company.BankAccount']>;
+    };
+};
+
 // @public
 interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
     companyId: string;
+}
+
+// @alpha
+interface BankAccountProps_2 extends Omit<BaseComponentInterface<'Company.Management.BankAccount'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: BankAccountDictionary;
 }
 
 // @public
@@ -1156,6 +1173,9 @@ declare namespace CompanyManagement {
         IndustryDictionary,
         IndustryCard,
         IndustryCardProps,
+        Locations_2 as Locations,
+        LocationsProps_2 as LocationsProps,
+        LocationsDictionary,
         LocationsCard,
         LocationsCardProps,
         FederalTaxes_4 as FederalTaxes,
@@ -1163,6 +1183,9 @@ declare namespace CompanyManagement {
         FederalTaxesDictionary,
         FederalTaxesCard_2 as FederalTaxesCard,
         FederalTaxesCardProps_2 as FederalTaxesCardProps,
+        BankAccount_2 as BankAccount,
+        BankAccountProps_2 as BankAccountProps,
+        BankAccountDictionary,
         BankAccountCard,
         BankAccountCardProps,
         PaySchedulesCard,
@@ -1175,6 +1198,9 @@ declare namespace CompanyManagement {
         TaxRateManagementProps,
         TaxPaymentsCard,
         TaxPaymentsCardProps,
+        Signatory_2 as Signatory,
+        SignatoryProps,
+        SignatoryDictionary,
         SignatoryCard,
         SignatoryCardProps,
         CompanyFormsCard,
@@ -1637,6 +1663,9 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_INDUSTRY_EDIT_CANCELLED: "company/management/industry/editCancelled";
     readonly COMPANY_MANAGEMENT_INDUSTRY_ALERT_DISMISSED: "company/management/industry/alertDismissed";
     readonly COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED: "company/management/locations/editRequested";
+    readonly COMPANY_MANAGEMENT_LOCATIONS_UPDATED: "company/management/locations/updated";
+    readonly COMPANY_MANAGEMENT_LOCATIONS_EDIT_CANCELLED: "company/management/locations/editCancelled";
+    readonly COMPANY_MANAGEMENT_LOCATIONS_ALERT_DISMISSED: "company/management/locations/alertDismissed";
     readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED: "company/management/federalTaxes/editRequested";
     readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_UPDATED: "company/management/federalTaxes/updated";
     readonly COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_CANCELLED: "company/management/federalTaxes/editCancelled";
@@ -1645,10 +1674,16 @@ export const componentEvents: {
     readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
     readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: "company/management/bankAccount/editRequested";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_UPDATED: "company/management/bankAccount/updated";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_CANCELLED: "company/management/bankAccount/editCancelled";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_ALERT_DISMISSED: "company/management/bankAccount/alertDismissed";
     readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
     readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
     readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: "company/management/signatory/editRequested";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_UPDATED: "company/management/signatory/updated";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_CANCELLED: "company/management/signatory/editCancelled";
+    readonly COMPANY_MANAGEMENT_SIGNATORY_ALERT_DISMISSED: "company/management/signatory/alertDismissed";
     readonly COMPANY_MANAGEMENT_COMPANY_FORMS_EDIT_REQUESTED: "company/management/companyForms/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
@@ -4093,6 +4128,9 @@ interface LocationFormProps extends BaseComponentInterface<'Company.Locations'> 
 function Locations(input: LocationsProps): JSX;
 
 // @alpha
+function Locations_2(input: LocationsProps_2): JSX;
+
+// @alpha
 function LocationsCard(props: LocationsCardProps): JSX;
 
 // @alpha
@@ -4101,6 +4139,14 @@ interface LocationsCardProps {
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
+
+// @alpha
+type LocationsDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.Locations'?: DeepPartial<Resources['Company.Management.Locations']>;
+        'Company.Locations'?: DeepPartial<Resources['Company.Locations']>;
+    };
+};
 
 // @public
 function LocationsList(props: LocationsListProps): JSX;
@@ -4113,6 +4159,12 @@ interface LocationsListProps extends BaseComponentInterface<'Company.Locations'>
 // @public
 interface LocationsProps extends BaseComponentInterface<'Company.Locations'> {
     companyId: string;
+}
+
+// @alpha
+interface LocationsProps_2 extends Omit<BaseComponentInterface<'Company.Management.Locations'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: LocationsDictionary;
 }
 
 // @public
@@ -5767,6 +5819,9 @@ export interface SharedQuestionMetadata {
 }
 
 // @alpha
+function Signatory_2(input: SignatoryProps): JSX;
+
+// @alpha
 function SignatoryCard(props: SignatoryCardProps): JSX;
 
 // @alpha
@@ -5774,6 +5829,20 @@ interface SignatoryCardProps {
     companyId: string;
     LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+type SignatoryDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.Signatory'?: DeepPartial<Resources['Company.Management.Signatory']>;
+        'Company.AssignSignatory'?: DeepPartial<Resources['Company.AssignSignatory']>;
+    };
+};
+
+// @alpha
+interface SignatoryProps extends Omit<BaseComponentInterface<'Company.Management.Signatory'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: SignatoryDictionary;
 }
 
 // @public

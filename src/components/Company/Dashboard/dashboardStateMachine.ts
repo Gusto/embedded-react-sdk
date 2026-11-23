@@ -215,20 +215,19 @@ export const dashboardStateMachine = {
   ),
   locations: state<MachineTransition>(
     // A company usually adds several addresses in one visit, so a save must not
-    // eject the user from the sub-flow. These self-transitions keep the spoke
-    // open and only record that something changed; the alert surfaces when the
-    // user actually leaves, via either exit below.
+    // eject the user from the sub-flow. This self-transition keeps the spoke open
+    // and only records that something changed; the alert surfaces when the user
+    // actually leaves, via the back header.
+    //
+    // One management event stands in for both onboarding save events, translated by
+    // LocationsEditScreen. COMPANY_LOCATION_DONE is gone along with the Continue button
+    // that raised it: the spoke now opens on the Add-only management list, so the back
+    // header is the only way out.
     transition(
-      componentEvents.COMPANY_LOCATION_CREATED,
+      componentEvents.COMPANY_MANAGEMENT_LOCATIONS_UPDATED,
       'locations',
       recordPendingAlert('locationsUpdated'),
     ),
-    transition(
-      componentEvents.COMPANY_LOCATION_UPDATED,
-      'locations',
-      recordPendingAlert('locationsUpdated'),
-    ),
-    transition(componentEvents.COMPANY_LOCATION_DONE, 'index', returnToIndexWithPendingAlert),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
   bankAccount: state<MachineTransition>(
@@ -241,17 +240,15 @@ export const dashboardStateMachine = {
     // anything, and would stay silent when they left via the back header after a
     // real change. The component's own COMPANY_BANK_ACCOUNT_CANCEL stays absent: it
     // fires on screens inside the sub-flow and must not eject the user either.
+    // One management event stands in for both onboarding save events, translated by
+    // BankAccountEditScreen. COMPANY_BANK_ACCOUNT_DONE is gone along with the Continue
+    // button that raised it: the spoke now opens on the Change-only management view, so
+    // the back header is the only way out.
     transition(
-      componentEvents.COMPANY_BANK_ACCOUNT_CREATED,
+      componentEvents.COMPANY_MANAGEMENT_BANK_ACCOUNT_UPDATED,
       'bankAccount',
       recordPendingAlert('bankAccountUpdated'),
     ),
-    transition(
-      componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED,
-      'bankAccount',
-      recordPendingAlert('bankAccountUpdated'),
-    ),
-    transition(componentEvents.COMPANY_BANK_ACCOUNT_DONE, 'index', returnToIndexWithPendingAlert),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
   paySchedule: state<MachineTransition>(
@@ -308,11 +305,15 @@ export const dashboardStateMachine = {
     // COMPANY_ASSIGN_SIGNATORY_MODE_UPDATED are intentionally absent: the first
     // three fire on save, immediately before COMPANY_ASSIGN_SIGNATORY_DONE, and
     // the last fires as the user switches between the create and invite forms
-    // inside the spoke. Transitioning on the single completion event keeps the
-    // alert tied to one unambiguous signal, whichever way the signatory was
-    // assigned.
+    // inside the spoke.
+    //
+    // Returns on the management event rather than COMPANY_ASSIGN_SIGNATORY_DONE itself,
+    // which SignatoryEditScreen translates. That is what removes the cross-spoke hazard
+    // the companyForms state below used to guard by omission: DocumentSigner's own
+    // assign-signatory step raises the onboarding event but does not go through that
+    // wrapper, so it can no longer reach this transition at all.
     transition(
-      componentEvents.COMPANY_ASSIGN_SIGNATORY_DONE,
+      componentEvents.COMPANY_MANAGEMENT_SIGNATORY_UPDATED,
       'index',
       returnToIndexWithAlert('signatoryUpdated'),
     ),

@@ -19,5 +19,11 @@
       "title": "No signatory assigned",
       "description": "Assign a signatory so this company's tax and payroll forms can be signed."
     }
+  },
+  "header": {
+    "backCta": "Back to signatory"
+  },
+  "alerts": {
+    "signatoryUpdated": "Signatory updated."
   }
 }

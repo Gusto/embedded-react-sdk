@@ -1136,6 +1136,14 @@ export namespace Translations {
         description: string
       }
     }
+    header: {
+      /** @defaultValue `"Back to bank account"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Bank account updated."` */
+      bankAccountUpdated: string
+    }
   }
   /** Translation keys for the `Company.Management.CompanyForms` i18n namespace. */
   export interface CompanyManagementCompanyForms {
@@ -1269,6 +1277,14 @@ export namespace Translations {
         /** @defaultValue `"Add a work address so this company can run payroll and file taxes in the right jurisdictions."` */
         description: string
       }
+    }
+    header: {
+      /** @defaultValue `"Back to locations"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Locations updated."` */
+      locationsUpdated: string
     }
   }
   /** Translation keys for the `Company.Management.PaySchedule` i18n namespace. */
@@ -1555,6 +1571,14 @@ export namespace Translations {
         /** @defaultValue `"Assign a signatory so this company's tax and payroll forms can be signed."` */
         description: string
       }
+    }
+    header: {
+      /** @defaultValue `"Back to signatory"` */
+      backCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Signatory updated."` */
+      signatoryUpdated: string
     }
   }
   /** Translation keys for the `Company.Management.StateTaxes` i18n namespace. */

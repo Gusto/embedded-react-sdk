@@ -724,6 +724,8 @@ Translation keys for the `Company.Management.BankAccount` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementbankaccountalerts"></a> `alerts` |
+| `alerts.bankAccountUpdated` |
 | <a id="property-companymanagementbankaccountcard"></a> `card` |
 | `card.accountName` |
 | `card.accountNumber` |
@@ -742,6 +744,8 @@ Translation keys for the `Company.Management.BankAccount` i18n namespace.
 | `card.verificationStatus.awaiting_deposits` |
 | `card.verificationStatus.ready_for_verification` |
 | `card.verificationStatus.verified` |
+| <a id="property-companymanagementbankaccountheader"></a> `header` |
+| `header.backCta` |
 
 ***
 
@@ -843,6 +847,8 @@ Translation keys for the `Company.Management.Locations` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementlocationsalerts"></a> `alerts` |
+| `alerts.locationsUpdated` |
 | <a id="property-companymanagementlocationscard"></a> `card` |
 | `card.addressColumn` |
 | `card.designationsColumn` |
@@ -855,6 +861,8 @@ Translation keys for the `Company.Management.Locations` i18n namespace.
 | `card.manageAriaLabel` |
 | `card.manageCta` |
 | `card.title` |
+| <a id="property-companymanagementlocationsheader"></a> `header` |
+| `header.backCta` |
 
 ***
 
@@ -1026,6 +1034,8 @@ Translation keys for the `Company.Management.Signatory` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementsignatoryalerts"></a> `alerts` |
+| `alerts.signatoryUpdated` |
 | <a id="property-companymanagementsignatorycard"></a> `card` |
 | `card.assignCta` |
 | `card.editAriaLabel` |
@@ -1044,6 +1054,8 @@ Translation keys for the `Company.Management.Signatory` i18n namespace.
 | `card.listEmptyPlaceholder` |
 | `card.name` |
 | `card.title` |
+| <a id="property-companymanagementsignatoryheader"></a> `header` |
+| `header.backCta` |
 
 ***
 

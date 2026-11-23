@@ -20,7 +20,13 @@ export {
   IndustryCard,
   type IndustryCardProps,
 } from '../Industry/management'
-export { LocationsCard, type LocationsCardProps } from '../Locations/management/LocationsCard'
+export {
+  Locations,
+  type LocationsProps,
+  type LocationsDictionary,
+  LocationsCard,
+  type LocationsCardProps,
+} from '../Locations/management'
 export {
   FederalTaxes,
   type FederalTaxesProps,
@@ -29,9 +35,12 @@ export {
   type FederalTaxesCardProps,
 } from '../FederalTaxes/management'
 export {
+  BankAccount,
+  type BankAccountProps,
+  type BankAccountDictionary,
   BankAccountCard,
   type BankAccountCardProps,
-} from '../BankAccount/management/BankAccountCard'
+} from '../BankAccount/management'
 export {
   PaySchedulesCard,
   type PaySchedulesCardProps,
@@ -43,7 +52,13 @@ export {
   TaxPaymentsCard,
   type TaxPaymentsCardProps,
 } from '../TaxPayments/management/TaxPaymentsCard'
-export { SignatoryCard, type SignatoryCardProps } from '../AssignSignatory/management/SignatoryCard'
+export {
+  Signatory,
+  type SignatoryProps,
+  type SignatoryDictionary,
+  SignatoryCard,
+  type SignatoryCardProps,
+} from '../AssignSignatory/management'
 export {
   CompanyFormsCard,
   type CompanyFormsCardProps,

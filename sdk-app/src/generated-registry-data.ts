@@ -5,6 +5,7 @@ import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUn
 import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
+  'CompanyManagement.BankAccount': ['companyId'],
   'CompanyManagement.BankAccountCard': ['companyId'],
   'CompanyManagement.CompanyFormsCard': ['companyId'],
   'CompanyManagement.Dashboard': ['companyId'],
@@ -13,10 +14,12 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.FederalTaxesCard': ['companyId'],
   'CompanyManagement.Industry': ['companyId'],
   'CompanyManagement.IndustryCard': ['companyId'],
+  'CompanyManagement.Locations': ['companyId'],
   'CompanyManagement.LocationsCard': ['companyId'],
   'CompanyManagement.PaySchedule': ['companyId'],
   'CompanyManagement.PayScheduleAssignment': ['companyId'],
   'CompanyManagement.PaySchedulesCard': ['companyId'],
+  'CompanyManagement.Signatory': ['companyId'],
   'CompanyManagement.SignatoryCard': ['companyId'],
   'CompanyManagement.StateTaxes': ['companyId'],
   'CompanyManagement.StateTaxesCard': ['companyId'],
