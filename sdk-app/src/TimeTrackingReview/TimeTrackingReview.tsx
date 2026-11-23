@@ -49,7 +49,7 @@ import { ReceiptPage, SendPage } from './SendPage'
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
-import { ApproveReject, ChangePin, GapPin, PrototypeModal, RequestBlock } from './parts'
+import { ApproveReject, ChangePin, GapPin, PrototypeModal, RequestBlock, Trail } from './parts'
 import { nowIso, type NoticeStatus, type Preview } from './preview'
 import type { PolicyData } from './PoliciesTab'
 import styles from './TimeTrackingReview.module.scss'
@@ -870,7 +870,25 @@ function TimeTrackingPrototype() {
                           people={schedulePeople}
                           period={period}
                           shifts={periodShifts}
-                          backLabel={focused ? focused.person.name : 'Timesheets'}
+                          trail={[
+                            {
+                              label: 'Timesheets',
+                              onClick: () => {
+                                setShiftPage(null)
+                                setFocusPerson(null)
+                              },
+                            },
+                            ...(focused
+                              ? [
+                                  {
+                                    label: focused.person.name,
+                                    onClick: () => {
+                                      setShiftPage(null)
+                                    },
+                                  },
+                                ]
+                              : []),
+                          ]}
                           onBack={() => {
                             setShiftPage(null)
                           }}
@@ -1512,9 +1530,9 @@ function ShiftsTable({
   return (
     <Flex flexDirection="column" gap={12}>
       <Flex alignItems="center" gap={12} flexWrap="wrap">
-        <Components.Button variant="tertiary" onClick={onBack}>
-          ‹ Everyone
-        </Components.Button>
+        <Trail trail={[{ label: 'Timesheets', onClick: onBack }]} current={person.name} />
+      </Flex>
+      <Flex alignItems="center" gap={12} flexWrap="wrap">
         <Components.Heading as="h2" styledAs="h4">
           {person.name} · {shifts.length} shifts
         </Components.Heading>

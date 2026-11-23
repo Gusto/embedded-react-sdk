@@ -16,7 +16,7 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { ChangePin, GapPin, SubPage } from './parts'
+import { ChangePin, GapPin, SubPage, type Crumb } from './parts'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -103,11 +103,7 @@ export function PoliciesTab({
   const openPage = (kind: PolicyKind, uuid: string, view: PolicyView, from?: 'details') => {
     setSearchParams(new URLSearchParams(policyHref(kind, uuid, view, from).slice(1)))
   }
-  const closePage = () => {
-    if (cameFromDetails && pageKind && pageUuid && pageUuid !== 'new') {
-      openPage(pageKind, pageUuid, 'details')
-      return
-    }
+  const openList = () => {
     setSearchParams(prev => {
       const params = new URLSearchParams(prev)
       params.delete('policy')
@@ -115,6 +111,13 @@ export function PoliciesTab({
       params.delete('from')
       return params
     })
+  }
+  const closePage = () => {
+    if (cameFromDetails && pageKind && pageUuid && pageUuid !== 'new') {
+      openPage(pageKind, pageUuid, 'details')
+      return
+    }
+    openList()
   }
 
   useEffect(() => {
@@ -330,7 +333,19 @@ export function PoliciesTab({
     </Components.Dialog>
   )
 
-  const backLabel = cameFromDetails && pagePolicy ? pagePolicy.name : 'Policies'
+  const policiesCrumb: Crumb = { label: 'Policies', onClick: openList }
+  const trail: Crumb[] =
+    pageKind && pagePolicy
+      ? [
+          policiesCrumb,
+          {
+            label: pagePolicy.name,
+            onClick: () => {
+              openPage(pageKind, pagePolicy.uuid, 'details')
+            },
+          },
+        ]
+      : [policiesCrumb]
   if (pageKind && pageView === 'edit' && (pagePolicy || pageUuid === 'new')) {
     const afterSave = (policy: AnyPolicy, preview: Preview) => {
       savePolicy(pageKind, policy, preview)
@@ -345,7 +360,7 @@ export function PoliciesTab({
           .filter(p => p !== pagePolicy)
           .map(p => p.name.toLowerCase())}
         workweeks={workweeks}
-        backLabel={backLabel}
+        trail={trail}
         onClose={closePage}
         onSave={afterSave}
       />
@@ -354,7 +369,7 @@ export function PoliciesTab({
         companyId={companyId}
         policy={(pagePolicy as ApiBreakPolicy | undefined) ?? null}
         existingNames={breakPolicies.filter(p => p !== pagePolicy).map(p => p.name.toLowerCase())}
-        backLabel={backLabel}
+        trail={trail}
         onClose={closePage}
         onSave={afterSave}
       />
@@ -367,7 +382,7 @@ export function PoliciesTab({
         policy={pagePolicy}
         people={people}
         breakToday={breakToday}
-        backLabel={backLabel}
+        trail={trail}
         onClose={closePage}
         onSave={(uuids, preview) => {
           assignPeople(pageKind, pagePolicy, uuids, preview)
@@ -383,7 +398,7 @@ export function PoliciesTab({
           kind={pageKind}
           policy={pagePolicy}
           people={people}
-          onBack={closePage}
+          trail={[policiesCrumb]}
           onEdit={() => {
             openPage(pageKind, pagePolicy.uuid, 'edit', 'details')
           }}
@@ -478,7 +493,7 @@ function OvertimeForm({
   policy,
   existingNames,
   workweeks,
-  backLabel,
+  trail,
   onClose,
   onSave,
 }: {
@@ -486,7 +501,7 @@ function OvertimeForm({
   policy: ApiOvertimePolicy | null
   existingNames: string[]
   workweeks: Array<{ schedule: ApiPaySchedule; start: string | null }>
-  backLabel: string
+  trail: Crumb[]
   onClose: () => void
   onSave: (policy: ApiOvertimePolicy, preview: Preview) => void
 }) {
@@ -527,8 +542,8 @@ function OvertimeForm({
   return (
     <SubPage
       narrow
-      backLabel={backLabel}
-      onBack={onClose}
+      trail={trail}
+      current={policy ? 'Edit' : 'New overtime policy'}
       title={policy ? `Edit ${policy.name}` : 'New overtime policy'}
       footer={
         <SaveFooter
@@ -619,14 +634,14 @@ function BreakForm({
   companyId,
   policy,
   existingNames,
-  backLabel,
+  trail,
   onClose,
   onSave,
 }: {
   companyId: string
   policy: ApiBreakPolicy | null
   existingNames: string[]
-  backLabel: string
+  trail: Crumb[]
   onClose: () => void
   onSave: (policy: ApiBreakPolicy, preview: Preview) => void
 }) {
@@ -673,8 +688,8 @@ function BreakForm({
   return (
     <SubPage
       narrow
-      backLabel={backLabel}
-      onBack={onClose}
+      trail={trail}
+      current={policy ? 'Edit' : 'New break policy'}
       title={policy ? `Edit ${policy.name}` : 'New break policy'}
       footer={
         <SaveFooter
@@ -819,7 +834,7 @@ function AssignPeople({
   policy,
   people,
   breakToday,
-  backLabel,
+  trail,
   onClose,
   onSave,
 }: {
@@ -827,7 +842,7 @@ function AssignPeople({
   policy: AnyPolicy
   people: Person[]
   breakToday: Set<string>
-  backLabel: string
+  trail: Crumb[]
   onClose: () => void
   onSave: (uuids: string[], preview: Preview) => void
 }) {
@@ -894,8 +909,8 @@ function AssignPeople({
 
   return (
     <SubPage
-      backLabel={backLabel}
-      onBack={onClose}
+      trail={trail}
+      current="Assign people"
       title={
         <>
           Assign people to {policy.name} <ChangePin id="policy-pages" />
@@ -949,7 +964,7 @@ function PolicyDetail({
   kind,
   policy,
   people,
-  onBack,
+  trail,
   onEdit,
   onAssign,
   onDelete,
@@ -957,7 +972,7 @@ function PolicyDetail({
   kind: PolicyKind
   policy: AnyPolicy
   people: Person[]
-  onBack: () => void
+  trail: Crumb[]
   onEdit: () => void
   onAssign: () => void
   onDelete: () => void
@@ -1015,8 +1030,8 @@ function PolicyDetail({
 
   return (
     <SubPage
-      backLabel="Policies"
-      onBack={onBack}
+      trail={trail}
+      current={policy.name}
       title={
         <>
           {policy.name} <ChangePin id="policy-pages" />

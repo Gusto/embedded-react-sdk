@@ -136,8 +136,8 @@ export function SendPage({
 
   return (
     <SubPage
-      backLabel="Timesheets"
-      onBack={onClose}
+      trail={[{ label: 'Timesheets', onClick: onClose }]}
+      current={wasUpdate ? 'Update payroll' : 'Send to payroll'}
       title={
         <>
           {title} <ChangePin id="send-page" />
@@ -251,8 +251,8 @@ export function ReceiptPage({
     return (
       <SubPage
         narrow
-        backLabel="Timesheets"
-        onBack={onBack}
+        trail={[{ label: 'Timesheets', onClick: onBack }]}
+        current="Sending hours"
         title={`Sending hours for ${formatPeriod(period)}`}
         description={`${scheduleLabel(schedule)} → ${payrollName}`}
         footer={back}
@@ -270,8 +270,8 @@ export function ReceiptPage({
     return (
       <SubPage
         narrow
-        backLabel="Timesheets"
-        onBack={onBack}
+        trail={[{ label: 'Timesheets', onClick: onBack }]}
+        current="Couldn’t send"
         title="Couldn’t send hours"
         description="Nothing was changed on payroll."
         footer={
@@ -291,8 +291,8 @@ export function ReceiptPage({
 
   return (
     <SubPage
-      backLabel="Timesheets"
-      onBack={onBack}
+      trail={[{ label: 'Timesheets', onClick: onBack }]}
+      current="Hours sent"
       title={
         <>
           Hours sent for {formatPeriod(period)} <ChangePin id="receipt" />

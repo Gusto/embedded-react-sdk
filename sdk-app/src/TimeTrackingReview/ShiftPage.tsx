@@ -25,7 +25,7 @@ import {
   type Person,
   type ShiftStatus,
 } from './model'
-import { ChangePin, GapPin, SubPage } from './parts'
+import { ChangePin, GapPin, SubPage, type Crumb } from './parts'
 import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -74,7 +74,7 @@ export function ShiftPage({
   people,
   period,
   shifts,
-  backLabel,
+  trail,
   onBack,
   onSave,
   onDelete,
@@ -84,7 +84,7 @@ export function ShiftPage({
   people: Person[]
   period: ApiPayPeriod
   shifts: ApiShift[]
-  backLabel: string
+  trail: Crumb[]
   onBack: () => void
   onSave: (shift: ApiShift, preview: Preview) => void
   onDelete: (shift: ApiShift, preview: Preview) => void
@@ -333,8 +333,14 @@ export function ShiftPage({
   return (
     <SubPage
       narrow
-      backLabel={backLabel}
-      onBack={onBack}
+      trail={trail}
+      current={
+        existing
+          ? mode.kind === 'edit' && mode.clockOut
+            ? 'Clock out'
+            : 'Edit shift'
+          : 'Add shift'
+      }
       title={
         <>
           {title} <ChangePin id="shift-window" />

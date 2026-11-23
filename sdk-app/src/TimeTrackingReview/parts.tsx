@@ -141,9 +141,30 @@ export function ApproveReject({
   )
 }
 
+export interface Crumb {
+  label: string
+  onClick: () => void
+}
+
+export function Trail({ trail, current }: { trail: Crumb[]; current: string }) {
+  const Components = useComponentContext()
+  return (
+    <Components.Breadcrumbs
+      breadcrumbs={[
+        ...trail.map((crumb, index) => ({ id: String(index), label: crumb.label })),
+        { id: 'current', label: current, isClickable: false },
+      ]}
+      currentBreadcrumbId="current"
+      onClick={id => {
+        trail[Number(id)]?.onClick()
+      }}
+    />
+  )
+}
+
 export function SubPage({
-  backLabel,
-  onBack,
+  trail,
+  current,
   title,
   description,
   actions,
@@ -151,8 +172,8 @@ export function SubPage({
   narrow,
   children,
 }: {
-  backLabel: string
-  onBack: () => void
+  trail: Crumb[]
+  current: string
   title: ReactNode
   description?: ReactNode
   actions?: ReactNode
@@ -164,11 +185,7 @@ export function SubPage({
   const width = narrow ? `${styles.subPageBody} ${styles.formPage}` : styles.subPageBody
   return (
     <Flex flexDirection="column" gap={20}>
-      <div>
-        <Components.Button variant="secondary" onClick={onBack}>
-          ‹ {backLabel}
-        </Components.Button>
-      </div>
+      <Trail trail={trail} current={current} />
       <Flex justifyContent="space-between" alignItems="flex-start" gap={12} flexWrap="wrap">
         <Flex flexDirection="column" gap={4}>
           <Components.Heading as="h2" styledAs="h3">
