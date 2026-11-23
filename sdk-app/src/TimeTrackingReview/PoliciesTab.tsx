@@ -16,7 +16,7 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { ChangePin, GapPin, PlusIcon, SubPage, type Crumb } from './parts'
+import { ChangePin, GapPin, PlusIcon, SegmentedToggle, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import styles from './TimeTrackingReview.module.scss'
@@ -887,6 +887,7 @@ interface AssignRow {
   label: string
   note: string
   locked: boolean
+  isFixed: boolean
 }
 
 function AssignPeople({
@@ -922,25 +923,43 @@ function AssignPeople({
       else if (locked) note = 'Move them to another overtime policy to take them off'
       else if (kind === 'break' && breakToday.has(uuid))
         note = 'Took a break today: can’t change until tomorrow'
-      return { person, eligible: elig.eligible, label: elig.label, note, locked }
+      const isFixed = !elig.eligible || locked || (kind === 'break' && breakToday.has(uuid))
+      return { person, eligible: elig.eligible, label: elig.label, note, locked, isFixed }
     })
+
+  const setMembership = (uuid: string, isIn: boolean) => {
+    setSelected(prev => {
+      const next = new Set(prev)
+      if (isIn) next.add(uuid)
+      else next.delete(uuid)
+      return next
+    })
+  }
 
   const dataView = useDataView<AssignRow>({
     data: rows,
-    selectionMode: 'multiple',
-    hideSelectAll: true,
-    getIsItemSelected: row => selected.has(row.person.employee.uuid),
-    onSelect: (row, checked) => {
-      if (!row.eligible || row.locked) return
-      setSelected(prev => {
-        const next = new Set(prev)
-        if (checked) next.add(row.person.employee.uuid)
-        else next.delete(row.person.employee.uuid)
-        return next
-      })
-    },
     columns: [
       { title: 'Person', render: row => row.person.name },
+      {
+        title: policy.name,
+        render: row => {
+          const uuid = row.person.employee.uuid
+          return (
+            <SegmentedToggle
+              label={`${row.person.name} in ${policy.name}`}
+              isDisabled={row.isFixed}
+              value={selected.has(uuid) ? 'in' : 'out'}
+              options={[
+                { value: 'in', label: 'In policy' },
+                { value: 'out', label: 'Not in policy' },
+              ]}
+              onChange={value => {
+                setMembership(uuid, value === 'in')
+              }}
+            />
+          )
+        },
+      },
       { title: 'Pay type', render: row => row.label },
       {
         title: 'Eligibility',
@@ -950,7 +969,17 @@ function AssignPeople({
           </Components.Badge>
         ),
       },
-      { title: 'Note', render: row => row.note },
+      {
+        title: 'Note',
+        render: row => {
+          const uuid = row.person.employee.uuid
+          if (selected.has(uuid) && !initial.has(uuid))
+            return <Components.Badge status="info">Will be added</Components.Badge>
+          if (!selected.has(uuid) && initial.has(uuid))
+            return <Components.Badge status="warning">Will be removed</Components.Badge>
+          return row.note
+        },
+      },
     ],
   })
 
@@ -984,40 +1013,45 @@ function AssignPeople({
           Assign people to {policy.name} <ChangePin id="policy-pages" />
         </>
       }
-      description={`Each person can be on one ${kind} policy, so picking someone moves them here. Ineligible people can’t be picked.`}
-      actions={
-        <Components.Button
-          variant="secondary"
-          onClick={() => {
-            setSelected(
-              new Set([
-                ...initial,
-                ...rows.filter(r => r.eligible && !r.locked).map(r => r.person.employee.uuid),
-              ]),
-            )
-          }}
-        >
-          Select all eligible
-        </Components.Button>
-      }
-      footer={
-        <SaveFooter
-          onCancel={onClose}
-          isDisabled={blocked || requests.length === 0}
-          onSave={() => {
-            onSave([...selected], {
-              title: `Assign people to ${policy.name}`,
-              requests,
-              gapIds: ['eligibility'],
-            })
-          }}
-        />
-      }
+      description={`Each person can be on one ${kind} policy, so adding someone moves them here. People who aren’t eligible can’t be added.`}
     >
-      <Components.Text size="sm" variant="supporting">
-        {selected.size} selected · {toAssign.length} to add
-        {kind === 'break' && ` · ${toRemove.length} to remove`} <GapPin id="eligibility" />
-      </Components.Text>
+      <div className={styles.assignBar}>
+        <Components.Text size="sm" variant="supporting">
+          {selected.size} in policy · {toAssign.length} to add
+          {kind === 'break' && ` · ${toRemove.length} to remove`}. Changes apply when you save.{' '}
+          <GapPin id="eligibility" />
+        </Components.Text>
+        <div className={styles.assignControls}>
+          <Components.Button
+            variant="secondary"
+            onClick={() => {
+              setSelected(
+                new Set([
+                  ...initial,
+                  ...rows.filter(r => !r.isFixed).map(r => r.person.employee.uuid),
+                ]),
+              )
+            }}
+          >
+            Add all eligible
+          </Components.Button>
+          <Components.Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Components.Button>
+          <Components.Button
+            isDisabled={blocked || requests.length === 0}
+            onClick={() => {
+              onSave([...selected], {
+                title: `Assign people to ${policy.name}`,
+                requests,
+                gapIds: ['eligibility'],
+              })
+            }}
+          >
+            Save
+          </Components.Button>
+        </div>
+      </div>
       <DataView label="People" {...dataView} />
       {blocked && (
         <Components.Alert status="warning" label="This would fail">

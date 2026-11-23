@@ -114,6 +114,45 @@ export function PlusIcon() {
   )
 }
 
+export function SegmentedToggle<T extends string>({
+  label,
+  options,
+  value,
+  isDisabled = false,
+  onChange,
+}: {
+  label: string
+  options: Array<{ value: T; label: string }>
+  value: T
+  isDisabled?: boolean
+  onChange: (value: T) => void
+}) {
+  return (
+    <div
+      role="radiogroup"
+      aria-label={label}
+      aria-disabled={isDisabled}
+      className={`${styles.segmented} ${isDisabled ? styles.segmentedDisabled : ''}`}
+    >
+      {options.map(option => (
+        <button
+          key={option.value}
+          type="button"
+          role="radio"
+          aria-checked={option.value === value}
+          disabled={isDisabled}
+          className={`${styles.segment} ${option.value === value ? styles.segmentActive : ''}`}
+          onClick={() => {
+            onChange(option.value)
+          }}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export function ApproveIcon() {
   return (
     <span className={styles.approveIcon}>
