@@ -1209,10 +1209,11 @@ declare namespace CompanyManagement {
         BankAccountCardProps,
         PaySchedulesCard,
         PaySchedulesCardProps,
-        StateTaxesCard_2 as StateTaxesCard,
-        StateTaxesCardProps_2 as StateTaxesCardProps,
         StateTaxes_4 as StateTaxes,
         StateTaxesProps_4 as StateTaxesProps,
+        StateTaxesDictionary,
+        StateTaxesCard_2 as StateTaxesCard,
+        StateTaxesCardProps_2 as StateTaxesCardProps,
         TaxRateManagement,
         TaxRateManagementProps,
         TaxPaymentsCard,
@@ -1701,6 +1702,9 @@ export const componentEvents: {
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_ALERT_DISMISSED: "company/management/bankAccount/alertDismissed";
     readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
     readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "company/management/stateTaxes/editRequested";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_UPDATED: "company/management/stateTaxes/updated";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: "company/management/stateTaxes/editCancelled";
+    readonly COMPANY_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED: "company/management/stateTaxes/alertDismissed";
     readonly COMPANY_MANAGEMENT_TAX_PAYMENTS_EDIT_REQUESTED: "company/management/taxPayments/editRequested";
     readonly COMPANY_MANAGEMENT_SIGNATORY_EDIT_REQUESTED: "company/management/signatory/editRequested";
     readonly COMPANY_MANAGEMENT_SIGNATORY_UPDATED: "company/management/signatory/updated";
@@ -6113,6 +6117,14 @@ interface StateTaxesCardProps_2 {
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// @alpha
+type StateTaxesDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.StateTaxes'?: DeepPartial<Resources['Company.Management.StateTaxes']>;
+        'Company.StateTaxes'?: DeepPartial<Resources['Company.StateTaxes']>;
+    };
+};
+
 // @public
 function StateTaxesEditForm(input: StateTaxesEditFormProps): JSX;
 
@@ -6157,8 +6169,9 @@ interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'>
 }
 
 // @alpha
-interface StateTaxesProps_4 extends BaseComponentInterface<'Company.StateTaxes'> {
+interface StateTaxesProps_4 extends Omit<BaseComponentInterface<'Company.Management.StateTaxes'>, 'dictionary'> {
     companyId: string;
+    dictionary?: StateTaxesDictionary;
 }
 
 // @public
