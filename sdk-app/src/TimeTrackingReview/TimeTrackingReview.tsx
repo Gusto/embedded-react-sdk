@@ -53,7 +53,7 @@ import { ApproveReject, ChangePin, GapPin, PrototypeModal, RequestBlock, Trail }
 import { nowIso, type NoticeStatus, type Preview } from './preview'
 import type { PolicyData } from './PoliciesTab'
 import styles from './TimeTrackingReview.module.scss'
-import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
+import { DataView, Flex, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { GustoProvider } from '@/contexts/GustoProvider/GustoProvider'
 
@@ -120,7 +120,6 @@ function TimeTrackingPrototype() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const companyId = entities.companyId
   const [searchParams, setSearchParams] = useSearchParams()
-  const textRowActions = searchParams.get('rowActions') === 'text'
   const tab: Tab = TABS.some(t => t.value === searchParams.get('tab'))
     ? (searchParams.get('tab') as Tab)
     : 'review'
@@ -636,28 +635,58 @@ function TimeTrackingPrototype() {
 
   const review = data && (
     <Flex flexDirection="column" gap={16}>
-      <Grid gridTemplateColumns={{ base: '1fr', medium: '1fr 1fr' }} gap={16}>
-        <Components.Select
-          label="Pay schedule"
-          placeholder="Choose a pay schedule"
-          value={scheduleUuid}
-          options={data.schedules.map(s => ({ value: s.uuid, label: scheduleLabel(s) }))}
-          onChange={value => {
-            setScheduleUuid(value)
-            setSelectedPeriodKey('')
-          }}
-        />
-        <Components.Select
-          label="Pay period"
-          placeholder="Choose a pay period"
-          value={selectedPeriodKey}
-          options={schedulePeriods.map(p => ({
-            value: periodKey(p),
-            label: `${formatPeriod(p)}${p.payroll?.processed ? ' · processed' : ''}`,
-          }))}
-          onChange={setSelectedPeriodKey}
-        />
-      </Grid>
+      <div className={styles.toolbar}>
+        <div className={styles.toolbarFilters}>
+          <div className={styles.toolbarSchedule}>
+            <Components.Select
+              label="Pay schedule"
+              placeholder="Choose a pay schedule"
+              value={scheduleUuid}
+              options={data.schedules.map(s => ({ value: s.uuid, label: scheduleLabel(s) }))}
+              onChange={value => {
+                setScheduleUuid(value)
+                setSelectedPeriodKey('')
+              }}
+            />
+          </div>
+          <div className={styles.toolbarPeriod}>
+            <Components.Select
+              label="Pay period"
+              placeholder="Choose a pay period"
+              value={selectedPeriodKey}
+              options={schedulePeriods.map(p => ({
+                value: periodKey(p),
+                label: `${formatPeriod(p)}${p.payroll?.processed ? ' · processed' : ''}`,
+              }))}
+              onChange={setSelectedPeriodKey}
+            />
+          </div>
+        </div>
+        <div className={styles.toolbarActions}>
+          <ChangePin id="send-page" />
+          <GapPin id="auto-sync" />
+          <GapPin id="sync-limits" />
+          <GapPin id="by-period" />
+          <Components.Button
+            variant="secondary"
+            icon={<PlusIcon />}
+            isDisabled={!period}
+            onClick={() => {
+              setShiftPage({ kind: 'add', personUuid: focusPerson })
+            }}
+          >
+            Add shift
+          </Components.Button>
+          <Components.Button
+            isDisabled={!period || shifts.kind !== 'done'}
+            onClick={() => {
+              setSendView('review')
+            }}
+          >
+            {lastSyncAt ? 'Update payroll' : 'Send to payroll'}
+          </Components.Button>
+        </div>
+      </div>
       {period?.payroll && (
         <Components.Text size="sm" variant="supporting">
           Payroll check date {formatShortDate(period.payroll.check_date)}, deadline{' '}
@@ -716,29 +745,6 @@ function TimeTrackingPrototype() {
           </Components.Alert>
         )
       )}
-      <Flex alignItems="center" gap={12} flexWrap="wrap">
-        <Components.Button
-          isDisabled={!period || shifts.kind !== 'done'}
-          onClick={() => {
-            setSendView('review')
-          }}
-        >
-          {lastSyncAt ? 'Update payroll' : 'Send to payroll'} · {period ? formatPeriod(period) : ''}
-        </Components.Button>
-        <Components.Button
-          variant="secondary"
-          isDisabled={!period}
-          onClick={() => {
-            setShiftPage({ kind: 'add', personUuid: focusPerson })
-          }}
-        >
-          Add shift
-        </Components.Button>
-        <ChangePin id="send-page" />
-        <GapPin id="auto-sync" />
-        <GapPin id="sync-limits" />
-        <GapPin id="by-period" />
-      </Flex>
 
       {period?.payroll?.processed && (
         <Components.Alert status="warning" label="This period’s payroll is processed">
@@ -849,22 +855,6 @@ function TimeTrackingPrototype() {
                 >
                   {changesOn ? 'Hide changes' : 'Show changes'} (C)
                 </Components.Button>
-                <span className={styles.prototypeSwitch}>
-                  <Components.Button
-                    variant="tertiary"
-                    onClick={() => {
-                      setSearchParams(prev => {
-                        const params = new URLSearchParams(prev)
-                        if (textRowActions) params.delete('rowActions')
-                        else params.set('rowActions', 'text')
-                        return params
-                      })
-                    }}
-                  >
-                    Row actions: {textRowActions ? 'text' : 'icons'}
-                  </Components.Button>
-                  <ChangePin id="row-actions-text" />
-                </span>
               </div>
             </Flex>
 
@@ -1235,6 +1225,14 @@ function TimeTrackingPrototype() {
   )
 }
 
+function PlusIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
+      <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function StatusBadges({ shifts }: { shifts: ApiShift[] }) {
   const Components = useComponentContext()
   const counts = new Map<ReviewState, number>()
@@ -1344,7 +1342,7 @@ function PeopleTable({
         title: (
           <>
             <span className={styles.srOnly}>Approve or reject</span>
-            <ChangePin id="row-icons" />
+            <ChangePin id="row-icons" /> <ChangePin id="row-actions-text" />
           </>
         ),
         render: ({ person, shifts }) => {
@@ -1434,7 +1432,9 @@ function PeopleTable({
           <GapPin id="bulk-approval" />
         </Flex>
       )}
-      <DataView label="People with shifts this period" {...dataView} />
+      <div className={styles.reviewTable}>
+        <DataView label="People with shifts this period" {...dataView} />
+      </div>
     </Flex>
   )
 }
@@ -1550,7 +1550,7 @@ function ShiftsTable({
         title: (
           <>
             <span className={styles.srOnly}>Approve or reject</span>
-            <ChangePin id="row-icons" />
+            <ChangePin id="row-icons" /> <ChangePin id="row-actions-text" />
           </>
         ),
         render: shift => (
@@ -1653,7 +1653,9 @@ function ShiftsTable({
           <ChangePin id="missed-breaks" />
         </Components.Alert>
       )}
-      <DataView label={`${person.name}’s shifts`} {...dataView} />
+      <div className={styles.reviewTable}>
+        <DataView label={`${person.name}’s shifts`} {...dataView} />
+      </div>
     </Flex>
   )
 }

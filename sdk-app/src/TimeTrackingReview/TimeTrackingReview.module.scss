@@ -273,7 +273,9 @@
 .approveReject {
   display: flex;
   align-items: center;
+  gap: 0.25rem;
   margin-right: 0.75rem;
+  white-space: nowrap;
 }
 
 .statusBadges {
@@ -362,9 +364,57 @@
   color: var(--g-colorBodySubContent);
 }
 
-.prototypeSwitch {
-  display: inline-flex;
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+}
+
+.toolbarFilters,
+.toolbarActions {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.toolbarFilters {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.toolbarActions {
+  flex: 0 0 auto;
   align-items: center;
-  border: 1px dashed #7c3aed;
-  border-radius: 0.5rem;
+  margin-left: auto;
+}
+
+.toolbarSchedule {
+  flex: 0 1 15rem;
+  min-width: 9rem;
+}
+
+.toolbarPeriod {
+  flex: 0 1 13.5rem;
+  min-width: 9rem;
+}
+
+.reviewTable {
+  width: 100%;
+
+  :global(.react-aria-Column):first-child,
+  :global(.react-aria-Cell):first-child {
+    width: 1%;
+    padding-inline: 0.5rem;
+  }
+
+  :global(.react-aria-Column):nth-child(2),
+  :global(.react-aria-Cell):nth-child(2) {
+    width: 15rem;
+    white-space: nowrap;
+  }
+
+  :global(.react-aria-Column):nth-last-child(2),
+  :global(.react-aria-Cell):nth-last-child(2) {
+    width: 1%;
+  }
 }

@@ -164,11 +164,11 @@ export const CHANGES: Change[] = [
     id: 'row-actions-text',
     round: 'nov-20',
     tabs: ['review'],
-    title: 'Try approve and reject as text buttons',
+    title: 'Approve and reject are labelled buttons',
     feedback:
       'Without the tooltip it’s hard: does X mean I’m deleting the entry? Maybe I’ll experiment with making it a real button and see how badly it breaks the experience.',
-    what: 'A prototype-only “Row actions” switch in the header swaps the ✓ and ✕ icons for “Approve” and “Reject” text buttons on every person and shift row, so both can be compared. The choice stays in the URL. The SDK icon button has no tooltip, which is a question for Steve.',
-    where: 'Header › Row actions; Timesheets › person rows and shift rows.',
+    what: 'The bare ✓ and ✕ icons became “✓ Approve” and “✕ Reject” buttons on every person and shift row, so the action is clear without a tooltip. The SDK icon button has no tooltip, which is still a question for Steve.',
+    where: 'Timesheets › person rows and shift rows.',
   },
 ]
 
