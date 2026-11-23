@@ -296,7 +296,7 @@ export function ReceiptPage({
           checks on it until it finishes. You can keep working; the result shows here and on
           Timesheets. <GapPin id="sync-limits" /> <ChangePin id="send-outcomes" />
         </Components.Alert>
-        <Components.LoadingSpinner />
+        <Components.LoadingSpinner size="sm" />
       </SubPage>
     )
   }

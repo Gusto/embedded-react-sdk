@@ -61,7 +61,7 @@ import { nowIso, type NoticeStatus, type Preview } from './preview'
 import type { PolicyData } from './PoliciesTab'
 import styles from './TimeTrackingReview.module.scss'
 import CloseIcon from '@/assets/icons/close.svg?react'
-import { DataView, Flex, HamburgerMenu, useDataView } from '@/components/Common'
+import { DataView, Flex, HamburgerMenu, Loading, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { GustoProvider } from '@/contexts/GustoProvider/GustoProvider'
 
@@ -767,7 +767,7 @@ function TimeTrackingPrototype() {
         </Components.Alert>
       )}
 
-      {shifts.kind === 'loading' && <Components.LoadingSpinner />}
+      {shifts.kind === 'loading' && <Loading />}
       {shifts.kind === 'error' && (
         <Components.Alert status="error" label="Couldn’t load shifts">
           {shifts.message}
@@ -867,7 +867,7 @@ function TimeTrackingPrototype() {
               </div>
             </Flex>
 
-            {base.kind === 'loading' && <Components.LoadingSpinner />}
+            {base.kind === 'loading' && <Loading />}
             {base.kind === 'error' && (
               <Components.Alert
                 status="error"

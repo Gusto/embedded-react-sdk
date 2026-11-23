@@ -93,6 +93,7 @@ export function ShiftPage({
 }) {
   const Components = useComponentContext()
   const existing = mode.kind === 'edit' ? mode.shift : null
+  const isPersonLocked = mode.kind === 'add' && mode.personUuid !== null
   const sorted = useMemo(() => [...people].sort((a, b) => a.name.localeCompare(b.name)), [people])
 
   const [personUuid, setPersonUuid] = useState(
@@ -367,9 +368,15 @@ export function ShiftPage({
       <div className={styles.formSection}>
         <Components.Select
           label="Person"
-          description={existing ? 'A shift can’t move to another person.' : undefined}
+          description={
+            existing
+              ? 'A shift can’t move to another person.'
+              : isPersonLocked
+                ? 'Adding a shift for this person.'
+                : undefined
+          }
           placeholder="Choose a person"
-          isDisabled={Boolean(existing)}
+          isDisabled={Boolean(existing) || isPersonLocked}
           value={personUuid}
           options={sorted.map(p => ({ value: p.employee.uuid, label: p.name }))}
           onChange={value => {
