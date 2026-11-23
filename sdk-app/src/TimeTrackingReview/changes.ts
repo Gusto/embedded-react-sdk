@@ -164,11 +164,11 @@ export const CHANGES: Change[] = [
     id: 'row-actions-text',
     round: 'nov-20',
     tabs: ['review'],
-    title: 'Approve and reject are labelled buttons',
+    title: 'Row actions live in the ⋮ menu; bulk bars keep the buttons',
     feedback:
       'Without the tooltip it’s hard: does X mean I’m deleting the entry? Maybe I’ll experiment with making it a real button and see how badly it breaks the experience.',
-    what: 'Shift rows have “✓ Approve” and “✕ Reject” buttons, so the action is clear without a tooltip. Person rows keep the table clean: Approve (n), Reject (n) and Return to pending (n) sit in the ⋮ menu with the same icons, and the bulk bars use the same counted actions. The SDK icon button has no tooltip, which is still a question for Steve.',
-    where: 'Timesheets › person row ⋮ menus, shift rows, and both bulk bars.',
+    what: 'To keep the tables clean, every row’s Approve, Reject and Return to pending sit in its ⋮ menu with a check, X and slash icon, and a count on person rows. Selecting rows brings up a bulk bar with the same three actions as labelled, counted buttons. Clicking a person’s name or “View shifts (n)” opens their shifts. The SDK icon button has no tooltip, which is still a question for Steve.',
+    where: 'Timesheets › every row’s ⋮ menu, both bulk bars, and person names.',
   },
 ]
 

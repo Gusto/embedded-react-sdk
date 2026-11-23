@@ -1307,7 +1307,11 @@ function PeopleTable({
         title: 'Person',
         render: ({ person }) => (
           <Flex flexDirection="column" gap={0}>
-            <Components.Text weight="medium">{person.name}</Components.Text>
+            <Components.Text weight="medium">
+              <Components.Link href={shiftsHref(person.employee.uuid)}>
+                {person.name}
+              </Components.Link>
+            </Components.Text>
             <Components.Text size="sm" variant="supporting">
               {person.title}
             </Components.Text>
@@ -1329,7 +1333,7 @@ function PeopleTable({
             }}
           >
             <span className={styles.drillIn}>
-              {shifts.length} shifts
+              View shifts ({shifts.length})
               <ChevronRightIcon />
             </span>
           </Components.Button>
@@ -1387,9 +1391,15 @@ function PeopleTable({
           triggerLabel={`More actions for ${person.name}`}
           items={[
             {
-              label: 'View shifts',
+              label: `View shifts (${shifts.length})`,
               onClick: () => {
                 void navigate(shiftsHref(person.employee.uuid))
+              },
+            },
+            {
+              label: 'Add shift',
+              onClick: () => {
+                onAddShift(person.employee.uuid)
               },
             },
             {
@@ -1420,12 +1430,6 @@ function PeopleTable({
                 )
               },
             },
-            {
-              label: 'Add shift',
-              onClick: () => {
-                onAddShift(person.employee.uuid)
-              },
-            },
           ]}
         />
       )
@@ -1443,7 +1447,8 @@ function PeopleTable({
       {selectedRows.length > 0 && (
         <Flex alignItems="center" justifyContent="space-between" gap={12} flexWrap="wrap">
           <Components.Text size="sm" weight="medium">
-            {who} selected · {selectedShifts.length} shifts <GapPin id="bulk-approval" />
+            {who} selected · {selectedShifts.length} shifts <GapPin id="bulk-approval" />{' '}
+            <ChangePin id="row-actions-text" />
           </Components.Text>
           <ApproveReject
             label={`the selected shifts for ${who}`}
@@ -1613,48 +1618,11 @@ function ShiftsTable({
           return '—'
         },
       },
-      {
-        title: (
-          <>
-            <span className={styles.srOnly}>Approve or reject</span>
-            <ChangePin id="row-icons" /> <ChangePin id="row-actions-text" />
-          </>
-        ),
-        render: shift => (
-          <ApproveReject
-            label={label(shift)}
-            onApprove={
-              shift.status !== 'approved' && shift.shift_ended_at
-                ? () => {
-                    onStatus([shift], 'approved', `Approve: ${label(shift)}`)
-                  }
-                : undefined
-            }
-            onReject={
-              shift.status !== 'rejected'
-                ? () => {
-                    onStatus([shift], 'rejected', `Reject: ${label(shift)}`)
-                  }
-                : undefined
-            }
-          />
-        ),
-      },
     ],
     itemMenu: shift => (
       <HamburgerMenu
         triggerLabel={`Actions for ${label(shift)}`}
         items={[
-          ...(shift.status !== 'pending'
-            ? [
-                {
-                  label: 'Return to pending',
-                  onClick: () => {
-                    onStatus([shift], 'pending', `Return to pending: ${label(shift)}`)
-                  },
-                },
-              ]
-            : []),
           {
             label: 'Edit or delete',
             onClick: () => {
@@ -1671,6 +1639,30 @@ function ShiftsTable({
                   },
                 },
               ]),
+          {
+            label: 'Approve',
+            icon: <ApproveIcon />,
+            isDisabled: shift.status === 'approved' || !shift.shift_ended_at,
+            onClick: () => {
+              onStatus([shift], 'approved', `Approve: ${label(shift)}`)
+            },
+          },
+          {
+            label: 'Reject',
+            icon: <RejectIcon />,
+            isDisabled: shift.status === 'rejected',
+            onClick: () => {
+              onStatus([shift], 'rejected', `Reject: ${label(shift)}`)
+            },
+          },
+          {
+            label: 'Return to pending',
+            icon: <PendingIcon />,
+            isDisabled: shift.status === 'pending',
+            onClick: () => {
+              onStatus([shift], 'pending', `Return to pending: ${label(shift)}`)
+            },
+          },
         ]}
       />
     ),
@@ -1689,6 +1681,7 @@ function ShiftsTable({
         {selectedShifts.length > 0 && (
           <>
             <GapPin id="bulk-approval" />
+            <ChangePin id="row-actions-text" />
             <ApproveReject
               label={`${selectedShifts.length} selected shifts`}
               pendingCount={selectedToPending.length}
