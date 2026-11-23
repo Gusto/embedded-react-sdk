@@ -167,7 +167,7 @@ export const CHANGES: Change[] = [
     title: 'Row actions live in the ⋮ menu; bulk bars keep the buttons',
     feedback:
       'Without the tooltip it’s hard: does X mean I’m deleting the entry? Maybe I’ll experiment with making it a real button and see how badly it breaks the experience.',
-    what: 'To keep the tables clean, every row’s Approve, Reject and Return to pending sit in its ⋮ menu with a check, X and slash icon, and a count on person rows. Selecting rows brings up a bulk bar with the same three actions as labelled, counted buttons. Clicking a person’s name or “View shifts (n)” opens their shifts. The SDK icon button has no tooltip, which is still a question for Steve.',
+    what: 'To keep the tables clean, every row’s Approve, Reject and Return to pending sit in its ⋮ menu with a check, X and slash icon, and a count on person rows. Selecting rows brings up a bulk bar with the same three actions as labelled, counted buttons. Clicking a person’s name or “View shifts (n)” opens their shifts. The SDK icon button has no tooltip, which is still an open question for the SDK components.',
     where: 'Timesheets › every row’s ⋮ menu, both bulk bars, and person names.',
   },
 ]
