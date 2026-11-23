@@ -84,10 +84,10 @@ export const CHANGES: Change[] = [
   {
     id: 'shift-window',
     tabs: ['review'],
-    title: 'Wider, taller shift window with times in one row',
+    title: 'Add and edit shift are one full screen',
     feedback: 'Dang why are all the modals so narrow? We have so much real estate and it’s wasted.',
-    what: 'Every popup (Add shift, Edit shift, View request, Run payroll) uses a new “medium” size on the SDK Modal: 41.75rem wide (up from 34rem) and nearly the full window height, matching the Workbench Dialog’s medium size. Shift times sit in one row, each break’s start and end sit beside it, and repeated notes were merged. The delete confirmation stays small. The size option is an SDK change, not in the published SDK.',
-    where: 'Add shift, Edit shift, View request and Run payroll.',
+    what: 'Add shift and Edit shift are now the same screen instead of a popup, with a back link to where you came from. Person is locked when editing. Start and end each get a date and a time, so overnight shifts are explicit, and each break’s start and end sit side by side. Delete asks to confirm in place.',
+    where: 'Timesheets › Add shift; a person’s shifts › Edit or Clock out now.',
   },
   {
     id: 'receipt',

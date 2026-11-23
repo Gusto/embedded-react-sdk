@@ -43,11 +43,10 @@ import {
   breakIssueKind,
   breakIssues,
 } from './model'
-import { AddShiftModal } from './AddShiftModal'
-import { EditShiftModal } from './EditShiftModal'
 import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
 import { ReceiptPage, SendPage } from './SendPage'
+import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
 import { ApproveReject, ChangePin, GapPin, PrototypeModal, RequestBlock } from './parts'
@@ -195,9 +194,7 @@ function TimeTrackingPrototype() {
     preview: Preview
     status: NoticeStatus
   } | null>(null)
-  const [editing, setEditing] = useState<ApiShift | null>(null)
-  const [clockingOut, setClockingOut] = useState(false)
-  const [adding, setAdding] = useState<{ personUuid: string | null } | null>(null)
+  const [shiftPage, setShiftPage] = useState<ShiftPageMode | null>(null)
   const [sendView, setSendView] = useState<'review' | 'receipt' | null>(null)
   const [sending, setSending] = useState<{ key: string; startedAt: string } | null>(null)
   const [sendFailedKey, setSendFailedKey] = useState<string | null>(null)
@@ -681,7 +678,7 @@ function TimeTrackingPrototype() {
           variant="secondary"
           isDisabled={!period}
           onClick={() => {
-            setAdding({ personUuid: focusPerson })
+            setShiftPage({ kind: 'add', personUuid: focusPerson })
           }}
         >
           Add shift
@@ -743,7 +740,7 @@ function TimeTrackingPrototype() {
           onSelectedChange={setSelectedPeople}
           onBulk={changeStatus}
           onAddShift={uuid => {
-            setAdding({ personUuid: uuid })
+            setShiftPage({ kind: 'add', personUuid: uuid })
           }}
         />
       )}
@@ -759,12 +756,10 @@ function TimeTrackingPrototype() {
           }}
           onStatus={changeStatus}
           onEdit={shift => {
-            setClockingOut(false)
-            setEditing(shift)
+            setShiftPage({ kind: 'edit', shift, clockOut: false })
           }}
           onClockOut={shift => {
-            setClockingOut(true)
-            setEditing(shift)
+            setShiftPage({ kind: 'edit', shift, clockOut: true })
           }}
         />
       )}
@@ -867,7 +862,50 @@ function TimeTrackingPrototype() {
                     id: 'review',
                     label: 'Timesheets',
                     content:
-                      sendView === 'receipt' && period && schedule ? (
+                      shiftPage && period ? (
+                        <ShiftPage
+                          key={shiftPage.kind === 'edit' ? shiftPage.shift.uuid : 'new'}
+                          mode={shiftPage}
+                          companyId={companyId}
+                          people={schedulePeople}
+                          period={period}
+                          shifts={periodShifts}
+                          backLabel={focused ? focused.person.name : 'Timesheets'}
+                          onBack={() => {
+                            setShiftPage(null)
+                          }}
+                          onSave={(saved, request) => {
+                            setShiftPage(null)
+                            if (shiftPage.kind === 'add') {
+                              setSim(prev => ({ ...prev, added: [...prev.added, saved] }))
+                              notify(
+                                saved.status === 'approved'
+                                  ? 'Shift added as approved. It goes to payroll the next time you send this period.'
+                                  : 'Shift added as pending.',
+                                request,
+                              )
+                              return
+                            }
+                            putShifts([saved])
+                            notify(
+                              saved.synced_to_payroll_at
+                                ? 'Saved. Still approved, but not on payroll until you update this period.'
+                                : 'Shift saved.',
+                              request,
+                            )
+                          }}
+                          onDelete={(deleted, request) => {
+                            setShiftPage(null)
+                            removeShift(deleted.uuid)
+                            notify(
+                              deleted.synced_to_payroll_at
+                                ? 'Shift deleted. Its hours stay on payroll until you update this period.'
+                                : 'Shift deleted.',
+                              request,
+                            )
+                          }}
+                        />
+                      ) : sendView === 'receipt' && period && schedule ? (
                         <ReceiptPage
                           schedule={schedule}
                           period={period}
@@ -1090,60 +1128,6 @@ function TimeTrackingPrototype() {
                 {!gapsOn && preview.gapIds.map(id => `#${GAP_NUMBER[id]}`).join(', ')}
               </Components.Text>
             </PrototypeModal>
-          )}
-
-          {editing && (
-            <EditShiftModal
-              shift={editing}
-              clockOut={clockingOut}
-              person={people.find(p => p.employee.uuid === editing.entity_uuid)}
-              onClose={() => {
-                setEditing(null)
-              }}
-              onSave={(next, request) => {
-                setEditing(null)
-                putShifts([next])
-                notify(
-                  next.synced_to_payroll_at
-                    ? 'Saved. Still approved, but not on payroll until you update this period.'
-                    : 'Shift saved.',
-                  request,
-                )
-              }}
-              onDelete={(deleted, request) => {
-                setEditing(null)
-                removeShift(deleted.uuid)
-                notify(
-                  deleted.synced_to_payroll_at
-                    ? 'Shift deleted. Its hours stay on payroll until you update this period.'
-                    : 'Shift deleted.',
-                  request,
-                )
-              }}
-            />
-          )}
-
-          {adding && period && (
-            <AddShiftModal
-              companyId={companyId}
-              people={schedulePeople}
-              period={period}
-              shifts={periodShifts}
-              initialPersonUuid={adding.personUuid}
-              onClose={() => {
-                setAdding(null)
-              }}
-              onSave={(shift, request) => {
-                setAdding(null)
-                setSim(prev => ({ ...prev, added: [...prev.added, shift] }))
-                notify(
-                  shift.status === 'approved'
-                    ? 'Shift added as approved. It goes to payroll the next time you send this period.'
-                    : 'Shift added as pending.',
-                  request,
-                )
-              }}
-            />
           )}
         </div>
       </ChangeContext.Provider>
