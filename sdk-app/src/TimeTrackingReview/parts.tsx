@@ -107,10 +107,12 @@ function XIcon() {
 
 export function ApproveReject({
   label,
+  forAll = false,
   onApprove,
   onReject,
 }: {
   label: string
+  forAll?: boolean
   onApprove?: () => void
   onReject?: () => void
 }) {
@@ -128,7 +130,7 @@ export function ApproveReject({
           </span>
         }
       >
-        Approve
+        {forAll ? 'Approve all' : 'Approve'}
       </Components.Button>
       <Components.Button
         variant="tertiary"
@@ -141,7 +143,7 @@ export function ApproveReject({
           </span>
         }
       >
-        Reject
+        {forAll ? 'Reject all' : 'Reject'}
       </Components.Button>
     </div>
   )

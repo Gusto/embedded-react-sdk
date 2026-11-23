@@ -274,7 +274,6 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  margin-right: 0.75rem;
   white-space: nowrap;
 }
 
@@ -366,6 +365,7 @@
 
 .toolbar {
   display: flex;
+  width: 100%;
   align-items: flex-end;
   gap: 2rem;
 }
@@ -401,20 +401,37 @@
 .reviewTable {
   width: 100%;
 
+  :global(.react-aria-Column),
+  :global(.react-aria-Cell) {
+    width: 1%;
+    white-space: nowrap;
+  }
+
   :global(.react-aria-Column):first-child,
   :global(.react-aria-Cell):first-child {
-    width: 1%;
     padding-inline: 0.5rem;
   }
 
   :global(.react-aria-Column):nth-child(2),
   :global(.react-aria-Cell):nth-child(2) {
-    width: 15rem;
-    white-space: nowrap;
+    width: auto;
   }
 
-  :global(.react-aria-Column):nth-last-child(2),
-  :global(.react-aria-Cell):nth-last-child(2) {
-    width: 1%;
+  :global(.react-aria-Cell):nth-child(2) > * {
+    display: block;
+    min-width: 14rem;
+    max-width: 22rem;
+
+    * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
+}
+
+.drillIn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
 }

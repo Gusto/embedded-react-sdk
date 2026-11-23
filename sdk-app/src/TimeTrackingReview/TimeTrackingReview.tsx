@@ -1225,6 +1225,20 @@ function TimeTrackingPrototype() {
   )
 }
 
+function ChevronRightIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
+      <path
+        d="M8 5L13 10L8 15"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 function PlusIcon() {
   return (
     <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
@@ -1305,9 +1319,18 @@ function PeopleTable({
           </>
         ),
         render: ({ person, shifts }) => (
-          <Components.Link href={shiftsHref(person.employee.uuid)}>
-            {shifts.length} shifts
-          </Components.Link>
+          <Components.Button
+            variant="tertiary"
+            aria-label={`View ${person.name}’s ${shifts.length} shifts`}
+            onClick={() => {
+              void navigate(shiftsHref(person.employee.uuid))
+            }}
+          >
+            <span className={styles.drillIn}>
+              {shifts.length} shifts
+              <ChevronRightIcon />
+            </span>
+          </Components.Button>
         ),
       },
       {
@@ -1351,6 +1374,7 @@ function PeopleTable({
           return (
             <ApproveReject
               label={`all of ${person.name}’s shifts`}
+              forAll
               onApprove={
                 toApprove.length
                   ? () => {
