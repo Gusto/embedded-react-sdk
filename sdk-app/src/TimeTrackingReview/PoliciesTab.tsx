@@ -16,7 +16,7 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { ChangePin, GapPin, PlusIcon, SegmentedToggle, SubPage, type Crumb } from './parts'
+import { ApproveIcon, ChangePin, GapPin, PendingIcon, PlusIcon, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import styles from './TimeTrackingReview.module.scss'
@@ -945,18 +945,25 @@ function AssignPeople({
         render: row => {
           const uuid = row.person.employee.uuid
           return (
-            <SegmentedToggle
-              label={`${row.person.name} in ${policy.name}`}
-              isDisabled={row.isFixed}
-              value={selected.has(uuid) ? 'in' : 'out'}
-              options={[
-                { value: 'in', label: 'In policy' },
-                { value: 'out', label: 'Not in policy' },
-              ]}
-              onChange={value => {
-                setMembership(uuid, value === 'in')
-              }}
-            />
+            <div className={styles.membershipSelect}>
+              <span className={styles.membershipIcon}>
+                {selected.has(uuid) ? <ApproveIcon /> : <PendingIcon />}
+              </span>
+              <Components.Select
+                label={`${row.person.name} in ${policy.name}`}
+                shouldVisuallyHideLabel
+                placeholder="Choose"
+                isDisabled={row.isFixed}
+                value={selected.has(uuid) ? 'in' : 'out'}
+                options={[
+                  { value: 'in', label: 'In policy' },
+                  { value: 'out', label: 'Not in policy' },
+                ]}
+                onChange={value => {
+                  setMembership(uuid, value === 'in')
+                }}
+              />
+            </div>
           )
         },
       },
