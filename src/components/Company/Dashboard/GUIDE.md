@@ -27,7 +27,9 @@ Signing a company form requires knowing who is looking at the dashboard. Pass `v
 
 ## Step flow <!-- slot: appendix -->
 
-The dashboard is a hub: the `Dashboard` cards view is the resting state. A card's Edit or Manage CTA opens that section's component, and a "Back to company settings" header returns to the cards. A successful save shows a dismissible success alert.
+The dashboard is a hub: the `Dashboard` cards view is the resting state. A card's Edit or Manage CTA opens that section's management surface, and a "Back to company settings" header returns to the cards. A successful save shows a dismissible success alert.
+
+Each section is also available on its own, as a card paired with a block that switches between the card and its editor — `CompanyManagement.Industry`, `CompanyManagement.Locations` and so on. Those blocks are not used here: the dashboard composes the cards directly, so a card's CTA routes within the dashboard rather than opening a second, nested editor with its own back affordance.
 
 ```mermaid
 flowchart LR
@@ -44,9 +46,13 @@ flowchart LR
   linkStyle 1,2,3,4,5,6,7,8,9 stroke-width:2.5px
 ```
 
-Each spoke is a complete component rather than a single form, so it may have screens of its own — `Locations`, for example, has its own address list with add and edit screens. Events raised inside a spoke (`company/location/add/done`, `company/bankAccount/created`, `company/bankAccount/verified`, `company/federalTaxes/updated`, `company/stateTaxes/edit`, `company/stateTaxes/updated`, `company/stateTaxes/rateScheduled`, `company/signatory/created`, `company/signatory/updated`, `company/signatory/invited`) keep the spoke open; only the spoke's own completion event (`company/location/done`, `company/bankAccount/done`, `company/federalTaxes/done`, `company/industry/selected`, `company/signatory/assignSignatory/done`) or the back header returns to the dashboard.
+Each spoke is a complete surface rather than a single form, so it may have screens of its own — Locations, for example, has its own address list with add and edit screens.
 
-`DocumentSigner` is a hub too, and the one case where a spoke contains a screen the dashboard also reaches directly: changing the signatory from the document list opens `DocumentSigner`'s own assign-signatory screen, which raises the same `company/signatory/assignSignatory/done` the Signatory card's spoke returns on. The dashboard stays put for it, so changing the signatory mid-review returns you to the document list rather than to the cards. Signing is the same: a company signs its forms one at a time, so each `company/forms/sign/signForm` keeps the screen open and the "Documents signed" alert surfaces only once you leave, whether by Continue or the back header.
+Every spoke raises a `company/management/<section>/updated` event when something is saved, and the dashboard acts only on that. The underlying screens keep raising their own events too (`company/location/add/done`, `company/bankAccount/created`, `company/bankAccount/verified`, `company/federalTaxes/updated`, `company/industry/selected`, `company/stateTaxes/updated`, `company/stateTaxes/rateScheduled`, `company/forms/sign/signForm`, and so on), so anything already listening for them keeps working — they simply no longer drive navigation.
+
+For the single-form sections — Industry, Federal taxes and Signatory — a save returns to the cards with an alert. For the sections where several records are edited in one visit — Locations, Bank account, State taxes and Documents — a save keeps the spoke open and the alert surfaces once you leave, since a company rarely stops after one address, one state or one form.
+
+The documents spoke is a hub too, and the one case where a spoke contains a screen the dashboard also reaches directly: changing the signatory from the document list opens its own assign-signatory screen, which raises the same `company/signatory/assignSignatory/done` the Signatory spoke's screens raise. Only saves made through the Signatory spoke raise `company/management/signatory/updated`, so changing the signatory mid-review returns you to the document list rather than to the cards. Signing is the same: a company signs its forms one at a time, so each signature keeps the screen open and the "Documents signed" alert surfaces only once you leave.
 
 `AssignSignatory` offers two routes to the same outcome — fill in the signatory's details directly, or invite them to supply their own — and `company/signatory/assignSignatory/done` fires for both, which is why the dashboard returns on that event rather than on the create and invite events behind it. The signatory card's `company/management/signatory/editRequested` carries the current `signatoryId` so the spoke amends that record; assigning someone new from the empty state carries no identifier and creates one.
 
@@ -54,7 +60,9 @@ Each spoke is a complete component rather than a single form, so it may have scr
 
 `TaxPaymentsFlow` is likewise a hub with no completion event, and being read-only it has nothing to show a success alert about: `company/taxPayments/view` and `company/taxPayments/back` move between its list and a single payment's detail, both inside the spoke. The back header is the only way from it to the dashboard.
 
-Because `Industry`, `FederalTaxes` and `AssignSignatory` submit without a Cancel button, and `Locations` and `BankAccount` open directly into a form when the company has no record yet, the "Back to company settings" header is the reliable way out of any spoke. It emits `company/dashboard/back`.
+The "Back to company settings" header is the way out of every spoke, and for most of them the only one: the management surfaces drop the Continue button their onboarding counterparts carry, since there is nothing to continue to from a settings page. Industry, Federal taxes and the signatory screens submit without a Cancel button of their own, and Locations and Bank account open directly into a form when the company has no record yet. The header emits `company/dashboard/back`.
+
+Cancelling inside a spoke is separate: it returns you to that spoke's own list — one address form, one state, or the micro-deposit screen — not to the cards.
 
 `PaySchedule` accepts two behaviors that `DashboardFlow` forwards: `enableAutoPilot` adds the AutoPilot row and its Edit action, and `enableMultipleSchedules` adds the Manage action that opens employee assignment. Both default to off, which leaves the pay schedule screen showing a single schedule's name and frequency with an Edit action.
 
