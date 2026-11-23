@@ -13,7 +13,13 @@ export type {
   TaxPaymentsListProps,
   TaxPaymentDetailProps,
 } from '../TaxPayments'
-export { IndustryCard, type IndustryCardProps } from '../Industry/management/IndustryCard'
+export {
+  Industry,
+  type IndustryProps,
+  type IndustryDictionary,
+  IndustryCard,
+  type IndustryCardProps,
+} from '../Industry/management'
 export { LocationsCard, type LocationsCardProps } from '../Locations/management/LocationsCard'
 export {
   FederalTaxesCard,

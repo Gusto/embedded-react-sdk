@@ -812,6 +812,8 @@ Translation keys for the `Company.Management.Industry` i18n namespace.
 
 | Property |
 | ------ |
+| <a id="property-companymanagementindustryalerts"></a> `alerts` |
+| `alerts.industryUpdated` |
 | <a id="property-companymanagementindustrycard"></a> `card` |
 | `card.editAriaLabel` |
 | `card.editCta` |
@@ -822,6 +824,8 @@ Translation keys for the `Company.Management.Industry` i18n namespace.
 | `card.listEmptyPlaceholder` |
 | `card.naicsCode` |
 | `card.title` |
+| <a id="property-companymanagementindustryheader"></a> `header` |
+| `header.backCta` |
 
 ***
 

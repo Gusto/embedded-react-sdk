@@ -201,8 +201,13 @@ export const dashboardStateMachine = {
     ),
   ),
   industry: state<MachineTransition>(
+    // Returns on the management event rather than the onboarding COMPANY_INDUSTRY_SELECTED
+    // the form itself raises. IndustryEditScreen translates one into the other, so both the
+    // dashboard and the standalone Industry block transition on a signal scoped to the
+    // management surface; the onboarding event still reaches onEvent for partners listening
+    // to it.
     transition(
-      componentEvents.COMPANY_INDUSTRY_SELECTED,
+      componentEvents.COMPANY_MANAGEMENT_INDUSTRY_UPDATED,
       'index',
       returnToIndexWithAlert('industryUpdated'),
     ),
