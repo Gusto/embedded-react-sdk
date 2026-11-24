@@ -7,31 +7,13 @@ import { createContext, useContext } from 'react'
  * Pass to {@link GustoProvider} via the `features` prop. Each flag documents its default and what
  * changes when you set it. Omitted flags use their default.
  *
- * @public
+ * @internal
  * @page providers
  */
 export interface Features {
   /**
-   * Regular rate of pay (RRoP) support: per-workweek overtime in payroll editing, and the pay
-   * schedule workweek start day it depends on.
-   *
-   * When `true`, `Payroll.PayrollEditEmployee` renders the RRoP editor, where adding overtime for an
-   * overtime-eligible employee on a multi-workweek payroll splits hours and overtime-affecting
-   * earnings into one column per workweek. `Payroll.PayrollConfiguration` shows each employee's
-   * total pay as the gross pay returned by the API. `usePayScheduleForm` exposes
-   * `Fields.WorkweekStartDay` and submits `workweekStartDay`, so the pay schedule forms in
-   * `CompanyOnboarding.PaySchedule` and `CompanyManagement.PaySchedule` show the field.
-   *
-   * When `false`, `Payroll.PayrollEditEmployee` renders the previous editor, which edits total hours
-   * for the whole pay period and sends no per-workweek breakdowns. `Payroll.PayrollConfiguration`
-   * estimates total pay from hours and pay rates. `Fields.WorkweekStartDay` is `undefined` and
-   * `workweekStartDay` is not submitted.
-   *
-   * Every flow that renders these screens follows the flag, including `Payroll.PayrollFlow`,
-   * `Payroll.PayrollExecutionFlow`, `Payroll.OffCycleFlow`, `Payroll.DismissalFlow`, and
-   * `CompanyOnboarding.OnboardingFlow`.
-   *
    * @defaultValue `true`
+   * @internal
    */
   regularRateOfPay?: boolean
 }
