@@ -7,8 +7,8 @@ interface UseDateRangeFilterOptions {
   onFilterChange?: () => void
   initialStartDate?: Date | null
   initialEndDate?: Date | null
-  /** Absolute upper bound for the end date, applied on top of the 12 month span cap. */
-  maxEndDate?: Date
+  /** Latest date the end date may be set to, applied on top of the 12 month span cap. */
+  latestAllowedEndDate?: Date
 }
 
 interface DateRangeApiParams {
@@ -50,9 +50,9 @@ const addMonths = (date: Date, months: number): Date => {
  * Seed the hook with `initialStartDate` / `initialEndDate` to render a default range on load;
  * `handleClearFilter` returns to those initial values (not `null`). `getMaxEndDate` and
  * `getMinStartDate` return bounds for date pickers that keep the selected range within
- * 12 months of the opposite endpoint; pass `maxEndDate` to also cap the end date at an absolute
- * date. `getApiDateParams` returns only the dates that are set,
- * formatted as `YYYY-MM-DD` strings for API requests.
+ * 12 months of the opposite endpoint; pass `latestAllowedEndDate` to also prevent end dates after
+ * a fixed date. `getApiDateParams` returns only the dates that are set, formatted as `YYYY-MM-DD`
+ * strings for API requests.
  *
  * @param options - Optional configuration; `onFilterChange` fires after any filter mutation.
  * @returns The current filter state and handlers — see {@link UseDateRangeFilterResult}.
@@ -63,7 +63,7 @@ export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDate
     onFilterChange,
     initialStartDate = null,
     initialEndDate = null,
-    maxEndDate: absoluteMaxEndDate,
+    latestAllowedEndDate,
   } = options ?? {}
 
   const initialRef = useRef<{ start: Date | null; end: Date | null }>({
@@ -104,10 +104,10 @@ export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDate
   }
 
   const getMaxEndDate = (): Date | undefined => {
-    if (!startDate) return absoluteMaxEndDate
+    if (!startDate) return latestAllowedEndDate
     const spanLimit = addMonths(startDate, MAX_RANGE_MONTHS)
-    if (!absoluteMaxEndDate) return spanLimit
-    return spanLimit < absoluteMaxEndDate ? spanLimit : absoluteMaxEndDate
+    if (!latestAllowedEndDate) return spanLimit
+    return spanLimit < latestAllowedEndDate ? spanLimit : latestAllowedEndDate
   }
 
   const getMinStartDate = (): Date | undefined => {

@@ -190,23 +190,25 @@ describe('useDateRangeFilter', () => {
       expect(diffDays).toBeLessThanOrEqual(367)
     })
 
-    it('caps maxEndDate at the absolute max when it is sooner than the span limit', () => {
-      const absoluteMax = new Date(2025, 5, 15)
-      const { result } = renderHook(() => useDateRangeFilter({ maxEndDate: absoluteMax }))
+    it('caps the end date at latestAllowedEndDate when it is sooner than the span limit', () => {
+      const latestAllowed = new Date(2025, 5, 15)
+      const { result } = renderHook(() =>
+        useDateRangeFilter({ latestAllowedEndDate: latestAllowed }),
+      )
 
-      expect(result.current.getMaxEndDate()).toEqual(absoluteMax)
+      expect(result.current.getMaxEndDate()).toEqual(latestAllowed)
 
       act(() => {
         result.current.handleStartDateChange(new Date(2025, 2, 15))
       })
 
-      expect(result.current.getMaxEndDate()).toEqual(absoluteMax)
+      expect(result.current.getMaxEndDate()).toEqual(latestAllowed)
     })
 
     it('uses the span limit when it is sooner than the absolute max', () => {
       const { result } = renderHook(() =>
         useDateRangeFilter({
-          maxEndDate: new Date(2030, 0, 1),
+          latestAllowedEndDate: new Date(2030, 0, 1),
           initialStartDate: new Date(2025, 0, 1),
         }),
       )
