@@ -1725,6 +1725,7 @@ export const componentEvents: {
     readonly EMPLOYEE_PROFILE_DONE: "employee/profile/done";
     readonly EMPLOYEE_HOME_ADDRESS_CREATED: "employee/addresses/home/created";
     readonly EMPLOYEE_HOME_ADDRESS_UPDATED: "employee/addresses/home/updated";
+    readonly EMPLOYEE_MANAGEMENT_CONTINUE_ONBOARDING: "employee/management/continueOnboarding";
     readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED: "employee/management/homeAddress/editRequested";
     readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED: "employee/management/homeAddress/editCancelled";
     readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED: "employee/management/homeAddress/created";
@@ -3075,7 +3076,7 @@ export type EmailFieldProps = HookFieldProps<TextInputHookFieldProps<EmailValida
 export type EmailValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_EMAIL'];
 
 // @public
-export type EmployeeAction = 'edit' | 'delete' | 'cancel_self_onboarding' | 'review' | 'dismiss' | 'rehire';
+export type EmployeeAction = 'edit' | 'delete' | 'cancel_self_onboarding' | 'review' | 'dismiss' | 'rehire' | 'manage';
 
 // @public
 export type EmployeeDetailsErrorCode = (typeof EmployeeDetailsErrorCodes)[keyof typeof EmployeeDetailsErrorCodes];

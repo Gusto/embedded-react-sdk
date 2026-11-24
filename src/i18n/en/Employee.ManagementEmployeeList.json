@@ -17,7 +17,10 @@
   "pendingDismissalBadge": "Last day {{date}}",
   "editCta": "Edit employee",
   "dismissCta": "Dismiss employee",
-  "cancelCta": "Cancel onboarding",
+  "continueOnboardingCta": "Continue onboarding",
+  "reviewCta": "Review employee",
+  "cancelSelfOnboardingCta": "Cancel self-onboarding",
+  "cancelCta": "Delete employee",
   "hamburgerTitle": "Employee actions menu",
   "employeeListLabel": "List of employees",
   "emptyState": {
@@ -35,9 +38,15 @@
     }
   },
   "deleteDialog": {
-    "title": "Cancel employee onboarding?",
+    "title": "Delete employee?",
     "description": "This will permanently delete this employee from your account. This action cannot be undone.",
     "confirmCta": "Delete employee",
     "cancelCta": "Cancel"
+  },
+  "cancelSelfOnboardingDialog": {
+    "title": "Cancel self-onboarding?",
+    "description": "{{name}} won't be able to finish onboarding on their own. You'll need to finish onboarding for them or send a new invite.",
+    "confirmCta": "Cancel self-onboarding",
+    "cancelCta": "Go back"
   }
 }

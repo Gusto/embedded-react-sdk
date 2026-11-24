@@ -4338,12 +4338,19 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | ------ | ------ |
 | <a id="property-employeemanagementemployeelistaddemployeecta"></a> `addEmployeeCta` | `"Add employee"` |
 | <a id="property-employeemanagementemployeelistbacktolistcta"></a> `backToListCta` | `"Back to employees"` |
-| <a id="property-employeemanagementemployeelistcancelcta"></a> `cancelCta` | `"Cancel onboarding"` |
+| <a id="property-employeemanagementemployeelistcancelcta"></a> `cancelCta` | `"Delete employee"` |
+| <a id="property-employeemanagementemployeelistcancelselfonboardingcta"></a> `cancelSelfOnboardingCta` | `"Cancel self-onboarding"` |
+| <a id="property-employeemanagementemployeelistcancelselfonboardingdialog"></a> `cancelSelfOnboardingDialog` | |
+| `cancelSelfOnboardingDialog.cancelCta` | `"Go back"` |
+| `cancelSelfOnboardingDialog.confirmCta` | `"Cancel self-onboarding"` |
+| `cancelSelfOnboardingDialog.description` | `"{{name}} won't be able to finish onboarding on their own. You'll need to finish onboarding for them or send a new invite."` |
+| `cancelSelfOnboardingDialog.title` | `"Cancel self-onboarding?"` |
+| <a id="property-employeemanagementemployeelistcontinueonboardingcta"></a> `continueOnboardingCta` | `"Continue onboarding"` |
 | <a id="property-employeemanagementemployeelistdeletedialog"></a> `deleteDialog` | |
 | `deleteDialog.cancelCta` | `"Cancel"` |
 | `deleteDialog.confirmCta` | `"Delete employee"` |
 | `deleteDialog.description` | `"This will permanently delete this employee from your account. This action cannot be undone."` |
-| `deleteDialog.title` | `"Cancel employee onboarding?"` |
+| `deleteDialog.title` | `"Delete employee?"` |
 | <a id="property-employeemanagementemployeelistdismisscta"></a> `dismissCta` | `"Dismiss employee"` |
 | <a id="property-employeemanagementemployeelisteditcta"></a> `editCta` | `"Edit employee"` |
 | <a id="property-employeemanagementemployeelistemployeelistlabel"></a> `employeeListLabel` | `"List of employees"` |
@@ -4363,6 +4370,7 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
 | <a id="property-employeemanagementemployeelistpendingdismissalbadge"></a> `pendingDismissalBadge` | `"Last day {{date}}"` |
 | <a id="property-employeemanagementemployeelistpendingdismissallabel"></a> `pendingDismissalLabel` | `"Pending dismissal"` |
+| <a id="property-employeemanagementemployeelistreviewcta"></a> `reviewCta` | `"Review employee"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |

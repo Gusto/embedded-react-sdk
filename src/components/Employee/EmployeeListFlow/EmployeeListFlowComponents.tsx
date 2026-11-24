@@ -1,3 +1,4 @@
+import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { ManagementEmployeeList } from '../EmployeeList/management/ManagementEmployeeList'
 import { DashboardFlow } from '../Dashboard'
 import { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'
@@ -24,6 +25,7 @@ export interface EmployeeListFlowProps extends BaseComponentInterface<never> {
 export interface EmployeeListFlowContextInterface extends FlowContextInterface {
   companyId: string
   employeeId?: string
+  onboardingStatus?: OnboardingStatus
   isSelfOnboardingEnabled?: boolean
   withEmployeeI9?: boolean
 }
@@ -54,11 +56,19 @@ export function TerminationFlowContextual() {
 
 /** @internal */
 export function OnboardingExecutionFlowContextual() {
-  const { companyId, onEvent, isSelfOnboardingEnabled, withEmployeeI9 } =
-    useFlow<EmployeeListFlowContextInterface>()
+  const {
+    companyId,
+    employeeId,
+    onboardingStatus,
+    onEvent,
+    isSelfOnboardingEnabled,
+    withEmployeeI9,
+  } = useFlow<EmployeeListFlowContextInterface>()
   return (
     <OnboardingExecutionFlow
       companyId={ensureRequired(companyId)}
+      initialEmployeeId={employeeId}
+      initialOnboardingStatus={onboardingStatus}
       onEvent={onEvent}
       isSelfOnboardingEnabled={isSelfOnboardingEnabled}
       withEmployeeI9={withEmployeeI9}

@@ -22,6 +22,7 @@ export const employeeEvents = {
   EMPLOYEE_PROFILE_DONE: 'employee/profile/done',
   EMPLOYEE_HOME_ADDRESS_CREATED: 'employee/addresses/home/created',
   EMPLOYEE_HOME_ADDRESS_UPDATED: 'employee/addresses/home/updated',
+  EMPLOYEE_MANAGEMENT_CONTINUE_ONBOARDING: 'employee/management/continueOnboarding',
   EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED: 'employee/management/homeAddress/editRequested',
   EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED: 'employee/management/homeAddress/editCancelled',
   EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED: 'employee/management/homeAddress/created',
