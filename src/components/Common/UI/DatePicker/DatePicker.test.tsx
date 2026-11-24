@@ -165,7 +165,9 @@ describe('DatePicker Component', () => {
       renderDatePicker({ value: new Date(2026, 5, 1), onChange })
 
       await user.click(screen.getByRole('button'))
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
 
       // CalendarCell renders a <div role="button"> labeled with the full date
       const june15 = screen
@@ -207,7 +209,9 @@ describe('DatePicker Component', () => {
       renderDatePicker({ value: new Date(2026, 5, 20), minDate: new Date(2026, 5, 15) })
 
       await user.click(screen.getByRole('button'))
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
 
       const cells = screen.getAllByRole('gridcell')
       const june8 = cells.find(c => c.textContent.trim() === '8')
@@ -223,7 +227,9 @@ describe('DatePicker Component', () => {
       renderDatePicker({ value: new Date(2026, 5, 10), maxDate: new Date(2026, 5, 15) })
 
       await user.click(screen.getByRole('button'))
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
 
       const cells = screen.getAllByRole('gridcell')
       const june25 = cells.find(c => c.textContent.trim() === '25')
@@ -242,7 +248,9 @@ describe('DatePicker Component', () => {
       renderDatePicker({ value: new Date(2026, 5, 10), isDateDisabled })
 
       await user.click(screen.getByRole('button'))
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
 
       const cells = screen.getAllByRole('gridcell')
       const june15 = cells.find(c => c.textContent.trim() === '15')
