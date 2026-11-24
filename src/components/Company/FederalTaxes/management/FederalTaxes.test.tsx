@@ -97,8 +97,7 @@ describe('CompanyManagement.FederalTaxes', () => {
 
     await openEditor(user)
 
-    // The editor is the onboarding form, whose terminal CTA still reads "Continue".
-    await user.click(screen.getByRole('button', { name: /Continue/i }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
       expect(onEvent).toHaveBeenCalledWith(

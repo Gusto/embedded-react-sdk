@@ -1,5 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { FederalTaxes as FederalTaxesOnboardingForm } from '../onboarding'
+import { Head } from '../onboarding/Head'
+import { Form } from '../onboarding/Form'
+import { useFederalTaxes } from '../onboarding/useFederalTaxes'
 import { translateEvents } from '@/components/Company/shared/translateEvents'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { LoaderComponentType } from '@/components/Base'
@@ -18,6 +24,20 @@ export interface FederalTaxesEditScreenProps {
   LoaderComponent?: LoaderComponentType
 }
 
+function FederalTaxesManagementActions() {
+  const { t } = useTranslation('Company.FederalTaxes')
+  const { isPending } = useFederalTaxes()
+  const Components = useComponentContext()
+
+  return (
+    <ActionsLayout>
+      <Components.Button type="submit" isLoading={isPending}>
+        {t('saveCta')}
+      </Components.Button>
+    </ActionsLayout>
+  )
+}
+
 /**
  * The federal tax details form as a management surface.
  *
@@ -32,6 +52,9 @@ export interface FederalTaxesEditScreenProps {
  *
  * Both onboarding events are still forwarded unchanged; this wrapper adds a signal rather
  * than replacing one.
+ *
+ * Composes the onboarding form's own head and fields with a Save button in place of its
+ * Continue: a management edit has no next step to continue to.
  *
  * @param props - See {@link FederalTaxesEditScreenProps}.
  * @returns The federal tax details form wired for a management surface.
@@ -50,6 +73,10 @@ export function FederalTaxesEditScreen({
         [componentEvents.COMPANY_FEDERAL_TAXES_UPDATED]:
           componentEvents.COMPANY_MANAGEMENT_FEDERAL_TAXES_UPDATED,
       })}
-    />
+    >
+      <Head />
+      <Form />
+      <FederalTaxesManagementActions />
+    </FederalTaxesOnboardingForm>
   )
 }

@@ -409,7 +409,7 @@ describe('Company DashboardFlow', () => {
     await user.type(comboBox, 'Orange Groves')
     await user.click(await screen.findByRole('option', { name: 'Orange Groves' }))
 
-    await user.click(screen.getByRole('button', { name: 'Continue' }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     expect(await screen.findByText('Industry updated')).toBeInTheDocument()
     expect(await screen.findByRole('tab', { name: 'Company details' })).toBeInTheDocument()
@@ -600,7 +600,7 @@ describe('Company DashboardFlow', () => {
     await user.click(screen.getByRole('button', { name: 'Edit federal taxes' }))
 
     await screen.findByText('Federal Tax Information')
-    await user.click(screen.getByRole('button', { name: /Continue/i }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     expect(await screen.findByText('Federal tax settings updated')).toBeInTheDocument()
   })

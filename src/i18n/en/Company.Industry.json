@@ -4,6 +4,7 @@
   "label": "Select your company's industry",
   "placeholder": "Type a few letters to search for your industry",
   "submitCta": "Continue",
+  "saveCta": "Save",
   "unmatchedIndustry": "NAICS {{code}}",
   "validations": {
     "required": "Select an industry to continue"

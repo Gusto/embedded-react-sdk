@@ -572,6 +572,7 @@ Translation keys for the `Company.FederalTaxes` i18n namespace.
 | <a id="property-companyfederaltaxeslegalentitynameerror"></a> `legalEntityNameError` | `"Legal entity name is required"` |
 | <a id="property-companyfederaltaxeslegalentitynamelabel"></a> `legalEntityNameLabel` | `"Legal entity name"` |
 | <a id="property-companyfederaltaxespagetitle"></a> `pageTitle` | `"Federal Tax Information"` |
+| <a id="property-companyfederaltaxessavecta"></a> `saveCta` | `"Save"` |
 | <a id="property-companyfederaltaxestaxpayertype"></a> `taxPayerType` | |
 | `taxPayerType.Association` | `"Association"` |
 | `taxPayerType.C-Corporation` | `"C-Corporation"` |
@@ -604,6 +605,7 @@ Translation keys for the `Company.Industry` i18n namespace.
 | <a id="property-companyindustrydescription"></a> `description` | `"Select the industry that most closely matches your company's. Think you fall between industries? Choose the one that best represents your primary business activity (this is usually the activity that generates the most income for your company)."` |
 | <a id="property-companyindustrylabel"></a> `label` | `"Select your company's industry"` |
 | <a id="property-companyindustryplaceholder"></a> `placeholder` | `"Type a few letters to search for your industry"` |
+| <a id="property-companyindustrysavecta"></a> `saveCta` | `"Save"` |
 | <a id="property-companyindustrysubmitcta"></a> `submitCta` | `"Continue"` |
 | <a id="property-companyindustrytitle"></a> `title` | `"Industry"` |
 | <a id="property-companyindustryunmatchedindustry"></a> `unmatchedIndustry` | `"NAICS {{code}}"` |

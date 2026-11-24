@@ -1,5 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { Industry as IndustryOnboardingForm } from '../onboarding'
+import { Head } from '../onboarding/Head'
+import { Edit } from '../onboarding/Edit'
+import { useIndustryFormContext } from '../onboarding/Context'
 import { translateEvents } from '@/components/Company/shared/translateEvents'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { LoaderComponentType } from '@/components/Base'
@@ -18,6 +24,20 @@ export interface IndustryEditScreenProps {
   LoaderComponent?: LoaderComponentType
 }
 
+function IndustryManagementActions() {
+  const { t } = useTranslation('Company.Industry')
+  const { status } = useIndustryFormContext()
+  const Components = useComponentContext()
+
+  return (
+    <ActionsLayout>
+      <Components.Button type="submit" isLoading={status.isPending}>
+        {t('saveCta')}
+      </Components.Button>
+    </ActionsLayout>
+  )
+}
+
 /**
  * The industry form as a management surface.
  *
@@ -31,6 +51,9 @@ export interface IndustryEditScreenProps {
  * a signal, it does not replace one. The translation deliberately does not live inside
  * `CompanyOnboarding.Industry`: that component is an onboarding step too, and must not start
  * raising management events there.
+ *
+ * Composes the onboarding form's own head and field with a Save button in place of its
+ * Continue: a management edit has no next step to continue to.
  *
  * @param props - See {@link IndustryEditScreenProps}.
  * @returns The industry form wired for a management surface.
@@ -49,6 +72,10 @@ export function IndustryEditScreen({
         [componentEvents.COMPANY_INDUSTRY_SELECTED]:
           componentEvents.COMPANY_MANAGEMENT_INDUSTRY_UPDATED,
       })}
-    />
+    >
+      <Head />
+      <Edit />
+      <IndustryManagementActions />
+    </IndustryOnboardingForm>
   )
 }

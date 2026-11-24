@@ -920,6 +920,8 @@ export namespace Translations {
     }
     /** @defaultValue `"Continue"` */
     continueCta: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
   }
   /** Translation keys for the `Company.Industry` i18n namespace. */
   export interface CompanyIndustry {
@@ -933,6 +935,8 @@ export namespace Translations {
     placeholder: string
     /** @defaultValue `"Continue"` */
     submitCta: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
     /** @defaultValue `"NAICS {{code}}"` */
     unmatchedIndustry: string
     validations: {
