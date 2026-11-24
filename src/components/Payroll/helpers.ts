@@ -15,13 +15,14 @@ import { useTranslation } from 'react-i18next'
 import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { Compensation, MinimumWages } from '@gusto/embedded-api/models/components/compensation'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import type { Payroll } from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import type { Payroll, PayrollShow } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { PayrollType } from './PayrollList/types'
 import { PayrollCategory, isOffCyclePayroll } from './payrollTypes'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
-import { FlsaStatus } from '@/shared/constants'
+import { FlsaStatus, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { MS_PER_HOUR } from '@/helpers/dateFormatting'
+import { SDKInternalError } from '@/types/sdkError'
 import type { useDateFormatter } from '@/hooks/useDateFormatter'
 const REGULAR_HOURS_NAME = 'regular hours'
 
@@ -940,3 +941,37 @@ export const canCancelPayroll = (payroll: Payroll): boolean => {
 
   return true
 }
+
+/**
+ * Whether a payroll has already been submitted, so it can no longer be prepared or edited.
+ *
+ * @remarks
+ * Matches the processed check `PayrollOverview` uses to switch from Edit to Cancel. Only a
+ * cancel makes a submitted payroll editable again. The `submitting` status is deliberately not
+ * counted: a recalculation of an already-calculated payroll reports that same status.
+ *
+ * @param payroll - The payroll as returned by the payroll GET.
+ * @returns `true` once the payroll is processed.
+ * @internal
+ */
+export const isPayrollSubmitted = (
+  payroll: Pick<PayrollShow, 'processed' | 'processingRequest'> | undefined,
+): boolean =>
+  payroll?.processed === true ||
+  payroll?.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+
+/**
+ * Builds the error shown when a payroll is already submitted, in place of calling prepare.
+ *
+ * @remarks
+ * Uses the `api_error` category because it stands in for the 422 that prepare returns for a
+ * submitted payroll, so it surfaces the same way that error did.
+ *
+ * @returns An {@link SDKInternalError} explaining the payroll can no longer be edited.
+ * @internal
+ */
+export const createPayrollAlreadySubmittedError = (): SDKInternalError =>
+  new SDKInternalError(
+    'This payroll has already been submitted, so it can no longer be edited. To make changes, cancel the payroll and run it again.',
+    'api_error',
+  )

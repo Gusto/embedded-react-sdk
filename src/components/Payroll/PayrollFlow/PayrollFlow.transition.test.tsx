@@ -7,6 +7,7 @@ import {
   createPayroll,
   handleGetPayrollBlockers,
   handleGetPayrolls,
+  handleGetUnsubmittedPayroll,
   handlePayrollsPrepare,
 } from '@/test/mocks/apis/payrolls'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
@@ -68,6 +69,7 @@ describe('PayrollFlow transition path', () => {
         ]),
       ),
       handlePayrollsPrepare(prepareResolver),
+      handleGetUnsubmittedPayroll(),
     )
   })
 

@@ -157,7 +157,21 @@ describe('PayrollConfiguration', () => {
       )
     })
 
-    it('does not retry the terminal already-processed error', async () => {
+    it('skips prepare when the payroll is already submitted', async () => {
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            "This payroll is already processed. If you'd like to make changes, please cancel and re-run it.",
+          ),
+        ).toBeInTheDocument()
+      })
+      expect(alreadyProcessedResolver).not.toHaveBeenCalled()
+    })
+
+    it('falls back to the prepare error, without retrying, when the payroll status is not yet processed', async () => {
+      currentPayrollData = { ...currentPayrollData, processed: false }
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
       await waitFor(() => {
@@ -219,6 +233,7 @@ describe('PayrollConfiguration', () => {
         ),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`, () => {
           isCancelled = true
+          currentPayrollData = { ...currentPayrollData, processed: false }
           return HttpResponse.json({ success: true })
         }),
       )

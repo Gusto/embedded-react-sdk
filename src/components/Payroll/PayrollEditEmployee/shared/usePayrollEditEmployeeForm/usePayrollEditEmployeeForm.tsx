@@ -51,7 +51,11 @@ import {
   PayrollCategory,
 } from '@/components/Payroll/payrollTypes'
 import { PREPARE_QUERY_KEY } from '@/components/Payroll/PayrollConfiguration/usePayrollConfigurationData'
-import { isOvertimeEligibleFlsaStatus } from '@/components/Payroll/helpers'
+import {
+  createPayrollAlreadySubmittedError,
+  isOvertimeEligibleFlsaStatus,
+  isPayrollSubmitted,
+} from '@/components/Payroll/helpers'
 import { retryAsync } from '@/helpers/retryAsync'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
@@ -228,13 +232,15 @@ export type UsePayrollEditEmployeeFormResult = HookLoadingResult | UsePayrollEdi
  *
  * @remarks
  * Prepares the payroll for the target employee, then exposes a workweek-keyed
- * form whose submit builds a `PayrollUpdate`. Single-workweek pay periods send
- * totals without `breakdowns`; multi-workweek pay periods send `breakdowns` per
- * line once that line's every workweek cell is filled. Overtime-eligible
- * (nonexempt) employees split hours and overtime-affecting earnings per
- * workweek while the single `data.withOvertime` flag is on (see
- * `actions.addOvertime`); everyone else, and every line while `withOvertime` is
- * off, edits flat totals.
+ * form whose submit builds a `PayrollUpdate`. Prepare waits for a fresh read of
+ * the payroll and is skipped once the payroll is submitted; the hook then stays
+ * in its loading branch with an "already submitted" error in `errorHandling`.
+ * Single-workweek pay periods send totals without `breakdowns`; multi-workweek
+ * pay periods send `breakdowns` per line once that line's every workweek cell
+ * is filled. Overtime-eligible (nonexempt) employees split hours and
+ * overtime-affecting earnings per workweek while the single `data.withOvertime`
+ * flag is on (see `actions.addOvertime`); everyone else, and every line while
+ * `withOvertime` is off, edits flat totals.
  *
  * @param props - Hook options.
  * @returns A loading result while data is fetching, or a ready result with data,
@@ -255,9 +261,13 @@ export function usePayrollEditEmployeeForm({
     employeeId,
   })
   const { data: earningTypesData } = useEarningTypesListSuspense({ companyId })
-  const { data: payrollData } = usePayrollsGetSuspense({ companyId, payrollId })
+  const { data: payrollData, isFetching: isFetchingPayroll } = usePayrollsGetSuspense({
+    companyId,
+    payrollId,
+  })
+  const payrollShow = payrollData.payrollShow
   const isTransitionPayroll =
-    derivePayrollCategory(payrollData.payrollShow ?? {}) === PayrollCategory.Transition
+    derivePayrollCategory(payrollShow ?? {}) === PayrollCategory.Transition
 
   const queryClient = useQueryClient()
   const { mutateAsync: preparePayroll } = usePayrollsPrepareMutation()
@@ -269,6 +279,10 @@ export function usePayrollEditEmployeeForm({
 
   const executePrepare = useCallback(async () => {
     setPrepareError(null)
+    if (isPayrollSubmitted(payrollShow)) {
+      setPrepareError(createPayrollAlreadySubmittedError())
+      return
+    }
     try {
       const result = await retryAsync(
         () =>
@@ -289,13 +303,13 @@ export function usePayrollEditEmployeeForm({
     } catch (error) {
       setPrepareError(error as Error)
     }
-  }, [companyId, payrollId, employeeId, preparePayroll, isTransitionPayroll])
+  }, [companyId, payrollId, employeeId, preparePayroll, isTransitionPayroll, payrollShow])
 
   useEffect(() => {
-    if (hasFiredRef.current) return
+    if (hasFiredRef.current || isFetchingPayroll) return
     hasFiredRef.current = true
     void executePrepare()
-  }, [executePrepare])
+  }, [executePrepare, isFetchingPayroll])
 
   const payScheduleQuery = usePaySchedulesGet(
     { companyId, payScheduleId: preparedPayroll?.payPeriod?.payScheduleUuid ?? '' },

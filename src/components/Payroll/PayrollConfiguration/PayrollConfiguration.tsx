@@ -15,6 +15,7 @@ import { GrossUpModal } from '../GrossUpModal'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { derivePayrollCategory, PayrollCategory } from '../payrollTypes'
+import { isPayrollSubmitted } from '../helpers'
 import { getPayrollDisplayDates } from '../payrollDates'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
@@ -200,6 +201,8 @@ const Root = ({
     !hasProcessingFailedAlert &&
     (isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current)
 
+  const isPayrollAlreadySubmitted = isPayrollSubmitted(payrollData.payrollShow)
+
   const {
     employeeDetails,
     employeeCompensations,
@@ -208,18 +211,25 @@ const Root = ({
     payrollCategory,
     pagination,
     isLoading,
-    isAlreadyProcessed,
+    isAlreadyProcessed: hasAlreadyProcessedPrepareError,
     refetch,
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
     // Don't prepare while calculating, or once we've seen it calculate. If the payroll was already
-    // calculated when we opened (e.g. clicking Edit), we do prepare so it can be edited.
-    disablePrepare: isPolling || isCalculatingPayroll || hasSeenCalculatingRef.current,
+    // calculated when we opened (e.g. clicking Edit), we do prepare so it can be edited. A submitted
+    // payroll can't be prepared at all until it's cancelled.
+    disablePrepare:
+      isPolling ||
+      isCalculatingPayroll ||
+      hasSeenCalculatingRef.current ||
+      isPayrollAlreadySubmitted,
     excludedEmployeeUuids,
     isTransitionPayroll:
       derivePayrollCategory(payrollData.payrollShow ?? {}) === PayrollCategory.Transition,
   })
+
+  const isAlreadyProcessed = isPayrollAlreadySubmitted || hasAlreadyProcessedPrepareError
 
   const alreadyProcessedAlert: PayrollFlowAlert = useMemo(
     () => ({

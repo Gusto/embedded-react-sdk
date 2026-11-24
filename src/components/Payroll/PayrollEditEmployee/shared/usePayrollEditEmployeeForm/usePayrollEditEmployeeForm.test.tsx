@@ -1,5 +1,6 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { Suspense, type ReactNode } from 'react'
+import type { QueryClient } from '@tanstack/react-query'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
 import {
@@ -11,8 +12,14 @@ import { PayrollEditEmployeeErrorCodes } from './payrollEditEmployeeSchema'
 import { server } from '@/test/mocks/server'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+import { createSdkQueryClient } from '@/contexts/ApiProvider/createSdkQueryClient'
 import { handleGetEmployee } from '@/test/mocks/apis/employees'
-import { handlePayrollsPrepare, handlePayrollsUpdate } from '@/test/mocks/apis/payrolls'
+import {
+  handleGetSubmittedPayroll,
+  handleGetUnsubmittedPayroll,
+  handlePayrollsPrepare,
+  handlePayrollsUpdate,
+} from '@/test/mocks/apis/payrolls'
 import { getEmptyEmployeeBankAccounts } from '@/test/mocks/apis/employeesBankAccounts'
 
 type ReadyResult = Extract<UsePayrollEditEmployeeFormResult, { isLoading: false }>
@@ -202,10 +209,29 @@ function renderPayrollEditEmployeeForm() {
   return renderHook(() => usePayrollEditEmployeeForm(HOOK_PROPS), { wrapper: Wrapper })
 }
 
+function renderPayrollEditEmployeeFormWithClient(queryClient: QueryClient) {
+  return renderHook(() => usePayrollEditEmployeeForm(HOOK_PROPS), {
+    wrapper: ({ children }: { children: ReactNode }) => (
+      <GustoTestProvider queryClient={queryClient}>
+        <Suspense fallback={null}>{children}</Suspense>
+      </GustoTestProvider>
+    ),
+  })
+}
+
+const ALREADY_SUBMITTED_ERROR = {
+  category: 'api_error',
+  message:
+    'This payroll has already been submitted, so it can no longer be edited. To make changes, cancel the payroll and run it again.',
+}
+
 describe('usePayrollEditEmployeeForm', () => {
   beforeEach(() => {
     setupApiTestMocks()
-    server.use(handleGetEmployee(() => HttpResponse.json(EMPLOYEE_RESPONSE)))
+    server.use(
+      handleGetEmployee(() => HttpResponse.json(EMPLOYEE_RESPONSE)),
+      handleGetUnsubmittedPayroll(),
+    )
   })
 
   it('transitions from loading to ready with the prepared payroll and normalized workweeks', async () => {
@@ -223,6 +249,43 @@ describe('usePayrollEditEmployeeForm', () => {
     expect(result.current.data.isMultipleWorkweeks).toBe(false)
     expect(result.current.data.preparedPayroll.workweeks).toHaveLength(1)
     expect(result.current.status).toEqual({ isPending: false, mode: 'update' })
+  })
+
+  it('skips prepare and reports an already-submitted error when the payroll is submitted', async () => {
+    const prepareResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(SINGLE_WORKWEEK_PREPARE),
+    )
+    server.use(handlePayrollsPrepare(prepareResolver), handleGetSubmittedPayroll())
+
+    const { result } = renderPayrollEditEmployeeForm()
+
+    await waitFor(() => {
+      expect(result.current.errorHandling.errors).toMatchObject([ALREADY_SUBMITTED_ERROR])
+    })
+    expect(result.current.isLoading).toBe(true)
+    expect(prepareResolver).not.toHaveBeenCalled()
+  })
+
+  it('waits for a fresh payroll read instead of trusting a stale cached status', async () => {
+    const queryClient = createSdkQueryClient()
+    const prepareResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(SINGLE_WORKWEEK_PREPARE),
+    )
+    server.use(handlePayrollsPrepare(prepareResolver))
+    const firstVisit = renderPayrollEditEmployeeFormWithClient(queryClient)
+    await waitFor(() => {
+      expect(firstVisit.result.current.isLoading).toBe(false)
+    })
+    firstVisit.unmount()
+
+    server.use(handleGetSubmittedPayroll())
+    await queryClient.invalidateQueries()
+    const { result } = renderPayrollEditEmployeeFormWithClient(queryClient)
+
+    await waitFor(() => {
+      expect(result.current.errorHandling.errors).toMatchObject([ALREADY_SUBMITTED_ERROR])
+    })
+    expect(prepareResolver).toHaveBeenCalledTimes(1)
   })
 
   it('submits totals without breakdowns for a single-workweek pay period', async () => {

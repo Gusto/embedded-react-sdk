@@ -8,7 +8,12 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { handleGetEmployee } from '@/test/mocks/apis/employees'
 import { getEmptyEmployeeBankAccounts } from '@/test/mocks/apis/employeesBankAccounts'
-import { handlePayrollsPrepare, handlePayrollsUpdate } from '@/test/mocks/apis/payrolls'
+import {
+  handleGetSubmittedPayroll,
+  handleGetUnsubmittedPayroll,
+  handlePayrollsPrepare,
+  handlePayrollsUpdate,
+} from '@/test/mocks/apis/payrolls'
 import { componentEvents } from '@/shared/constants'
 
 const EMPLOYEE_RESPONSE = {
@@ -98,7 +103,10 @@ describe('RropPayrollEditEmployee', () => {
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
-    server.use(handleGetEmployee(() => HttpResponse.json(EMPLOYEE_RESPONSE)))
+    server.use(
+      handleGetEmployee(() => HttpResponse.json(EMPLOYEE_RESPONSE)),
+      handleGetUnsubmittedPayroll(),
+    )
   })
 
   it('starts collapsed with a single Hours input and an Add overtime button when overtime is zero', async () => {
@@ -332,6 +340,21 @@ describe('RropPayrollEditEmployee', () => {
     expect(updateBody).not.toBeNull()
   })
 
+  it('shows the already-submitted error instead of the editor when the payroll is submitted', async () => {
+    const prepareResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(multiWorkweekPrepare('0')),
+    )
+    server.use(handlePayrollsPrepare(prepareResolver), handleGetSubmittedPayroll())
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+
+    expect(
+      await screen.findByText(
+        'This payroll has already been submitted, so it can no longer be edited. To make changes, cancel the payroll and run it again.',
+      ),
+    ).toBeInTheDocument()
+    expect(prepareResolver).not.toHaveBeenCalled()
+  })
+
   it('cancels without calling the update endpoint', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
     const updateResolver = vi.fn<HttpResponseResolver>(() =>
@@ -382,6 +405,7 @@ describe('preapproved time off', () => {
         HttpResponse.json({ ...prepare, employee_compensations: [preparedCompensation] }),
       ),
       handlePayrollsUpdate(updateResolver),
+      handleGetUnsubmittedPayroll(),
     )
     renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={vi.fn()} />)
 

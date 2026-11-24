@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useBase } from '../Base'
+import { createPayrollAlreadySubmittedError, isPayrollSubmitted } from './helpers'
 import { retryAsync } from '@/helpers/retryAsync'
 
 interface UsePreparedPayrollDataParams {
@@ -41,9 +43,11 @@ const isPayrollBeingProcessedError = (error: unknown): boolean => {
  * Wraps the prepare-payroll mutation and pay-schedule fetch, retrying while the payroll is still being processed.
  *
  * @remarks
- * Fires the prepare call once on mount, then exposes `handlePreparePayroll` for callers that need to re-prepare
- * (e.g. after sort or pagination changes). Distinguishes initial loading from subsequent pagination via
- * `isLoading` and `isPaginating`, and surfaces the pay schedule for the prepared payroll's pay period.
+ * Fires the prepare call once on mount, after a fresh read of the payroll, then exposes `handlePreparePayroll`
+ * for callers that need to re-prepare (e.g. after sort or pagination changes). A submitted payroll is never
+ * prepared: prepare always fails for one, so the hook reports an "already submitted" error instead.
+ * Distinguishes initial loading from subsequent pagination via `isLoading` and `isPaginating`, and surfaces
+ * the pay schedule for the prepared payroll's pay period.
  *
  * @param params - The company and payroll identifiers, plus optional employee filter, sort, and ready callback.
  * @returns The prepared payroll, its pay schedule, loading flags, and a `handlePreparePayroll` callback to re-run.
@@ -63,6 +67,11 @@ export const usePreparedPayrollData = ({
   const hasInitialDataRef = useRef(false)
   const hasFiredRef = useRef(false)
   const { baseSubmitHandler } = useBase()
+  const { data: payrollData, isFetching: isFetchingPayroll } = usePayrollsGetSuspense({
+    companyId,
+    payrollId,
+  })
+  const payrollShow = payrollData.payrollShow
 
   const employeeUuidsKey = useMemo(() => employeeUuids?.join(',') ?? '', [employeeUuids])
 
@@ -103,24 +112,28 @@ export const usePreparedPayrollData = ({
   ])
 
   const handlePreparePayroll = useCallback(async () => {
-    await baseSubmitHandler(null, () =>
-      retryAsync(executePrepare, {
+    await baseSubmitHandler(null, async () => {
+      if (isPayrollSubmitted(payrollShow)) {
+        throw createPayrollAlreadySubmittedError()
+      }
+      await retryAsync(executePrepare, {
         maxAttempts: PREPARE_MAX_ATTEMPTS,
         delayMs: PREPARE_RETRY_DELAY_MS,
         shouldRetry: isPayrollBeingProcessedError,
-      }),
-    )
-  }, [baseSubmitHandler, executePrepare])
+      })
+    })
+  }, [baseSubmitHandler, executePrepare, payrollShow])
 
   useEffect(() => {
-    if (hasFiredRef.current) return
+    if (hasFiredRef.current || isFetchingPayroll) return
     hasFiredRef.current = true
     void handlePreparePayroll()
-  }, [handlePreparePayroll])
+  }, [handlePreparePayroll, isFetchingPayroll])
 
+  const isAwaitingPayrollStatus = isFetchingPayroll && !hasFiredRef.current
   const isInitialLoading = isPreparePayrollPending && !hasInitialDataRef.current
   const isPaginating = isPreparePayrollPending && hasInitialDataRef.current
-  const isLoading = isInitialLoading || isPayScheduleLoading
+  const isLoading = isAwaitingPayrollStatus || isInitialLoading || isPayScheduleLoading
 
   return {
     handlePreparePayroll,
