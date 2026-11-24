@@ -111,10 +111,7 @@ export interface PayScheduleFormFields {
   /** Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. */
   Day2: ComponentType<Day2FieldProps> | undefined
   /**
-   * Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay
-   * overtime calculations. `undefined` when the `regularRateOfPay` flag in {@link Features} is
-   * set to `false`.
-   */
+   * Bound to `workweekStartDay`. Workweek start day selector, used for overtime calculations. */
   WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps> | undefined
 }
 
