@@ -213,7 +213,9 @@ describe('Dashboard', () => {
   it('displays employee basic details', async () => {
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeInTheDocument()
+    })
 
     expect(screen.getByText('Date of birth')).toBeInTheDocument()
     expect(screen.getByText('Personal email')).toBeInTheDocument()
@@ -224,7 +226,9 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('button', { name: 'Edit' }))
 
@@ -267,7 +271,9 @@ describe('Dashboard', () => {
 
     renderWithProviders(<DashboardFlow employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('button', { name: 'Edit' }))
 
@@ -296,7 +302,9 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Home address')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Home address')).toBeInTheDocument()
+    })
 
     const homeAddressBox = screen
       .getByRole('heading', { name: 'Home address' })
@@ -315,7 +323,9 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Work address')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Work address')).toBeInTheDocument()
+    })
 
     const workAddressBox = screen
       .getByRole('heading', { name: 'Work address' })
@@ -1862,13 +1872,15 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('tab', { name: 'Taxes' }))
 
-    await waitFor(() =>
-      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument(),
-    )
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
+    })
 
     const stateTaxesBox = screen
       .getByRole('heading', { name: 'State taxes' })
@@ -1903,12 +1915,14 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeInTheDocument()
+    })
     await user.click(screen.getByRole('tab', { name: 'Taxes' }))
 
-    await waitFor(() =>
-      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument(),
-    )
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
+    })
 
     const stateTaxesBox = screen
       .getByRole('heading', { name: 'State taxes' })
@@ -1930,11 +1944,15 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('tab', { name: 'Documents' }))
 
-    await waitFor(() => expect(screen.getByText('Form I-9')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Form I-9')).toBeInTheDocument()
+    })
   })
 
   it('emits EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED with employeeId and formId when clicking View on a form', async () => {
@@ -1943,11 +1961,15 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('tab', { name: 'Documents' }))
 
-    await waitFor(() => expect(screen.getByText('Form I-9')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText('Form I-9')).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('button', { name: 'View' }))
 

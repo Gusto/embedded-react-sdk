@@ -170,7 +170,9 @@ describe('DatePickerField', () => {
       // Open the calendar via the toggle button inside the date picker group
       const group = screen.getByRole('group', { name: new RegExp(LABEL, 'i') })
       await user.click(within(group).getByRole('button'))
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
 
       const june15 = screen
         .getAllByRole('button')
@@ -196,7 +198,9 @@ describe('DatePickerField', () => {
 
       const group = screen.getByRole('group', { name: new RegExp(LABEL, 'i') })
       await user.click(within(group).getByRole('button'))
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
 
       const june15 = screen
         .getAllByRole('button')
