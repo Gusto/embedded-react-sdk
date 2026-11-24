@@ -19,9 +19,9 @@ import { normalizeToDate } from '@/helpers/dateFormatting'
  * and the `employeeType` filter passed to {@link useEmployeeList}.
  *
  * @remarks
- * `manage` marks an employee who has finished onboarding and isn't viewed through the
- * `'terminated'` filter. It signals that the employee is managed from their profile rather than
- * through the onboarding steps.
+ * `manage` marks an employee who has finished onboarding, signaling that the employee is managed
+ * from their profile rather than through the onboarding steps. Like `edit`, it is omitted when
+ * `employeeType` is `'terminated'`.
  *
  * @public
  */
@@ -159,7 +159,8 @@ function deriveAllowedActions(
  * allowed for its current onboarding state.
  *
  * @remarks
- * Onboarded employees carry `manage` unless `employeeType` is `'terminated'`.
+ * Onboarded employees carry `manage`. Like `edit`, it is omitted when `employeeType` is
+ * `'terminated'`.
  *
  * `employeeType` maps to a server-side filter and changes which actions appear on each row:
  * `'active'` adds `dismiss` unless the employee already has a termination scheduled for a future

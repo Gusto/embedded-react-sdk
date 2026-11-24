@@ -20,7 +20,8 @@ allowed for its current onboarding state.
 
 ## Remarks
 
-Onboarded employees carry `manage` unless `employeeType` is `'terminated'`.
+Onboarded employees carry `manage`. Like `edit`, it is omitted when `employeeType` is
+`'terminated'`.
 
 `employeeType` maps to a server-side filter and changes which actions appear on each row:
 `'active'` adds `dismiss` unless the employee already has a termination scheduled for a future
@@ -124,9 +125,9 @@ and the `employeeType` filter passed to [useEmployeeList](#useemployeelist).
 
 #### Remarks
 
-`manage` marks an employee who has finished onboarding and isn't viewed through the
-`'terminated'` filter. It signals that the employee is managed from their profile rather than
-through the onboarding steps.
+`manage` marks an employee who has finished onboarding, signaling that the employee is managed
+from their profile rather than through the onboarding steps. Like `edit`, it is omitted when
+`employeeType` is `'terminated'`.
 
 ***
 
