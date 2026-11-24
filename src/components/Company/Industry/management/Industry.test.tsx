@@ -121,10 +121,7 @@ describe('CompanyManagement.Industry', () => {
       await user.type(comboBox, OTHER_INDUSTRY.comboBoxLabel)
       await user.click(await screen.findByRole('option', { name: OTHER_INDUSTRY.comboBoxLabel }))
 
-      // The editor is the onboarding industry form, whose terminal CTA still reads
-      // "Continue". Management-flavoured copy is a separate, pre-existing gap — the
-      // dashboard's industry spoke shows the same label today.
-      await user.click(screen.getByRole('button', { name: 'Continue' }))
+      await user.click(screen.getByRole('button', { name: 'Save' }))
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(

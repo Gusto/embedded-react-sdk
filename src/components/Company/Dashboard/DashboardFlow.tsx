@@ -38,17 +38,18 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * the dashboard after a successful edit. Wraps the dashboard in error and suspense boundaries.
  *
  * This is a hub-and-spoke surface with no terminal step, so it can stay mounted indefinitely. Each
- * spoke renders an existing company component — `CompanyOnboarding.Industry`,
- * `CompanyOnboarding.Locations`, `CompanyOnboarding.FederalTaxes`, `CompanyOnboarding.BankAccount`,
- * `CompanyManagement.PaySchedule`, `CompanyManagement.StateTaxes`,
- * `CompanyManagement.TaxPaymentsFlow`, `CompanyOnboarding.AssignSignatory`,
- * `CompanyOnboarding.DocumentSigner` — beneath a "Back to company
- * settings" header, which is the reliable way back: those components are submit-only or open
+ * spoke renders the same edit screen as the matching `CompanyManagement` block —
+ * `CompanyManagement.Industry`, `CompanyManagement.Locations`, `CompanyManagement.FederalTaxes`,
+ * `CompanyManagement.BankAccount`, `CompanyManagement.PaySchedule`,
+ * `CompanyManagement.StateTaxes`, `CompanyManagement.TaxPaymentsFlow`,
+ * `CompanyManagement.Signatory`, `CompanyManagement.CompanyForms` — beneath a "Back to company
+ * settings" header, which is the reliable way back: those screens are submit-only or open
  * directly into a form, and their own Cancel affordances belong to screens inside them.
  *
- * Every card and tab section is also exported as a self-contained block that can be dropped into a
- * custom layout without the surrounding dashboard chrome (see the components below). Using the
- * individual cards means owning the card-to-edit-screen swap, any success alerts, and
+ * Every card is also exported on its own (see the components below), as are the section blocks
+ * listed above and the tabbed {@link Dashboard} layout without the navigation. Each section block
+ * except `TaxPaymentsFlow` pairs its card with its edit screen and owns the swap between them and
+ * its success alert; using a bare card means owning that swap, any success alerts, and
  * cross-component state yourself.
  *
  * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the flag
@@ -60,22 +61,24 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/management/industry/editRequested` | Fired when "Edit" is clicked on the Industry card | `{ companyId: string }` |
- * | `company/industry/selected` | Fired after an industry is saved; the dashboard returns to the cards and surfaces the "Industry updated" alert | The updated `industry` |
+ * | `company/industry/selected` | Fired after an industry is saved, immediately before `company/management/industry/updated` | The updated `industry` |
+ * | `company/management/industry/updated` | Fired after an industry is saved; the dashboard returns to the cards and surfaces the "Industry updated" alert | The updated `industry` |
  * | `company/management/locations/editRequested` | Fired when "Manage" is clicked on the Locations card | `{ companyId: string }` |
  * | `company/location/add` | Fired when "Add location" is clicked on the manage screen; the manage screen stays open | — |
  * | `company/location/add/done` | Fired after a new location is created; the manage screen stays open | Created `Location` entity |
  * | `company/location/edit` | Fired when a location's "Edit" menu item is chosen; the manage screen stays open | — |
  * | `company/location/edit/done` | Fired after a location is updated; the manage screen stays open | Updated `Location` entity |
- * | `company/location/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards | — |
+ * | `company/management/locations/updated` | Fired after a location is created or updated; the manage screen stays open | The created or updated `Location` entity |
  * | `company/management/bankAccount/editRequested` | Fired when "Manage" or "Add bank account" is clicked on the Bank account card | `{ companyId: string }` |
  * | `company/bankAccount/change` | Fired when "Change bank account" is clicked on the manage screen; the manage screen stays open | — |
  * | `company/bankAccount/created` | Fired after a bank account is created; the manage screen stays open | Created `CompanyBankAccount` entity |
  * | `company/bankAccount/verify` | Fired when "Verify bank account" is clicked; the manage screen stays open | The `CompanyBankAccount` being verified |
  * | `company/bankAccount/verified` | Fired after micro-deposits are verified; the manage screen stays open | Verified `CompanyBankAccount` entity |
- * | `company/bankAccount/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards, surfacing the "Bank account updated" alert only if an account was created or verified during the visit | — |
+ * | `company/management/bankAccount/updated` | Fired after a bank account is created or verified; the manage screen stays open | The created or verified `CompanyBankAccount` entity |
  * | `company/management/federalTaxes/editRequested` | Fired when "Edit" is clicked on the Federal taxes card | `{ companyId: string }` |
- * | `company/federalTaxes/updated` | Fired after a federal-taxes save succeeds, immediately before `company/federalTaxes/done` | Updated `FederalTaxDetails` entity |
- * | `company/federalTaxes/done` | Fired after a federal-taxes save succeeds; the dashboard returns to the cards and surfaces the "Federal tax settings updated" alert | — |
+ * | `company/federalTaxes/updated` | Fired after a federal-taxes save succeeds, first of its three events | Updated `FederalTaxDetails` entity |
+ * | `company/federalTaxes/done` | Fired after a federal-taxes save succeeds, last of its three events | — |
+ * | `company/management/federalTaxes/updated` | Fired after a federal-taxes save succeeds; the dashboard returns to the cards and surfaces the "Federal tax settings updated" alert | Updated `FederalTaxDetails` entity |
  * | `company/management/paySchedule/editRequested` | Fired when "Manage" or "Add pay schedule" is clicked on the Pay schedules card | `{ companyId: string }` |
  * | `paySchedule/update` | Fired when a schedule's "Edit" is clicked on the manage screen; the manage screen stays open | `{ uuid: string }` |
  * | `paySchedule/updated` | Fired after a schedule is saved; the manage screen stays open | Updated `PayScheduleShow` entity |
@@ -89,6 +92,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/stateTaxes/manageRates` | Fired when a state's tax rate history is opened; the manage screen stays open | `{ state: string }` |
  * | `company/stateTaxes/updated` | Fired after a state's requirements are saved; the manage screen stays open | — |
  * | `company/stateTaxes/rateScheduled` | Fired after a future-dated tax rate is scheduled from a state's tax rate history; the manage screen stays open | `{ state: string, key: string, effectiveFrom: string, requirements: { key: string, value: string }[] }` |
+ * | `company/management/stateTaxes/updated` | Fired after a state's requirements are saved or a rate is scheduled; the manage screen stays open | The same payload as the event it accompanies |
  * | `company/management/taxPayments/editRequested` | Fired when "Manage" is clicked on the Tax payments card | `{ companyId: string }` |
  * | `company/taxPayments/view` | Fired when a tax payment is selected on the manage screen; the manage screen stays open | `{ taxPaymentId: string }` |
  * | `company/taxPayments/back` | Fired when the user returns from a tax payment to the manage screen; the manage screen stays open | — |
@@ -97,16 +101,17 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/signatory/created` | Fired after a signatory is created. From the Signatory card the assign screen stays open; from the documents screen it returns to the document list | Created `Signatory` entity |
  * | `company/signatory/updated` | Fired after a signatory is updated. From the Signatory card the assign screen stays open; from the documents screen it returns to the document list | Updated `Signatory` entity |
  * | `company/signatory/invited` | Fired after a signatory invitation is sent. From the Signatory card the assign screen stays open; from the documents screen it returns to the document list | The invited `Signatory` |
- * | `company/signatory/assignSignatory/done` | Fired once a signatory is assigned either way. From the Signatory card the dashboard returns to the cards and surfaces the "Signatory updated" alert; from the documents screen the document list stays open | — |
+ * | `company/signatory/assignSignatory/done` | Fired once a signatory is assigned either way. From the documents screen the document list stays open | — |
+ * | `company/management/signatory/updated` | Fired once a signatory is assigned from the Signatory card; the dashboard returns to the cards and surfaces the "Signatory updated" alert | — |
  * | `company/management/companyForms/editRequested` | Fired when "Manage" is clicked on the Documents card | `{ companyId: string }` |
  * | `company/forms/view` | Fired when a form is selected for signing on the manage screen; the manage screen stays open | The selected `Form` |
  * | `company/forms/editSignatory` | Fired when the user chooses to change the signatory on the manage screen; the manage screen opens its own assign-signatory step | The current `Signatory` |
  * | `company/forms/sign/signForm` | Fired after a form is signed; the manage screen stays open | The signed `Form` |
  * | `company/forms/sign/done` | Fired when the signature step closes; the manage screen stays open | — |
  * | `company/forms/sign/back` | Fired when the user leaves the signature form; the manage screen stays open | — |
- * | `company/forms/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards and surfaces the "Documents signed" alert if anything was signed | — |
+ * | `company/management/companyForms/updated` | Fired after a form is signed; the manage screen stays open | The signed `Form` |
  * | `company/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'companyDetails' \| 'pay' \| 'taxes' \| 'documents' }` |
- * | `company/dashboard/back` | Fired when the user clicks "Back to company settings" on a spoke; the dashboard returns to the cards. Leaving the state taxes screen surfaces the "State tax settings updated" alert if a state was saved or a rate scheduled during the visit | — |
+ * | `company/dashboard/back` | Fired when the user clicks "Back to company settings" on a spoke; the dashboard returns to the cards. Leaving the locations, bank account, state taxes or documents screen surfaces that section's success alert if something was saved or signed during the visit | — |
  * | `company/dashboard/alertDismissed` | Fired when the user dismisses a top-of-dashboard success alert | — |
  *
  * @components

@@ -30,5 +30,6 @@
     "941": "941 - Employer's Quarterly Federal Tax Return",
     "944": "944 - Employer's Annual Federal Tax Return"
   },
-  "continueCta": "Continue"
+  "continueCta": "Continue",
+  "saveCta": "Save"
 }
