@@ -169,7 +169,7 @@ before rendering.
 | `CustomTwicePerMonth` | `ComponentType`\<[`CustomTwicePerMonthFieldProps`](#customtwicepermonthfieldprops)\> \| `undefined` | Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
 | `Day1` | `ComponentType`\<[`Day1FieldProps`](#day1fieldprops)\> \| `undefined` | Bound to `day1`. First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
 | `Day2` | `ComponentType`\<[`Day2FieldProps`](#day2fieldprops)\> \| `undefined` | Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
-| `WorkweekStartDay` | `ComponentType`\<[`WorkweekStartDayFieldProps`](#workweekstartdayfieldprops)\> \| `undefined` | Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay overtime calculations. `undefined` when the `regularRateOfPay` flag in [Features](../../providers.md#features) is set to `false`. |
+| `WorkweekStartDay` | `ComponentType`\<[`WorkweekStartDayFieldProps`](#workweekstartdayfieldprops)\> \| `undefined` | Bound to `workweekStartDay`. Workweek start day selector, used for overtime calculations. |
 
 ***
 
@@ -388,9 +388,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### WorkweekStartDay
 
-Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay
-overtime calculations. `undefined` when the `regularRateOfPay` flag in [Features](../../providers.md#features) is
-set to `false`.
+Bound to `workweekStartDay`. Workweek start day selector, used for overtime calculations.
 
 ```tsx
 {form.Fields.WorkweekStartDay && (

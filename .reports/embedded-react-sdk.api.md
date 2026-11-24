@@ -3352,8 +3352,9 @@ export type EventType = (typeof componentEvents)[keyof typeof componentEvents];
 // @public
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
-// @public
-export interface Features {
+// @internal
+export interface _Features {
+    // (undocumented)
     regularRateOfPay?: boolean;
 }
 
@@ -3584,7 +3585,8 @@ export interface GustoBaseProviderProps {
     config: APIConfig;
     currency?: string;
     dictionary?: GlobalResourceDictionary;
-    features?: Features;
+    // @internal
+    features?: _Features;
     lng?: string;
     LoaderComponent?: (input: {
         children?: ReactNode;
