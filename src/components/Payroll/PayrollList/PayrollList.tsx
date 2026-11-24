@@ -112,6 +112,7 @@ const Root = ({
   const dateRangeFilter = useDateRangeFilter({
     initialStartDate: getDefaultStartDate(),
     initialEndDate: getDefaultEndDate(),
+    latestAllowedEndDate: getDefaultEndDate(),
     onFilterChange: useCallback(() => {
       resetPage()
     }, [resetPage]),
