@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.59.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.59.1...v0.59.2) (2026-11-24)
+
+### Features & Enhancements
+
+- Export `useContractorList` as a public hook ([#3143](https://github.com/Gusto/embedded-react-sdk/issues/3143))
+- `Payroll.PayrollOverview`'s fast ACH blocker now shows an acceptance checkbox instead of a redundant radio button when there's only one unblock option ([#3135](https://github.com/Gusto/embedded-react-sdk/issues/3135))
+- Add the alpha `CompanyManagement.FederalTaxes` block for reviewing and managing a company's federal tax setup. Gated behind the `companySettingsDashboard` flag in `UnstableFeatures` ([#3162](https://github.com/Gusto/embedded-react-sdk/issues/3162))
+- Add the alpha `CompanyManagement.Locations` block for reviewing and managing a company's work locations. Gated behind the `companySettingsDashboard` flag in `UnstableFeatures` ([#3163](https://github.com/Gusto/embedded-react-sdk/issues/3163))
+
+### Fixes
+
+- Stop refetching queries when returning to the tab after a 401 ([#3179](https://github.com/Gusto/embedded-react-sdk/issues/3179))
+- Mark the `features` config as internal ([#3188](https://github.com/Gusto/embedded-react-sdk/issues/3188))
+
+### Chores & Maintenance
+
+- Bump dependencies (`@hookform/resolvers`, `@mswjs/interceptors`, `@storybook/addon-a11y`, `@storybook/addon-docs`, `@storybook/addon-onboarding`, `@storybook/test-runner`, `@testing-library/user-event`, `@testing-library/jest-dom`, `@typescript-eslint/rule-tester`, `@vitest/coverage-v8`, `axe-core`, `cspell`, `dompurify`, `eslint-plugin-storybook`, `i18next`, `lint-staged`, `markdownlint-cli2`, `msw`, `react-i18next`, `typescript-eslint`, `vite-plugin-stylelint`, `vitest`)
+
 ## [0.59.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.59.0...v0.59.1) (2026-11-17)
 
 ### Features & Enhancements
