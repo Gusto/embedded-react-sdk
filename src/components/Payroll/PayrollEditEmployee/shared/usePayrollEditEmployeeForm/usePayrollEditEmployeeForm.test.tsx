@@ -262,7 +262,7 @@ describe('usePayrollEditEmployeeForm', () => {
     await waitFor(() => {
       expect(result.current.errorHandling.errors).toMatchObject([ALREADY_SUBMITTED_ERROR])
     })
-    expect(result.current.isLoading).toBe(true)
+    expect(result.current).toMatchObject({ isLoading: true, isPayrollAlreadySubmitted: true })
     expect(prepareResolver).not.toHaveBeenCalled()
   })
 

@@ -4,6 +4,7 @@ import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payro
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
@@ -16,7 +17,9 @@ import { useFeature } from '@/contexts/FeaturesProvider/useFeature'
 import { componentEvents } from '@/shared/constants'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
-import { useComponentDictionary } from '@/i18n'
+import { useComponentDictionary, useI18n } from '@/i18n'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { EmptyData } from '@/components/Common'
 import { useBase } from '@/components/Base/useBase'
 
 /**
@@ -91,6 +94,9 @@ const Root = ({
   className,
 }: PayrollEditEmployeeProps) => {
   useComponentDictionary('Payroll.PayrollEditEmployee', dictionary)
+  useI18n('Payroll.PayrollEditEmployee')
+  const { t } = useTranslation('Payroll.PayrollEditEmployee')
+  const { Button } = useComponentContext()
 
   const queryClient = useQueryClient()
   const { LoadingIndicator, baseSubmitHandler } = useBase()
@@ -103,12 +109,13 @@ const Root = ({
   const { data: payrollData } = usePayrollsGetSuspense({ companyId, payrollId })
   const isTransitionPayroll =
     derivePayrollCategory(payrollData.payrollShow ?? {}) === PayrollCategory.Transition
-  const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
-    companyId,
-    payrollId,
-    employeeUuids: memoizedEmployeeId,
-    isTransitionPayroll,
-  })
+  const { preparedPayroll, paySchedule, isLoading, isPayrollAlreadySubmitted } =
+    usePreparedPayrollData({
+      companyId,
+      payrollId,
+      employeeUuids: memoizedEmployeeId,
+      isTransitionPayroll,
+    })
 
   const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
 
@@ -181,6 +188,19 @@ const Root = ({
 
   if (isLoading) {
     return <LoadingIndicator />
+  }
+
+  if (isPayrollAlreadySubmitted) {
+    return (
+      <EmptyData
+        title={t('alreadySubmitted.title')}
+        description={t('alreadySubmitted.description')}
+      >
+        <Button variant="secondary" onClick={onCancel}>
+          {t('alreadySubmitted.backCta')}
+        </Button>
+      </EmptyData>
+    )
   }
 
   return (

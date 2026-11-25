@@ -237,6 +237,26 @@ const Root = ({
   })
 
   if (form.isLoading) {
+    if (form.isPayrollAlreadySubmitted) {
+      return (
+        <div ref={containerRef} className={styles.container}>
+          <EmptyData
+            title={t('alreadySubmitted.title')}
+            description={t('alreadySubmitted.description')}
+          >
+            <Button
+              variant="secondary"
+              onClick={() => {
+                onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED)
+              }}
+            >
+              {t('alreadySubmitted.backCta')}
+            </Button>
+          </EmptyData>
+        </div>
+      )
+    }
+
     return (
       <div ref={containerRef} className={styles.container}>
         <BaseLayout isLoading error={form.errorHandling.errors} LoaderComponent={LoaderComponent} />

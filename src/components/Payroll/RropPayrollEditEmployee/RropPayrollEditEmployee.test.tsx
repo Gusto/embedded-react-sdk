@@ -340,18 +340,18 @@ describe('RropPayrollEditEmployee', () => {
     expect(updateBody).not.toBeNull()
   })
 
-  it('shows the already-submitted error instead of the editor when the payroll is submitted', async () => {
+  it('shows the already-submitted state with a way back instead of the editor when the payroll is submitted', async () => {
+    const user = userEvent.setup()
     const prepareResolver = vi.fn<HttpResponseResolver>(() =>
       HttpResponse.json(multiWorkweekPrepare('0')),
     )
     server.use(handlePayrollsPrepare(prepareResolver), handleGetSubmittedPayroll())
     renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
-    expect(
-      await screen.findByText(
-        'This payroll has already been submitted, so it can no longer be edited. To make changes, cancel the payroll and run it again.',
-      ),
-    ).toBeInTheDocument()
+    expect(await screen.findByText('This payroll has already been submitted')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Back to payroll' }))
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED)
     expect(prepareResolver).not.toHaveBeenCalled()
   })
 

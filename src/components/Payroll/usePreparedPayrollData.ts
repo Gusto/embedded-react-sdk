@@ -6,7 +6,7 @@ import type { PayrollPrepared } from '@gusto/embedded-api/models/components/unpr
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useBase } from '../Base'
-import { createPayrollAlreadySubmittedError, isPayrollSubmitted } from './helpers'
+import { isPayrollSubmitted } from './helpers'
 import { retryAsync } from '@/helpers/retryAsync'
 
 interface UsePreparedPayrollDataParams {
@@ -29,6 +29,8 @@ interface UsePreparedPayrollDataReturn {
   isLoading: boolean
   isPaginating: boolean
   hasInitialData: boolean
+  /** `true` once the payroll is found to be already submitted, in which case prepare is skipped. */
+  isPayrollAlreadySubmitted: boolean
 }
 
 const PREPARE_MAX_ATTEMPTS = 4
@@ -45,7 +47,7 @@ const isPayrollBeingProcessedError = (error: unknown): boolean => {
  * @remarks
  * Fires the prepare call once on mount, after a fresh read of the payroll, then exposes `handlePreparePayroll`
  * for callers that need to re-prepare (e.g. after sort or pagination changes). A submitted payroll is never
- * prepared: prepare always fails for one, so the hook reports an "already submitted" error instead.
+ * prepared: prepare always fails for one, so the hook sets `isPayrollAlreadySubmitted` instead.
  * Distinguishes initial loading from subsequent pagination via `isLoading` and `isPaginating`, and surfaces
  * the pay schedule for the prepared payroll's pay period.
  *
@@ -66,6 +68,7 @@ export const usePreparedPayrollData = ({
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
   const hasInitialDataRef = useRef(false)
   const hasFiredRef = useRef(false)
+  const [isPayrollAlreadySubmitted, setIsPayrollAlreadySubmitted] = useState(false)
   const { baseSubmitHandler } = useBase()
   const { data: payrollData, isFetching: isFetchingPayroll } = usePayrollsGetSuspense({
     companyId,
@@ -112,16 +115,17 @@ export const usePreparedPayrollData = ({
   ])
 
   const handlePreparePayroll = useCallback(async () => {
-    await baseSubmitHandler(null, async () => {
-      if (isPayrollSubmitted(payrollShow)) {
-        throw createPayrollAlreadySubmittedError()
-      }
-      await retryAsync(executePrepare, {
+    if (isPayrollSubmitted(payrollShow)) {
+      setIsPayrollAlreadySubmitted(true)
+      return
+    }
+    await baseSubmitHandler(null, () =>
+      retryAsync(executePrepare, {
         maxAttempts: PREPARE_MAX_ATTEMPTS,
         delayMs: PREPARE_RETRY_DELAY_MS,
         shouldRetry: isPayrollBeingProcessedError,
-      })
-    })
+      }),
+    )
   }, [baseSubmitHandler, executePrepare, payrollShow])
 
   useEffect(() => {
@@ -142,5 +146,6 @@ export const usePreparedPayrollData = ({
     isLoading,
     isPaginating,
     hasInitialData: hasInitialDataRef.current,
+    isPayrollAlreadySubmitted,
   }
 }

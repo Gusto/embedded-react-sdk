@@ -15,16 +15,14 @@ import {
   handlePayrollsPrepare,
 } from '@/test/mocks/apis/payrolls'
 
-const ALREADY_SUBMITTED_MESSAGE =
-  'This payroll has already been submitted, so it can no longer be edited. To make changes, cancel the payroll and run it again.'
-
 function PreparedPayrollProbe() {
-  const { preparedPayroll, isLoading } = usePreparedPayrollData({
+  const { preparedPayroll, isLoading, isPayrollAlreadySubmitted } = usePreparedPayrollData({
     companyId: 'company-1',
     payrollId: 'payroll-1',
   })
 
   if (isLoading) return <p>Loading prepared payroll</p>
+  if (isPayrollAlreadySubmitted) return <p>Payroll already submitted</p>
   return <p>{preparedPayroll ? 'Prepared payroll ready' : 'No prepared payroll'}</p>
 }
 
@@ -60,12 +58,12 @@ describe('usePreparedPayrollData', () => {
     expect(prepareResolver).toHaveBeenCalledTimes(1)
   })
 
-  it('skips prepare and shows the already-submitted error when the payroll is submitted', async () => {
+  it('skips prepare and reports the payroll as already submitted', async () => {
     server.use(handleGetSubmittedPayroll())
 
     renderProbe()
 
-    expect(await screen.findByText(ALREADY_SUBMITTED_MESSAGE)).toBeInTheDocument()
+    expect(await screen.findByText('Payroll already submitted')).toBeInTheDocument()
     expect(prepareResolver).not.toHaveBeenCalled()
   })
 
@@ -80,7 +78,7 @@ describe('usePreparedPayrollData', () => {
     await queryClient.invalidateQueries()
     renderProbe(queryClient)
 
-    expect(await screen.findByText(ALREADY_SUBMITTED_MESSAGE)).toBeInTheDocument()
+    expect(await screen.findByText('Payroll already submitted')).toBeInTheDocument()
     expect(prepareResolver).toHaveBeenCalledTimes(1)
   })
 })

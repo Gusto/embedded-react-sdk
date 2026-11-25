@@ -218,13 +218,29 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
 }
 
 /**
- * Discriminated union returned by {@link usePayrollEditEmployeeForm}. Loading
- * branch carries only `errorHandling`; ready branch carries form data, fields,
- * status, and actions.
+ * Loading-state return value of {@link usePayrollEditEmployeeForm} — the
+ * `isLoading: true` branch of {@link UsePayrollEditEmployeeFormResult}.
  *
  * @public
  */
-export type UsePayrollEditEmployeeFormResult = HookLoadingResult | UsePayrollEditEmployeeFormReady
+export interface UsePayrollEditEmployeeFormLoading extends HookLoadingResult {
+  /**
+   * `true` once the payroll is found to be already submitted. A submitted
+   * payroll can't be prepared, so the hook stays in this branch and
+   * `errorHandling` also carries an "already submitted" error.
+   */
+  isPayrollAlreadySubmitted: boolean
+}
+
+/**
+ * Discriminated union returned by {@link usePayrollEditEmployeeForm}. Loading
+ * branch carries `errorHandling` and `isPayrollAlreadySubmitted`; ready branch
+ * carries form data, fields, status, and actions.
+ *
+ * @public
+ */
+export type UsePayrollEditEmployeeFormResult =
+  UsePayrollEditEmployeeFormLoading | UsePayrollEditEmployeeFormReady
 
 /**
  * Headless form hook for editing a single employee's compensation within a
@@ -234,7 +250,8 @@ export type UsePayrollEditEmployeeFormResult = HookLoadingResult | UsePayrollEdi
  * Prepares the payroll for the target employee, then exposes a workweek-keyed
  * form whose submit builds a `PayrollUpdate`. Prepare waits for a fresh read of
  * the payroll and is skipped once the payroll is submitted; the hook then stays
- * in its loading branch with an "already submitted" error in `errorHandling`.
+ * in its loading branch with `isPayrollAlreadySubmitted` set and an "already
+ * submitted" error in `errorHandling`.
  * Single-workweek pay periods send totals without `breakdowns`; multi-workweek
  * pay periods send `breakdowns` per line once that line's every workweek cell
  * is filled. Overtime-eligible (nonexempt) employees split hours and
@@ -275,11 +292,13 @@ export function usePayrollEditEmployeeForm({
 
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
   const [prepareError, setPrepareError] = useState<Error | null>(null)
+  const [isPayrollAlreadySubmitted, setIsPayrollAlreadySubmitted] = useState(false)
   const hasFiredRef = useRef(false)
 
   const executePrepare = useCallback(async () => {
     setPrepareError(null)
     if (isPayrollSubmitted(payrollShow)) {
+      setIsPayrollAlreadySubmitted(true)
       setPrepareError(createPayrollAlreadySubmittedError())
       return
     }
@@ -723,7 +742,7 @@ export function usePayrollEditEmployeeForm({
   }
 
   if (!preparedPayroll || !employee) {
-    return { isLoading: true as const, errorHandling }
+    return { isLoading: true as const, errorHandling, isPayrollAlreadySubmitted }
   }
 
   return {
