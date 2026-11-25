@@ -11,27 +11,52 @@ interface UseDateRangeFilterOptions {
   latestAllowedEndDate?: Date
 }
 
-interface DateRangeApiParams {
+/**
+ * `YYYY-MM-DD` query parameters produced by {@link UseDateRangeFilterResult.getApiDateParams}.
+ *
+ * @remarks
+ * Each key is present only when the matching endpoint of the range is set, so the object can be
+ * spread directly into a list request without sending empty values.
+ *
+ * @public
+ */
+export interface DateRangeApiParams {
+  /** Inclusive start of the range as a `YYYY-MM-DD` string; omitted when no start date is set. */
   startDate?: string
+  /** Inclusive end of the range as a `YYYY-MM-DD` string; omitted when no end date is set. */
   endDate?: string
 }
 
 /**
- * Return shape of {@link useDateRangeFilter}, exposing the current filter dates,
- * change handlers, and helpers for date-picker bounds and API query params.
+ * A start/end date range filter: the current dates, change handlers, and helpers for
+ * date-picker bounds and API query params.
  *
- * @internal
+ * @remarks
+ * Returned on hooks that expose a date filter, such as
+ * {@link usePayrollList | usePayrollList}'s `dateRangeFilter`. Wire the handlers to your own
+ * date inputs and spread `getApiDateParams()` into requests. The span between the two dates is
+ * capped at 12 months, which `getMaxEndDate` and `getMinStartDate` express as picker bounds.
+ *
+ * @public
  */
 export interface UseDateRangeFilterResult {
+  /** Inclusive start of the selected range, or `null` when unset. */
   startDate: Date | null
+  /** Inclusive end of the selected range, or `null` when unset. */
   endDate: Date | null
-  /** True when the current dates differ from the initial dates the hook was seeded with. */
+  /** True when the current dates differ from the initial dates the filter was seeded with. */
   isModified: boolean
+  /** Sets the start date, or clears it when passed `null`. */
   handleStartDateChange: (date: Date | null) => void
+  /** Sets the end date, or clears it when passed `null`. */
   handleEndDateChange: (date: Date | null) => void
+  /** Returns both dates to the initial values the filter was seeded with. */
   handleClearFilter: () => void
+  /** Returns the set dates as `YYYY-MM-DD` request params — see {@link DateRangeApiParams}. */
   getApiDateParams: () => DateRangeApiParams
+  /** Latest date the end date may be set to, or `undefined` when unbounded. */
   getMaxEndDate: () => Date | undefined
+  /** Earliest date the start date may be set to, or `undefined` when unbounded. */
   getMinStartDate: () => Date | undefined
 }
 

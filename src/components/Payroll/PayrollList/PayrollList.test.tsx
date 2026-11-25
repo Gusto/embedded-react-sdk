@@ -424,6 +424,7 @@ describe('PayrollList', () => {
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(componentEvents.PAYROLL_SKIPPED, {
           payrollId: 'payroll-regular-1',
+          payroll: expect.objectContaining({ payrollUuid: 'payroll-regular-1' }),
         })
       })
       expect(skipResolver).toHaveBeenCalledTimes(1)
@@ -514,6 +515,7 @@ describe('PayrollList', () => {
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(componentEvents.PAYROLL_DELETED, {
           payrollId: bonusPayroll.payroll_uuid,
+          payroll: expect.objectContaining({ payrollUuid: bonusPayroll.payroll_uuid }),
         })
       })
       expect(deletePath).toBe(

@@ -2765,6 +2765,12 @@ export interface DateRange {
 }
 
 // @public
+export interface DateRangeApiParams {
+    endDate?: string;
+    startDate?: string;
+}
+
+// @public
 export interface DateRangePickerProps {
     endDateLabel: string;
     label: string;
@@ -4900,7 +4906,13 @@ interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLan
 }
 
 // @public
-function PayrollList(props: PayrollListBlockProps): JSX;
+function PayrollList(input: PayrollListBlockProps): JSX;
+
+// @public
+export interface PayrollListActionResult {
+    payroll: Payroll_2;
+    payrollId: string;
+}
 
 // @public
 interface PayrollListBlockProps extends BaseComponentInterface<never> {
@@ -7067,6 +7079,19 @@ export function useCurrentWorkAddressForm(props: UseCurrentWorkAddressFormProps)
 export type UseCurrentWorkAddressFormProps = Omit<UseWorkAddressFormProps, 'workAddressUuid'>;
 
 // @public
+export interface UseDateRangeFilterResult {
+    endDate: Date | null;
+    getApiDateParams: () => DateRangeApiParams;
+    getMaxEndDate: () => Date | undefined;
+    getMinStartDate: () => Date | undefined;
+    handleClearFilter: () => void;
+    handleEndDateChange: (date: Date | null) => void;
+    handleStartDateChange: (date: Date | null) => void;
+    isModified: boolean;
+    startDate: Date | null;
+}
+
+// @public
 export function useDeductionForm(input: UseDeductionFormProps): UseDeductionFormResult;
 
 // @public
@@ -7374,6 +7399,36 @@ export interface UsePaymentMethodFormReady extends BaseFormHookReady<PaymentMeth
 
 // @public
 export type UsePaymentMethodFormResult = HookLoadingResult | UsePaymentMethodFormReady;
+
+// @public
+export function usePayrollList(input: UsePayrollListProps): UsePayrollListResult;
+
+// @public
+export interface UsePayrollListProps {
+    companyId: string;
+}
+
+// @public
+export interface UsePayrollListReady extends BaseHookReady<{
+    payrolls: Payroll_2[];
+    paySchedules: PayScheduleShow[];
+    blockers: ApiPayrollBlocker[];
+    wireInRequests: WireInRequest[];
+}, {
+    hasUnprocessedTransitions: boolean;
+    skippingPayrollId: string | null;
+    deletingPayrollId: string | null;
+}> {
+    actions: {
+        onSkip: (payrollId: string) => Promise<HookSubmitResult<PayrollListActionResult> | undefined>;
+        onDelete: (payrollId: string) => Promise<HookSubmitResult<PayrollListActionResult> | undefined>;
+    };
+    dateRangeFilter: UseDateRangeFilterResult;
+    pagination: PaginationControlProps;
+}
+
+// @public
+export type UsePayrollListResult = HookLoadingResult | UsePayrollListReady;
 
 // @public
 export function usePayScheduleForm(input: UsePayScheduleFormProps): HookLoadingResult | UsePayScheduleFormReady;

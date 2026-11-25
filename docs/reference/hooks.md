@@ -24,6 +24,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | [useContractorTaxForms](contractor/hooks/use-contractor-tax-forms) | Standalone data hook for a contractor's tax forms (1099s). |
 | [useDismissal](contractor/hooks/use-dismissal) | Fetches a contractor and exposes an action to schedule their dismissal. |
 | [useEmployeeList](employee/hooks/use-employee-list) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
+| [usePayrollList](payroll/hooks/use-payroll-list) | Fetches a company's upcoming (unprocessed) payrolls along with the pay schedules, blockers, and wire-in requests needed to present them, and skips or deletes individual payrolls. |
 
 ## ✍️ Form hooks
 
@@ -358,6 +359,7 @@ narrowing. `isLoading: false` discriminates this branch from
 - [`UseDismissalReady`](contractor/hooks/use-dismissal.md#usedismissalready)
 - [`UseContractorListReady`](contractor/hooks/use-contractor-list.md#usecontractorlistready)
 - [`UseContractorPaymentMethodSummaryReady`](contractor/hooks/use-contractor-payment-method-summary.md#usecontractorpaymentmethodsummaryready)
+- [`UsePayrollListReady`](payroll/hooks/use-payroll-list.md#usepayrolllistready)
 
 #### Type Parameters
 

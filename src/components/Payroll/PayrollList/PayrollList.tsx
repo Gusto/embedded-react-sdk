@@ -1,31 +1,15 @@
-import { useState, useCallback } from 'react'
-import { useQueryClient, keepPreviousData } from '@tanstack/react-query'
-import {
-  usePayrollsList,
-  invalidateAllPayrollsList,
-} from '@gusto/embedded-api/react-query/payrollsList'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
-import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
-import { usePayrollsDeleteMutation } from '@gusto/embedded-api/react-query/payrollsDelete'
-import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
-import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
-import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
-import {
-  ProcessingStatuses,
-  QueryParamPayrollTypes,
-} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+import { useState, type ErrorInfo } from 'react'
 import {
   OffCycleReasonType,
   type Payroll,
 } from '@gusto/embedded-api/models/components/unprocessedpayroll'
-import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
-import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import { PayrollListPresentation } from './PayrollListPresentation'
+import { usePayrollList } from './shared/usePayrollList'
 import type { BaseComponentInterface } from '@/components/Base'
-import { BaseComponent, BaseLayout, useBase } from '@/components/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
-import { usePagination } from '@/hooks/usePagination/usePagination'
-import { useDateRangeFilter } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { normalizeToSDKError, type SDKError } from '@/types/sdkError'
 
 /**
  * Props for {@link PayrollList}.
@@ -39,6 +23,12 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
   withOffcyclePayroll?: boolean
 }
 
+const COMPONENT_NAME = 'Payroll.PayrollList'
+
+function toThrowable(error: SDKError): unknown {
+  return error.raw instanceof Error ? error.raw : new Error(error.message)
+}
+
 /**
  * Lists upcoming payrolls and lets users start running them.
  *
@@ -48,6 +38,9 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
  * call-to-action starts an off-cycle payroll.
  *
  * @remarks
+ * Data fetching, filtering, pagination, and the skip and delete actions come from
+ * {@link usePayrollList}; use that hook directly to build this screen with your own layout.
+ *
  * When the company has unprocessed transition pay periods within the next
  * 90 days, the Run Payroll action on Regular rows is disabled to prevent a
  * regular payroll from being run before the transition is resolved. Off-cycle
@@ -68,102 +61,69 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
  * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |
  * | `transition/payrollSelected` | User selected a transition payroll to run | `{ payrollUuid, payPeriod }` |
  * | `payroll/review` | User selected a calculated payroll to review and submit | `{ payrollUuid, payPeriod }` |
- * | `payroll/skipped` | A payroll was successfully skipped | `{ payrollId }` |
- * | `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId }` |
+ * | `payroll/skipped` | A payroll was successfully skipped | `{ payrollId, payroll }` |
+ * | `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId, payroll }` |
  * | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
  *
  * @param props - See {@link PayrollListBlockProps}.
  * @returns The rendered payroll list.
  * @public
  */
-export function PayrollList(props: PayrollListBlockProps) {
+export function PayrollList({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: PayrollListBlockProps) {
+  const { observability } = useObservability()
+
+  const onErrorBoundaryError = (boundaryError: unknown, errorInfo: ErrorInfo) => {
+    props.onEvent(componentEvents.ERROR, boundaryError)
+
+    observability?.onError?.({
+      ...normalizeToSDKError(boundaryError),
+      timestamp: Date.now(),
+      componentName: COMPONENT_NAME,
+      componentStack: errorInfo.componentStack ?? undefined,
+    })
+  }
+
   return (
-    <BaseComponent {...props}>
-      <Root {...props} />
-    </BaseComponent>
+    <BaseBoundaries
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+      componentName={COMPONENT_NAME}
+      onErrorBoundaryError={onErrorBoundaryError}
+    >
+      <Root LoaderComponent={LoaderComponent} {...props} />
+    </BaseBoundaries>
   )
 }
 
-const FUTURE_LOOKAHEAD_MONTHS = 3
-
-const getDefaultStartDate = (): Date => new Date()
-
-const getDefaultEndDate = (): Date => {
-  const date = new Date()
-  date.setMonth(date.getMonth() + FUTURE_LOOKAHEAD_MONTHS)
-  return date
-}
-
-const Root = ({
+function Root({
   companyId,
   onEvent,
   withOffcyclePayroll = true,
   LoaderComponent,
   className,
-}: PayrollListBlockProps) => {
-  const { baseSubmitHandler } = useBase()
-  const queryClient = useQueryClient()
+}: Omit<PayrollListBlockProps, 'FallbackComponent'>) {
+  const payrollList = usePayrollList({ companyId })
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
-  const [skippingPayrollId, setSkippingPayrollId] = useState<string | null>(null)
-  const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
   const [showDeleteSuccessAlert, setShowDeleteSuccessAlert] = useState(false)
-  const [deletingPayrollId, setDeletingPayrollId] = useState<string | null>(null)
 
-  const dateRangeFilter = useDateRangeFilter({
-    initialStartDate: getDefaultStartDate(),
-    initialEndDate: getDefaultEndDate(),
-    latestAllowedEndDate: getDefaultEndDate(),
-    onFilterChange: useCallback(() => {
-      resetPage()
-    }, [resetPage]),
-  })
-  const dateFilterParams = dateRangeFilter.getApiDateParams()
+  const { errors } = payrollList.errorHandling
 
-  const { data: payrollsData, isFetching } = usePayrollsList(
-    {
-      companyId,
-      processingStatuses: [ProcessingStatuses.Unprocessed],
-      startDate: dateFilterParams.startDate,
-      endDate: dateFilterParams.endDate,
-      payrollTypes: [QueryParamPayrollTypes.Regular, QueryParamPayrollTypes.OffCycle],
-      includeOffCycle: true,
-      page: currentPage,
-      per: itemsPerPage,
-    },
-    { placeholderData: keepPreviousData, throwOnError: true },
-  )
-  const payrollList = payrollsData?.payrollList ?? []
-  const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({
-    companyId,
-  })
-  const paySchedulesList = paySchedulesData.payScheduleShowResponse!
+  if (payrollList.isLoading) {
+    // Nothing rendered yet, so a failed query has no surface to show an alert against.
+    // Throw it to the boundary above, which emits `componentEvents.ERROR` and renders
+    // `FallbackComponent`.
+    const [loadError] = errors
+    if (loadError) throw toThrowable(loadError)
 
-  const { data: blockersData } = usePayrollsGetBlockersSuspense({
-    companyUuid: companyId,
-  })
-
-  const payrollBlockerList = blockersData.payrollBlockers ?? []
-
-  const blockers: ApiPayrollBlocker[] = payrollBlockerList.map(
-    (blocker: { key?: string; message?: string }) => ({
-      key: blocker.key ?? 'unknown',
-      message: blocker.message,
-    }),
-  )
-
-  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
-    companyUuid: companyId,
-  })
-
-  const wireInRequests = wireInRequestsData.wireInRequestList ?? []
-
-  const { hasUnprocessedTransitions } = useUnprocessedTransitionPayPeriods(companyId)
-
-  const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
-  const { mutateAsync: deletePayrollMutation } = usePayrollsDeleteMutation()
+    return <BaseLayout isLoading LoaderComponent={LoaderComponent} />
+  }
 
   const onRunPayroll = ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
-    const payroll = payrollList.find(payroll => payroll.payrollUuid === payrollUuid)
+    const payroll = payrollList.data.payrolls.find(item => item.payrollUuid === payrollUuid)
     const isTransitionPayroll =
       payroll?.offCycleReason === OffCycleReasonType.TransitionFromOldPaySchedule
 
@@ -174,92 +134,59 @@ const Root = ({
       { payrollUuid, payPeriod },
     )
   }
-  const onRunOffCyclePayroll = () => {
-    onEvent(componentEvents.RUN_OFF_CYCLE_PAYROLL)
-  }
-  const onSubmitPayroll = ({
-    payrollUuid,
-    payPeriod,
-  }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
-    onEvent(componentEvents.REVIEW_PAYROLL, { payrollUuid, payPeriod })
-  }
+
   const onSkipPayroll = async ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => {
-    const payroll = payrollList.find(payroll => payroll.payrollUuid === payrollUuid)
+    if (!payrollUuid) return
 
-    if (payroll?.payPeriod) {
-      setSkippingPayrollId(payrollUuid!)
-      const payrollType =
-        payroll.offCycleReason === 'Transition from old pay schedule'
-          ? PayrollType.TransitionFromOldPaySchedule
-          : PayrollType.Regular
+    const result = await payrollList.actions.onSkip(payrollUuid)
+    if (!result) return
 
-      await baseSubmitHandler({}, async () => {
-        await skipPayroll({
-          request: {
-            companyUuid: companyId,
-            requestBody: {
-              payrollType,
-              startDate: payroll.payPeriod?.startDate ?? undefined,
-              endDate: payroll.payPeriod?.endDate ?? undefined,
-              payScheduleUuid: payroll.payPeriod?.payScheduleUuid ?? undefined,
-            },
-          },
-        })
-
-        setShowSkipSuccessAlert(true)
-        onEvent(componentEvents.PAYROLL_SKIPPED, { payrollId: payrollUuid })
-      })
-      setSkippingPayrollId(null)
-    }
+    setShowSkipSuccessAlert(true)
+    onEvent(componentEvents.PAYROLL_SKIPPED, result.data)
   }
 
   const onDeletePayroll = async ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => {
-    if (payrollUuid) {
-      setDeletingPayrollId(payrollUuid)
-      await baseSubmitHandler({}, async () => {
-        await deletePayrollMutation({
-          request: { companyId, payrollId: payrollUuid },
-        })
-        await invalidateAllPayrollsList(queryClient)
-        setShowDeleteSuccessAlert(true)
-        onEvent(componentEvents.PAYROLL_DELETED, { payrollId: payrollUuid })
-      })
-      setDeletingPayrollId(null)
-    }
-  }
+    if (!payrollUuid) return
 
-  if (!payrollsData) {
-    return <BaseLayout isLoading LoaderComponent={LoaderComponent} />
-  }
+    const result = await payrollList.actions.onDelete(payrollUuid)
+    if (!result) return
 
-  const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers, isFetching)
+    setShowDeleteSuccessAlert(true)
+    onEvent(componentEvents.PAYROLL_DELETED, result.data)
+  }
 
   return (
-    <PayrollListPresentation
-      className={className}
-      payrolls={payrollList}
-      pagination={paginationProps}
-      paySchedules={paySchedulesList}
-      onRunPayroll={onRunPayroll}
-      onSubmitPayroll={onSubmitPayroll}
-      onSkipPayroll={onSkipPayroll}
-      onDeletePayroll={onDeletePayroll}
-      onRunOffCyclePayroll={onRunOffCyclePayroll}
-      showSkipSuccessAlert={showSkipSuccessAlert}
-      onDismissSkipSuccessAlert={() => {
-        setShowSkipSuccessAlert(false)
-      }}
-      showDeleteSuccessAlert={showDeleteSuccessAlert}
-      onDismissDeleteSuccessAlert={() => {
-        setShowDeleteSuccessAlert(false)
-      }}
-      skippingPayrollId={skippingPayrollId}
-      deletingPayrollId={deletingPayrollId}
-      blockers={blockers}
-      wireInRequests={wireInRequests}
-      dateRangeFilter={dateRangeFilter}
-      hasUnprocessedTransitions={hasUnprocessedTransitions}
-      withOffcyclePayroll={withOffcyclePayroll}
-    />
+    <BaseLayout error={errors} LoaderComponent={LoaderComponent}>
+      <PayrollListPresentation
+        className={className}
+        payrolls={payrollList.data.payrolls}
+        pagination={payrollList.pagination}
+        paySchedules={payrollList.data.paySchedules}
+        onRunPayroll={onRunPayroll}
+        onSubmitPayroll={({ payrollUuid, payPeriod }) => {
+          onEvent(componentEvents.REVIEW_PAYROLL, { payrollUuid, payPeriod })
+        }}
+        onSkipPayroll={onSkipPayroll}
+        onDeletePayroll={onDeletePayroll}
+        onRunOffCyclePayroll={() => {
+          onEvent(componentEvents.RUN_OFF_CYCLE_PAYROLL)
+        }}
+        showSkipSuccessAlert={showSkipSuccessAlert}
+        onDismissSkipSuccessAlert={() => {
+          setShowSkipSuccessAlert(false)
+        }}
+        showDeleteSuccessAlert={showDeleteSuccessAlert}
+        onDismissDeleteSuccessAlert={() => {
+          setShowDeleteSuccessAlert(false)
+        }}
+        skippingPayrollId={payrollList.status.skippingPayrollId}
+        deletingPayrollId={payrollList.status.deletingPayrollId}
+        blockers={payrollList.data.blockers}
+        wireInRequests={payrollList.data.wireInRequests}
+        dateRangeFilter={payrollList.dateRangeFilter}
+        hasUnprocessedTransitions={payrollList.status.hasUnprocessedTransitions}
+        withOffcyclePayroll={withOffcyclePayroll}
+      />
+    </BaseLayout>
   )
 }

@@ -772,3 +772,16 @@ export type {
   ContractorSignatureSsnValidation,
   ContractorSignatureEinValidation,
 } from '@/components/Contractor/Documents/shared/SignatureForm/useContractorSignatureForm'
+
+// Domain data hooks - Payroll
+export { usePayrollList } from '@/components/Payroll/PayrollList/shared/usePayrollList'
+export type {
+  UsePayrollListProps,
+  UsePayrollListResult,
+  UsePayrollListReady,
+  PayrollListActionResult,
+} from '@/components/Payroll/PayrollList/shared/usePayrollList'
+export type {
+  UseDateRangeFilterResult,
+  DateRangeApiParams,
+} from '@/hooks/useDateRangeFilter/useDateRangeFilter'

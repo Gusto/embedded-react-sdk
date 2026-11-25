@@ -1,7 +1,14 @@
-import { useState, useCallback } from 'react'
-import { fn } from 'storybook/test'
+import { useState, useCallback, useMemo } from 'react'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { GustoEmbeddedProvider } from '@gusto/embedded-api/react-query/_context'
+import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
+import { HTTPClient } from '@gusto/embedded-api/lib/http'
+import { expect, fn, userEvent, within } from 'storybook/test'
+import { PayrollList } from './PayrollList'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
+import { createSdkQueryClient } from '@/contexts/ApiProvider/createSdkQueryClient'
+import { addDays, formatDateToStringDate } from '@/helpers/dateFormatting'
 
 export default {
   title: 'Domain/Payroll/PayrollList',
@@ -416,4 +423,151 @@ export const WithDateFilter = () => {
       dateRangeFilter={activeDateRangeFilter}
     />
   )
+}
+
+/*
+ * Connected stories render `PayrollList` itself against a mock transport, so they exercise
+ * `usePayrollList` — fetching, filters, pagination, skip, and delete — alongside the
+ * presentation-only stories above.
+ */
+
+const onEvent = fn().mockName('onEvent')
+
+type ConnectedScenario = 'default' | 'empty' | 'loading' | 'error' | 'paginated' | 'skip' | 'delete'
+
+const dateInDays = (days: number) => formatDateToStringDate(addDays(new Date(), days)) ?? ''
+
+const createConnectedPayroll = (id: string, overrides: Record<string, unknown> = {}) => ({
+  payroll_uuid: id,
+  processed: false,
+  off_cycle: false,
+  external: false,
+  check_date: dateInDays(7),
+  payroll_deadline: addDays(new Date(), 5).toISOString(),
+  pay_period: {
+    start_date: dateInDays(-14),
+    end_date: dateInDays(0),
+    pay_schedule_uuid: 'schedule-1',
+  },
+  ...overrides,
+})
+
+const connectedPaySchedules = [
+  {
+    uuid: 'schedule-1',
+    frequency: 'Every other week',
+    anchor_pay_date: '2024-01-05',
+    anchor_end_of_pay_period: '2024-01-01',
+    custom_name: 'Bi-weekly',
+    active: true,
+    version: 'schedule-version-1',
+  },
+]
+
+function createConnectedRows(scenario: ConnectedScenario) {
+  if (scenario === 'empty') return []
+  if (scenario === 'delete') {
+    return [createConnectedPayroll('bonus-1', { off_cycle: true, off_cycle_reason: 'Bonus' })]
+  }
+  if (scenario === 'paginated') {
+    return Array.from({ length: 12 }, (_, index) =>
+      createConnectedPayroll(`payroll-${index + 1}`, {
+        pay_period: {
+          start_date: dateInDays(-14 - index * 14),
+          end_date: dateInDays(-index * 14),
+          pay_schedule_uuid: 'schedule-1',
+        },
+      }),
+    )
+  }
+  return [
+    createConnectedPayroll('regular-1'),
+    createConnectedPayroll('calculated-1', { calculated_at: new Date().toISOString() }),
+    createConnectedPayroll('bonus-1', { off_cycle: true, off_cycle_reason: 'Bonus' }),
+  ]
+}
+
+function ConnectedPayrollList({ scenario }: { scenario: ConnectedScenario }) {
+  const { queryClient, client } = useMemo(() => {
+    let rows = createConnectedRows(scenario)
+    const queryClient = createSdkQueryClient()
+    const client = new GustoEmbeddedCore({
+      serverURL: 'https://payroll-list.storybook.invalid',
+      httpClient: new HTTPClient({
+        fetcher: async input => {
+          const request = input instanceof Request ? input : new Request(input)
+          const url = new URL(request.url)
+          if (scenario === 'loading') return new Promise<Response>(() => {})
+          if (scenario === 'error')
+            return Response.json({ message: 'Unable to load payrolls' }, { status: 500 })
+          if (request.method === 'POST' && url.pathname.endsWith('/payrolls/skip')) {
+            rows = rows.slice(1)
+            return new Response(null, { status: 202 })
+          }
+          if (request.method === 'DELETE') {
+            rows = []
+            return new Response(null, { status: 204 })
+          }
+          if (url.pathname.endsWith('/payrolls')) {
+            const page = Number(url.searchParams.get('page') ?? 1)
+            const per = Number(url.searchParams.get('per') ?? 5)
+            return Response.json(rows.slice((page - 1) * per, page * per), {
+              headers: {
+                'x-total-count': String(rows.length),
+                'x-total-count-pages': String(Math.ceil(rows.length / per)),
+                'x-total-pages': String(Math.ceil(rows.length / per)),
+              },
+            })
+          }
+          if (url.pathname.endsWith('/pay_schedules')) return Response.json(connectedPaySchedules)
+          if (url.pathname.endsWith('/payrolls/blockers')) return Response.json([])
+          if (url.pathname.endsWith('/wire_in_requests')) return Response.json([])
+          if (url.pathname.endsWith('/pay_periods')) return Response.json([])
+          throw new Error(`Unexpected Storybook request: ${request.method} ${url.pathname}`)
+        },
+      }),
+    })
+    return { queryClient, client }
+  }, [scenario])
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <GustoEmbeddedProvider client={client}>
+        <PayrollList companyId="company-1" onEvent={onEvent} />
+      </GustoEmbeddedProvider>
+    </QueryClientProvider>
+  )
+}
+
+export const Connected = () => <ConnectedPayrollList scenario="default" />
+export const ConnectedEmptyState = () => <ConnectedPayrollList scenario="empty" />
+export const ConnectedLoading = () => <ConnectedPayrollList scenario="loading" />
+export const ConnectedQueryError = () => <ConnectedPayrollList scenario="error" />
+export const ConnectedPaginated = () => <ConnectedPayrollList scenario="paginated" />
+
+export const ConnectedSkipPayroll = {
+  render: () => <ConnectedPayrollList scenario="skip" />,
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const menus = await canvas.findAllByRole('button', { name: /open menu/i })
+    const [firstMenu] = menus
+    if (!firstMenu) throw new Error('No row menu rendered')
+    await userEvent.click(firstMenu)
+    await userEvent.click(await body.findByRole('menuitem', { name: 'Skip payroll' }))
+    await userEvent.click(await body.findByRole('button', { name: 'Yes, skip payroll' }))
+    await expect(canvas.findByText('Payroll skipped')).resolves.toBeVisible()
+  },
+}
+
+export const ConnectedDeletePayroll = {
+  render: () => <ConnectedPayrollList scenario="delete" />,
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    await userEvent.click(await canvas.findByRole('button', { name: /open menu/i }))
+    await userEvent.click(await body.findByRole('menuitem', { name: 'Cancel payroll' }))
+    await userEvent.click(await body.findByRole('button', { name: 'Yes, cancel payroll' }))
+    await expect(canvas.findByText('Payroll cancelled')).resolves.toBeVisible()
+  },
 }
