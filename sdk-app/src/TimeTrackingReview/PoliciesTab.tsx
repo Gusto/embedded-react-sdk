@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { getAllPages, getJson, withQuery } from './api'
+import { getAllPages, withQuery } from './api'
 import {
   addDays,
   breakRuleLabel,
@@ -19,24 +19,14 @@ import {
 import { ChangePin, GapPin, PlusIcon, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
 import { PeoplePolicies, type PolicyMove } from './PeoplePolicies'
-import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
+import { simId, type Notify, type Preview } from './preview'
 import styles from './TimeTrackingReview.module.scss'
 import TrashIcon from '@/assets/icons/trashcan.svg?react'
-import {
-  ActionsLayout,
-  DataView,
-  EmptyData,
-  Flex,
-  Grid,
-  HamburgerMenu,
-  useDataView,
-} from '@/components/Common'
-import { EmployeeTable } from '@/components/TimeOff/shared/EmployeeTable/EmployeeTable'
-import type { EmployeeTableItem } from '@/components/TimeOff/shared/EmployeeTable/EmployeeTableTypes'
+import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type PolicyKind = 'overtime' | 'break'
-type PolicyView = 'details' | 'edit' | 'assign'
+type PolicyView = 'details' | 'edit'
 type AnyPolicy = ApiOvertimePolicy | ApiBreakPolicy
 
 const KIND_LABEL: Record<PolicyKind, string> = {
@@ -71,6 +61,8 @@ function todayIso() {
 }
 
 export function PoliciesTab({
+  view,
+  onOpenPeople,
   companyId,
   people,
   schedules,
@@ -79,6 +71,8 @@ export function PoliciesTab({
   onPoliciesChange,
   onNotify,
 }: {
+  view: 'policies' | 'people'
+  onOpenPeople?: () => void
   companyId: string
   people: Person[]
   schedules: ApiPaySchedule[]
@@ -153,22 +147,6 @@ export function PoliciesTab({
     }
   }, [companyId])
 
-  const [departments, setDepartments] = useState<Map<string, string>>(new Map())
-  useEffect(() => {
-    const controller = new AbortController()
-    getJson(`/v1/companies/${companyId}/departments`, controller.signal)
-      .then(({ body }) => {
-        const list = Array.isArray(body) ? (body as Array<{ uuid: string; title: string }>) : []
-        setDepartments(new Map(list.map(d => [d.uuid, d.title])))
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setDepartments(new Map())
-      })
-    return () => {
-      controller.abort()
-    }
-  }, [companyId])
-
   const breakToday = useMemo(
     () => new Set(todayShifts.filter(s => s.breaks.length > 0).map(s => s.entity_uuid)),
     [todayShifts],
@@ -203,27 +181,6 @@ export function PoliciesTab({
         : { ...current, breakPolicies: upsert(breakPolicies, policy as ApiBreakPolicy) },
     )
     onNotify(`${policy.name} ${isNew ? 'created' : 'saved'}.`, preview)
-  }
-
-  const assignPeople = (
-    kind: PolicyKind,
-    policy: ApiOvertimePolicy | ApiBreakPolicy,
-    uuids: string[],
-    preview: Preview,
-  ) => {
-    const chosen = new Set(uuids)
-    const reassign = <T extends ApiOvertimePolicy | ApiBreakPolicy>(list: T[]) =>
-      list.map(p =>
-        p.uuid === policy.uuid
-          ? { ...p, assigned_employees: uuids.map(uuid => ({ uuid })) }
-          : { ...p, assigned_employees: p.assigned_employees.filter(a => !chosen.has(a.uuid)) },
-      )
-    onPoliciesChange(
-      kind === 'overtime'
-        ? { ...current, overtimePolicies: reassign(overtimePolicies) }
-        : { ...current, breakPolicies: reassign(breakPolicies) },
-    )
-    onNotify(`${uuids.length} people are on ${policy.name}.`, preview)
   }
 
   const movePeople = (moves: PolicyMove[], preview: Preview) => {
@@ -307,12 +264,6 @@ export function PoliciesTab({
           label: 'Edit',
           onClick: () => {
             openPage(kind, policy.uuid, 'edit')
-          },
-        },
-        {
-          label: 'Add employees',
-          onClick: () => {
-            openPage(kind, policy.uuid, 'assign')
           },
         },
         {
@@ -408,6 +359,40 @@ export function PoliciesTab({
           },
         ]
       : [policiesCrumb]
+  if (view === 'people') {
+    return (
+      <Flex flexDirection="column" gap={24}>
+        {uncovered.length > 0 && (
+          <Components.Alert
+            status="warning"
+            label={`${uncovered.length} eligible people are missing a policy`}
+          >
+            {uncovered.map(p => p.name).join(', ')} <GapPin id="state-reminders" />
+          </Components.Alert>
+        )}
+        <Components.Box
+          header={
+            <Components.BoxHeader
+              title={
+                <>
+                  People <ChangePin id="people-policies" />
+                </>
+              }
+            />
+          }
+        >
+          <PeoplePolicies
+            people={people}
+            overtimePolicies={overtimePolicies}
+            breakPolicies={breakPolicies}
+            breakToday={breakToday}
+            onSave={movePeople}
+          />
+        </Components.Box>
+      </Flex>
+    )
+  }
+
   if (pageKind && pageView === 'edit' && (pagePolicy || pageUuid === 'new')) {
     const afterSave = (policy: AnyPolicy, preview: Preview) => {
       savePolicy(pageKind, policy, preview)
@@ -437,23 +422,6 @@ export function PoliciesTab({
       />
     )
   }
-  if (pageKind && pageView === 'assign' && pagePolicy) {
-    return (
-      <AssignPeople
-        kind={pageKind}
-        policy={pagePolicy}
-        people={people}
-        departments={departments}
-        breakToday={breakToday}
-        trail={trail}
-        onClose={closePage}
-        onSave={(uuids, preview) => {
-          assignPeople(pageKind, pagePolicy, uuids, preview)
-          closePage()
-        }}
-      />
-    )
-  }
   if (pageKind && pageView === 'details' && pagePolicy) {
     return (
       <>
@@ -465,8 +433,8 @@ export function PoliciesTab({
           onEdit={() => {
             openPage(pageKind, pagePolicy.uuid, 'edit', 'details')
           }}
-          onAssign={() => {
-            openPage(pageKind, pagePolicy.uuid, 'assign', 'details')
+          onEditPeople={() => {
+            onOpenPeople?.()
           }}
           onDelete={() => {
             setDeleting({ kind: pageKind, policy: pagePolicy })
@@ -479,35 +447,6 @@ export function PoliciesTab({
 
   return (
     <Flex flexDirection="column" gap={24}>
-      {uncovered.length > 0 && (
-        <Components.Alert
-          status="warning"
-          label={`${uncovered.length} eligible people are missing a policy`}
-        >
-          {uncovered.map(p => p.name).join(', ')} <GapPin id="state-reminders" />
-        </Components.Alert>
-      )}
-
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={
-              <>
-                People <ChangePin id="people-policies" />
-              </>
-            }
-          />
-        }
-      >
-        <PeoplePolicies
-          people={people}
-          overtimePolicies={overtimePolicies}
-          breakPolicies={breakPolicies}
-          breakToday={breakToday}
-          onSave={movePeople}
-        />
-      </Components.Box>
-
       <Components.Box
         header={
           <Components.BoxHeader
@@ -957,170 +896,13 @@ function BreakForm({
   )
 }
 
-interface AssignRow extends EmployeeTableItem {
-  person: Person
-  department: string
-  currentPolicy: string
-}
-
-function AssignPeople({
-  kind,
-  policy,
-  people,
-  departments,
-  breakToday,
-  trail,
-  onClose,
-  onSave,
-}: {
-  kind: PolicyKind
-  policy: AnyPolicy
-  people: Person[]
-  departments: Map<string, string>
-  breakToday: Set<string>
-  trail: Crumb[]
-  onClose: () => void
-  onSave: (uuids: string[], preview: Preview) => void
-}) {
-  const Components = useComponentContext()
-  const [search, setSearch] = useState('')
-  const [selected, setSelected] = useState<Set<string>>(new Set())
-  const members = new Set(policy.assigned_employees.map(a => a.uuid))
-
-  const candidates: AssignRow[] = people
-    .filter(person => eligibility(person.employee).eligible && !members.has(person.employee.uuid))
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map(person => ({
-      uuid: person.employee.uuid,
-      firstName: person.employee.first_name,
-      lastName: person.employee.last_name,
-      jobTitle: person.title,
-      person,
-      department: departments.get(person.employee.department_uuid ?? '') ?? '',
-      currentPolicy:
-        (kind === 'overtime' ? person.overtimePolicy?.name : person.breakPolicy?.name) ?? 'None',
-    }))
-  const query = search.trim().toLowerCase()
-  const rows = candidates.filter(
-    row =>
-      row.person.name.toLowerCase().includes(query) || row.department.toLowerCase().includes(query),
-  )
-
-  const toAssign = [...selected]
-  const resource = kind === 'overtime' ? 'overtime_policies' : 'break_policies'
-  const requests: PreviewRequest[] = toAssign.length
-    ? [
-        {
-          method: 'PUT',
-          path: `/v1/time_tracking/${resource}/${policy.uuid}/assign_employees`,
-          body: { version: policy.version, employees: toAssign.map(uuid => ({ uuid })) },
-        },
-      ]
-    : []
-  const blocked = kind === 'break' && toAssign.some(uuid => breakToday.has(uuid))
-  const kindLabel = kind === 'overtime' ? 'overtime' : 'break'
-
-  return (
-    <SubPage
-      trail={trail}
-      current="Add employees"
-      title={
-        <>
-          Add employees to policy <ChangePin id="policy-pages" /> <ChangePin id="add-employees" />
-        </>
-      }
-      description={`Select the employees you want to add to ${policy.name}.`}
-      footer={
-        <ActionsLayout>
-          <Components.Button variant="secondary" onClick={onClose}>
-            Back
-          </Components.Button>
-          <Components.Button
-            isDisabled={blocked || toAssign.length === 0}
-            onClick={() => {
-              onSave([...members, ...toAssign], {
-                title: `Add employees to ${policy.name}`,
-                requests,
-                gapIds: ['eligibility'],
-              })
-            }}
-          >
-            Continue
-          </Components.Button>
-        </ActionsLayout>
-      }
-    >
-      <Components.Alert
-        status="warning"
-        label={`Any employees currently assigned to another ${kindLabel} policy will be moved to this policy.`}
-      />
-      <div className={styles.fullWidth}>
-        <EmployeeTable<AssignRow>
-          data={rows}
-          searchValue={search}
-          onSearchChange={setSearch}
-          onSearchClear={() => {
-            setSearch('')
-          }}
-          searchPlaceholder="Search by name or department"
-          hideSearch={candidates.length === 0}
-          selectionMode="multiple"
-          getIsItemSelected={row => selected.has(row.uuid)}
-          onSelect={(row, checked) => {
-            setSelected(prev => {
-              const next = new Set(prev)
-              if (checked) next.add(row.uuid)
-              else next.delete(row.uuid)
-              return next
-            })
-          }}
-          onSelectAll={(checked, visible) => {
-            setSelected(prev => {
-              const next = new Set(prev)
-              for (const row of visible) {
-                if (checked) next.add(row.uuid)
-                else next.delete(row.uuid)
-              }
-              return next
-            })
-          }}
-          emptyState={() => (
-            <EmptyData title="All eligible employees have already been added to this policy." />
-          )}
-          additionalColumns={[
-            { key: 'department', title: 'Department', render: row => row.department },
-            {
-              key: 'currentPolicy',
-              title: `Current ${kindLabel} policy`,
-              render: row => row.currentPolicy,
-            },
-          ]}
-        />
-      </div>
-      <Components.Text size="sm" variant="supporting">
-        {members.size} {members.size === 1 ? 'person is' : 'people are'} already on this policy.{' '}
-        {kind === 'overtime'
-          ? 'To take someone off, move them to another overtime policy in Policies › People.'
-          : 'To take someone off, change their break policy in Policies › People.'}{' '}
-        Only people who can be on a policy are listed. <GapPin id="eligibility" />{' '}
-        <ChangePin id="eligible-only" />
-      </Components.Text>
-      {blocked && (
-        <Components.Alert status="warning" label="This would fail">
-          Someone you selected took a break today, so the API would reject this, without saying who.
-        </Components.Alert>
-      )}
-    </SubPage>
-  )
-}
-
 function PolicyDetail({
   kind,
   policy,
   people,
   trail,
   onEdit,
-  onAssign,
+  onEditPeople,
   onDelete,
 }: {
   kind: PolicyKind
@@ -1128,7 +910,7 @@ function PolicyDetail({
   people: Person[]
   trail: Crumb[]
   onEdit: () => void
-  onAssign: () => void
+  onEditPeople: () => void
   onDelete: () => void
 }) {
   const Components = useComponentContext()
@@ -1212,8 +994,8 @@ function PolicyDetail({
             <Components.BoxHeader
               title={`People (${onPolicy.length})`}
               action={
-                <Components.Button variant="secondary" onClick={onAssign}>
-                  Add employees
+                <Components.Button variant="secondary" onClick={onEditPeople}>
+                  Edit people
                 </Components.Button>
               }
             />

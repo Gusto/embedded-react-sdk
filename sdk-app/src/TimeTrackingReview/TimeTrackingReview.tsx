@@ -43,7 +43,6 @@ import {
   breakIssueCounts,
   BREAK_ISSUE_LABEL,
 } from './model'
-import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
 import { SendPage, type SendFailure, type SendOutcome, type SendView } from './SendPage'
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
@@ -84,7 +83,7 @@ type Load<T> = { kind: 'loading' } | { kind: 'error'; message: string } | { kind
 const TABS: Array<{ value: Tab; label: string }> = [
   { value: 'review', label: 'Timesheets' },
   { value: 'policies', label: 'Policies' },
-  { value: 'payroll', label: 'Run payroll (another flow)' },
+  { value: 'people', label: 'People' },
 ]
 
 const BREAK_TYPE_ORDER: Array<ApiBreakRule['break_type']> = ['meal', 'rest']
@@ -220,7 +219,6 @@ function TimeTrackingPrototype() {
     },
     [],
   )
-  const [sendWhenLoaded, setSendWhenLoaded] = useState(false)
 
   useEffect(() => {
     if (!companyId) return
@@ -397,13 +395,6 @@ function TimeTrackingPrototype() {
   }, [selectedPeriodKey, scheduleUuid])
 
   useEffect(() => {
-    if (sendWhenLoaded && shifts.kind === 'done') {
-      setSendWhenLoaded(false)
-      setSendView('review')
-    }
-  }, [sendWhenLoaded, shifts])
-
-  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement
       if (target.closest('input, textarea, select, [role="dialog"]')) return
@@ -430,16 +421,6 @@ function TimeTrackingPrototype() {
       .getElementById(`change-${id}`)
       ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }, [])
-
-  const applySim = useCallback(
-    (loaded: ApiShift[]) => [
-      ...loaded
-        .map(shift => (shift.uuid in sim.shifts ? sim.shifts[shift.uuid] : shift))
-        .filter((shift): shift is ApiShift => shift !== null),
-      ...sim.added,
-    ],
-    [sim],
-  )
 
   const periodShifts = useMemo(() => {
     if (shifts.kind !== 'done' || !period) return []
@@ -1058,10 +1039,6 @@ function TimeTrackingPrototype() {
                             setSendFailure(sendKey, null)
                             setSendView('review')
                           }}
-                          onRunPayroll={() => {
-                            setSendView(null)
-                            setTab('payroll')
-                          }}
                         />
                       ) : (
                         review
@@ -1072,6 +1049,10 @@ function TimeTrackingPrototype() {
                     label: 'Policies',
                     content: (
                       <PoliciesTab
+                        view="policies"
+                        onOpenPeople={() => {
+                          setTab('people')
+                        }}
                         companyId={companyId}
                         people={people}
                         schedules={data.schedules}
@@ -1085,32 +1066,20 @@ function TimeTrackingPrototype() {
                     ),
                   },
                   {
-                    id: 'payroll',
-                    label: 'Run payroll (another flow)',
+                    id: 'people',
+                    label: 'People',
                     content: (
-                      <PayrollTab
+                      <PoliciesTab
+                        view="people"
                         companyId={companyId}
                         people={people}
                         schedules={data.schedules}
-                        periods={data.periods}
-                        applySim={applySim}
+                        overtimePolicies={data.overtimePolicies}
+                        breakPolicies={data.breakPolicies}
+                        onPoliciesChange={(next: PolicyData) => {
+                          updateData(current => ({ ...current, ...next }))
+                        }}
                         onNotify={notify}
-                        onProcess={processed => {
-                          updateData(current => ({
-                            ...current,
-                            periods: current.periods.map(p =>
-                              p === processed && p.payroll
-                                ? { ...p, payroll: { ...p.payroll, processed: true } }
-                                : p,
-                            ),
-                          }))
-                        }}
-                        onReview={(nextSchedule, key) => {
-                          setScheduleUuid(nextSchedule)
-                          setSelectedPeriodKey(key)
-                          setTab('review')
-                          setSendWhenLoaded(true)
-                        }}
                       />
                     ),
                   },

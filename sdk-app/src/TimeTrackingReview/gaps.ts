@@ -10,7 +10,7 @@ export const GAP_KIND_LABEL: Record<GapKind, string> = {
   limited: 'Supported with limitations',
 }
 
-export type Tab = 'review' | 'policies' | 'payroll'
+export type Tab = 'review' | 'policies' | 'people'
 
 export type GapId =
   | 'ot-state'
@@ -41,7 +41,7 @@ export const GAPS: Gap[] = [
   {
     id: 'ot-state',
     priority: 'P0',
-    tabs: ['policies'],
+    tabs: ['policies', 'people'],
     kind: 'none',
     title: 'Policy creation: state designation for OT',
     details: 'Overtime (OT) policies do not have a jurisdiction field.',
@@ -50,7 +50,7 @@ export const GAPS: Gap[] = [
   {
     id: 'state-reminders',
     priority: 'P1',
-    tabs: ['policies'],
+    tabs: ['policies', 'people'],
     kind: 'none',
     title: 'State reminders: identify missing compliant policies',
     details:
@@ -70,12 +70,12 @@ export const GAPS: Gap[] = [
   {
     id: 'auto-sync',
     priority: 'P0',
-    tabs: ['review', 'payroll'],
+    tabs: ['review'],
     kind: 'none',
     title: 'Payroll sync: automatically sync hours after approval',
     details:
       'Approval changes the status of individual shifts. Payroll sync is a separate operation scoped to a pay schedule and date range; it does not trigger automatically on approval. Payroll admins will manually sync hours before running payroll.',
-    here: 'Send to payroll is its own step. Run payroll reminds the admin when a period has approved hours that haven’t been sent.',
+    here: 'Send to payroll is its own step, with a review page and a summary.',
   },
   {
     id: 'which-timesheets',
@@ -104,7 +104,7 @@ export const GAPS: Gap[] = [
   {
     id: 'eligibility',
     priority: 'P0',
-    tabs: ['policies'],
+    tabs: ['policies', 'people'],
     kind: 'plannedWorkaround',
     title: 'Employee assignment: show eligible employees and explain exclusions',
     details: 'Requires client reconstruction: no eligibility filter for employees.',
@@ -148,7 +148,7 @@ export const GAPS: Gap[] = [
   {
     id: 'status-lock',
     priority: 'P0',
-    tabs: ['review', 'payroll'],
+    tabs: ['review'],
     kind: 'bug',
     title: 'Approval management: allow status changes until hours reach a processed payroll',
     details: 'Supported, with a known bug.',
@@ -159,7 +159,7 @@ export const GAPS: Gap[] = [
   {
     id: 'sync-limits',
     priority: 'P0',
-    tabs: ['review', 'payroll'],
+    tabs: ['review'],
     kind: 'limited',
     title: 'Payroll sync: sync approved pay-period hours and see completion',
     details:

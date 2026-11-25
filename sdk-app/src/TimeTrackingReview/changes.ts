@@ -22,7 +22,7 @@ export type ChangeId =
   | 'eligible-only'
   | 'delayed-breaks'
   | 'overnight-shifts'
-  | 'add-employees'
+  | 'three-tabs'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -212,22 +212,22 @@ export const CHANGES: Change[] = [
   {
     id: 'people-policies',
     round: 'nov-24',
-    tabs: ['policies'],
+    tabs: ['people'],
     title: 'Policies by person: move people between policies',
     feedback:
       'Flip the assignment view to people first, show each person’s current policies, and use the Time Off bulk selection pattern.',
-    what: 'A People section on Policies lists every eligible person with their current overtime and break policy. Change one person from their row, or select several and move them in one go. Overtime has no “none” option since the API can only move people, not remove them. Built on the same searchable, selectable table as Time Off’s add employees.',
-    where: 'Policies › People.',
+    what: 'The People tab lists every eligible person with their current overtime and break policy. Change one person from their row, or select several and move them in one go. Overtime has no “none” option since the API can only move people, not remove them. Built on the same searchable, selectable table as Time Off’s add employees.',
+    where: 'People tab.',
   },
   {
     id: 'eligible-only',
     round: 'nov-24',
-    tabs: ['policies'],
+    tabs: ['people'],
     title: 'Only eligible people are listed',
     feedback:
       'Drop the eligibility column; the employees API can filter by FLSA status so only hourly and salaried non-exempt people show.',
     what: 'People who can’t be on a policy aren’t listed at all, so the Eligibility column is gone. For now the page filters by FLSA status itself, pending the API filter.',
-    where: 'Policies › People, and Assign people on each policy.',
+    where: 'People tab.',
   },
   {
     id: 'delayed-breaks',
@@ -249,14 +249,14 @@ export const CHANGES: Change[] = [
     where: 'Add shift and Edit shift.',
   },
   {
-    id: 'add-employees',
+    id: 'three-tabs',
     round: 'nov-24',
-    tabs: ['policies'],
-    title: 'Add employees works like Time Off',
+    tabs: ['policies', 'people'],
+    title: 'Three tabs: Timesheets, Policies, People',
     feedback:
-      'Use the Time Off “Add employees to policy” pattern; it’s used elsewhere, so keep it as similar as possible.',
-    what: 'Assign people is now “Add employees to policy”, built like Time Off’s: a heading and description, a warning that people on another policy will be moved, a searchable table (name or department) with checkboxes and select all, and Back and Continue at the bottom. It lists only eligible people who aren’t on the policy yet, with their department and current policy. Taking someone off happens in Policies › People.',
-    where: 'Policies › a policy › Add employees.',
+      'Policies is confusing. Make it three pages: Timesheets, Policies (assigned people and details), and People (the table of where everyone belongs). Drop Run payroll from the prototype.',
+    what: 'Policies now only lists policies; each policy page shows its assigned people and details, and “Edit people” opens the People tab. People is its own tab: everyone eligible with their overtime and break policy, changed per row or in bulk. The separate “Add employees to policy” screen and the Run payroll tab are gone.',
+    where: 'The tabs at the top; Policies › a policy › Edit people.',
   },
 ]
 

@@ -95,7 +95,6 @@ export function SendPage({
   onClose,
   onSend,
   onSendAgain,
-  onRunPayroll,
 }: {
   view: SendView
   companyId: string
@@ -110,7 +109,6 @@ export function SendPage({
   onClose: () => void
   onSend: (included: ApiShift[], preview: Preview, outcome: SendOutcome) => void
   onSendAgain: () => void
-  onRunPayroll: () => void
 }) {
   const Components = useComponentContext()
   const [outcome, setOutcome] = useState<SendOutcome>('success')
@@ -266,16 +264,7 @@ export function SendPage({
   }
 
   const isFailed = failure !== null && failure.kind !== 'partial'
-  const summaryActions = (
-    <Flex gap={12}>
-      {!isFailed && (
-        <Components.Button variant="secondary" onClick={onRunPayroll}>
-          See it in Run payroll
-        </Components.Button>
-      )}
-      <Components.Button onClick={onClose}>Done</Components.Button>
-    </Flex>
-  )
+  const summaryActions = <Components.Button onClick={onClose}>Done</Components.Button>
   const tryAgain = (
     <Components.Button variant="secondary" onClick={onSendAgain}>
       Try again
