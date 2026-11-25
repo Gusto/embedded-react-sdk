@@ -24,6 +24,7 @@ export type ChangeId =
   | 'overnight-shifts'
   | 'three-tabs'
   | 'no-overtime'
+  | 'send-anchored'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -268,6 +269,16 @@ export const CHANGES: Change[] = [
       'Is it possible for someone to not have a break policy or an overtime policy at all? Pressure-testing the dropdowns.',
     what: 'Both can happen, but they mean different things. Someone with no overtime policy (a new hire, say) can’t have shifts saved, so their overtime dropdown is marked invalid, their row says “No overtime policy” in red, and an error alert at the top names them. No break policy is allowed, so it gets an info note only. Overtime still has no “none” option, since once someone is on one they can only be moved.',
     where: 'People tab.',
+  },
+  {
+    id: 'send-anchored',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Send flow stays put: one layout, fixed buttons',
+    feedback:
+      'We have jumping CTAs and no clear “return to timesheets” button. Make the flow buttoned up, less jumpy, and anchor expectations.',
+    what: 'Review, sending and the result are one page that changes in place. The title stays “Send to payroll”; the alert at the top shows where you are (deadline and left-out warning, then “Sending…”, then the result); the facts box stays in the same spot and is retitled What you’re sending, What’s being sent, What was sent. The buttons never move: Back to timesheets on the left, and on the right Send, then the same button spinning while it sends, then Try again if it failed. After a successful send the one remaining button is Back to timesheets.',
+    where: 'Timesheets › Send to payroll.',
   },
 ]
 
