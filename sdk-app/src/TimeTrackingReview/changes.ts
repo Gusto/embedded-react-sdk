@@ -28,6 +28,8 @@ export type ChangeId =
   | 'alerts-column'
   | 'person-alerts'
   | 'approval-binary'
+  | 'person-payroll'
+  | 'shift-sent-time'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -311,6 +313,25 @@ export const CHANGES: Change[] = [
     what: 'A shift is either approved or not. Each shift row has an Approve switch, and each person row has an “Approve (n)” switch that is on when all their finished shifts are approved, and bulk actions are Approve and Unapprove. Reject and Return to pending are gone. Unapproving writes “pending”. A shift rejected elsewhere shows as Not approved, since the API treats pending and rejected the same: neither is sent, and rejected has no reason, lock or notice. The one difference is the status-change webhook partners receive.',
     where:
       'Timesheets › Approval column, row menus and bulk bar; a person’s shifts › Approve switch; Send to payroll warning.',
+  },
+  {
+    id: 'person-payroll',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Payroll state on the timesheets list',
+    feedback: 'Mirror the shifts table’s Payroll column on the main table, e.g. Sent (15).',
+    what: 'Each person’s row stacks Sent, Changed since send and Not sent with counts, so it shows who needs payroll updated without opening each person. Built from each shift’s synced_to_payroll_at, which the API never clears and doesn’t tie to a payroll.',
+    where: 'Timesheets › Payroll column.',
+  },
+  {
+    id: 'shift-sent-time',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'When each shift was sent',
+    feedback:
+      'Keep the timesheets list generic (sent or not sent) and put the timestamp on each shift.',
+    what: 'A person’s shifts show one badge with the time: “Sent Nov 24, 3:12 PM”, or “Changed since sent Nov 24, 3:12 PM” when the shift was edited after. The timesheets list keeps the counts.',
+    where: 'A person’s shifts › Payroll column.',
   },
 ]
 

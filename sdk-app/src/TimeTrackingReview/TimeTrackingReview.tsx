@@ -25,6 +25,7 @@ import {
   primaryJob,
   resolvePaySchedule,
   reviewState,
+  type ReviewState,
   isApproved,
   scheduleLabel,
   syncEffect,
@@ -1248,6 +1249,16 @@ function ChevronRightIcon() {
   )
 }
 
+const PAYROLL_LINES: Array<{
+  state: ReviewState
+  label: string
+  status: 'success' | 'warning' | 'info'
+}> = [
+  { state: 'sent', label: 'Sent', status: 'success' },
+  { state: 'changed', label: 'Changed since send', status: 'warning' },
+  { state: 'unsent', label: 'Not sent', status: 'info' },
+]
+
 const toApproveOf = (shifts: ApiShift[]) =>
   shifts.filter(shift => !isApproved(shift) && shift.shift_ended_at)
 const toUnapproveOf = (shifts: ApiShift[]) => shifts.filter(isApproved)
@@ -1403,6 +1414,29 @@ function PeopleTable({
                   )
               }}
             />
+          )
+        },
+      },
+      {
+        title: (
+          <>
+            Payroll <ChangePin id="person-payroll" /> <GapPin id="which-timesheets" />
+          </>
+        ),
+        render: ({ shifts }) => {
+          const lines = PAYROLL_LINES.map(line => ({
+            ...line,
+            count: shifts.filter(shift => reviewState(shift) === line.state).length,
+          })).filter(line => line.count > 0)
+          if (lines.length === 0) return '—'
+          return (
+            <span className={styles.alertStack}>
+              {lines.map(line => (
+                <Components.Badge key={line.state} status={line.status}>
+                  {line.label} ({line.count})
+                </Components.Badge>
+              ))}
+            </span>
           )
         },
       },
@@ -1617,18 +1651,21 @@ function ShiftsTable({
         },
       },
       {
-        title: 'Payroll',
+        title: (
+          <>
+            Payroll <ChangePin id="shift-sent-time" />
+          </>
+        ),
         render: shift => {
           const state = reviewState(shift)
           if (state === 'unsent') return <Components.Badge status="info">Not sent</Components.Badge>
-          if (state === 'sent' && shift.synced_to_payroll_at)
+          if ((state === 'sent' || state === 'changed') && shift.synced_to_payroll_at)
             return (
-              <Components.Badge status="success">
-                Sent {formatShortDate(shift.synced_to_payroll_at.slice(0, 10))}
+              <Components.Badge status={state === 'sent' ? 'success' : 'warning'}>
+                {state === 'sent' ? 'Sent' : 'Changed since sent'}{' '}
+                {formatDateTime(shift.synced_to_payroll_at)}
               </Components.Badge>
             )
-          if (state === 'changed')
-            return <Components.Badge status="warning">Changed since send</Components.Badge>
           return '—'
         },
       },
