@@ -5768,6 +5768,10 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | <a id="property-payrollpayrolleditemployeeadditionalhourscolumn"></a> `additionalHoursColumn` | `"Additional hours"` |
 | <a id="property-payrollpayrolleditemployeeaddreimbursementcta"></a> `addReimbursementCta` | `"Add one-time reimbursement"` |
 | <a id="property-payrollpayrolleditemployeeaddreimbursementlink"></a> `addReimbursementLink` | `"Add one-time reimbursement"` |
+| <a id="property-payrollpayrolleditemployeealreadysubmitted"></a> `alreadySubmitted` | |
+| `alreadySubmitted.backCta` | `"Back to payroll"` |
+| `alreadySubmitted.description` | `"It can no longer be edited. To make changes, cancel the payroll and run it again."` |
+| `alreadySubmitted.title` | `"This payroll has already been submitted"` |
 | <a id="property-payrollpayrolleditemployeebreadcrumblabel"></a> `breadcrumbLabel` | `"{{firstName}} {{lastName}}"` |
 | <a id="property-payrollpayrolleditemployeecancelcta"></a> `cancelCta` | `"Cancel"` |
 | <a id="property-payrollpayrolleditemployeecancelreimbursementcta"></a> `cancelReimbursementCta` | `"Cancel reimbursement"` |
