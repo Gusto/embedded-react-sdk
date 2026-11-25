@@ -22,6 +22,7 @@ export type ChangeId =
   | 'eligible-only'
   | 'delayed-breaks'
   | 'overnight-shifts'
+  | 'add-employees'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -192,11 +193,11 @@ export const CHANGES: Change[] = [
     id: 'send-dialog',
     round: 'nov-24',
     tabs: ['review'],
-    title: 'Sending is a confirmation, not a page',
+    title: 'Sending is its own short flow: review, sending, summary',
     feedback:
-      'Simplify the send: we don’t need a “what we’ll send” and a “what we sent” table on top of the timesheet.',
-    what: 'Send to payroll opens a short confirmation (the SDK Dialog, as used for cancelling a payroll) with the hours, shifts and people going to which payroll. After Send it closes; Timesheets shows the progress and then the result inline: sent, partly sent with Try again, or failed. Each shift’s Payroll column shows what went. This replaces the send page and “View what was sent”.',
-    where: 'Timesheets › Send to payroll, and the alerts above the table.',
+      'Simplify the send, without “what we’ll send” and “what we sent” tables. Then: the send should be a dedicated experience with an explicit return, not just a banner.',
+    what: 'Send to payroll opens a “Review and send hours” page, like contractor payments’ “Review and submit”: the deadline, a warning for shifts left out, and four facts (hours, shifts, people, payroll) instead of a table, with Back and Send. While it runs, the page shows the same loader as submitting a payroll, and you can go back to Timesheets. It ends on a “Send summary” page with the result and a Done button that returns to Timesheets, like contractor payments’ Payment summary. Timesheets keeps a one-line status that opens the summary.',
+    where: 'Timesheets › Send to payroll.',
   },
   {
     id: 'send-warning',
@@ -205,7 +206,7 @@ export const CHANGES: Change[] = [
     title: 'Warn about shifts left out before sending',
     feedback:
       'Warn people when pending, rejected or still clocked-in shifts won’t be part of the payroll calculation.',
-    what: 'When any shift won’t be sent, the confirmation shows a warning with the count by reason (pending, rejected, still clocked in) and who they belong to. The buttons become “Review shifts first” and “Send to payroll anyway”. This follows how Payroll review shows blockers inline above Submit.',
+    what: 'When any shift won’t be sent, the review page shows a warning with the count by reason (pending, rejected, still clocked in), who they belong to, and a Review shifts button. This follows how Payroll review shows blockers inline above Submit.',
     where: 'Timesheets › Send to payroll.',
   },
   {
@@ -246,6 +247,16 @@ export const CHANGES: Change[] = [
       'Partners’ clock-in apps send messy data, so handle overnight shifts gracefully instead of strict rules.',
     what: 'Add and Edit shift only require the end to be after the start; if the end time is earlier on the same day, the error suggests changing the end date. Overnight shifts say “Ends the next day”. Shifts over 16 hours get a note, and an overlap with another shift is a warning instead of an error, so messy clock-in data can still be fixed and saved.',
     where: 'Add shift and Edit shift.',
+  },
+  {
+    id: 'add-employees',
+    round: 'nov-24',
+    tabs: ['policies'],
+    title: 'Add employees works like Time Off',
+    feedback:
+      'Use the Time Off “Add employees to policy” pattern; it’s used elsewhere, so keep it as similar as possible.',
+    what: 'Assign people is now “Add employees to policy”, built like Time Off’s: a heading and description, a warning that people on another policy will be moved, a searchable table (name or department) with checkboxes and select all, and Back and Continue at the bottom. It lists only eligible people who aren’t on the policy yet, with their department and current policy. Taking someone off happens in Policies › People.',
+    where: 'Policies › a policy › Add employees.',
   },
 ]
 

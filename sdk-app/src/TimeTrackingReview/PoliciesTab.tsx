@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { getAllPages, withQuery } from './api'
+import { getAllPages, getJson, withQuery } from './api'
 import {
   addDays,
   breakRuleLabel,
@@ -16,13 +16,23 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { ApproveIcon, ChangePin, GapPin, PendingIcon, PlusIcon, SubPage, type Crumb } from './parts'
+import { ChangePin, GapPin, PlusIcon, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
 import { PeoplePolicies, type PolicyMove } from './PeoplePolicies'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import styles from './TimeTrackingReview.module.scss'
 import TrashIcon from '@/assets/icons/trashcan.svg?react'
-import { DataView, Flex, Grid, HamburgerMenu, useDataView } from '@/components/Common'
+import {
+  ActionsLayout,
+  DataView,
+  EmptyData,
+  Flex,
+  Grid,
+  HamburgerMenu,
+  useDataView,
+} from '@/components/Common'
+import { EmployeeTable } from '@/components/TimeOff/shared/EmployeeTable/EmployeeTable'
+import type { EmployeeTableItem } from '@/components/TimeOff/shared/EmployeeTable/EmployeeTableTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type PolicyKind = 'overtime' | 'break'
@@ -137,6 +147,22 @@ export function PoliciesTab({
       })
       .catch(() => {
         if (!controller.signal.aborted) setTodayShifts([])
+      })
+    return () => {
+      controller.abort()
+    }
+  }, [companyId])
+
+  const [departments, setDepartments] = useState<Map<string, string>>(new Map())
+  useEffect(() => {
+    const controller = new AbortController()
+    getJson(`/v1/companies/${companyId}/departments`, controller.signal)
+      .then(({ body }) => {
+        const list = Array.isArray(body) ? (body as Array<{ uuid: string; title: string }>) : []
+        setDepartments(new Map(list.map(d => [d.uuid, d.title])))
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setDepartments(new Map())
       })
     return () => {
       controller.abort()
@@ -284,7 +310,7 @@ export function PoliciesTab({
           },
         },
         {
-          label: 'Assign people',
+          label: 'Add employees',
           onClick: () => {
             openPage(kind, policy.uuid, 'assign')
           },
@@ -417,6 +443,7 @@ export function PoliciesTab({
         kind={pageKind}
         policy={pagePolicy}
         people={people}
+        departments={departments}
         breakToday={breakToday}
         trail={trail}
         onClose={closePage}
@@ -930,17 +957,17 @@ function BreakForm({
   )
 }
 
-interface AssignRow {
+interface AssignRow extends EmployeeTableItem {
   person: Person
-  note: string
-  locked: boolean
-  isFixed: boolean
+  department: string
+  currentPolicy: string
 }
 
 function AssignPeople({
   kind,
   policy,
   people,
+  departments,
   breakToday,
   trail,
   onClose,
@@ -949,161 +976,138 @@ function AssignPeople({
   kind: PolicyKind
   policy: AnyPolicy
   people: Person[]
+  departments: Map<string, string>
   breakToday: Set<string>
   trail: Crumb[]
   onClose: () => void
   onSave: (uuids: string[], preview: Preview) => void
 }) {
   const Components = useComponentContext()
-  const initial = useMemo(() => new Set(policy.assigned_employees.map(a => a.uuid)), [policy])
-  const [selected, setSelected] = useState<Set<string>>(initial)
+  const [search, setSearch] = useState('')
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const members = new Set(policy.assigned_employees.map(a => a.uuid))
 
-  const rows: AssignRow[] = people
-    .filter(person => eligibility(person.employee).eligible)
+  const candidates: AssignRow[] = people
+    .filter(person => eligibility(person.employee).eligible && !members.has(person.employee.uuid))
     .sort((a, b) => a.name.localeCompare(b.name))
-    .map(person => {
-      const uuid = person.employee.uuid
-      const locked = kind === 'overtime' && initial.has(uuid)
-      const current = kind === 'overtime' ? person.overtimePolicy?.name : person.breakPolicy?.name
-      let note = current && current !== policy.name ? `On ${current}` : ''
-      if (kind === 'break' && breakToday.has(uuid))
-        note = 'Took a break today: can’t change until tomorrow'
-      const isFixed = locked || (kind === 'break' && breakToday.has(uuid))
-      return { person, note, locked, isFixed }
-    })
+    .map(person => ({
+      uuid: person.employee.uuid,
+      firstName: person.employee.first_name,
+      lastName: person.employee.last_name,
+      jobTitle: person.title,
+      person,
+      department: departments.get(person.employee.department_uuid ?? '') ?? '',
+      currentPolicy:
+        (kind === 'overtime' ? person.overtimePolicy?.name : person.breakPolicy?.name) ?? 'None',
+    }))
+  const query = search.trim().toLowerCase()
+  const rows = candidates.filter(
+    row =>
+      row.person.name.toLowerCase().includes(query) || row.department.toLowerCase().includes(query),
+  )
 
-  const setMembership = (uuid: string, isIn: boolean) => {
-    setSelected(prev => {
-      const next = new Set(prev)
-      if (isIn) next.add(uuid)
-      else next.delete(uuid)
-      return next
-    })
-  }
-
-  const dataView = useDataView<AssignRow>({
-    data: rows,
-    columns: [
-      { title: 'Person', render: row => row.person.name },
-      {
-        title: policy.name,
-        render: row => {
-          const uuid = row.person.employee.uuid
-          return (
-            <div className={styles.membershipSelect}>
-              <span className={styles.membershipIcon}>
-                {selected.has(uuid) ? <ApproveIcon /> : <PendingIcon />}
-              </span>
-              <Components.Select
-                label={`${row.person.name} in ${policy.name}`}
-                shouldVisuallyHideLabel
-                placeholder="Choose"
-                isDisabled={row.isFixed}
-                value={selected.has(uuid) ? 'in' : 'out'}
-                options={[
-                  { value: 'in', label: 'In policy' },
-                  { value: 'out', label: 'Not in policy' },
-                ]}
-                onChange={value => {
-                  setMembership(uuid, value === 'in')
-                }}
-              />
-            </div>
-          )
-        },
-      },
-      { title: 'Job', render: row => row.person.title },
-      {
-        title: 'Note',
-        render: row => {
-          const uuid = row.person.employee.uuid
-          if (selected.has(uuid) && !initial.has(uuid))
-            return <Components.Badge status="info">Will be added</Components.Badge>
-          if (!selected.has(uuid) && initial.has(uuid))
-            return <Components.Badge status="warning">Will be removed</Components.Badge>
-          return row.note
-        },
-      },
-    ],
-  })
-
-  const toAssign = [...selected].filter(uuid => !initial.has(uuid))
-  const toRemove = [...initial].filter(uuid => !selected.has(uuid))
+  const toAssign = [...selected]
   const resource = kind === 'overtime' ? 'overtime_policies' : 'break_policies'
-  const requests: PreviewRequest[] = []
-  if (toAssign.length)
-    requests.push({
-      method: 'PUT',
-      path: `/v1/time_tracking/${resource}/${policy.uuid}/assign_employees`,
-      body: { version: policy.version, employees: toAssign.map(uuid => ({ uuid })) },
-    })
-  if (toRemove.length && kind === 'break')
-    requests.push({
-      method: 'PUT',
-      path: `/v1/time_tracking/break_policies/${policy.uuid}/remove_employees`,
-      body: {
-        version: toAssign.length ? '<version returned by the assign request>' : policy.version,
-        employees: toRemove.map(uuid => ({ uuid })),
-      },
-    })
-  const blocked = kind === 'break' && [...toAssign, ...toRemove].some(uuid => breakToday.has(uuid))
+  const requests: PreviewRequest[] = toAssign.length
+    ? [
+        {
+          method: 'PUT',
+          path: `/v1/time_tracking/${resource}/${policy.uuid}/assign_employees`,
+          body: { version: policy.version, employees: toAssign.map(uuid => ({ uuid })) },
+        },
+      ]
+    : []
+  const blocked = kind === 'break' && toAssign.some(uuid => breakToday.has(uuid))
+  const kindLabel = kind === 'overtime' ? 'overtime' : 'break'
 
   return (
     <SubPage
       trail={trail}
-      current="Assign people"
+      current="Add employees"
       title={
         <>
-          Assign people to {policy.name} <ChangePin id="policy-pages" />
+          Add employees to policy <ChangePin id="policy-pages" /> <ChangePin id="add-employees" />
         </>
       }
-      description={
-        kind === 'overtime'
-          ? 'Everyone eligible is on exactly one overtime policy. Adding someone moves them here, and to take someone off, add them to another overtime policy. Only people who can be on a policy are listed.'
-          : 'Each person can be on one break policy, so adding someone moves them here. Only people who can be on a policy are listed.'
-      }
-    >
-      <div className={styles.assignBar}>
-        <Components.Text size="sm" variant="supporting">
-          {selected.size} in policy · {toAssign.length} to add
-          {kind === 'break' && ` · ${toRemove.length} to remove`}. Changes apply when you save.{' '}
-          <GapPin id="eligibility" /> <ChangePin id="eligible-only" />
-        </Components.Text>
-        <div className={styles.assignControls}>
-          <Components.Button
-            variant="secondary"
-            onClick={() => {
-              setSelected(
-                new Set([
-                  ...initial,
-                  ...rows.filter(r => !r.isFixed).map(r => r.person.employee.uuid),
-                ]),
-              )
-            }}
-          >
-            Add everyone
-          </Components.Button>
+      description={`Select the employees you want to add to ${policy.name}.`}
+      footer={
+        <ActionsLayout>
           <Components.Button variant="secondary" onClick={onClose}>
-            Cancel
+            Back
           </Components.Button>
           <Components.Button
-            isDisabled={blocked || requests.length === 0}
+            isDisabled={blocked || toAssign.length === 0}
             onClick={() => {
-              onSave([...selected], {
-                title: `Assign people to ${policy.name}`,
+              onSave([...members, ...toAssign], {
+                title: `Add employees to ${policy.name}`,
                 requests,
                 gapIds: ['eligibility'],
               })
             }}
           >
-            Save
+            Continue
           </Components.Button>
-        </div>
+        </ActionsLayout>
+      }
+    >
+      <Components.Alert
+        status="warning"
+        label={`Any employees currently assigned to another ${kindLabel} policy will be moved to this policy.`}
+      />
+      <div className={styles.fullWidth}>
+        <EmployeeTable<AssignRow>
+          data={rows}
+          searchValue={search}
+          onSearchChange={setSearch}
+          onSearchClear={() => {
+            setSearch('')
+          }}
+          searchPlaceholder="Search by name or department"
+          hideSearch={candidates.length === 0}
+          selectionMode="multiple"
+          getIsItemSelected={row => selected.has(row.uuid)}
+          onSelect={(row, checked) => {
+            setSelected(prev => {
+              const next = new Set(prev)
+              if (checked) next.add(row.uuid)
+              else next.delete(row.uuid)
+              return next
+            })
+          }}
+          onSelectAll={(checked, visible) => {
+            setSelected(prev => {
+              const next = new Set(prev)
+              for (const row of visible) {
+                if (checked) next.add(row.uuid)
+                else next.delete(row.uuid)
+              }
+              return next
+            })
+          }}
+          emptyState={() => (
+            <EmptyData title="All eligible employees have already been added to this policy." />
+          )}
+          additionalColumns={[
+            { key: 'department', title: 'Department', render: row => row.department },
+            {
+              key: 'currentPolicy',
+              title: `Current ${kindLabel} policy`,
+              render: row => row.currentPolicy,
+            },
+          ]}
+        />
       </div>
-      <DataView label="People" {...dataView} />
+      <Components.Text size="sm" variant="supporting">
+        {members.size} {members.size === 1 ? 'person is' : 'people are'} already on this policy.{' '}
+        {kind === 'overtime'
+          ? 'To take someone off, move them to another overtime policy in Policies › People.'
+          : 'To take someone off, change their break policy in Policies › People.'}{' '}
+        Only people who can be on a policy are listed. <GapPin id="eligibility" />{' '}
+        <ChangePin id="eligible-only" />
+      </Components.Text>
       {blocked && (
         <Components.Alert status="warning" label="This would fail">
-          Someone you changed took a break today, so the API would reject this, without saying who.
+          Someone you selected took a break today, so the API would reject this, without saying who.
         </Components.Alert>
       )}
     </SubPage>
@@ -1209,7 +1213,7 @@ function PolicyDetail({
               title={`People (${onPolicy.length})`}
               action={
                 <Components.Button variant="secondary" onClick={onAssign}>
-                  Assign people
+                  Add employees
                 </Components.Button>
               }
             />

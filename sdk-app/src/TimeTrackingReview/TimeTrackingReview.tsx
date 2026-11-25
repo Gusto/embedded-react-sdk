@@ -45,7 +45,7 @@ import {
 } from './model'
 import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
-import { SendDialog, type SendFailure, type SendOutcome } from './SendDialog'
+import { SendPage, type SendFailure, type SendOutcome, type SendView } from './SendPage'
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER, ROUND_LABEL, type ChangeRound } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
@@ -208,7 +208,7 @@ function TimeTrackingPrototype() {
     status: NoticeStatus
   } | null>(null)
   const [shiftPage, setShiftPage] = useState<ShiftPageMode | null>(null)
-  const [isSendOpen, setIsSendOpen] = useState(false)
+  const [sendView, setSendView] = useState<SendView | null>(null)
   const [sending, setSending] = useState<{ key: string; startedAt: string } | null>(null)
   const [sendFailures, setSendFailures] = useState<Record<string, SendFailure>>({})
   const [dismissedDates, setDismissedDates] = useState<Set<string>>(new Set())
@@ -399,7 +399,7 @@ function TimeTrackingPrototype() {
   useEffect(() => {
     if (sendWhenLoaded && shifts.kind === 'done') {
       setSendWhenLoaded(false)
-      setIsSendOpen(true)
+      setSendView('review')
     }
   }, [sendWhenLoaded, shifts])
 
@@ -518,7 +518,7 @@ function TimeTrackingPrototype() {
 
   const startSend = (included: ApiShift[], request: Preview, outcome: SendOutcome) => {
     const key = sendKey
-    setIsSendOpen(false)
+    setSendView('summary')
     if (period?.payroll?.processed) {
       setSendFailure(key, { kind: 'processed' })
       return
@@ -650,18 +650,6 @@ function TimeTrackingPrototype() {
   const payrollName = period?.payroll
     ? `${formatShortDate(period.payroll.check_date)} payroll`
     : 'payroll'
-  const retryButton = (
-    <Components.Button
-      variant="secondary"
-      onClick={() => {
-        setSendFailure(sendKey, null)
-        setIsSendOpen(true)
-      }}
-    >
-      Try again
-    </Components.Button>
-  )
-
   const focused = focusPerson ? personRows.find(r => r.person.employee.uuid === focusPerson) : null
 
   const review = data && (
@@ -711,7 +699,7 @@ function TimeTrackingPrototype() {
           <Components.Button
             isDisabled={!period || shifts.kind !== 'done' || Boolean(sendingHere) || !hasSendable}
             onClick={() => {
-              setIsSendOpen(true)
+              setSendView('review')
             }}
           >
             {lastSyncAt ? 'Update payroll' : 'Send to payroll'}
@@ -731,42 +719,52 @@ function TimeTrackingPrototype() {
         </Components.Alert>
       )}
       {sendingHere && (
-        <Components.Alert status="info" label="Sending hours to payroll…">
+        <Components.Alert
+          status="info"
+          label="Sending hours to payroll…"
+          action={
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                setSendView('summary')
+              }}
+            >
+              View progress
+            </Components.Button>
+          }
+        >
           <Flex alignItems="center" gap={8}>
             <Components.LoadingSpinner size="sm" style="inline" />
             <span>
-              Started {formatDateTime(sendingHere.startedAt)}. Payroll confirms in the background,
-              so you can keep working. <GapPin id="sync-limits" /> <ChangePin id="send-dialog" />
+              Started {formatDateTime(sendingHere.startedAt)}. You can keep working.{' '}
+              <GapPin id="sync-limits" /> <ChangePin id="send-dialog" />
             </span>
           </Flex>
         </Components.Alert>
       )}
-      {!sendingHere && failure?.kind === 'processed' && (
-        <Components.Alert status="error" label={`The ${payrollName} was already processed`}>
-          There’s no open payroll for these dates, so their hours can’t change.{' '}
-          <GapPin id="sync-limits" />
-        </Components.Alert>
-      )}
-      {!sendingHere && failure?.kind === 'error' && (
-        <Components.Alert status="error" label="The send failed" action={retryButton}>
-          Payroll didn’t accept any hours, so nothing changed. If it keeps failing, contact support.
-          What the API reports for a failed send isn’t defined yet. <GapPin id="which-timesheets" />{' '}
-          <ChangePin id="send-outcomes" />
-        </Components.Alert>
-      )}
-      {!sendingHere && failure?.kind === 'partial' && (
+      {!sendingHere && failure && (
         <Components.Alert
           status="error"
-          label={`${failure.names.length} ${failure.names.length === 1 ? 'person wasn’t' : 'people weren’t'} sent`}
-          action={retryButton}
+          label={
+            failure.kind === 'partial'
+              ? 'Some hours didn’t reach payroll'
+              : 'The last send didn’t go through'
+          }
+          action={
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                setSendView('summary')
+              }}
+            >
+              View send summary
+            </Components.Button>
+          }
         >
-          {failure.shifts} {failure.shifts === 1 ? 'shift' : 'shifts'} for{' '}
-          {failure.names.join(', ')} didn’t reach payroll. Everyone else was sent. What the API
-          reports for a partial send isn’t defined yet. <GapPin id="which-timesheets" />{' '}
           <ChangePin id="send-outcomes" />
         </Components.Alert>
       )}
-      {!sendingHere && failure?.kind !== 'error' && failure?.kind !== 'processed' && lastSyncAt && (
+      {!sendingHere && !failure && lastSyncAt && (
         <Components.Alert
           status="success"
           label={`Sent to the ${payrollName} ${formatDateTime(lastSyncAt)}`}
@@ -774,16 +772,15 @@ function TimeTrackingPrototype() {
             <Components.Button
               variant="secondary"
               onClick={() => {
-                setTab('payroll')
+                setSendView('summary')
               }}
             >
-              See it in Run payroll
+              View send summary
             </Components.Button>
           }
         >
-          {sent.sent.length} shifts · {sent.rows.length} people · {formatHours(sent.hours)} hours.
-          Each shift’s Payroll column shows whether it went. <GapPin id="which-timesheets" />{' '}
-          <ChangePin id="send-dialog" />
+          {sent.sent.length} shifts · {sent.rows.length} people · {formatHours(sent.hours)} hours.{' '}
+          <GapPin id="which-timesheets" />
         </Components.Alert>
       )}
       {!sendingHere && changedCount > 0 && (
@@ -794,7 +791,7 @@ function TimeTrackingPrototype() {
             <Components.Button
               variant="secondary"
               onClick={() => {
-                setIsSendOpen(true)
+                setSendView('review')
               }}
             >
               Update payroll
@@ -804,22 +801,6 @@ function TimeTrackingPrototype() {
           Payroll keeps the old hours until you update it. Spotted by comparing each shift’s
           updated_at with its synced_to_payroll_at. <GapPin id="which-timesheets" />
         </Components.Alert>
-      )}
-      {period && schedule && (
-        <SendDialog
-          key={sendKey}
-          isOpen={isSendOpen}
-          companyId={companyId}
-          schedule={schedule}
-          period={period}
-          people={schedulePeople}
-          shifts={periodShifts}
-          isUpdate={Boolean(lastSyncAt)}
-          onClose={() => {
-            setIsSendOpen(false)
-          }}
-          onSend={startSend}
-        />
       )}
 
       {period?.payroll?.processed && (
@@ -1054,6 +1035,32 @@ function TimeTrackingPrototype() {
                                 : 'Shift deleted.',
                               request,
                             )
+                          }}
+                        />
+                      ) : sendView && period && schedule ? (
+                        <SendPage
+                          key={sendKey}
+                          view={sendView}
+                          companyId={companyId}
+                          schedule={schedule}
+                          period={period}
+                          people={schedulePeople}
+                          shifts={periodShifts}
+                          isUpdate={Boolean(lastSyncAt)}
+                          sendingSince={sendingHere?.startedAt ?? null}
+                          failure={failure}
+                          sent={sent}
+                          onClose={() => {
+                            setSendView(null)
+                          }}
+                          onSend={startSend}
+                          onSendAgain={() => {
+                            setSendFailure(sendKey, null)
+                            setSendView('review')
+                          }}
+                          onRunPayroll={() => {
+                            setSendView(null)
+                            setTab('payroll')
                           }}
                         />
                       ) : (
