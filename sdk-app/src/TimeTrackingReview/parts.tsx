@@ -234,7 +234,7 @@ export function SubPage({
   const Components = useComponentContext()
   const width = narrow ? `${styles.subPageBody} ${styles.formPage}` : styles.subPageBody
   return (
-    <Flex flexDirection="column" gap={20}>
+    <Flex flexDirection="column" gap={16}>
       <Trail trail={trail} current={current} />
       <div className={styles.subPageHeader}>
         <div className={styles.subPageTitle}>

@@ -362,7 +362,7 @@ export function PoliciesTab({
       : [policiesCrumb]
   if (view === 'people') {
     return (
-      <Flex flexDirection="column" gap={24}>
+      <Flex flexDirection="column" gap={16}>
         {noOvertime.length > 0 && (
           <Banner
             status="error"
@@ -459,7 +459,7 @@ export function PoliciesTab({
   }
 
   return (
-    <Flex flexDirection="column" gap={24}>
+    <Flex flexDirection="column" gap={16}>
       <Components.Box
         header={
           <Components.BoxHeader
