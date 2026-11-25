@@ -588,6 +588,9 @@ call-to-action starts an off-cycle payroll.
 
 ### Remarks
 
+Data fetching, filtering, pagination, and the skip and delete actions come from
+[usePayrollList](hooks/use-payroll-list.md#usepayrolllist); use that hook directly to build this screen with your own layout.
+
 When the company has unprocessed transition pay periods within the next
 90 days, the Run Payroll action on Regular rows is disabled to prevent a
 regular payroll from being run before the transition is resolved. Off-cycle
@@ -627,8 +630,8 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |
 | `transition/payrollSelected` | User selected a transition payroll to run | `{ payrollUuid, payPeriod }` |
 | `payroll/review` | User selected a calculated payroll to review and submit | `{ payrollUuid, payPeriod }` |
-| `payroll/skipped` | A payroll was successfully skipped | `{ payrollId }` |
-| `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId }` |
+| `payroll/skipped` | A payroll was successfully skipped | `{ payrollId, payroll }` |
+| `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId, payroll }` |
 | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
 
 <br />

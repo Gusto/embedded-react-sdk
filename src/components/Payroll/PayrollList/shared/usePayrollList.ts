@@ -13,13 +13,15 @@ import {
   QueryParamPayrollTypes,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import { PayrollTypes } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayperiods'
-import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import {
+  OffCycleReasonType,
+  type Payroll,
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { ApiPayrollBlocker } from '../../PayrollBlocker/payrollHelpers'
-import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
+import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { usePagination } from '@/hooks/usePagination/usePagination'
@@ -28,188 +30,250 @@ import {
   type UseDateRangeFilterResult,
 } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { addDays, toRFCDate } from '@/helpers/dateFormatting'
 
 const FUTURE_LOOKAHEAD_MONTHS = 3
 const TRANSITION_LOOK_AHEAD_DAYS = 90
-const TRANSITION_OFF_CYCLE_REASON = 'Transition from old pay schedule'
 
-/**
- * Inputs for the in-development payroll list hook.
- *
- * @internal
- */
-export interface UsePayrollListProps {
-  companyId: string
-  /**
-   * Enables legacy component query behavior: payroll list errors reach the component boundary,
-   * and supporting-query errors do so only without cached data. Defaults to returning all query
-   * errors to headless consumers through `errorHandling` without throwing them.
-   */
-  throwOnQueryError?: boolean
+const getDefaultStartDate = (): Date => new Date()
+
+const getDefaultEndDate = (): Date => {
+  const date = new Date()
+  date.setMonth(date.getMonth() + FUTURE_LOOKAHEAD_MONTHS)
+  return date
 }
 
 /**
- * Loaded unprocessed payrolls, supporting company data, mutation state, and list controls.
+ * Props for {@link usePayrollList}.
  *
- * @internal
+ * @public
+ */
+export interface UsePayrollListProps {
+  /** The associated company identifier. */
+  companyId: string
+}
+
+/**
+ * Outcome of {@link UsePayrollListReady.actions | a skip or delete action} on a payroll.
+ *
+ * @remarks
+ * Both endpoints reply with an empty body — `202 Accepted` for skip, `204 No Content` for
+ * delete — so there is no server-returned entity to hand back. `payroll` is the record as it
+ * appeared in the list when the action ran, which identifies what changed.
+ *
+ * @public
+ */
+export interface PayrollListActionResult {
+  /** Identifier of the payroll the action applied to. */
+  payrollId: string
+  /** The payroll record the action applied to, as it appeared in the list beforehand. */
+  payroll: Payroll
+}
+
+/**
+ * Ready state of {@link usePayrollList}.
+ *
+ * @public
  */
 export interface UsePayrollListReady extends BaseHookReady<
   {
+    /** Unprocessed regular and off-cycle payrolls on the current page. */
     payrolls: Payroll[]
+    /** The company's pay schedules, used to label each row's schedule. */
     paySchedules: PayScheduleShow[]
+    /** Issues that must be resolved before any payroll can be run. */
     blockers: ApiPayrollBlocker[]
+    /** Open wire-in requests, used to show funding status against a payroll. */
     wireInRequests: WireInRequest[]
   },
   {
+    /** Whether the company has an unprocessed transition pay period within the next 90 days. */
     hasUnprocessedTransitions: boolean
+    /** Identifier of the payroll currently being skipped, or `null` when no skip is in flight. */
     skippingPayrollId: string | null
+    /** Identifier of the payroll currently being deleted, or `null` when no delete is in flight. */
     deletingPayrollId: string | null
   }
 > {
+  /** Pagination controls for the current page of payrolls. */
   pagination: PaginationControlProps
+  /** Date range filter applied to the list; changing it returns pagination to the first page. */
   dateRangeFilter: UseDateRangeFilterResult
+  /** Actions that change a payroll's state. */
   actions: {
-    /** Skips the payroll, running the optional success callback inside submit error handling. */
-    onSkip: (payrollUuid: string, onSuccess?: () => void) => Promise<void>
-    /** Deletes the cancellable off-cycle payroll, running the optional success callback inside submit error handling. */
-    onDelete: (payrollId: string, onSuccess?: () => void) => Promise<void>
+    /**
+     * Skips the payroll's pay period. Resolves to the result, or `undefined` when the payroll
+     * has no pay period to skip or the request failed — read `errorHandling.errors` for why.
+     */
+    onSkip: (payrollId: string) => Promise<HookSubmitResult<PayrollListActionResult> | undefined>
+    /**
+     * Deletes a cancellable off-cycle payroll. Resolves to the result, or `undefined` when the
+     * payroll is not on the current page or the request failed — read `errorHandling.errors`.
+     */
+    onDelete: (payrollId: string) => Promise<HookSubmitResult<PayrollListActionResult> | undefined>
   }
 }
 
 /**
- * Fetches upcoming (unprocessed) payrolls and skips or deletes them without rendering UI.
+ * Return type of {@link usePayrollList}.
+ *
+ * @public
+ */
+export type UsePayrollListResult = HookLoadingResult | UsePayrollListReady
+
+/**
+ * Fetches a company's upcoming (unprocessed) payrolls along with the pay schedules, blockers, and
+ * wire-in requests needed to present them, and skips or deletes individual payrolls.
  *
  * @remarks
- * Queries unprocessed regular, off-cycle, and external payrolls. The date range defaults to today
- * through three months ahead, and changing it returns pagination to the first page. Previous rows
- * remain visible during pagination and filter changes. `hasUnprocessedTransitions` reflects
- * unprocessed transition pay periods within the next 90 days. Handled mutation failures appear in
- * `errorHandling`; unexpected errors reach a React boundary. This in-development hook is consumed
- * by `UNSTABLE_PayrollList` and is not exported publicly.
+ * Queries unprocessed regular and off-cycle payrolls, including transition payrolls, which the API
+ * returns as off-cycle with an `offCycleReason` of `Transition from old pay schedule`. The date
+ * range is seeded with today through three months ahead and the end date cannot be moved past that
+ * point; changing the range returns pagination to the first page. Previous rows stay rendered
+ * while a new page or range loads, and `pagination.isFetching` flips to `true` during the request.
  *
- * @param props - Company identifier and optional component-boundary query error behavior.
- * @returns Loading/error state or payrolls, company data, filters, pagination, and skip/delete actions.
- * @internal
+ * `status.hasUnprocessedTransitions` reports whether a transition pay period falls within the next
+ * 90 days. While one does, a regular payroll should not be run until the transition is resolved —
+ * run or skip it through the off-cycle path first.
+ *
+ * Both actions resolve to `undefined` on failure rather than throwing; the error is added to
+ * `errorHandling.errors`, which also carries any query error.
+ *
+ * @param props - See {@link UsePayrollListProps}.
+ * @returns A {@link HookLoadingResult} while the first page is in flight, or a {@link UsePayrollListReady} once data has arrived.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { usePayrollList } from '@gusto/embedded-react-sdk'
+ *
+ * function UpcomingPayrolls({ companyId }: { companyId: string }) {
+ *   const payrollList = usePayrollList({ companyId })
+ *
+ *   if (payrollList.isLoading) return <div>Loading...</div>
+ *
+ *   return (
+ *     <ul>
+ *       {payrollList.data.payrolls.map(({ payrollUuid, checkDate }) => {
+ *         if (!payrollUuid) return null
+ *
+ *         return (
+ *           <li key={payrollUuid}>
+ *             {checkDate}
+ *             <button
+ *               disabled={payrollList.status.skippingPayrollId === payrollUuid}
+ *               onClick={() => payrollList.actions.onSkip(payrollUuid)}
+ *             >
+ *               Skip
+ *             </button>
+ *           </li>
+ *         )
+ *       })}
+ *     </ul>
+ *   )
+ * }
+ * ```
  */
-export function usePayrollList({
-  companyId,
-  throwOnQueryError = false,
-}: UsePayrollListProps): HookLoadingResult | UsePayrollListReady {
-  const { error, setError, baseSubmitHandler } = useBaseSubmit()
+export function usePayrollList({ companyId }: UsePayrollListProps): UsePayrollListResult {
+  const {
+    error: submitError,
+    setError: setSubmitError,
+    baseSubmitHandler,
+  } = useBaseSubmit('PayrollList')
   const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
   const [skippingPayrollId, setSkippingPayrollId] = useState<string | null>(null)
   const [deletingPayrollId, setDeletingPayrollId] = useState<string | null>(null)
 
-  const initialDates = useMemo(() => {
-    const startDate = new Date()
-    const endDate = new Date()
-    endDate.setMonth(endDate.getMonth() + FUTURE_LOOKAHEAD_MONTHS)
-    return { startDate, endDate }
-  }, [])
   const dateRangeFilter = useDateRangeFilter({
-    initialStartDate: initialDates.startDate,
-    initialEndDate: initialDates.endDate,
+    initialStartDate: getDefaultStartDate(),
+    initialEndDate: getDefaultEndDate(),
+    latestAllowedEndDate: getDefaultEndDate(),
     onFilterChange: resetPage,
   })
 
-  const transitionLookAheadEndDate = useMemo(() => {
-    const date = new Date()
-    date.setDate(date.getDate() + TRANSITION_LOOK_AHEAD_DAYS)
-    return new RFCDate(date)
-  }, [])
-
-  const throwWithoutCachedData = (_error: Error, query: { state: { data: unknown } }) =>
-    throwOnQueryError && query.state.data === undefined
+  const transitionLookAheadEndDate = useMemo(
+    () => toRFCDate(addDays(new Date(), TRANSITION_LOOK_AHEAD_DAYS)),
+    [],
+  )
 
   const payrollsQuery = usePayrollsList(
     {
       companyId,
       processingStatuses: [ProcessingStatuses.Unprocessed],
-      payrollTypes: [
-        QueryParamPayrollTypes.Regular,
-        QueryParamPayrollTypes.OffCycle,
-        QueryParamPayrollTypes.External,
-      ],
+      payrollTypes: [QueryParamPayrollTypes.Regular, QueryParamPayrollTypes.OffCycle],
       includeOffCycle: true,
       ...dateRangeFilter.getApiDateParams(),
       page: currentPage,
       per: itemsPerPage,
     },
-    { placeholderData: keepPreviousData, throwOnError: throwOnQueryError },
+    { placeholderData: keepPreviousData },
   )
-  const paySchedulesQuery = usePaySchedulesGetAll(
-    { companyId },
-    { throwOnError: throwWithoutCachedData },
-  )
-  const blockersQuery = usePayrollsGetBlockers(
-    { companyUuid: companyId },
-    { throwOnError: throwWithoutCachedData },
-  )
-  const wiresQuery = useWireInRequestsList(
-    { companyUuid: companyId },
-    { throwOnError: throwWithoutCachedData },
-  )
-  const transitionPayPeriodsQuery = usePaySchedulesGetPayPeriods(
-    {
-      companyId,
-      payrollTypes: PayrollTypes.Transition,
-      endDate: transitionLookAheadEndDate,
-    },
-    { throwOnError: throwWithoutCachedData },
-  )
+  const paySchedulesQuery = usePaySchedulesGetAll({ companyId })
+  const blockersQuery = usePayrollsGetBlockers({ companyUuid: companyId })
+  const wiresQuery = useWireInRequestsList({ companyUuid: companyId })
+  const transitionPayPeriodsQuery = usePaySchedulesGetPayPeriods({
+    companyId,
+    payrollTypes: PayrollTypes.Transition,
+    endDate: transitionLookAheadEndDate,
+  })
 
   const skipMutation = usePayrollsSkipMutation()
   const deleteMutation = usePayrollsDeleteMutation()
 
   const errorHandling = composeErrorHandler(
-    throwOnQueryError
-      ? []
-      : [payrollsQuery, paySchedulesQuery, blockersQuery, wiresQuery, transitionPayPeriodsQuery],
-    { submitError: error, setSubmitError: setError },
+    [payrollsQuery, paySchedulesQuery, blockersQuery, wiresQuery, transitionPayPeriodsQuery],
+    { submitError, setSubmitError },
   )
 
   const payrolls = payrollsQuery.data?.payrollList ?? []
 
-  const onSkip = async (payrollUuid: string, onSuccess?: () => void) => {
-    const payroll = payrolls.find(item => item.payrollUuid === payrollUuid)
-    if (!payroll?.payPeriod) return
+  const onSkip = async (payrollId: string) => {
+    const payroll = payrolls.find(item => item.payrollUuid === payrollId)
+    if (!payroll?.payPeriod) return undefined
 
-    setSkippingPayrollId(payrollUuid)
     const payrollType =
-      payroll.offCycleReason === TRANSITION_OFF_CYCLE_REASON
+      payroll.offCycleReason === OffCycleReasonType.TransitionFromOldPaySchedule
         ? PayrollType.TransitionFromOldPaySchedule
         : PayrollType.Regular
 
+    let result: HookSubmitResult<PayrollListActionResult> | undefined
+    setSkippingPayrollId(payrollId)
     try {
-      await baseSubmitHandler({}, async () => {
+      await baseSubmitHandler(payroll, async target => {
         await skipMutation.mutateAsync({
           request: {
             companyUuid: companyId,
             requestBody: {
               payrollType,
-              startDate: payroll.payPeriod?.startDate ?? undefined,
-              endDate: payroll.payPeriod?.endDate ?? undefined,
-              payScheduleUuid: payroll.payPeriod?.payScheduleUuid ?? undefined,
+              startDate: target.payPeriod?.startDate ?? undefined,
+              endDate: target.payPeriod?.endDate ?? undefined,
+              payScheduleUuid: target.payPeriod?.payScheduleUuid ?? undefined,
             },
           },
         })
-        onSuccess?.()
+        result = { mode: 'update', data: { payrollId, payroll: target } }
       })
     } finally {
       setSkippingPayrollId(null)
     }
+    return result
   }
 
-  const onDelete = async (payrollId: string, onSuccess?: () => void) => {
+  const onDelete = async (payrollId: string) => {
+    const payroll = payrolls.find(item => item.payrollUuid === payrollId)
+    if (!payroll) return undefined
+
+    let result: HookSubmitResult<PayrollListActionResult> | undefined
     setDeletingPayrollId(payrollId)
     try {
-      await baseSubmitHandler({}, async () => {
+      await baseSubmitHandler(payroll, async target => {
         await deleteMutation.mutateAsync({ request: { companyId, payrollId } })
-        onSuccess?.()
+        result = { mode: 'update', data: { payrollId, payroll: target } }
       })
     } finally {
       setDeletingPayrollId(null)
     }
+    return result
   }
 
   if (

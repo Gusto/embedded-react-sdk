@@ -30,8 +30,6 @@ export interface UnstableFeatures {
    * @defaultValue `false`
    */
   historicalPayments?: boolean
-  /** Enables the in-development hook-backed `Payroll.PayrollList` implementation. */
-  payrollListHooks?: boolean
   /**
    * Reviewing a single contractor's payment history.
    *

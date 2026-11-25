@@ -62,6 +62,19 @@ describe('usePayrollList headless contract', () => {
     expect(ready.pagination.currentPage).toBe(1)
   })
 
+  it('queries only regular and off-cycle payrolls', async () => {
+    const requestedPayrollTypes: string[][] = []
+    const payrollsResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+      requestedPayrollTypes.push(new URL(request.url).searchParams.getAll('payroll_types'))
+      return HttpResponse.json([createListPayroll()])
+    })
+    server.use(...buildPayrollListHandlers({ payrollsResolver }))
+
+    await renderReadyHook()
+
+    expect(requestedPayrollTypes).toEqual([['regular,off_cycle']])
+  })
+
   it('reports unprocessed transition pay periods', async () => {
     server.use(
       ...buildPayrollListHandlers({
@@ -100,18 +113,18 @@ describe('usePayrollList headless contract', () => {
     expect(result.current.errorHandling.errors).toEqual([])
   })
 
-  it('skips a regular payroll and runs the success callback', async () => {
+  it('skips a regular payroll and returns the affected record', async () => {
     let skipBody: Record<string, unknown> | null = null
     const skipResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
       skipBody = (await request.json()) as Record<string, unknown>
       return new HttpResponse(null, { status: 202 })
     })
     server.use(handleSkipPayroll(skipResolver))
-    const onSuccess = vi.fn()
     const { result, getReady } = await renderReadyHook()
 
+    let skipResult: Awaited<ReturnType<UsePayrollListReady['actions']['onSkip']>>
     await act(async () => {
-      await getReady().actions.onSkip('payroll-regular-1', onSuccess)
+      skipResult = await getReady().actions.onSkip('payroll-regular-1')
     })
 
     expect(skipResolver).toHaveBeenCalledTimes(1)
@@ -121,7 +134,10 @@ describe('usePayrollList headless contract', () => {
       end_date: '2025-01-15',
       pay_schedule_uuid: 'schedule-1',
     })
-    expect(onSuccess).toHaveBeenCalledTimes(1)
+    expect(skipResult).toMatchObject({
+      mode: 'update',
+      data: { payrollId: 'payroll-regular-1', payroll: { payrollUuid: 'payroll-regular-1' } },
+    })
     expect((result.current as UsePayrollListReady).status.skippingPayrollId).toBeNull()
   })
 
@@ -139,7 +155,8 @@ describe('usePayrollList headless contract', () => {
       }),
     )
     const { getReady } = await renderReadyHook()
-    const payrollUuid = getReady().data.payrolls[0]!.payrollUuid!
+    const [transitionPayroll] = getReady().data.payrolls
+    const payrollUuid = transitionPayroll?.payrollUuid ?? ''
 
     await act(async () => {
       await getReady().actions.onSkip(payrollUuid)
@@ -148,7 +165,7 @@ describe('usePayrollList headless contract', () => {
     expect(skipBody).toMatchObject({ payroll_type: 'Transition from old pay schedule' })
   })
 
-  it('surfaces a failed skip in errorHandling without running the success callback', async () => {
+  it('surfaces a failed skip in errorHandling and resolves to undefined', async () => {
     server.use(
       handleSkipPayroll(() =>
         HttpResponse.json(
@@ -157,18 +174,24 @@ describe('usePayrollList headless contract', () => {
         ),
       ),
     )
-    const onSuccess = vi.fn()
     const { result, getReady } = await renderReadyHook()
 
+    let skipResult: Awaited<ReturnType<UsePayrollListReady['actions']['onSkip']>>
     await act(async () => {
-      await getReady().actions.onSkip('payroll-regular-1', onSuccess)
+      skipResult = await getReady().actions.onSkip('payroll-regular-1')
     })
 
-    expect(onSuccess).not.toHaveBeenCalled()
+    expect(skipResult).toBeUndefined()
     expect(result.current.errorHandling.errors).toHaveLength(1)
   })
 
   it('deletes a payroll using the company and payroll identifiers', async () => {
+    server.use(
+      ...buildPayrollListHandlers({
+        payrolls: [createOffCyclePayroll('Bonus')],
+        paySchedules: [createPaySchedule()],
+      }),
+    )
     let deletePath: string | null = null
     server.use(
       handleDeletePayroll(({ request }) => {
@@ -176,24 +199,28 @@ describe('usePayrollList headless contract', () => {
         return new HttpResponse(null, { status: 204 })
       }),
     )
-    const onSuccess = vi.fn()
     const { result, getReady } = await renderReadyHook()
 
+    let deleteResult: Awaited<ReturnType<UsePayrollListReady['actions']['onDelete']>>
     await act(async () => {
-      await getReady().actions.onDelete('payroll-off-cycle-bonus', onSuccess)
+      deleteResult = await getReady().actions.onDelete('payroll-off-cycle-bonus')
     })
 
     expect(deletePath).toBe(`/v1/companies/${companyId}/payrolls/payroll-off-cycle-bonus`)
-    expect(onSuccess).toHaveBeenCalledTimes(1)
+    expect(deleteResult).toMatchObject({
+      mode: 'update',
+      data: { payrollId: 'payroll-off-cycle-bonus' },
+    })
     expect((result.current as UsePayrollListReady).status.deletingPayrollId).toBeNull()
   })
 
   it('exposes a date filter seeded with today through three months ahead', async () => {
     const { getReady } = await renderReadyHook()
 
-    const { startDate, endDate } = getReady().dateRangeFilter
+    const { startDate, endDate, isModified } = getReady().dateRangeFilter
     expect(startDate).toBeInstanceOf(Date)
-    expect(endDate!.getTime()).toBeGreaterThan(startDate!.getTime())
-    expect(getReady().dateRangeFilter.isModified).toBe(false)
+    expect(endDate).toBeInstanceOf(Date)
+    expect(endDate?.getTime() ?? 0).toBeGreaterThan(startDate?.getTime() ?? 0)
+    expect(isModified).toBe(false)
   })
 })

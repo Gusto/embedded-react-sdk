@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react'
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -36,12 +35,7 @@ const sharedHandlers = [
   }),
 ]
 
-describe.each([
-  { implementation: 'legacy', unstableFeatures: {} },
-  { implementation: 'hooks', unstableFeatures: { payrollListHooks: true } },
-])('PayrollList ($implementation)', ({ unstableFeatures }) => {
-  const renderList = (ui: ReactElement) => renderWithProviders(ui, { unstableFeatures })
-
+describe('PayrollList', () => {
   const defaultProps = {
     companyId: 'company-123',
     onEvent: vi.fn(),
@@ -62,7 +56,7 @@ describe.each([
   })
 
   it('includes off-cycle payrolls with a wide date window', async () => {
-    renderList(<PayrollList {...defaultProps} />)
+    renderWithProviders(<PayrollList {...defaultProps} />)
 
     await waitFor(() => {
       expect(capturedPayrollListUrl).not.toBeNull()
@@ -80,7 +74,7 @@ describe.each([
   })
 
   it('renders the date filter trigger button', async () => {
-    renderList(<PayrollList {...defaultProps} />)
+    renderWithProviders(<PayrollList {...defaultProps} />)
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /^Filter by date,/ })).toBeInTheDocument()
@@ -88,7 +82,9 @@ describe.each([
   })
 
   test('applies custom className', async () => {
-    const { container } = renderList(<PayrollList {...defaultProps} className="custom-class" />)
+    const { container } = renderWithProviders(
+      <PayrollList {...defaultProps} className="custom-class" />,
+    )
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /^Filter by date,/ })).toBeInTheDocument()
@@ -98,7 +94,7 @@ describe.each([
   })
 
   it('passes a default start_date of today to the API', async () => {
-    renderList(<PayrollList {...defaultProps} />)
+    renderWithProviders(<PayrollList {...defaultProps} />)
 
     await waitFor(() => {
       expect(capturedPayrollListUrl).not.toBeNull()
@@ -117,7 +113,7 @@ describe.each([
   })
 
   it('includes page and per params in the API request', async () => {
-    renderList(<PayrollList {...defaultProps} />)
+    renderWithProviders(<PayrollList {...defaultProps} />)
 
     await waitFor(() => {
       expect(capturedPayrollListUrl).not.toBeNull()
@@ -168,7 +164,7 @@ describe.each([
         ),
       )
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       const runPayrollButton = await screen.findByRole('button', { name: 'Run Payroll' })
       expect(runPayrollButton).toBeDisabled()
@@ -182,7 +178,7 @@ describe.each([
         ...sharedHandlers,
       )
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       const runPayrollButton = await screen.findByRole('button', { name: 'Run Payroll' })
       expect(runPayrollButton).not.toBeDisabled()
@@ -203,7 +199,7 @@ describe.each([
       ...sharedHandlers,
     )
 
-    renderList(<PayrollList {...defaultProps} />)
+    renderWithProviders(<PayrollList {...defaultProps} />)
 
     await waitFor(() => {
       expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
@@ -245,7 +241,7 @@ describe.each([
       ...sharedHandlers,
     )
 
-    renderList(<PayrollList {...defaultProps} />)
+    renderWithProviders(<PayrollList {...defaultProps} />)
 
     const runPayrollButton = await screen.findByRole('button', { name: 'Run Payroll' })
 
@@ -276,7 +272,7 @@ describe.each([
     it('renders the empty state when there are no payrolls', async () => {
       server.use(...buildPayrollListHandlers())
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       expect(await screen.findByText('All payrolls have been processed')).toBeInTheDocument()
     })
@@ -289,7 +285,7 @@ describe.each([
         }),
       )
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       expect(await screen.findByText('Weekly Schedule')).toBeInTheDocument()
       expect(screen.getByText(/Jan 1 - Jan 15, 2025/)).toBeInTheDocument()
@@ -310,7 +306,7 @@ describe.each([
         }),
       )
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       expect(await screen.findAllByRole('button', { name: 'Run Payroll' })).toHaveLength(2)
       expect(screen.getByRole('button', { name: 'Review and submit' })).toBeInTheDocument()
@@ -331,7 +327,7 @@ describe.each([
       const onEvent = vi.fn()
       server.use(...buildPayrollListHandlers({ payrolls: [createListPayroll()] }))
 
-      renderList(<PayrollList {...defaultProps} onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
 
       await user.click(await screen.findByRole('button', { name: 'Run Payroll' }))
 
@@ -369,7 +365,7 @@ describe.each([
         }),
       )
 
-      renderList(<PayrollList {...defaultProps} onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
 
       await user.click(await screen.findByRole('button', { name: 'Review and submit' }))
 
@@ -384,7 +380,7 @@ describe.each([
       const onEvent = vi.fn()
       server.use(...buildPayrollListHandlers({ payrolls: [createListPayroll()] }))
 
-      renderList(<PayrollList {...defaultProps} onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
 
       await user.click(await screen.findByRole('button', { name: 'Run off-cycle payroll' }))
 
@@ -394,7 +390,7 @@ describe.each([
     it('hides the off-cycle call-to-action when withOffcyclePayroll is false', async () => {
       server.use(...buildPayrollListHandlers({ payrolls: [createListPayroll()] }))
 
-      renderList(<PayrollList {...defaultProps} withOffcyclePayroll={false} />)
+      renderWithProviders(<PayrollList {...defaultProps} withOffcyclePayroll={false} />)
 
       await screen.findByRole('button', { name: 'Run Payroll' })
       expect(screen.queryByRole('button', { name: 'Run off-cycle payroll' })).toBeNull()
@@ -421,13 +417,14 @@ describe.each([
         handleSkipPayroll(skipResolver),
       )
 
-      renderList(<PayrollList {...defaultProps} onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
 
       await openSkipDialog(user)
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(componentEvents.PAYROLL_SKIPPED, {
           payrollId: 'payroll-regular-1',
+          payroll: expect.objectContaining({ payrollUuid: 'payroll-regular-1' }),
         })
       })
       expect(skipResolver).toHaveBeenCalledTimes(1)
@@ -454,7 +451,7 @@ describe.each([
         handleSkipPayroll(skipResolver),
       )
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       await openSkipDialog(user)
 
@@ -478,7 +475,7 @@ describe.each([
         handleSkipPayroll(skipResolver),
       )
 
-      renderList(<PayrollList {...defaultProps} onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
 
       await openSkipDialog(user)
 
@@ -511,13 +508,14 @@ describe.each([
         handleDeletePayroll(deleteResolver),
       )
 
-      renderList(<PayrollList {...defaultProps} onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
 
       await openDeleteDialog(user)
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(componentEvents.PAYROLL_DELETED, {
           payrollId: bonusPayroll.payroll_uuid,
+          payroll: expect.objectContaining({ payrollUuid: bonusPayroll.payroll_uuid }),
         })
       })
       expect(deletePath).toBe(
@@ -540,7 +538,7 @@ describe.each([
         handleDeletePayroll(deleteResolver),
       )
 
-      renderList(<PayrollList {...defaultProps} onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
 
       await openDeleteDialog(user)
 
@@ -561,7 +559,7 @@ describe.each([
         }),
       )
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       await screen.findByRole('button', { name: 'Run Payroll' })
       expect(screen.queryByRole('button', { name: /open menu/i })).toBeNull()
@@ -580,7 +578,7 @@ describe.each([
       })
       server.use(...buildPayrollListHandlers({ payrollsResolver }))
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       await screen.findByRole('button', { name: 'Run Payroll' })
       await user.click(screen.getByTestId('pagination-next'))
@@ -619,7 +617,7 @@ describe.each([
       const user = userEvent.setup()
       const { requests } = recordRequests()
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       await screen.findByRole('button', { name: 'Run Payroll' })
       await user.click(screen.getByTestId('pagination-next'))
@@ -651,7 +649,7 @@ describe.each([
       const user = userEvent.setup()
       const { requests } = recordRequests()
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       await screen.findByRole('button', { name: 'Run Payroll' })
       const defaultStartDate = requests[0]!.searchParams.get('start_date')
@@ -684,7 +682,7 @@ describe.each([
       })
       server.use(...buildPayrollListHandlers({ payrollsResolver }))
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       await screen.findByRole('button', { name: 'Run Payroll' })
       await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
@@ -704,7 +702,7 @@ describe.each([
         }),
       )
 
-      renderList(<PayrollList {...defaultProps} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       expect(await screen.findByRole('alert')).toBeInTheDocument()
     })
