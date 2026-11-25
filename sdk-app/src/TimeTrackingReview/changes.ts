@@ -310,7 +310,7 @@ export const CHANGES: Change[] = [
     feedback: 'Do we still need Return to pending? Maybe it’s not rejected, just unapproved.',
     what: 'A shift is either approved or not. Each shift row has an Approve switch, and each person row has an “Approve (n)” switch that is on when all their finished shifts are approved, and bulk actions are Approve and Unapprove. Reject and Return to pending are gone. Unapproving writes “pending”. A shift rejected elsewhere shows as Not approved, since the API treats pending and rejected the same: neither is sent, and rejected has no reason, lock or notice. The one difference is the status-change webhook partners receive.',
     where:
-      'Timesheets › Approved and Not approved columns, row menus and bulk bar; a person’s shifts › Approve switch; Send to payroll warning.',
+      'Timesheets › Approval column, row menus and bulk bar; a person’s shifts › Approve switch; Send to payroll warning.',
   },
 ]
 

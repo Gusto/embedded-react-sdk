@@ -407,9 +407,16 @@
 }
 
 .peopleTable {
-  :global(.react-aria-Column):nth-child(2),
-  :global(.react-aria-Cell):nth-child(2) {
+  :global(.react-aria-Column),
+  :global(.react-aria-Cell) {
     width: auto;
+  }
+
+  :global(.react-aria-Column):first-child,
+  :global(.react-aria-Cell):first-child,
+  :global(.react-aria-Column):last-child,
+  :global(.react-aria-Cell):last-child {
+    width: 1%;
   }
 
   :global(.react-aria-Cell):nth-child(2) > * {

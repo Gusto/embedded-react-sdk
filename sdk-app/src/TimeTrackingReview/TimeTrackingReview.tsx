@@ -1248,13 +1248,6 @@ function ChevronRightIcon() {
   )
 }
 
-function ApprovalCount({ shifts, approved }: { shifts: ApiShift[]; approved: boolean }) {
-  const Components = useComponentContext()
-  const count = shifts.filter(shift => isApproved(shift) === approved).length
-  const status = count === 0 ? 'info' : approved ? 'success' : 'warning'
-  return <Components.Badge status={status}>{count}</Components.Badge>
-}
-
 const toApproveOf = (shifts: ApiShift[]) =>
   shifts.filter(shift => !isApproved(shift) && shift.shift_ended_at)
 const toUnapproveOf = (shifts: ApiShift[]) => shifts.filter(isApproved)
@@ -1315,26 +1308,6 @@ function PeopleTable({
       {
         title: (
           <>
-            Alerts <ChangePin id="person-alerts" />
-          </>
-        ),
-        render: ({ person, shifts }) => {
-          const alerts = personAlerts(shifts, person.breakPolicy)
-          if (alerts.length === 0) return '—'
-          return (
-            <span className={styles.alertStack}>
-              {alerts.map(alert => (
-                <Components.Badge key={alert} status="warning">
-                  {alert}
-                </Components.Badge>
-              ))}
-            </span>
-          )
-        },
-      },
-      {
-        title: (
-          <>
             Shifts <ChangePin id="view-shifts" />
           </>
         ),
@@ -1383,19 +1356,29 @@ function PeopleTable({
       {
         title: (
           <>
-            Approved <ChangePin id="approval-binary" />
+            Alerts <ChangePin id="person-alerts" />
           </>
         ),
-        justify: 'end',
-        render: ({ shifts }) => <ApprovalCount shifts={shifts} approved />,
+        render: ({ person, shifts }) => {
+          const alerts = personAlerts(shifts, person.breakPolicy)
+          if (alerts.length === 0) return '—'
+          return (
+            <span className={styles.alertStack}>
+              {alerts.map(alert => (
+                <Components.Badge key={alert} status="warning">
+                  {alert}
+                </Components.Badge>
+              ))}
+            </span>
+          )
+        },
       },
       {
-        title: 'Not approved',
-        justify: 'end',
-        render: ({ shifts }) => <ApprovalCount shifts={shifts} approved={false} />,
-      },
-      {
-        title: 'Approval',
+        title: (
+          <>
+            Approval <ChangePin id="approval-binary" />
+          </>
+        ),
         render: ({ person, shifts }) => {
           const finished = shifts.filter(shift => shift.shift_ended_at)
           const toApprove = toApproveOf(shifts)
