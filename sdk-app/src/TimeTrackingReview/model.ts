@@ -327,6 +327,25 @@ export function breakIssueLabel(issues: BreakIssue[]) {
   return [...counts].map(([key, n]) => (n > 1 ? `${key} ×${n}` : key)).join(', ')
 }
 
+/** Shifts longer than this get a "Long shift" alert; the API sets no limit. */
+export const LONG_SHIFT_MINUTES = 16 * 60
+
+/** One line per problem, stacked in a shift's Alerts column: e.g. "Missed meal break (2)". */
+export function shiftAlerts(shift: ApiShift, policy: ApiBreakPolicy | undefined): string[] {
+  const counts = new Map<string, number>()
+  for (const issue of breakIssues(shift, policy)) {
+    const key = `${BREAK_ISSUE_LABEL[issue.kind]} ${issue.rule.break_type} break`
+    counts.set(key, (counts.get(key) ?? 0) + 1)
+  }
+  const alerts = [...counts].map(([key, n]) => (n > 1 ? `${key} (${n})` : key))
+  if (
+    shift.shift_ended_at &&
+    minutesBetween(shift.shift_started_at, shift.shift_ended_at) > LONG_SHIFT_MINUTES
+  )
+    alerts.push('Long shift')
+  return alerts
+}
+
 export function crossesMidnight(shift: ApiShift) {
   if (!shift.shift_ended_at) return false
   return zonedParts(shift.shift_ended_at, shift.time_zone).date !== localStartDate(shift)

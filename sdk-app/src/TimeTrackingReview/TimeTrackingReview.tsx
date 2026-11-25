@@ -35,13 +35,11 @@ import {
   type ApiOvertimePolicy,
   type ApiPayPeriod,
   type ApiPaySchedule,
-  type ApiBreakRule,
   type ApiShift,
   type Person,
   type ShiftStatus,
   breakIssues,
-  breakIssueCounts,
-  BREAK_ISSUE_LABEL,
+  shiftAlerts,
 } from './model'
 import { PoliciesTab } from './PoliciesTab'
 import { SendPage, type SendFailure, type SendOutcome, type SendView } from './SendPage'
@@ -85,13 +83,6 @@ const TABS: Array<{ value: Tab; label: string }> = [
   { value: 'policies', label: 'Policies' },
   { value: 'people', label: 'People' },
 ]
-
-const BREAK_TYPE_ORDER: Array<ApiBreakRule['break_type']> = ['meal', 'rest']
-
-const BREAK_TYPE_LABEL: Record<ApiBreakRule['break_type'], string> = {
-  meal: 'Meal',
-  rest: 'Rest',
-}
 
 const APPROVAL_LABEL: Record<ShiftStatus, string> = {
   pending: 'Pending',
@@ -1541,9 +1532,6 @@ function ShiftsTable({
   const policy = person.breakPolicy
   const issuesByShift = new Map(shifts.map(s => [s.uuid, breakIssues(s, policy)]))
   const shiftsWithIssues = shifts.filter(s => issuesByShift.get(s.uuid)?.length)
-  const breakTypes = BREAK_TYPE_ORDER.filter(type =>
-    policy?.rules.some(rule => rule.break_type === type),
-  )
 
   const dataView = useDataView<ApiShift>({
     data: shifts,
@@ -1596,25 +1584,26 @@ function ShiftsTable({
         },
       },
       { title: 'Worked', justify: 'end', render: shift => formatHours(workedHours(shift)) },
-      ...breakTypes.map(type => ({
-        title: `${BREAK_TYPE_LABEL[type]} breaks`,
+      {
+        title: (
+          <>
+            Alerts <ChangePin id="alerts-column" />
+          </>
+        ),
         render: (shift: ApiShift) => {
-          if (!shift.shift_ended_at) return '—'
-          const issues = (issuesByShift.get(shift.uuid) ?? []).filter(
-            issue => issue.rule.break_type === type,
-          )
-          if (issues.length === 0) return <Components.Badge status="success">OK</Components.Badge>
+          const alerts = shiftAlerts(shift, policy)
+          if (alerts.length === 0) return '—'
           return (
-            <span className={styles.badgeGroup}>
-              {breakIssueCounts(issues).map(([kind, count]) => (
-                <Components.Badge key={kind} status="warning">
-                  {BREAK_ISSUE_LABEL[kind]} ({count})
+            <span className={styles.alertStack}>
+              {alerts.map(alert => (
+                <Components.Badge key={alert} status="warning">
+                  {alert}
                 </Components.Badge>
               ))}
             </span>
           )
         },
-      })),
+      },
       {
         title: 'Approval',
         render: shift => {

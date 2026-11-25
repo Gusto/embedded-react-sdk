@@ -10,6 +10,7 @@ import {
 } from './breaks'
 import {
   breakIssueLabel,
+  LONG_SHIFT_MINUTES,
   breakIssues,
   formatDay,
   formatPeriod,
@@ -31,8 +32,6 @@ import styles from './TimeTrackingReview.module.scss'
 import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-
-const LONG_SHIFT_MINUTES = 16 * 60
 
 export type ShiftPageMode =
   { kind: 'add'; personUuid: string | null } | { kind: 'edit'; shift: ApiShift; clockOut: boolean }

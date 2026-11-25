@@ -25,6 +25,7 @@ export type ChangeId =
   | 'three-tabs'
   | 'no-overtime'
   | 'send-anchored'
+  | 'alerts-column'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -238,7 +239,7 @@ export const CHANGES: Change[] = [
     title: 'Delayed breaks, and more than one problem per break',
     feedback: 'Breaks can be missed, delayed or shortened, and more than one at once.',
     what: 'Break columns can show Delayed when a break starts after the policy’s latest start, alongside Missed and Short. A shift can show several at once.',
-    where: 'A person’s shifts › break columns; Edit shift.',
+    where: 'A person’s shifts › Alerts column; Edit shift.',
   },
   {
     id: 'overnight-shifts',
@@ -279,6 +280,16 @@ export const CHANGES: Change[] = [
       'We have jumping CTAs and no clear “return to timesheets” button. Make the flow buttoned up, less jumpy, and anchor expectations.',
     what: 'Review, sending and the result are one page that changes in place. The title stays “Send to payroll”; the alert at the top shows where you are (deadline and left-out warning, then “Sending…”, then the result); the facts box stays in the same spot and is retitled What you’re sending, What’s being sent, What was sent. The buttons never move: Back to timesheets on the left, and on the right Send, then the same button spinning while it sends, then Try again if it failed. After a successful send the one remaining button is Back to timesheets.',
     where: 'Timesheets › Send to payroll.',
+  },
+  {
+    id: 'alerts-column',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'One Alerts column instead of a column per break type',
+    feedback:
+      'Rather than separate columns for meal and rest breaks, have one Alerts column and stack the issues.',
+    what: 'A person’s shifts now have one Alerts column. Each problem is its own line: missed, delayed or short meal and rest breaks, and shifts over 16 hours. Shifts with no problems show a dash.',
+    where: 'A person’s shifts › Alerts column.',
   },
 ]
 
