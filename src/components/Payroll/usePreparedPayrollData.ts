@@ -115,10 +115,10 @@ export const usePreparedPayrollData = ({
   ])
 
   const handlePreparePayroll = useCallback(async () => {
-    if (isPayrollSubmitted(payrollShow)) {
-      setIsPayrollAlreadySubmitted(true)
-      return
-    }
+    const isSubmitted = isPayrollSubmitted(payrollShow)
+    setIsPayrollAlreadySubmitted(isSubmitted)
+    if (isSubmitted) return
+
     await baseSubmitHandler(null, () =>
       retryAsync(executePrepare, {
         maxAttempts: PREPARE_MAX_ATTEMPTS,

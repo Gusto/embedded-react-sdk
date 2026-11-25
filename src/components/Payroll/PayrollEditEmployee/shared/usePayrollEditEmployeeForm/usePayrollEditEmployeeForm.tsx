@@ -297,8 +297,9 @@ export function usePayrollEditEmployeeForm({
 
   const executePrepare = useCallback(async () => {
     setPrepareError(null)
-    if (isPayrollSubmitted(payrollShow)) {
-      setIsPayrollAlreadySubmitted(true)
+    const isSubmitted = isPayrollSubmitted(payrollShow)
+    setIsPayrollAlreadySubmitted(isSubmitted)
+    if (isSubmitted) {
       setPrepareError(createPayrollAlreadySubmittedError())
       return
     }

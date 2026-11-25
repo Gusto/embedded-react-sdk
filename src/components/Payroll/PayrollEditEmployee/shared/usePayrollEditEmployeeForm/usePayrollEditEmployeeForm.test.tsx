@@ -219,6 +219,8 @@ function renderPayrollEditEmployeeFormWithClient(queryClient: QueryClient) {
   })
 }
 
+const waitForQueryObserversToNotify = () => new Promise(resolve => setTimeout(resolve, 0))
+
 const ALREADY_SUBMITTED_ERROR = {
   category: 'api_error',
   message:
@@ -284,6 +286,41 @@ describe('usePayrollEditEmployeeForm', () => {
 
     await waitFor(() => {
       expect(result.current.errorHandling.errors).toMatchObject([ALREADY_SUBMITTED_ERROR])
+    })
+    expect(prepareResolver).toHaveBeenCalledTimes(1)
+  })
+
+  it('clears the already-submitted state when a retry finds the payroll cancelled', async () => {
+    const queryClient = createSdkQueryClient()
+    let releasePrepare = () => {}
+    const prepareReleased = new Promise<void>(resolve => {
+      releasePrepare = resolve
+    })
+    const prepareResolver = vi.fn<HttpResponseResolver>(async () => {
+      await prepareReleased
+      return HttpResponse.json(SINGLE_WORKWEEK_PREPARE)
+    })
+    server.use(handlePayrollsPrepare(prepareResolver), handleGetSubmittedPayroll())
+    const { result } = renderPayrollEditEmployeeFormWithClient(queryClient)
+    await waitFor(() => {
+      expect(result.current).toMatchObject({ isLoading: true, isPayrollAlreadySubmitted: true })
+    })
+
+    server.use(handleGetUnsubmittedPayroll())
+    await act(async () => {
+      await queryClient.invalidateQueries()
+      await waitForQueryObserversToNotify()
+    })
+    act(() => {
+      result.current.errorHandling.retryQueries()
+    })
+
+    await waitFor(() => {
+      expect(result.current).toMatchObject({ isLoading: true, isPayrollAlreadySubmitted: false })
+    })
+    releasePrepare()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
     })
     expect(prepareResolver).toHaveBeenCalledTimes(1)
   })
