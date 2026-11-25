@@ -1,10 +1,27 @@
-import { useContext, type ReactNode } from 'react'
+import { useContext, useState, type ReactNode } from 'react'
 import { ChangeContext, GapContext } from './gapContext'
 import { CHANGE_NUMBER, type ChangeId } from './changes'
 import { GAP_NUMBER, type GapId } from './gaps'
 import styles from './TimeTrackingReview.module.scss'
 import { Flex } from '@/components/Common'
+import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
+/** An SDK Alert the user can close. It comes back if its label changes, e.g. a new count. */
+export function Banner({ onDismiss, ...props }: AlertProps) {
+  const Components = useComponentContext()
+  const [dismissedLabel, setDismissedLabel] = useState<string | null>(null)
+  if (dismissedLabel === props.label) return null
+  return (
+    <Components.Alert
+      {...props}
+      onDismiss={() => {
+        setDismissedLabel(props.label)
+        onDismiss?.()
+      }}
+    />
+  )
+}
 
 export function GapPin({ id }: { id: GapId }) {
   const { on, active, setActive } = useContext(GapContext)
@@ -146,22 +163,21 @@ export function ApprovalActions({
   return (
     <div className={styles.approveReject}>
       <Components.Button
-        variant="tertiary"
-        aria-label={`Approve ${label}`}
-        isDisabled={approveCount === 0}
-        onClick={onApprove}
-        icon={<ApproveIcon />}
-      >
-        Approve ({approveCount})
-      </Components.Button>
-      <Components.Button
-        variant="tertiary"
+        variant="secondary"
         aria-label={`Unapprove ${label}`}
         isDisabled={unapproveCount === 0}
         onClick={onUnapprove}
         icon={<UnapproveIcon />}
       >
         Unapprove ({unapproveCount})
+      </Components.Button>
+      <Components.Button
+        aria-label={`Approve ${label}`}
+        isDisabled={approveCount === 0}
+        onClick={onApprove}
+        icon={<ApproveIcon />}
+      >
+        Approve ({approveCount})
       </Components.Button>
     </div>
   )

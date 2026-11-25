@@ -26,7 +26,7 @@ import {
   type Person,
   type ShiftStatus,
 } from './model'
-import { ChangePin, GapPin, SubPage, type Crumb } from './parts'
+import { Banner, ChangePin, GapPin, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
 import styles from './TimeTrackingReview.module.scss'
 import { nowIso, simId, type Preview } from './preview'
@@ -314,11 +314,11 @@ export function ShiftPage({
 
   const footer = confirmDelete ? (
     <Flex flexDirection="column" gap={12}>
-      <Components.Alert status="warning" label="Delete this shift?">
+      <Banner status="warning" label="Delete this shift?">
         {existing?.synced_to_payroll_at
           ? 'It was already sent. Its hours stay on payroll until you update this period.'
           : 'It won’t be sent to payroll.'}
-      </Components.Alert>
+      </Banner>
       <Flex justifyContent="flex-end" gap={12}>
         <Components.Button
           variant="secondary"
@@ -432,21 +432,21 @@ export function ShiftPage({
           {outsidePeriod && ` This date is outside ${formatPeriod(period)}.`}
         </Components.Text>
         {clash && (
-          <Components.Alert status="warning" label="This overlaps another shift">
+          <Banner status="warning" label="This overlaps another shift">
             It overlaps their {formatTime(clash.shift_started_at, clash.time_zone)} –{' '}
             {clash.shift_ended_at ? formatTime(clash.shift_ended_at, clash.time_zone) : 'now'}{' '}
             shift. You can still save it, since clock-in apps sometimes send overlapping shifts;
             check one of them isn’t a duplicate. <ChangePin id="overnight-shifts" />
-          </Components.Alert>
+          </Banner>
         )}
         {isLongShift && (
-          <Components.Alert
+          <Banner
             status="info"
             label={`This shift is ${(shiftMinutes / 60).toFixed(1)} hours long`}
           >
             Long and overnight shifts save as they are. If it looks like a missed clock-out, fix the
             end time. <ChangePin id="overnight-shifts" />
-          </Components.Alert>
+          </Banner>
         )}
       </div>
 
@@ -460,17 +460,17 @@ export function ShiftPage({
           timeZone={timeZone}
         />
         {issues.length > 0 && person?.breakPolicy && (
-          <Components.Alert status="warning" label={breakIssueLabel(issues)}>
+          <Banner status="warning" label={breakIssueLabel(issues)}>
             {person.breakPolicy.pay_premium
               ? `${person.breakPolicy.name} pays a premium for this, so the shift earns extra pay.`
               : `${person.breakPolicy.name} doesn’t pay a premium for this.`}{' '}
             <ChangePin id="missed-breaks" />
-          </Components.Alert>
+          </Banner>
         )}
         {saveErrors.isShown && breakErrors.length > 0 && (
-          <Components.Alert status="error" label="Fix the breaks before saving">
+          <Banner status="error" label="Fix the breaks before saving">
             {breakErrors.join(' ')}
-          </Components.Alert>
+          </Banner>
         )}
       </div>
 

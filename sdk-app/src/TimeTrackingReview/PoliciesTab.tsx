@@ -16,7 +16,7 @@ import {
   type ApiShift,
   type Person,
 } from './model'
-import { ChangePin, GapPin, PlusIcon, SubPage, type Crumb } from './parts'
+import { Banner, ChangePin, GapPin, PlusIcon, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
 import { PeoplePolicies, type PolicyMove } from './PeoplePolicies'
 import { simId, type Notify, type Preview } from './preview'
@@ -364,7 +364,7 @@ export function PoliciesTab({
     return (
       <Flex flexDirection="column" gap={24}>
         {noOvertime.length > 0 && (
-          <Components.Alert
+          <Banner
             status="error"
             label={`${noOvertime.length} ${noOvertime.length === 1 ? 'person has' : 'people have'} no overtime policy`}
           >
@@ -372,16 +372,16 @@ export function PoliciesTab({
             one: the API rejects new and edited shifts with “Employee must be assigned to an
             overtime policy before submitting unclassified hours.” Choose a policy on their row.{' '}
             <ChangePin id="no-overtime" />
-          </Components.Alert>
+          </Banner>
         )}
         {noBreak.length > 0 && (
-          <Components.Alert
+          <Banner
             status="info"
             label={`${noBreak.length} ${noBreak.length === 1 ? 'person has' : 'people have'} no break policy`}
           >
             {noBreak.map(p => p.name).join(', ')}. That’s allowed; their shifts just aren’t checked
             against break rules. <GapPin id="state-reminders" />
-          </Components.Alert>
+          </Banner>
         )}
         <Components.Box
           header={
@@ -520,12 +520,11 @@ export function PoliciesTab({
 }
 
 function FormErrors({ problems, isShown }: { problems: string[]; isShown: boolean }) {
-  const Components = useComponentContext()
   if (!isShown || !problems.length) return null
   return (
-    <Components.Alert status="error" label="Fix this before saving">
+    <Banner status="error" label="Fix this before saving">
       {problems.join(' ')}
-    </Components.Alert>
+    </Banner>
   )
 }
 
@@ -682,12 +681,12 @@ function OvertimeForm({
         <GapPin id="ot-state" />
       </Components.Text>
       {policy && (
-        <Components.Alert status="warning" label="Changes apply to the current workweek">
+        <Banner status="warning" label="Changes apply to the current workweek">
           {workweeks
             .map(w => `${scheduleLabel(w.schedule)} from ${w.start ? formatDay(w.start) : '?'}`)
             .join('; ')}
           . A payroll that already covers part of that week may need a correction.{' '}
-        </Components.Alert>
+        </Banner>
       )}
     </SubPage>
   )

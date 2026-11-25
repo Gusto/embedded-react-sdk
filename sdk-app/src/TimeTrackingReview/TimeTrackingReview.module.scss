@@ -164,7 +164,8 @@
   color: var(--color-danger);
 }
 
-.kind_limited {
+.kind_limited,
+.kind_sdkComponent {
   background: var(--color-warning-bg);
   color: var(--color-warning-text);
 }
@@ -339,29 +340,12 @@
   color: var(--g-colorBodySubContent);
 }
 
-.toolbar {
-  display: flex;
-  width: 100%;
-  align-items: flex-end;
-  gap: 2rem;
-}
-
-.toolbarFilters,
-.toolbarActions {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-}
-
 .toolbarFilters {
+  display: flex;
   flex: 0 1 auto;
-  min-width: 0;
-}
-
-.toolbarActions {
-  flex: 0 0 auto;
   align-items: center;
-  margin-left: auto;
+  gap: 12px;
+  min-width: 0;
 }
 
 .toolbarSchedule {
@@ -514,13 +498,35 @@
   }
 }
 
-.bulkBar {
+.controlBar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   width: 100%;
+  min-height: 2.5rem;
+
+  > :first-child {
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  > :last-child {
+    flex-shrink: 0;
+  }
+}
+
+.controlFilters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.controlActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .bulkSummary {
@@ -632,4 +638,9 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+// Tripled class to outrank the 24px margin from the SDK Tabs `.GSDK .tabsContainer .react-aria-TabList` rule.
+.pageTabs.pageTabs.pageTabs :global(.react-aria-TabList) {
+  margin-bottom: 1rem;
 }

@@ -31,6 +31,9 @@ export type ChangeId =
   | 'person-payroll'
   | 'shift-sent-time'
   | 'bulk-placement'
+  | 'steady-layout'
+  | 'control-bar'
+  | 'layer-order'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -343,6 +346,35 @@ export const CHANGES: Change[] = [
       'Bulk actions were above the table on Timesheets but above the banner on a person’s shifts. Keep them above the table.',
     what: 'Selecting shifts shows the same bar as Timesheets, directly above the table: Clear selection, the count, then Approve and Unapprove.',
     where: 'A person’s shifts › bulk bar.',
+  },
+  {
+    id: 'steady-layout',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'A steady layout: even spacing and a reserved bulk bar',
+    feedback:
+      'The table jumps up and down and spacing varies. Use consistent spacing and reserve room for bulk actions.',
+    what: 'Every block on the page, banners included, is 16px apart. The bulk bar is always there above the table: with nothing selected it prompts you to select rows and Approve and Unapprove are disabled, so selecting doesn’t move the table. Every banner can be dismissed.',
+    where: 'Timesheets and a person’s shifts; banners everywhere.',
+  },
+  {
+    id: 'layer-order',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Fixed layer order',
+    feedback:
+      'Layers are always: tabs, breadcrumbs, table name, banners, control bar (with the filters), table.',
+    what: 'Every banner now sits above the control bar, so nothing between the bar and the table appears or disappears. The breadcrumb and table name come first, under the tabs.',
+    where: 'Timesheets and a person’s shifts.',
+  },
+  {
+    id: 'control-bar',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'One control bar that swaps to bulk actions',
+    feedback: 'Treat the action row as one element; selecting rows replaces what’s there.',
+    what: 'One bar right above the table holds the pay schedule and period filters on the left and Add shift and Send to payroll on the right. Selecting rows replaces the whole bar with Clear selection, the count, then Unapprove and Approve buttons, at the same height, so the table doesn’t move. The SDK has no table toolbar like this, so it’s flagged as a possible SDK enhancement.',
+    where: 'Timesheets and a person’s shifts › control bar.',
   },
 ]
 

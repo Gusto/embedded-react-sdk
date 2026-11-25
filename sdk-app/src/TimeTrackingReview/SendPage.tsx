@@ -14,7 +14,7 @@ import {
   type Person,
   type SentSummary,
 } from './model'
-import { ChangePin, GapPin, SubPage } from './parts'
+import { Banner, ChangePin, GapPin, SubPage } from './parts'
 import type { Preview } from './preview'
 import styles from './TimeTrackingReview.module.scss'
 import { ActionsLayout, Flex } from '@/components/Common'
@@ -231,15 +231,12 @@ export function SendPage({
       footer={footer}
     >
       {stage === 'review' && period.payroll && (
-        <Components.Alert
-          status="info"
-          label={`Send by ${formatDateTime(period.payroll.payroll_deadline)}`}
-        >
+        <Banner status="info" label={`Send by ${formatDateTime(period.payroll.payroll_deadline)}`}>
           Hours sent by then are paid on {formatShortDate(period.payroll.check_date)}.
-        </Components.Alert>
+        </Banner>
       )}
       {stage === 'review' && skippedCount > 0 && (
-        <Components.Alert
+        <Banner
           status="warning"
           label={`${plural(skippedCount, 'shift', 'shifts')} won’t be sent`}
           action={
@@ -257,10 +254,10 @@ export function SendPage({
           </ul>
           Only approved, finished shifts are sent. Hours left out aren’t paid on this payroll unless
           you approve them and send again. <ChangePin id="send-warning" />
-        </Components.Alert>
+        </Banner>
       )}
       {stage === 'sending' && (
-        <Components.Alert status="info" label="Sending hours to payroll…">
+        <Banner status="info" label="Sending hours to payroll…">
           <Flex alignItems="center" gap={8}>
             <Components.LoadingSpinner size="sm" style="inline" />
             <span>
@@ -268,23 +265,23 @@ export function SendPage({
               <GapPin id="sync-limits" />
             </span>
           </Flex>
-        </Components.Alert>
+        </Banner>
       )}
       {stage === 'failed' && failure?.kind === 'processed' && (
-        <Components.Alert status="error" label={`The ${payrollName} was already processed`}>
+        <Banner status="error" label={`The ${payrollName} was already processed`}>
           There’s no open payroll for these dates, so their hours can’t change.{' '}
           <GapPin id="sync-limits" />
-        </Components.Alert>
+        </Banner>
       )}
       {stage === 'failed' && failure?.kind === 'error' && (
-        <Components.Alert status="error" label="The send failed">
+        <Banner status="error" label="The send failed">
           Payroll didn’t accept any hours, so nothing changed. Try again, and if it keeps failing,
           contact support. What the API reports for a failed send isn’t defined yet.{' '}
           <GapPin id="which-timesheets" />
-        </Components.Alert>
+        </Banner>
       )}
       {stage === 'sent' && failure?.kind === 'partial' && (
-        <Components.Alert
+        <Banner
           status="error"
           label={`${plural(failure.names.length, 'person wasn’t', 'people weren’t')} sent`}
           action={
@@ -296,12 +293,12 @@ export function SendPage({
           {plural(failure.shifts, 'shift', 'shifts')} for {failure.names.join(', ')} didn’t reach
           payroll. Everyone else was sent. What the API reports for a partial send isn’t defined
           yet. <GapPin id="which-timesheets" />
-        </Components.Alert>
+        </Banner>
       )}
       {stage === 'sent' && !failure && (
-        <Components.Alert status="success" label="Hours sent to payroll">
+        <Banner status="success" label="Hours sent to payroll">
           {plural(sent.rows.length, 'person’s', 'people’s')} hours are on the {payrollName}.
-        </Components.Alert>
+        </Banner>
       )}
       <Components.Box header={<Components.BoxHeader title={factsTitle} />}>
         <Flex flexDirection="column" gap={16}>
@@ -313,7 +310,7 @@ export function SendPage({
         </Flex>
       </Components.Box>
       {stage === 'sent' && sent.changed > 0 && (
-        <Components.Alert
+        <Banner
           status="warning"
           label={`${plural(sent.changed, 'shift has', 'shifts have')} changed since this send`}
           action={
@@ -323,7 +320,7 @@ export function SendPage({
           }
         >
           Payroll keeps the old hours until you update it. <GapPin id="which-timesheets" />
-        </Components.Alert>
+        </Banner>
       )}
       <div className={styles.simulate}>
         <Components.Select

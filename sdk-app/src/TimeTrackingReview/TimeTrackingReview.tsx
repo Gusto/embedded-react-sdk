@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
 import type { EntityIds } from '../useEntities'
 import { useResolvedTheme } from '../useThemeModeContext'
@@ -50,15 +50,16 @@ import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER, ROUND_LABEL, type ChangeRound } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
 import {
-  ApproveIcon,
   ApprovalActions,
+  ApproveIcon,
+  Banner,
   ChangePin,
-  UnapproveIcon,
   GapPin,
+  PlusIcon,
   PrototypeModal,
   RequestBlock,
-  PlusIcon,
   Trail,
+  UnapproveIcon,
 } from './parts'
 import { nowIso, type NoticeStatus, type Preview } from './preview'
 import type { PolicyData } from './PoliciesTab'
@@ -612,62 +613,92 @@ function TimeTrackingPrototype() {
     : 'payroll'
   const focused = focusPerson ? personRows.find(r => r.person.employee.uuid === focusPerson) : null
 
+  const focusedBreakIssues = focused
+    ? focused.shifts.filter(shift => breakIssues(shift, focused.person.breakPolicy).length > 0)
+        .length
+    : 0
+  const filterControls = (
+    <div className={styles.toolbarFilters}>
+      <ChangePin id="layer-order" />
+      <div className={styles.toolbarSchedule}>
+        <Components.Select
+          label="Pay schedule"
+          shouldVisuallyHideLabel
+          placeholder="Choose a pay schedule"
+          value={scheduleUuid}
+          options={(data?.schedules ?? []).map(s => ({ value: s.uuid, label: scheduleLabel(s) }))}
+          onChange={value => {
+            setScheduleUuid(value)
+            setSelectedPeriodKey('')
+          }}
+        />
+      </div>
+      <div className={styles.toolbarPeriod}>
+        <Components.Select
+          label="Pay period"
+          shouldVisuallyHideLabel
+          placeholder="Choose a pay period"
+          value={selectedPeriodKey}
+          options={schedulePeriods.map(p => ({
+            value: periodKey(p),
+            label: `${formatPeriod(p)}${p.payroll?.processed ? ' · processed' : ''}`,
+          }))}
+          onChange={setSelectedPeriodKey}
+        />
+      </div>
+    </div>
+  )
+  const pageActions = (
+    <>
+      <ChangePin id="send-page" />
+      <GapPin id="auto-sync" />
+      <GapPin id="sync-limits" />
+      <GapPin id="by-period" />
+      <Components.Button
+        variant="secondary"
+        icon={<PlusIcon />}
+        isDisabled={!period}
+        onClick={() => {
+          setShiftPage({ kind: 'add', personUuid: focusPerson })
+        }}
+      >
+        Add shift
+      </Components.Button>
+      <Components.Button
+        isDisabled={!period || shifts.kind !== 'done' || Boolean(sendingHere) || !hasSendable}
+        onClick={() => {
+          setSendView('review')
+        }}
+      >
+        {lastSyncAt ? 'Update payroll' : 'Send to payroll'}
+      </Components.Button>
+    </>
+  )
+
   const review = data && (
     <Flex flexDirection="column" gap={16}>
-      <div className={styles.toolbar}>
-        <div className={styles.toolbarFilters}>
-          <div className={styles.toolbarSchedule}>
-            <Components.Select
-              label="Pay schedule"
-              placeholder="Choose a pay schedule"
-              value={scheduleUuid}
-              options={data.schedules.map(s => ({ value: s.uuid, label: scheduleLabel(s) }))}
-              onChange={value => {
-                setScheduleUuid(value)
-                setSelectedPeriodKey('')
-              }}
-            />
-          </div>
-          <div className={styles.toolbarPeriod}>
-            <Components.Select
-              label="Pay period"
-              placeholder="Choose a pay period"
-              value={selectedPeriodKey}
-              options={schedulePeriods.map(p => ({
-                value: periodKey(p),
-                label: `${formatPeriod(p)}${p.payroll?.processed ? ' · processed' : ''}`,
-              }))}
-              onChange={setSelectedPeriodKey}
-            />
-          </div>
-        </div>
-        <div className={styles.toolbarActions}>
-          <ChangePin id="send-page" />
-          <GapPin id="auto-sync" />
-          <GapPin id="sync-limits" />
-          <GapPin id="by-period" />
-          <Components.Button
-            variant="secondary"
-            icon={<PlusIcon />}
-            isDisabled={!period}
-            onClick={() => {
-              setShiftPage({ kind: 'add', personUuid: focusPerson })
-            }}
-          >
-            Add shift
-          </Components.Button>
-          <Components.Button
-            isDisabled={!period || shifts.kind !== 'done' || Boolean(sendingHere) || !hasSendable}
-            onClick={() => {
-              setSendView('review')
-            }}
-          >
-            {lastSyncAt ? 'Update payroll' : 'Send to payroll'}
-          </Components.Button>
-        </div>
-      </div>
+      {focused && (
+        <Trail
+          trail={[
+            {
+              label: 'Timesheets',
+              onClick: () => {
+                setFocusPerson(null)
+              },
+            },
+          ]}
+          current={focused.person.name}
+        />
+      )}
+      <Components.Heading as="h2" styledAs="h4">
+        {focused
+          ? `${focused.person.name} · ${focused.shifts.length} shifts`
+          : shifts.kind === 'done'
+            ? `${personRows.length} people · ${periodShifts.length} shifts`
+            : 'People'}
+      </Components.Heading>
       {period?.payroll && !dismissedDates.has(sendKey) && (
-        <Components.Alert
+        <Banner
           status="info"
           label={`Hours for this period are paid ${formatShortDate(period.payroll.check_date)}`}
           onDismiss={() => {
@@ -676,10 +707,10 @@ function TimeTrackingPrototype() {
         >
           Send them by {formatDateTime(period.payroll.payroll_deadline)}.
           {!lastSyncAt && !sendingHere && ' Nothing has been sent yet.'}
-        </Components.Alert>
+        </Banner>
       )}
       {sendingHere && (
-        <Components.Alert
+        <Banner
           status="info"
           label="Sending hours to payroll…"
           action={
@@ -700,10 +731,10 @@ function TimeTrackingPrototype() {
               <GapPin id="sync-limits" /> <ChangePin id="send-dialog" />
             </span>
           </Flex>
-        </Components.Alert>
+        </Banner>
       )}
       {!sendingHere && failure && (
-        <Components.Alert
+        <Banner
           status="error"
           label={
             failure.kind === 'partial'
@@ -722,10 +753,10 @@ function TimeTrackingPrototype() {
           }
         >
           <ChangePin id="send-outcomes" />
-        </Components.Alert>
+        </Banner>
       )}
       {!sendingHere && !failure && lastSyncAt && (
-        <Components.Alert
+        <Banner
           status="success"
           label={`Sent to the ${payrollName} ${formatDateTime(lastSyncAt)}`}
           action={
@@ -741,10 +772,10 @@ function TimeTrackingPrototype() {
         >
           {sent.sent.length} shifts · {sent.rows.length} people · {formatHours(sent.hours)} hours.{' '}
           <GapPin id="which-timesheets" />
-        </Components.Alert>
+        </Banner>
       )}
       {!sendingHere && changedCount > 0 && (
-        <Components.Alert
+        <Banner
           status="warning"
           label={`${changedCount} sent ${changedCount === 1 ? 'shift has' : 'shifts have'} changed since`}
           action={
@@ -760,30 +791,29 @@ function TimeTrackingPrototype() {
         >
           Payroll keeps the old hours until you update it. Spotted by comparing each shift’s
           updated_at with its synced_to_payroll_at. <GapPin id="which-timesheets" />
-        </Components.Alert>
+        </Banner>
       )}
 
       {period?.payroll?.processed && (
-        <Components.Alert status="warning" label="This period’s payroll is processed">
+        <Banner status="warning" label="This period’s payroll is processed">
           Sending again won’t change it, and status changes are blocked.
-        </Components.Alert>
+        </Banner>
       )}
       {overlappingProcessed.length > 0 && (
-        <Components.Alert status="warning" label="An overlapping payroll is processed">
+        <Banner status="warning" label="An overlapping payroll is processed">
           {overlappingProcessed.map(formatPeriod).join(', ')} on another schedule is processed. The
           API may block status changes here too. <GapPin id="status-lock" />
-        </Components.Alert>
+        </Banner>
       )}
 
-      {shifts.kind === 'loading' && <Loading />}
       {shifts.kind === 'error' && (
-        <Components.Alert status="error" label="Couldn’t load shifts">
+        <Banner status="error" label="Couldn’t load shifts">
           {shifts.message}
-        </Components.Alert>
+        </Banner>
       )}
 
       {shifts.kind === 'done' && periodShifts.length === 0 && (
-        <Components.Alert
+        <Banner
           status="info"
           label="No shifts in this period"
           action={
@@ -802,11 +832,35 @@ function TimeTrackingPrototype() {
           {data.latestShiftAt
             ? `The latest shift in this company starts ${formatDateTime(data.latestShiftAt)}.`
             : 'This company has no shifts.'}
-        </Components.Alert>
+        </Banner>
       )}
 
+      {focused && focusedBreakIssues > 0 && focused.person.breakPolicy && (
+        <Banner
+          status="warning"
+          label={`${focusedBreakIssues} of these shifts have a missed, delayed or short break`}
+        >
+          {focused.person.breakPolicy.pay_premium
+            ? `${focused.person.breakPolicy.name} pays a premium for each missed, delayed or short break, so these shifts earn extra pay. Fix the breaks if they were actually taken.`
+            : `${focused.person.breakPolicy.name} doesn’t pay a premium, so this doesn’t change pay. Fix the breaks if they were actually taken.`}{' '}
+          The page checks this against the policy’s rules; the API doesn’t flag it.{' '}
+          <ChangePin id="missed-breaks" /> <ChangePin id="delayed-breaks" />
+        </Banner>
+      )}
+      {!(shifts.kind === 'done' && periodShifts.length > 0) && (
+        <ControlBar
+          selectedLabel={null}
+          onClear={() => {}}
+          actions={pageActions}
+          filters={filterControls}
+          bulkActions={null}
+        />
+      )}
+      {shifts.kind === 'loading' && <Loading />}
       {shifts.kind === 'done' && periodShifts.length > 0 && !focused && (
         <PeopleTable
+          actions={pageActions}
+          filters={filterControls}
           rows={personRows}
           workweekStartDay={schedule?.workweek_start_day ?? null}
           shiftsHref={shiftsHref}
@@ -821,13 +875,12 @@ function TimeTrackingPrototype() {
 
       {focused && (
         <ShiftsTable
+          actions={pageActions}
+          filters={filterControls}
           person={focused.person}
           shifts={focused.shifts}
           selected={selectedShifts}
           onSelectedChange={setSelectedShifts}
-          onBack={() => {
-            setFocusPerson(null)
-          }}
           onStatus={changeStatus}
           onEdit={shift => {
             setShiftPage({ kind: 'edit', shift, clockOut: false })
@@ -877,7 +930,7 @@ function TimeTrackingPrototype() {
 
             {base.kind === 'loading' && <Loading />}
             {base.kind === 'error' && (
-              <Components.Alert
+              <Banner
                 status="error"
                 label="Couldn’t load the company"
                 action={
@@ -892,7 +945,7 @@ function TimeTrackingPrototype() {
                 }
               >
                 {base.message}
-              </Components.Alert>
+              </Banner>
             )}
 
             {changes > 0 && (
@@ -907,7 +960,7 @@ function TimeTrackingPrototype() {
             )}
 
             {notice && (
-              <Components.Alert
+              <Banner
                 status={notice.status}
                 label={notice.message}
                 onDismiss={() => {
@@ -927,143 +980,145 @@ function TimeTrackingPrototype() {
             )}
 
             {data && (
-              <Components.Tabs
-                aria-label="Time tracking"
-                selectedId={tab}
-                onSelectionChange={setTab}
-                tabs={[
-                  {
-                    id: 'review',
-                    label: 'Timesheets',
-                    content:
-                      shiftPage && period ? (
-                        <ShiftPage
-                          key={shiftPage.kind === 'edit' ? shiftPage.shift.uuid : 'new'}
-                          mode={shiftPage}
-                          companyId={companyId}
-                          people={schedulePeople}
-                          period={period}
-                          shifts={periodShifts}
-                          trail={[
-                            {
-                              label: 'Timesheets',
-                              onClick: () => {
-                                setShiftPage(null)
-                                setFocusPerson(null)
+              <div className={styles.pageTabs}>
+                <Components.Tabs
+                  aria-label="Time tracking"
+                  selectedId={tab}
+                  onSelectionChange={setTab}
+                  tabs={[
+                    {
+                      id: 'review',
+                      label: 'Timesheets',
+                      content:
+                        shiftPage && period ? (
+                          <ShiftPage
+                            key={shiftPage.kind === 'edit' ? shiftPage.shift.uuid : 'new'}
+                            mode={shiftPage}
+                            companyId={companyId}
+                            people={schedulePeople}
+                            period={period}
+                            shifts={periodShifts}
+                            trail={[
+                              {
+                                label: 'Timesheets',
+                                onClick: () => {
+                                  setShiftPage(null)
+                                  setFocusPerson(null)
+                                },
                               },
-                            },
-                            ...(focused
-                              ? [
-                                  {
-                                    label: focused.person.name,
-                                    onClick: () => {
-                                      setShiftPage(null)
+                              ...(focused
+                                ? [
+                                    {
+                                      label: focused.person.name,
+                                      onClick: () => {
+                                        setShiftPage(null)
+                                      },
                                     },
-                                  },
-                                ]
-                              : []),
-                          ]}
-                          onBack={() => {
-                            setShiftPage(null)
-                          }}
-                          onSave={(saved, request) => {
-                            setShiftPage(null)
-                            if (shiftPage.kind === 'add') {
-                              setSim(prev => ({ ...prev, added: [...prev.added, saved] }))
+                                  ]
+                                : []),
+                            ]}
+                            onBack={() => {
+                              setShiftPage(null)
+                            }}
+                            onSave={(saved, request) => {
+                              setShiftPage(null)
+                              if (shiftPage.kind === 'add') {
+                                setSim(prev => ({ ...prev, added: [...prev.added, saved] }))
+                                notify(
+                                  saved.status === 'approved'
+                                    ? 'Shift added as approved. It goes to payroll the next time you send this period.'
+                                    : 'Shift added, not approved yet.',
+                                  request,
+                                )
+                                return
+                              }
+                              putShifts([saved])
                               notify(
-                                saved.status === 'approved'
-                                  ? 'Shift added as approved. It goes to payroll the next time you send this period.'
-                                  : 'Shift added, not approved yet.',
+                                saved.synced_to_payroll_at
+                                  ? 'Saved. Still approved, but not on payroll until you update this period.'
+                                  : 'Shift saved.',
                                 request,
                               )
-                              return
-                            }
-                            putShifts([saved])
-                            notify(
-                              saved.synced_to_payroll_at
-                                ? 'Saved. Still approved, but not on payroll until you update this period.'
-                                : 'Shift saved.',
-                              request,
-                            )
+                            }}
+                            onDelete={(deleted, request) => {
+                              setShiftPage(null)
+                              removeShift(deleted.uuid)
+                              notify(
+                                deleted.synced_to_payroll_at
+                                  ? 'Shift deleted. Its hours stay on payroll until you update this period.'
+                                  : 'Shift deleted.',
+                                request,
+                              )
+                            }}
+                          />
+                        ) : sendView && period && schedule ? (
+                          <SendPage
+                            key={sendKey}
+                            view={sendView}
+                            companyId={companyId}
+                            schedule={schedule}
+                            period={period}
+                            people={schedulePeople}
+                            shifts={periodShifts}
+                            isUpdate={Boolean(lastSyncAt)}
+                            sendingSince={sendingHere?.startedAt ?? null}
+                            failure={failure}
+                            sent={sent}
+                            onClose={() => {
+                              setSendView(null)
+                            }}
+                            onSend={startSend}
+                            onSendAgain={() => {
+                              setSendFailure(sendKey, null)
+                              setSendView('review')
+                            }}
+                          />
+                        ) : (
+                          review
+                        ),
+                    },
+                    {
+                      id: 'policies',
+                      label: 'Policies',
+                      content: (
+                        <PoliciesTab
+                          view="policies"
+                          onOpenPeople={() => {
+                            setTab('people')
                           }}
-                          onDelete={(deleted, request) => {
-                            setShiftPage(null)
-                            removeShift(deleted.uuid)
-                            notify(
-                              deleted.synced_to_payroll_at
-                                ? 'Shift deleted. Its hours stay on payroll until you update this period.'
-                                : 'Shift deleted.',
-                              request,
-                            )
-                          }}
-                        />
-                      ) : sendView && period && schedule ? (
-                        <SendPage
-                          key={sendKey}
-                          view={sendView}
                           companyId={companyId}
-                          schedule={schedule}
-                          period={period}
-                          people={schedulePeople}
-                          shifts={periodShifts}
-                          isUpdate={Boolean(lastSyncAt)}
-                          sendingSince={sendingHere?.startedAt ?? null}
-                          failure={failure}
-                          sent={sent}
-                          onClose={() => {
-                            setSendView(null)
+                          people={people}
+                          schedules={data.schedules}
+                          overtimePolicies={data.overtimePolicies}
+                          breakPolicies={data.breakPolicies}
+                          onPoliciesChange={(next: PolicyData) => {
+                            updateData(current => ({ ...current, ...next }))
                           }}
-                          onSend={startSend}
-                          onSendAgain={() => {
-                            setSendFailure(sendKey, null)
-                            setSendView('review')
-                          }}
+                          onNotify={notify}
                         />
-                      ) : (
-                        review
                       ),
-                  },
-                  {
-                    id: 'policies',
-                    label: 'Policies',
-                    content: (
-                      <PoliciesTab
-                        view="policies"
-                        onOpenPeople={() => {
-                          setTab('people')
-                        }}
-                        companyId={companyId}
-                        people={people}
-                        schedules={data.schedules}
-                        overtimePolicies={data.overtimePolicies}
-                        breakPolicies={data.breakPolicies}
-                        onPoliciesChange={(next: PolicyData) => {
-                          updateData(current => ({ ...current, ...next }))
-                        }}
-                        onNotify={notify}
-                      />
-                    ),
-                  },
-                  {
-                    id: 'people',
-                    label: 'People',
-                    content: (
-                      <PoliciesTab
-                        view="people"
-                        companyId={companyId}
-                        people={people}
-                        schedules={data.schedules}
-                        overtimePolicies={data.overtimePolicies}
-                        breakPolicies={data.breakPolicies}
-                        onPoliciesChange={(next: PolicyData) => {
-                          updateData(current => ({ ...current, ...next }))
-                        }}
-                        onNotify={notify}
-                      />
-                    ),
-                  },
-                ]}
-              />
+                    },
+                    {
+                      id: 'people',
+                      label: 'People',
+                      content: (
+                        <PoliciesTab
+                          view="people"
+                          companyId={companyId}
+                          people={people}
+                          schedules={data.schedules}
+                          overtimePolicies={data.overtimePolicies}
+                          breakPolicies={data.breakPolicies}
+                          onPoliciesChange={(next: PolicyData) => {
+                            updateData(current => ({ ...current, ...next }))
+                          }}
+                          onNotify={notify}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              </div>
             )}
           </div>
 
@@ -1235,6 +1290,48 @@ function ClearSelection({ onClear }: { onClear: () => void }) {
   )
 }
 
+/** One row above a table: page actions normally, replaced by bulk actions while rows are selected. */
+function ControlBar({
+  selectedLabel,
+  onClear,
+  actions,
+  bulkActions,
+  filters,
+}: {
+  filters: ReactNode
+  selectedLabel: string | null
+  onClear: () => void
+  actions: ReactNode
+  bulkActions: ReactNode
+}) {
+  const Components = useComponentContext()
+  return (
+    <div className={styles.controlBar}>
+      {selectedLabel ? (
+        <>
+          <div className={styles.bulkSummary}>
+            <ClearSelection onClear={onClear} />
+            <Components.Text size="sm" weight="medium">
+              {selectedLabel}
+            </Components.Text>
+            <GapPin id="bulk-approval" /> <GapPin id="table-toolbar" />{' '}
+            <ChangePin id="control-bar" />
+          </div>
+          {bulkActions}
+        </>
+      ) : (
+        <>
+          <div className={styles.controlFilters}>
+            {filters}
+            <GapPin id="table-toolbar" /> <ChangePin id="control-bar" />
+          </div>
+          <div className={styles.controlActions}>{actions}</div>
+        </>
+      )}
+    </div>
+  )
+}
+
 function ChevronRightIcon() {
   return (
     <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
@@ -1269,6 +1366,8 @@ interface PersonRow {
 }
 
 function PeopleTable({
+  actions,
+  filters,
   rows,
   workweekStartDay,
   shiftsHref,
@@ -1284,6 +1383,8 @@ function PeopleTable({
   onSelectedChange: (next: Set<string>) => void
   onBulk: (targets: ApiShift[], status: ShiftStatus, title: string) => void
   onAddShift: (personUuid: string) => void
+  actions: ReactNode
+  filters: ReactNode
 }) {
   const Components = useComponentContext()
   const navigate = useNavigate()
@@ -1492,20 +1593,17 @@ function PeopleTable({
   const who = `${selectedRows.length} ${selectedRows.length === 1 ? 'person' : 'people'}`
 
   return (
-    <Flex flexDirection="column" gap={8}>
-      {selectedRows.length > 0 && (
-        <div className={styles.bulkBar}>
-          <div className={styles.bulkSummary}>
-            <ClearSelection
-              onClear={() => {
-                onSelectedChange(new Set())
-              }}
-            />
-            <Components.Text size="sm" weight="medium">
-              {who} selected · {selectedShifts.length} shifts <GapPin id="bulk-approval" />{' '}
-              <ChangePin id="row-actions-text" />
-            </Components.Text>
-          </div>
+    <Flex flexDirection="column" gap={16}>
+      <ControlBar
+        selectedLabel={
+          selectedRows.length > 0 ? `${who} selected · ${selectedShifts.length} shifts` : null
+        }
+        onClear={() => {
+          onSelectedChange(new Set())
+        }}
+        actions={actions}
+        filters={filters}
+        bulkActions={
           <ApprovalActions
             label={`the selected shifts for ${who}`}
             approveCount={toApprove.length}
@@ -1517,8 +1615,8 @@ function PeopleTable({
               onBulk(toUnapprove, 'pending', `Unapprove ${toUnapprove.length} shifts for ${who}`)
             }}
           />
-        </div>
-      )}
+        }
+      />
       <div className={`${styles.reviewTable} ${styles.peopleTable}`}>
         <DataView label="People with shifts this period" {...dataView} />
       </div>
@@ -1531,16 +1629,18 @@ function ShiftsTable({
   shifts,
   selected,
   onSelectedChange,
-  onBack,
   onStatus,
   onEdit,
   onClockOut,
+  actions,
+  filters,
 }: {
   person: Person
   shifts: ApiShift[]
   selected: Set<string>
   onSelectedChange: (next: Set<string>) => void
-  onBack: () => void
+  actions: ReactNode
+  filters: ReactNode
   onStatus: (targets: ApiShift[], status: ShiftStatus, title: string) => void
   onEdit: (shift: ApiShift) => void
   onClockOut: (shift: ApiShift) => void
@@ -1552,8 +1652,6 @@ function ShiftsTable({
   const selectedToApprove = toApproveOf(selectedShifts)
   const selectedToUnapprove = toUnapproveOf(selectedShifts)
   const policy = person.breakPolicy
-  const issuesByShift = new Map(shifts.map(s => [s.uuid, breakIssues(s, policy)]))
-  const shiftsWithIssues = shifts.filter(s => issuesByShift.get(s.uuid)?.length)
 
   const dataView = useDataView<ApiShift>({
     data: shifts,
@@ -1696,67 +1794,39 @@ function ShiftsTable({
   })
 
   return (
-    <Flex flexDirection="column" gap={12}>
-      <Flex alignItems="center" gap={12} flexWrap="wrap">
-        <Trail trail={[{ label: 'Timesheets', onClick: onBack }]} current={person.name} />
-      </Flex>
-      <Flex alignItems="center" gap={12} flexWrap="wrap">
-        <Components.Heading as="h2" styledAs="h4">
-          {person.name} · {shifts.length} shifts
-        </Components.Heading>
-      </Flex>
-      {policy && shiftsWithIssues.length > 0 && (
-        <Components.Alert
-          status="warning"
-          label={`${shiftsWithIssues.length} of these shifts have a missed, delayed or short break`}
-        >
-          {policy.pay_premium
-            ? `${policy.name} pays a premium for each missed, delayed or short break, so these shifts earn extra pay. Fix the breaks if they were actually taken.`
-            : `${policy.name} doesn’t pay a premium, so this doesn’t change pay. Fix the breaks if they were actually taken.`}{' '}
-          The page checks this against the policy’s rules; the API doesn’t flag it.{' '}
-          <ChangePin id="missed-breaks" /> <ChangePin id="delayed-breaks" />
-        </Components.Alert>
-      )}
-      <Flex flexDirection="column" gap={8}>
-        {selectedShifts.length > 0 && (
-          <div className={styles.bulkBar}>
-            <div className={styles.bulkSummary}>
-              <ClearSelection
-                onClear={() => {
-                  onSelectedChange(new Set())
-                }}
-              />
-              <Components.Text size="sm" weight="medium">
-                {selectedShifts.length} {selectedShifts.length === 1 ? 'shift' : 'shifts'} selected{' '}
-                <GapPin id="bulk-approval" /> <ChangePin id="row-actions-text" />{' '}
-                <ChangePin id="bulk-placement" />
-              </Components.Text>
-            </div>
-            <ApprovalActions
-              label={`${selectedShifts.length} selected shifts`}
-              approveCount={selectedToApprove.length}
-              unapproveCount={selectedToUnapprove.length}
-              onApprove={() => {
-                onStatus(
-                  selectedToApprove,
-                  'approved',
-                  `Approve ${selectedToApprove.length} shifts`,
-                )
-              }}
-              onUnapprove={() => {
-                onStatus(
-                  selectedToUnapprove,
-                  'pending',
-                  `Unapprove ${selectedToUnapprove.length} shifts`,
-                )
-              }}
-            />
-          </div>
-        )}
-        <div className={styles.reviewTable}>
-          <DataView label={`${person.name}’s shifts`} {...dataView} />
-        </div>
-      </Flex>
+    <Flex flexDirection="column" gap={16}>
+      <ControlBar
+        selectedLabel={
+          selectedShifts.length > 0
+            ? `${selectedShifts.length} ${selectedShifts.length === 1 ? 'shift' : 'shifts'} selected`
+            : null
+        }
+        onClear={() => {
+          onSelectedChange(new Set())
+        }}
+        actions={actions}
+        filters={filters}
+        bulkActions={
+          <ApprovalActions
+            label={`${selectedShifts.length} selected shifts`}
+            approveCount={selectedToApprove.length}
+            unapproveCount={selectedToUnapprove.length}
+            onApprove={() => {
+              onStatus(selectedToApprove, 'approved', `Approve ${selectedToApprove.length} shifts`)
+            }}
+            onUnapprove={() => {
+              onStatus(
+                selectedToUnapprove,
+                'pending',
+                `Unapprove ${selectedToUnapprove.length} shifts`,
+              )
+            }}
+          />
+        }
+      />
+      <div className={styles.reviewTable}>
+        <DataView label={`${person.name}’s shifts`} {...dataView} />
+      </div>
     </Flex>
   )
 }

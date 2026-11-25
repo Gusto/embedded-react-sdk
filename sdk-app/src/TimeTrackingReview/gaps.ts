@@ -1,5 +1,5 @@
 export type GapKind =
-  'none' | 'planned' | 'plannedWorkaround' | 'plannedPartial' | 'bug' | 'limited'
+  'none' | 'planned' | 'plannedWorkaround' | 'plannedPartial' | 'bug' | 'limited' | 'sdkComponent'
 
 export const GAP_KIND_LABEL: Record<GapKind, string> = {
   none: 'Not supported, no workaround',
@@ -8,6 +8,7 @@ export const GAP_KIND_LABEL: Record<GapKind, string> = {
   plannedPartial: 'API work planned; partial workaround exists',
   bug: 'Supported, with known bugs',
   limited: 'Supported with limitations',
+  sdkComponent: 'SDK component gap; possible enhancement',
 }
 
 export type Tab = 'review' | 'policies' | 'people'
@@ -25,6 +26,7 @@ export type GapId =
   | 'break-timing'
   | 'status-lock'
   | 'sync-limits'
+  | 'table-toolbar'
 
 export interface Gap {
   id: GapId
@@ -165,6 +167,18 @@ export const GAPS: Gap[] = [
     details:
       'Sync accepts a pay schedule UUID and start/end dates, not a pay-period identifier. Async status reports completion. Sync does not target transition or termination payrolls; shifts in those periods can resolve to an overlapping regular payroll or to no payroll.',
     here: 'A send covers everyone on the schedule for the period. Only regular pay periods appear in the picker.',
+  },
+  {
+    id: 'table-toolbar',
+    priority: 'P1',
+    tabs: ['review'],
+    kind: 'sdkComponent',
+    title: 'SDK: table toolbar that swaps to bulk actions on select',
+    details:
+      'The SDK DataView has row selection but no toolbar slot. There’s no built-in row above a table that holds page actions and is replaced by a selection count, Clear selection and bulk actions while rows are selected.',
+    needed:
+      'Possible SDK enhancement: a DataView toolbar (or companion component) with a default slot and a selection slot at a fixed height, so tables don’t shift when selection changes.',
+    here: 'The page builds its own control bar from SDK Buttons and Text, and keeps its height fixed.',
   },
 ]
 
