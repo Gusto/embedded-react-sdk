@@ -237,7 +237,7 @@
 }
 
 .approveIcon,
-.rejectIcon {
+.unapproveIcon {
   display: inline-flex;
 
   svg {
@@ -250,14 +250,14 @@
   --row-icon-color: var(--g-colorSuccessAccent);
 }
 
-.rejectIcon {
+.unapproveIcon {
   --row-icon-color: var(--g-colorErrorAccent);
 }
 
 [disabled] .approveIcon,
-[disabled] .rejectIcon,
+[disabled] .unapproveIcon,
 [data-disabled] .approveIcon,
-[data-disabled] .rejectIcon {
+[data-disabled] .unapproveIcon {
   opacity: 0.3;
 }
 
@@ -421,15 +421,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-  }
-}
-
-.pendingIcon {
-  display: inline-flex;
-
-  svg {
-    width: 1.125rem;
-    height: 1.125rem;
   }
 }
 

@@ -38,17 +38,16 @@ function isOutcome(value: string): value is SendOutcome {
   return OUTCOME_OPTIONS.some(option => option.value === value)
 }
 
-type SkipReason = 'pending' | 'rejected' | 'open'
+type SkipReason = 'unapproved' | 'open'
 
 const SKIP_REASONS: Array<{ reason: SkipReason; label: (count: number) => string }> = [
-  { reason: 'pending', label: count => `${count} pending` },
-  { reason: 'rejected', label: count => `${count} rejected` },
+  { reason: 'unapproved', label: count => `${count} not approved` },
   { reason: 'open', label: count => `${count} still clocked in` },
 ]
 
 function skipReason(shift: ApiShift): SkipReason | null {
   const state = reviewState(shift)
-  return state === 'pending' || state === 'rejected' || state === 'open' ? state : null
+  return state === 'unapproved' || state === 'open' ? state : null
 }
 
 function namesList(names: string[]) {

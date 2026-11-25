@@ -372,20 +372,23 @@ export function crossesMidnight(shift: ApiShift) {
   return zonedParts(shift.shift_ended_at, shift.time_zone).date !== localStartDate(shift)
 }
 
-export type ReviewState = 'open' | 'pending' | 'rejected' | 'sent' | 'changed' | 'unsent'
+export type ReviewState = 'open' | 'unapproved' | 'sent' | 'changed' | 'unsent'
+
+/** Pending and rejected behave the same in the API (neither syncs), so the page treats both as not approved. */
+export function isApproved(shift: ApiShift) {
+  return shift.status === 'approved'
+}
 
 export function reviewState(shift: ApiShift): ReviewState {
   if (!shift.shift_ended_at) return 'open'
-  if (shift.status === 'pending') return 'pending'
-  if (shift.status === 'rejected') return 'rejected'
+  if (!isApproved(shift)) return 'unapproved'
   if (!shift.synced_to_payroll_at) return 'unsent'
   return Date.parse(shift.updated_at) > Date.parse(shift.synced_to_payroll_at) ? 'changed' : 'sent'
 }
 
 export const REVIEW_STATE_LABEL: Record<ReviewState, string> = {
   open: 'Still clocked in',
-  pending: 'Pending',
-  rejected: 'Rejected',
+  unapproved: 'Not approved',
   unsent: 'Approved · not sent',
   sent: 'Approved · sent',
   changed: 'Approved · changed since send?',

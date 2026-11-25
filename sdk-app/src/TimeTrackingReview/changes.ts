@@ -27,6 +27,7 @@ export type ChangeId =
   | 'send-anchored'
   | 'alerts-column'
   | 'person-alerts'
+  | 'approval-binary'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -210,7 +211,7 @@ export const CHANGES: Change[] = [
     title: 'Warn about shifts left out before sending',
     feedback:
       'Warn people when pending, rejected or still clocked-in shifts won’t be part of the payroll calculation.',
-    what: 'When any shift won’t be sent, the review page shows a warning with the count by reason (pending, rejected, still clocked in), who they belong to, and a Review shifts button. This follows how Payroll review shows blockers inline above Submit.',
+    what: 'When any shift won’t be sent, the review page shows a warning with the count by reason (not approved, still clocked in), who they belong to, and a Review shifts button. This follows how Payroll review shows blockers inline above Submit.',
     where: 'Timesheets › Send to payroll.',
   },
   {
@@ -300,6 +301,16 @@ export const CHANGES: Change[] = [
     feedback: 'Show the same stacked alerts on the main timesheets table, one row per person.',
     what: 'Each person’s row has an Alerts column that totals their problems across the period, one line each: e.g. “3 missed meal breaks” or “1 long shift”.',
     where: 'Timesheets › Alerts column.',
+  },
+  {
+    id: 'approval-binary',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Approved or not approved, nothing else',
+    feedback: 'Do we still need Return to pending? Maybe it’s not rejected, just unapproved.',
+    what: 'A shift is either approved or not. Each shift row has an Approved switch, and bulk actions are Approve and Unapprove. Reject and Return to pending are gone. Unapproving writes “pending”. A shift rejected elsewhere shows as Not approved, since the API treats pending and rejected the same: neither is sent, and rejected has no reason, lock or notice. The one difference is the status-change webhook partners receive.',
+    where:
+      'Timesheets › Approved and Not approved columns, row menus and bulk bar; a person’s shifts › Approved switch; Send to payroll warning.',
   },
 ]
 

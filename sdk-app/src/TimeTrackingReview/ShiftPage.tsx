@@ -483,7 +483,7 @@ export function ShiftPage({
             value={status}
             options={[
               { value: 'approved', label: 'Approved' },
-              { value: 'pending', label: 'Pending' },
+              { value: 'pending', label: 'Not approved' },
             ]}
             onChange={value => {
               if (value === 'approved' || value === 'pending') setStatus(value)
@@ -492,7 +492,7 @@ export function ShiftPage({
         )}
         {existing && (
           <Components.Text size="sm" variant="supporting">
-            Stays “{existing.status}” after the edit.
+            Stays {existing.status === 'approved' ? 'approved' : 'not approved'} after the edit.
             {existing.synced_to_payroll_at &&
               ' Already sent: payroll keeps the old hours until the next send.'}
             {existing.synced_to_payroll_at && <GapPin id="which-timesheets" />} The page checks

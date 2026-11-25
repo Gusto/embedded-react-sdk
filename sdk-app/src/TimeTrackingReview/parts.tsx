@@ -3,7 +3,6 @@ import { ChangeContext, GapContext } from './gapContext'
 import { CHANGE_NUMBER, type ChangeId } from './changes'
 import { GAP_NUMBER, type GapId } from './gaps'
 import styles from './TimeTrackingReview.module.scss'
-import SlashCircleIcon from '@/assets/icons/slash-circle.svg?react'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -122,70 +121,47 @@ export function ApproveIcon() {
   )
 }
 
-export function RejectIcon() {
+export function UnapproveIcon() {
   return (
-    <span className={styles.rejectIcon}>
+    <span className={styles.unapproveIcon}>
       <XIcon />
     </span>
   )
 }
 
-export function PendingIcon() {
-  return (
-    <span className={styles.pendingIcon}>
-      <SlashCircleIcon />
-    </span>
-  )
-}
-
-export function ApproveReject({
+export function ApprovalActions({
   label,
   approveCount,
-  rejectCount,
-  pendingCount,
+  unapproveCount,
   onApprove,
-  onReject,
-  onPending,
+  onUnapprove,
 }: {
   label: string
-  approveCount?: number
-  rejectCount?: number
-  pendingCount?: number
-  onPending?: () => void
-  onApprove?: () => void
-  onReject?: () => void
+  approveCount: number
+  unapproveCount: number
+  onApprove: () => void
+  onUnapprove: () => void
 }) {
   const Components = useComponentContext()
   return (
     <div className={styles.approveReject}>
-      {pendingCount !== undefined && (
-        <Components.Button
-          variant="tertiary"
-          aria-label={`Return ${label} to pending`}
-          isDisabled={!onPending}
-          onClick={onPending}
-          icon={<PendingIcon />}
-        >
-          Return to pending ({pendingCount})
-        </Components.Button>
-      )}
       <Components.Button
         variant="tertiary"
         aria-label={`Approve ${label}`}
-        isDisabled={!onApprove}
+        isDisabled={approveCount === 0}
         onClick={onApprove}
         icon={<ApproveIcon />}
       >
-        Approve{approveCount === undefined ? '' : ` (${approveCount})`}
+        Approve ({approveCount})
       </Components.Button>
       <Components.Button
         variant="tertiary"
-        aria-label={`Reject ${label}`}
-        isDisabled={!onReject}
-        onClick={onReject}
-        icon={<RejectIcon />}
+        aria-label={`Unapprove ${label}`}
+        isDisabled={unapproveCount === 0}
+        onClick={onUnapprove}
+        icon={<UnapproveIcon />}
       >
-        Reject{rejectCount === undefined ? '' : ` (${rejectCount})`}
+        Unapprove ({unapproveCount})
       </Components.Button>
     </div>
   )
