@@ -30,6 +30,7 @@ export type ChangeId =
   | 'approval-binary'
   | 'person-payroll'
   | 'shift-sent-time'
+  | 'bulk-placement'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -332,6 +333,16 @@ export const CHANGES: Change[] = [
       'Keep the timesheets list generic (sent or not sent) and put the timestamp on each shift.',
     what: 'A person’s shifts show one badge with the time: “Sent Nov 24, 3:12 PM”, or “Changed since sent Nov 24, 3:12 PM” when the shift was edited after. The timesheets list keeps the counts.',
     where: 'A person’s shifts › Payroll column.',
+  },
+  {
+    id: 'bulk-placement',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Bulk actions always sit right above the table',
+    feedback:
+      'Bulk actions were above the table on Timesheets but above the banner on a person’s shifts. Keep them above the table.',
+    what: 'Selecting shifts shows the same bar as Timesheets, directly above the table: Clear selection, the count, then Approve and Unapprove.',
+    where: 'A person’s shifts › bulk bar.',
   },
 ]
 

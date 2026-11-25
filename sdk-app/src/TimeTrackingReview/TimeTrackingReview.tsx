@@ -1704,16 +1704,34 @@ function ShiftsTable({
         <Components.Heading as="h2" styledAs="h4">
           {person.name} · {shifts.length} shifts
         </Components.Heading>
-        <span className={styles.spacer} />
+      </Flex>
+      {policy && shiftsWithIssues.length > 0 && (
+        <Components.Alert
+          status="warning"
+          label={`${shiftsWithIssues.length} of these shifts have a missed, delayed or short break`}
+        >
+          {policy.pay_premium
+            ? `${policy.name} pays a premium for each missed, delayed or short break, so these shifts earn extra pay. Fix the breaks if they were actually taken.`
+            : `${policy.name} doesn’t pay a premium, so this doesn’t change pay. Fix the breaks if they were actually taken.`}{' '}
+          The page checks this against the policy’s rules; the API doesn’t flag it.{' '}
+          <ChangePin id="missed-breaks" /> <ChangePin id="delayed-breaks" />
+        </Components.Alert>
+      )}
+      <Flex flexDirection="column" gap={8}>
         {selectedShifts.length > 0 && (
-          <>
-            <ClearSelection
-              onClear={() => {
-                onSelectedChange(new Set())
-              }}
-            />
-            <GapPin id="bulk-approval" />
-            <ChangePin id="row-actions-text" />
+          <div className={styles.bulkBar}>
+            <div className={styles.bulkSummary}>
+              <ClearSelection
+                onClear={() => {
+                  onSelectedChange(new Set())
+                }}
+              />
+              <Components.Text size="sm" weight="medium">
+                {selectedShifts.length} {selectedShifts.length === 1 ? 'shift' : 'shifts'} selected{' '}
+                <GapPin id="bulk-approval" /> <ChangePin id="row-actions-text" />{' '}
+                <ChangePin id="bulk-placement" />
+              </Components.Text>
+            </div>
             <ApprovalActions
               label={`${selectedShifts.length} selected shifts`}
               approveCount={selectedToApprove.length}
@@ -1733,24 +1751,12 @@ function ShiftsTable({
                 )
               }}
             />
-          </>
+          </div>
         )}
+        <div className={styles.reviewTable}>
+          <DataView label={`${person.name}’s shifts`} {...dataView} />
+        </div>
       </Flex>
-      {policy && shiftsWithIssues.length > 0 && (
-        <Components.Alert
-          status="warning"
-          label={`${shiftsWithIssues.length} of these shifts have a missed, delayed or short break`}
-        >
-          {policy.pay_premium
-            ? `${policy.name} pays a premium for each missed, delayed or short break, so these shifts earn extra pay. Fix the breaks if they were actually taken.`
-            : `${policy.name} doesn’t pay a premium, so this doesn’t change pay. Fix the breaks if they were actually taken.`}{' '}
-          The page checks this against the policy’s rules; the API doesn’t flag it.{' '}
-          <ChangePin id="missed-breaks" /> <ChangePin id="delayed-breaks" />
-        </Components.Alert>
-      )}
-      <div className={styles.reviewTable}>
-        <DataView label={`${person.name}’s shifts`} {...dataView} />
-      </div>
     </Flex>
   )
 }
