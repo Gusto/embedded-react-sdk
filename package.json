@@ -103,7 +103,7 @@
     "@storybook/addon-a11y": "^10.6.8",
     "@storybook/addon-docs": "^10.6.8",
     "@storybook/addon-onboarding": "^10.6.8",
-    "@storybook/react-vite": "^10.6.7",
+    "@storybook/react-vite": "^10.6.8",
     "@storybook/test-runner": "^0.26.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^8.0.0",
