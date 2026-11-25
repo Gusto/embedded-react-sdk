@@ -500,21 +500,54 @@
   }
 }
 
+.controlBarWrap {
+  width: 100%;
+  container-type: inline-size;
+}
+
 .controlBar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  width: 100%;
   min-height: 2.5rem;
 
   > :first-child {
     min-width: 0;
-    white-space: nowrap;
   }
 
   > :last-child {
     flex-shrink: 0;
+    margin-left: auto;
+  }
+}
+
+// Below 40rem, matching the SDK's small breakpoint: stack, and give each control the full width.
+@container (max-width: 40rem) {
+  .controlBar {
+    flex-direction: column;
+    align-items: stretch;
+
+    > :last-child {
+      margin-left: 0;
+    }
+  }
+
+  .controlFilters,
+  .toolbarFilters,
+  .controlActions,
+  .approveReject {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .toolbarFilters,
+  .toolbarSchedule,
+  .toolbarPeriod,
+  .controlActions > :not(.pin),
+  .approveReject > :not(.pin) {
+    flex: 1 1 100%;
   }
 }
 

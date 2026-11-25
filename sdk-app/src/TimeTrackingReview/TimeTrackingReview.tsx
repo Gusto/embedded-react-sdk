@@ -1369,28 +1369,30 @@ function ControlBar({
 }) {
   const Components = useComponentContext()
   return (
-    <div className={styles.controlBar}>
-      {selectedLabel ? (
-        <>
-          <div className={styles.bulkSummary}>
-            <ClearSelection onClear={onClear} />
-            <Components.Text size="sm" weight="medium">
-              {selectedLabel}
-            </Components.Text>
-            <GapPin id="bulk-approval" /> <GapPin id="table-toolbar" />{' '}
-            <ChangePin id="control-bar" />
-          </div>
-          {bulkActions}
-        </>
-      ) : (
-        <>
-          <div className={styles.controlFilters}>
-            {filters}
-            <GapPin id="table-toolbar" /> <ChangePin id="control-bar" />
-          </div>
-          <div className={styles.controlActions}>{actions}</div>
-        </>
-      )}
+    <div className={styles.controlBarWrap}>
+      <div className={styles.controlBar}>
+        {selectedLabel ? (
+          <>
+            <div className={styles.bulkSummary}>
+              <ClearSelection onClear={onClear} />
+              <Components.Text size="sm" weight="medium">
+                {selectedLabel}
+              </Components.Text>
+              <GapPin id="bulk-approval" /> <GapPin id="table-toolbar" />{' '}
+              <ChangePin id="control-bar" />
+            </div>
+            {bulkActions}
+          </>
+        ) : (
+          <>
+            <div className={styles.controlFilters}>
+              {filters}
+              <GapPin id="table-toolbar" /> <ChangePin id="control-bar" />
+            </div>
+            <div className={styles.controlActions}>{actions}</div>
+          </>
+        )}
+      </div>
     </div>
   )
 }

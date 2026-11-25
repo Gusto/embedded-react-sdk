@@ -374,7 +374,7 @@ export const CHANGES: Change[] = [
     tabs: ['review'],
     title: 'One control bar that swaps to bulk actions',
     feedback: 'Treat the action row as one element; selecting rows replaces what’s there.',
-    what: 'One bar right above the table holds the pay schedule and period filters on the left and Add shift and Send to payroll on the right. Selecting rows replaces the whole bar with Clear selection, the count, then Unapprove and Approve buttons, at the same height, so the table doesn’t move. The SDK has no table toolbar like this, so it’s flagged as a possible SDK enhancement.',
+    what: 'One bar right above the table holds the pay schedule and period filters on the left and Add shift and Send to payroll on the right. Selecting rows replaces the whole bar with Clear selection, the count, then Unapprove and Approve buttons, at the same height, so the table doesn’t move. On narrower screens it follows the SDK’s list pages: the buttons wrap under the filters, and below 40rem every control stacks full width. The SDK has no table toolbar like this, so it’s flagged as a possible SDK enhancement.',
     where: 'Timesheets and a person’s shifts › control bar.',
   },
   {
