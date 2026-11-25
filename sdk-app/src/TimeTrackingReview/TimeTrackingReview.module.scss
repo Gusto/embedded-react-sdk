@@ -523,7 +523,7 @@
   }
 }
 
-// Below 40rem, matching the SDK's small breakpoint: stack, and give each control the full width.
+// 40rem is the SDK's small breakpoint.
 @container (max-width: 40rem) {
   .controlBar {
     flex-direction: column;

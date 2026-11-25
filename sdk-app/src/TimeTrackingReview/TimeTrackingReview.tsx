@@ -1363,7 +1363,6 @@ function ClearSelection({ onClear }: { onClear: () => void }) {
   )
 }
 
-/** One row above a table: page actions normally, replaced by bulk actions while rows are selected. */
 function ControlBar({
   selectedLabel,
   onClear,
