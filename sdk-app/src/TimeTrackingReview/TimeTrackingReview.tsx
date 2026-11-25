@@ -1394,6 +1394,35 @@ function PeopleTable({
         justify: 'end',
         render: ({ shifts }) => <ApprovalCount shifts={shifts} approved={false} />,
       },
+      {
+        title: 'Approval',
+        render: ({ person, shifts }) => {
+          const finished = shifts.filter(shift => shift.shift_ended_at)
+          const toApprove = toApproveOf(shifts)
+          const toUnapprove = toUnapproveOf(shifts)
+          return (
+            <Components.Switch
+              label={`Approve (${finished.length})`}
+              isDisabled={finished.length === 0}
+              value={finished.length > 0 && toApprove.length === 0}
+              onChange={checked => {
+                if (checked)
+                  onBulk(
+                    toApprove,
+                    'approved',
+                    `Approve ${person.name}’s ${toApprove.length} shifts`,
+                  )
+                else
+                  onBulk(
+                    toUnapprove,
+                    'pending',
+                    `Unapprove ${person.name}’s ${toUnapprove.length} shifts`,
+                  )
+              }}
+            />
+          )
+        },
+      },
     ],
     itemMenu: ({ person, shifts }) => {
       const toApprove = toApproveOf(shifts)
@@ -1583,7 +1612,7 @@ function ShiftsTable({
       {
         title: (
           <>
-            Approved <ChangePin id="approval-binary" />
+            Approval <ChangePin id="approval-binary" />
           </>
         ),
         render: shift => {
@@ -1591,8 +1620,7 @@ function ShiftsTable({
             return <Components.Badge status="info">Clocked in</Components.Badge>
           return (
             <Components.Switch
-              label={`Approve ${label(shift)}`}
-              shouldVisuallyHideLabel
+              label="Approve"
               value={isApproved(shift)}
               onChange={checked => {
                 onStatus(
