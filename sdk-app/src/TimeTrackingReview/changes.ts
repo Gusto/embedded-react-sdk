@@ -26,6 +26,7 @@ export type ChangeId =
   | 'no-overtime'
   | 'send-anchored'
   | 'alerts-column'
+  | 'person-alerts'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -290,6 +291,15 @@ export const CHANGES: Change[] = [
       'Rather than separate columns for meal and rest breaks, have one Alerts column and stack the issues.',
     what: 'A person’s shifts now have one Alerts column. Each problem is its own line: missed, delayed or short meal and rest breaks, and shifts over 16 hours. Shifts with no problems show a dash.',
     where: 'A person’s shifts › Alerts column.',
+  },
+  {
+    id: 'person-alerts',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Alerts on the timesheets list',
+    feedback: 'Show the same stacked alerts on the main timesheets table, one row per person.',
+    what: 'Each person’s row has an Alerts column that totals their problems across the period, one line each: e.g. “3 missed meal breaks” or “1 long shift”.',
+    where: 'Timesheets › Alerts column.',
   },
 ]
 

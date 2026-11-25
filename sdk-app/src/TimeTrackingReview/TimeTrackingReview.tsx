@@ -40,6 +40,7 @@ import {
   type ShiftStatus,
   breakIssues,
   shiftAlerts,
+  personAlerts,
 } from './model'
 import { PoliciesTab } from './PoliciesTab'
 import { SendPage, type SendFailure, type SendOutcome, type SendView } from './SendPage'
@@ -1323,6 +1324,26 @@ function PeopleTable({
             </Components.Text>
           </Flex>
         ),
+      },
+      {
+        title: (
+          <>
+            Alerts <ChangePin id="person-alerts" />
+          </>
+        ),
+        render: ({ person, shifts }) => {
+          const alerts = personAlerts(shifts, person.breakPolicy)
+          if (alerts.length === 0) return '—'
+          return (
+            <span className={styles.alertStack}>
+              {alerts.map(alert => (
+                <Components.Badge key={alert} status="warning">
+                  {alert}
+                </Components.Badge>
+              ))}
+            </span>
+          )
+        },
       },
       {
         title: (

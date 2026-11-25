@@ -327,22 +327,43 @@ export function breakIssueLabel(issues: BreakIssue[]) {
   return [...counts].map(([key, n]) => (n > 1 ? `${key} ×${n}` : key)).join(', ')
 }
 
+const BREAK_TYPES: Array<ApiBreakRule['break_type']> = ['meal', 'rest']
+
 /** Shifts longer than this get a "Long shift" alert; the API sets no limit. */
 export const LONG_SHIFT_MINUTES = 16 * 60
 
 /** One line per problem, stacked in a shift's Alerts column: e.g. "Missed meal break (2)". */
 export function shiftAlerts(shift: ApiShift, policy: ApiBreakPolicy | undefined): string[] {
-  const counts = new Map<string, number>()
-  for (const issue of breakIssues(shift, policy)) {
-    const key = `${BREAK_ISSUE_LABEL[issue.kind]} ${issue.rule.break_type} break`
-    counts.set(key, (counts.get(key) ?? 0) + 1)
-  }
-  const alerts = [...counts].map(([key, n]) => (n > 1 ? `${key} (${n})` : key))
+  const issues = breakIssues(shift, policy)
+  const alerts = BREAK_TYPES.flatMap(type =>
+    breakIssueCounts(issues.filter(issue => issue.rule.break_type === type)).map(([kind, n]) => {
+      const label = `${BREAK_ISSUE_LABEL[kind]} ${type} break`
+      return n > 1 ? `${label} (${n})` : label
+    }),
+  )
   if (
     shift.shift_ended_at &&
     minutesBetween(shift.shift_started_at, shift.shift_ended_at) > LONG_SHIFT_MINUTES
   )
     alerts.push('Long shift')
+  return alerts
+}
+
+/** A person's problems across all their shifts, one line each: e.g. "3 missed meal breaks". */
+export function personAlerts(shifts: ApiShift[], policy: ApiBreakPolicy | undefined): string[] {
+  const issues = shifts.flatMap(shift => breakIssues(shift, policy))
+  const alerts = BREAK_TYPES.flatMap(type =>
+    breakIssueCounts(issues.filter(issue => issue.rule.break_type === type)).map(
+      ([kind, n]) =>
+        `${n} ${BREAK_ISSUE_LABEL[kind].toLowerCase()} ${type} break${n > 1 ? 's' : ''}`,
+    ),
+  )
+  const longShifts = shifts.filter(
+    shift =>
+      shift.shift_ended_at &&
+      minutesBetween(shift.shift_started_at, shift.shift_ended_at) > LONG_SHIFT_MINUTES,
+  ).length
+  if (longShifts) alerts.push(`${longShifts} long shift${longShifts > 1 ? 's' : ''}`)
   return alerts
 }
 
