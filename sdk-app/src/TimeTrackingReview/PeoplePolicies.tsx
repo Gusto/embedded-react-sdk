@@ -3,7 +3,6 @@ import { eligibility, type ApiBreakPolicy, type ApiOvertimePolicy, type Person }
 import { ChangePin, GapPin } from './parts'
 import type { Preview, PreviewRequest } from './preview'
 import styles from './TimeTrackingReview.module.scss'
-import CloseIcon from '@/assets/icons/close.svg?react'
 import { EmployeeTable } from '@/components/TimeOff/shared/EmployeeTable/EmployeeTable'
 import type { EmployeeTableItem } from '@/components/TimeOff/shared/EmployeeTable/EmployeeTableTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -51,7 +50,6 @@ export function PeoplePolicies({
 }) {
   const Components = useComponentContext()
   const [search, setSearch] = useState('')
-  const [selected, setSelected] = useState<Set<string>>(new Set())
   const [drafts, setDrafts] = useState<Record<string, Draft>>({})
 
   const eligiblePeople = people
@@ -87,15 +85,6 @@ export function PeoplePolicies({
   }
 
   const breakFromValue = (value: string) => (value === NO_BREAK_POLICY ? null : value)
-
-  const moveSelected = (change: { overtime?: string; break?: string }) => {
-    for (const person of eligiblePeople) {
-      if (!selected.has(person.employee.uuid)) continue
-      if (change.overtime) setDraft(person, { overtimePolicy: change.overtime })
-      if (change.break && !breakToday.has(person.employee.uuid))
-        setDraft(person, { breakPolicy: breakFromValue(change.break) })
-    }
-  }
 
   const overtimeOptions = overtimePolicies.map(policy => ({
     value: policy.uuid,
@@ -151,10 +140,7 @@ export function PeoplePolicies({
       gapIds: ['eligibility'],
     })
     setDrafts({})
-    setSelected(new Set())
   }
-
-  const selectedCount = eligiblePeople.filter(person => selected.has(person.employee.uuid)).length
 
   return (
     <div className={styles.peoplePolicies}>
@@ -163,7 +149,7 @@ export function PeoplePolicies({
           {eligiblePeople.length} people can be on a policy.{' '}
           {changedCount > 0
             ? `${changedCount} ${changedCount === 1 ? 'person' : 'people'} changed. Changes apply when you save.`
-            : 'Change a policy on a row, or select people to move them together.'}{' '}
+            : 'Change a policy on a row.'}{' '}
           <GapPin id="eligibility" /> <ChangePin id="eligible-only" />
         </Components.Text>
         <div className={styles.assignControls}>
@@ -182,49 +168,6 @@ export function PeoplePolicies({
         </div>
       </div>
 
-      {selectedCount > 0 && (
-        <div className={styles.bulkBar}>
-          <div className={styles.bulkSummary}>
-            <Components.Button
-              variant="tertiary"
-              icon={<CloseIcon aria-hidden />}
-              onClick={() => {
-                setSelected(new Set())
-              }}
-            >
-              Clear selection
-            </Components.Button>
-            <Components.Text size="sm">{selectedCount} selected</Components.Text>
-          </div>
-          <div className={styles.bulkMoves}>
-            <div className={styles.bulkMove}>
-              <Components.Select
-                label="Move to overtime policy"
-                shouldVisuallyHideLabel
-                placeholder="Move to overtime policy…"
-                value=""
-                options={overtimeOptions}
-                onChange={value => {
-                  moveSelected({ overtime: value })
-                }}
-              />
-            </div>
-            <div className={styles.bulkMove}>
-              <Components.Select
-                label="Move to break policy"
-                shouldVisuallyHideLabel
-                placeholder="Move to break policy…"
-                value=""
-                options={breakOptions}
-                onChange={value => {
-                  moveSelected({ break: value })
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
       <EmployeeTable<PersonRow>
         label="People and their policies"
         data={rows}
@@ -234,26 +177,6 @@ export function PeoplePolicies({
           setSearch('')
         }}
         searchPlaceholder="Search people"
-        selectionMode="multiple"
-        getIsItemSelected={row => selected.has(row.uuid)}
-        onSelect={(row, checked) => {
-          setSelected(prev => {
-            const next = new Set(prev)
-            if (checked) next.add(row.uuid)
-            else next.delete(row.uuid)
-            return next
-          })
-        }}
-        onSelectAll={(checked, visible) => {
-          setSelected(prev => {
-            const next = new Set(prev)
-            for (const row of visible) {
-              if (checked) next.add(row.uuid)
-              else next.delete(row.uuid)
-            }
-            return next
-          })
-        }}
         additionalColumns={[
           {
             title: (
@@ -267,6 +190,7 @@ export function PeoplePolicies({
                   label={`${row.person.name}’s overtime policy`}
                   shouldVisuallyHideLabel
                   placeholder="Choose a policy"
+                  isInvalid={overtimeValue(row.person) === ''}
                   value={overtimeValue(row.person)}
                   options={overtimeOptions}
                   onChange={value => {
@@ -300,7 +224,7 @@ export function PeoplePolicies({
               if (drafts[row.uuid])
                 return <Components.Badge status="info">Changes not saved</Components.Badge>
               if (!row.person.overtimePolicy)
-                return <Components.Badge status="warning">No overtime policy</Components.Badge>
+                return <Components.Badge status="error">No overtime policy</Components.Badge>
               if (breakToday.has(row.uuid))
                 return 'Took a break today: break policy is fixed until tomorrow'
               return ''

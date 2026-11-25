@@ -153,7 +153,8 @@ export function PoliciesTab({
   )
   const nameOf = (uuid: string) => people.find(p => p.employee.uuid === uuid)?.name ?? 'Unknown'
   const eligiblePeople = people.filter(p => eligibility(p.employee).eligible)
-  const uncovered = eligiblePeople.filter(p => !p.overtimePolicy || !p.breakPolicy)
+  const noOvertime = eligiblePeople.filter(p => !p.overtimePolicy)
+  const noBreak = eligiblePeople.filter(p => !p.breakPolicy)
 
   const today = todayIso()
   const workweeks = schedules.map(schedule => ({
@@ -362,12 +363,24 @@ export function PoliciesTab({
   if (view === 'people') {
     return (
       <Flex flexDirection="column" gap={24}>
-        {uncovered.length > 0 && (
+        {noOvertime.length > 0 && (
           <Components.Alert
-            status="warning"
-            label={`${uncovered.length} eligible people are missing a policy`}
+            status="error"
+            label={`${noOvertime.length} ${noOvertime.length === 1 ? 'person has' : 'people have'} no overtime policy`}
           >
-            {uncovered.map(p => p.name).join(', ')} <GapPin id="state-reminders" />
+            {noOvertime.map(p => p.name).join(', ')}. Their shifts can’t be saved until they’re on
+            one: the API rejects new and edited shifts with “Employee must be assigned to an
+            overtime policy before submitting unclassified hours.” Choose a policy on their row.{' '}
+            <ChangePin id="no-overtime" />
+          </Components.Alert>
+        )}
+        {noBreak.length > 0 && (
+          <Components.Alert
+            status="info"
+            label={`${noBreak.length} ${noBreak.length === 1 ? 'person has' : 'people have'} no break policy`}
+          >
+            {noBreak.map(p => p.name).join(', ')}. That’s allowed; their shifts just aren’t checked
+            against break rules. <GapPin id="state-reminders" />
           </Components.Alert>
         )}
         <Components.Box

@@ -23,6 +23,7 @@ export type ChangeId =
   | 'delayed-breaks'
   | 'overnight-shifts'
   | 'three-tabs'
+  | 'no-overtime'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
@@ -216,7 +217,7 @@ export const CHANGES: Change[] = [
     title: 'Policies by person: move people between policies',
     feedback:
       'Flip the assignment view to people first, show each person’s current policies, and use the Time Off bulk selection pattern.',
-    what: 'The People tab lists every eligible person with their current overtime and break policy. Change one person from their row, or select several and move them in one go. Overtime has no “none” option since the API can only move people, not remove them. Built on the same searchable, selectable table as Time Off’s add employees.',
+    what: 'The People tab lists every eligible person with their current overtime and break policy. Change anyone from their row; there are no checkboxes, since the dropdowns do the job. Overtime has no “none” option since the API can only move people, not remove them. Built on the same searchable, selectable table as Time Off’s add employees.',
     where: 'People tab.',
   },
   {
@@ -255,8 +256,18 @@ export const CHANGES: Change[] = [
     title: 'Three tabs: Timesheets, Policies, People',
     feedback:
       'Policies is confusing. Make it three pages: Timesheets, Policies (assigned people and details), and People (the table of where everyone belongs). Drop Run payroll from the prototype.',
-    what: 'Policies now only lists policies; each policy page shows its assigned people and details, and “Edit people” opens the People tab. People is its own tab: everyone eligible with their overtime and break policy, changed per row or in bulk. The separate “Add employees to policy” screen and the Run payroll tab are gone.',
+    what: 'Policies now only lists policies; each policy page shows its assigned people and details, and “Edit people” opens the People tab. People is its own tab: everyone eligible with their overtime and break policy, changed with the dropdown on each row (no checkboxes or bulk bar). The separate “Add employees to policy” screen and the Run payroll tab are gone.',
     where: 'The tabs at the top; Policies › a policy › Edit people.',
+  },
+  {
+    id: 'no-overtime',
+    round: 'nov-24',
+    tabs: ['people'],
+    title: 'No overtime policy is an error, no break policy is fine',
+    feedback:
+      'Is it possible for someone to not have a break policy or an overtime policy at all? Pressure-testing the dropdowns.',
+    what: 'Both can happen, but they mean different things. Someone with no overtime policy (a new hire, say) can’t have shifts saved, so their overtime dropdown is marked invalid, their row says “No overtime policy” in red, and an error alert at the top names them. No break policy is allowed, so it gets an info note only. Overtime still has no “none” option, since once someone is on one they can only be moved.',
+    where: 'People tab.',
   },
 ]
 
