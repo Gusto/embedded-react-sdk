@@ -265,11 +265,23 @@ export function minutesBetween(a: string, b: string) {
   return Math.round((Date.parse(b) - Date.parse(a)) / 60000)
 }
 
+export type BreakIssueKind = 'missing' | 'delayed' | 'short'
+
 export interface BreakIssue {
   rule: ApiBreakRule
-  kind: 'missing' | 'short'
+  kind: BreakIssueKind
 }
 
+export const BREAK_ISSUE_LABEL: Record<BreakIssueKind, string> = {
+  missing: 'Missed',
+  delayed: 'Delayed',
+  short: 'Short',
+}
+
+/**
+ * The page's own check of a shift against its break policy. The nth break of a rule is due by
+ * n × the rule's hours worked; one break can be both delayed and short.
+ */
 export function breakIssues(shift: ApiShift, policy: ApiBreakPolicy | undefined): BreakIssue[] {
   if (!policy || !shift.shift_ended_at) return []
   const shiftMinutes = minutesBetween(shift.shift_started_at, shift.shift_ended_at)
@@ -279,40 +291,37 @@ export function breakIssues(shift: ApiShift, policy: ApiBreakPolicy | undefined)
       shiftMinutes < threshold
         ? 0
         : Math.max(1, Math.floor(shiftMinutes / rule.for_hours_worked_in_minutes))
-    const taken = shift.breaks.filter(b => b.break_rule_uuid === rule.uuid)
-    return Array.from({ length: required }, (_, index): BreakIssue | null => {
+    const taken = shift.breaks
+      .filter(b => b.break_rule_uuid === rule.uuid)
+      .sort((a, b) => Date.parse(a.start_time) - Date.parse(b.start_time))
+    return Array.from({ length: required }, (_, index): BreakIssue[] => {
       const match = taken[index]
-      if (!match) return { rule, kind: 'missing' }
+      if (!match) return [{ rule, kind: 'missing' }]
+      const issues: BreakIssue[] = []
+      const dueBy = (index + 1) * rule.for_hours_worked_in_minutes
+      if (minutesBetween(shift.shift_started_at, match.start_time) > dueBy)
+        issues.push({ rule, kind: 'delayed' })
       if (
         match.end_time &&
         minutesBetween(match.start_time, match.end_time) < rule.break_duration_in_minutes
       )
-        return { rule, kind: 'short' }
-      return null
-    }).filter(issue => issue !== null)
+        issues.push({ rule, kind: 'short' })
+      return issues
+    }).flat()
   })
 }
 
-export function breakIssueKind(issues: BreakIssue[]): BreakIssue['kind'] {
-  return issues.some(i => i.kind === 'missing') ? 'missing' : 'short'
-}
-
-export function breakIssueDetail(issues: BreakIssue[]) {
-  const counts = (kind: BreakIssue['kind']) => {
-    const byType = new Map<string, number>()
-    for (const issue of issues.filter(i => i.kind === kind))
-      byType.set(issue.rule.break_type, (byType.get(issue.rule.break_type) ?? 0) + 1)
-    return [...byType].map(([type, n]) => `${n} ${type}`).join(', ')
-  }
-  const primary = breakIssueKind(issues)
-  const secondary = primary === 'missing' && issues.some(i => i.kind === 'short')
-  return secondary ? `${counts('missing')} · ${counts('short')} short` : counts(primary)
+/** Counts per kind, in a fixed order: e.g. `[['missing', 1], ['short', 2]]`. */
+export function breakIssueCounts(issues: BreakIssue[]): Array<[BreakIssueKind, number]> {
+  return (['missing', 'delayed', 'short'] satisfies BreakIssueKind[])
+    .map((kind): [BreakIssueKind, number] => [kind, issues.filter(i => i.kind === kind).length])
+    .filter(([, count]) => count > 0)
 }
 
 export function breakIssueLabel(issues: BreakIssue[]) {
   const counts = new Map<string, number>()
   for (const issue of issues) {
-    const key = `${issue.kind === 'missing' ? 'Missed' : 'Short'} ${issue.rule.break_type}`
+    const key = `${BREAK_ISSUE_LABEL[issue.kind]} ${issue.rule.break_type}`
     counts.set(key, (counts.get(key) ?? 0) + 1)
   }
   return [...counts].map(([key, n]) => (n > 1 ? `${key} ×${n}` : key)).join(', ')

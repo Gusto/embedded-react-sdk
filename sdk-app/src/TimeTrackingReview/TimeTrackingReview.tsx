@@ -27,6 +27,7 @@ import {
   reviewState,
   scheduleLabel,
   syncEffect,
+  willSync,
   workedHours,
   type ApiAssignments,
   type ApiBreakPolicy,
@@ -39,10 +40,12 @@ import {
   type Person,
   type ShiftStatus,
   breakIssues,
+  breakIssueCounts,
+  BREAK_ISSUE_LABEL,
 } from './model'
 import { PayrollTab } from './PayrollTab'
 import { PoliciesTab } from './PoliciesTab'
-import { SendPage, type SendFailure, type SendOutcome } from './SendPage'
+import { SendDialog, type SendFailure, type SendOutcome } from './SendDialog'
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER, ROUND_LABEL, type ChangeRound } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
@@ -205,7 +208,7 @@ function TimeTrackingPrototype() {
     status: NoticeStatus
   } | null>(null)
   const [shiftPage, setShiftPage] = useState<ShiftPageMode | null>(null)
-  const [sendView, setSendView] = useState<'review' | 'receipt' | null>(null)
+  const [isSendOpen, setIsSendOpen] = useState(false)
   const [sending, setSending] = useState<{ key: string; startedAt: string } | null>(null)
   const [sendFailures, setSendFailures] = useState<Record<string, SendFailure>>({})
   const [dismissedDates, setDismissedDates] = useState<Set<string>>(new Set())
@@ -396,7 +399,7 @@ function TimeTrackingPrototype() {
   useEffect(() => {
     if (sendWhenLoaded && shifts.kind === 'done') {
       setSendWhenLoaded(false)
-      setSendView('review')
+      setIsSendOpen(true)
     }
   }, [sendWhenLoaded, shifts])
 
@@ -498,6 +501,7 @@ function TimeTrackingPrototype() {
     null,
   )
   const changedCount = periodShifts.filter(s => reviewState(s) === 'changed').length
+  const hasSendable = periodShifts.some(willSync)
   const sendKey = period ? `${scheduleUuid}:${periodKey(period)}` : ''
   const sendingHere = sending?.key === sendKey ? sending : null
   const sent =
@@ -514,7 +518,7 @@ function TimeTrackingPrototype() {
 
   const startSend = (included: ApiShift[], request: Preview, outcome: SendOutcome) => {
     const key = sendKey
-    setSendView('receipt')
+    setIsSendOpen(false)
     if (period?.payroll?.processed) {
       setSendFailure(key, { kind: 'processed' })
       return
@@ -642,6 +646,22 @@ function TimeTrackingPrototype() {
     .map(person => ({ person, shifts: byPerson.get(person.employee.uuid)! }))
     .sort((a, b) => a.person.name.localeCompare(b.person.name))
 
+  const failure = sendFailures[sendKey] ?? null
+  const payrollName = period?.payroll
+    ? `${formatShortDate(period.payroll.check_date)} payroll`
+    : 'payroll'
+  const retryButton = (
+    <Components.Button
+      variant="secondary"
+      onClick={() => {
+        setSendFailure(sendKey, null)
+        setIsSendOpen(true)
+      }}
+    >
+      Try again
+    </Components.Button>
+  )
+
   const focused = focusPerson ? personRows.find(r => r.person.employee.uuid === focusPerson) : null
 
   const review = data && (
@@ -689,9 +709,9 @@ function TimeTrackingPrototype() {
             Add shift
           </Components.Button>
           <Components.Button
-            isDisabled={!period || shifts.kind !== 'done'}
+            isDisabled={!period || shifts.kind !== 'done' || Boolean(sendingHere) || !hasSendable}
             onClick={() => {
-              setSendView('review')
+              setIsSendOpen(true)
             }}
           >
             {lastSyncAt ? 'Update payroll' : 'Send to payroll'}
@@ -710,56 +730,96 @@ function TimeTrackingPrototype() {
           {!lastSyncAt && !sendingHere && ' Nothing has been sent yet.'}
         </Components.Alert>
       )}
-      {!sendingHere && sendFailures[sendKey] && (
+      {sendingHere && (
+        <Components.Alert status="info" label="Sending hours to payroll…">
+          <Flex alignItems="center" gap={8}>
+            <Components.LoadingSpinner size="sm" style="inline" />
+            <span>
+              Started {formatDateTime(sendingHere.startedAt)}. Payroll confirms in the background,
+              so you can keep working. <GapPin id="sync-limits" /> <ChangePin id="send-dialog" />
+            </span>
+          </Flex>
+        </Components.Alert>
+      )}
+      {!sendingHere && failure?.kind === 'processed' && (
+        <Components.Alert status="error" label={`The ${payrollName} was already processed`}>
+          There’s no open payroll for these dates, so their hours can’t change.{' '}
+          <GapPin id="sync-limits" />
+        </Components.Alert>
+      )}
+      {!sendingHere && failure?.kind === 'error' && (
+        <Components.Alert status="error" label="The send failed" action={retryButton}>
+          Payroll didn’t accept any hours, so nothing changed. If it keeps failing, contact support.
+          What the API reports for a failed send isn’t defined yet. <GapPin id="which-timesheets" />{' '}
+          <ChangePin id="send-outcomes" />
+        </Components.Alert>
+      )}
+      {!sendingHere && failure?.kind === 'partial' && (
         <Components.Alert
           status="error"
-          label={
-            sendFailures[sendKey].kind === 'partial'
-              ? 'Some hours didn’t reach payroll'
-              : 'The last send didn’t go through'
-          }
+          label={`${failure.names.length} ${failure.names.length === 1 ? 'person wasn’t' : 'people weren’t'} sent`}
+          action={retryButton}
+        >
+          {failure.shifts} {failure.shifts === 1 ? 'shift' : 'shifts'} for{' '}
+          {failure.names.join(', ')} didn’t reach payroll. Everyone else was sent. What the API
+          reports for a partial send isn’t defined yet. <GapPin id="which-timesheets" />{' '}
+          <ChangePin id="send-outcomes" />
+        </Components.Alert>
+      )}
+      {!sendingHere && failure?.kind !== 'error' && failure?.kind !== 'processed' && lastSyncAt && (
+        <Components.Alert
+          status="success"
+          label={`Sent to the ${payrollName} ${formatDateTime(lastSyncAt)}`}
           action={
             <Components.Button
               variant="secondary"
               onClick={() => {
-                setSendView('receipt')
+                setTab('payroll')
               }}
             >
-              View details
+              See it in Run payroll
             </Components.Button>
           }
         >
-          <ChangePin id="send-outcomes" />
+          {sent.sent.length} shifts · {sent.rows.length} people · {formatHours(sent.hours)} hours.
+          Each shift’s Payroll column shows whether it went. <GapPin id="which-timesheets" />{' '}
+          <ChangePin id="send-dialog" />
         </Components.Alert>
       )}
-      {sendingHere ? (
-        <Components.Alert status="info" label="Sending hours to payroll…">
-          Started {formatDateTime(sendingHere.startedAt)}. You can keep working.{' '}
-          <GapPin id="sync-limits" /> <ChangePin id="receipt" />
+      {!sendingHere && changedCount > 0 && (
+        <Components.Alert
+          status="warning"
+          label={`${changedCount} sent ${changedCount === 1 ? 'shift has' : 'shifts have'} changed since`}
+          action={
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                setIsSendOpen(true)
+              }}
+            >
+              Update payroll
+            </Components.Button>
+          }
+        >
+          Payroll keeps the old hours until you update it. Spotted by comparing each shift’s
+          updated_at with its synced_to_payroll_at. <GapPin id="which-timesheets" />
         </Components.Alert>
-      ) : (
-        lastSyncAt &&
-        period && (
-          <Components.Alert
-            status="success"
-            label={`Last sent ${formatDateTime(lastSyncAt)} to the ${period.payroll ? `${formatShortDate(period.payroll.check_date)} payroll` : 'payroll'}`}
-            action={
-              <Components.Button
-                variant="secondary"
-                onClick={() => {
-                  setSendView('receipt')
-                }}
-              >
-                View what was sent
-              </Components.Button>
-            }
-          >
-            {sent.sent.length} shifts · {sent.rows.length} people · {formatHours(sent.hours)} hours
-            · {formatHours(sent.overtime)} estimated overtime <GapPin id="rules-applied" />
-            {changedCount > 0 && ` · ${changedCount} changed since`}{' '}
-            <GapPin id="which-timesheets" /> <ChangePin id="receipt" />
-          </Components.Alert>
-        )
+      )}
+      {period && schedule && (
+        <SendDialog
+          key={sendKey}
+          isOpen={isSendOpen}
+          companyId={companyId}
+          schedule={schedule}
+          period={period}
+          people={schedulePeople}
+          shifts={periodShifts}
+          isUpdate={Boolean(lastSyncAt)}
+          onClose={() => {
+            setIsSendOpen(false)
+          }}
+          onSend={startSend}
+        />
       )}
 
       {period?.payroll?.processed && (
@@ -996,36 +1056,6 @@ function TimeTrackingPrototype() {
                             )
                           }}
                         />
-                      ) : sendView && period && schedule ? (
-                        <SendPage
-                          key={sendKey}
-                          companyId={companyId}
-                          schedule={schedule}
-                          period={period}
-                          people={schedulePeople}
-                          shifts={periodShifts}
-                          phase={sendView === 'receipt' ? 'result' : 'review'}
-                          isUpdate={Boolean(lastSyncAt)}
-                          snapshot={sendSnapshots[sendKey] ?? null}
-                          sendingSince={sendingHere?.startedAt ?? null}
-                          failure={sendFailures[sendKey] ?? null}
-                          onClose={() => {
-                            setSendView(null)
-                          }}
-                          onReview={personUuid => {
-                            setSendView(null)
-                            setFocusPerson(personUuid)
-                          }}
-                          onSend={startSend}
-                          onSendAgain={() => {
-                            setSendFailure(sendKey, null)
-                            setSendView('review')
-                          }}
-                          onRunPayroll={() => {
-                            setSendView(null)
-                            setTab('payroll')
-                          }}
-                        />
                       ) : (
                         review
                       ),
@@ -1151,7 +1181,7 @@ function TimeTrackingPrototype() {
                 Each pink badge marks something that changed after a review, newest first. Badges
                 inside pages show when you open them.
               </p>
-              {(['nov-20', 'nov-19'] satisfies ChangeRound[]).map(round => {
+              {(['nov-24', 'nov-20', 'nov-19'] satisfies ChangeRound[]).map(round => {
                 const changes = CHANGES.filter(
                   change => change.round === round && change.tabs.includes(tab),
                 )
@@ -1598,11 +1628,14 @@ function ShiftsTable({
             issue => issue.rule.break_type === type,
           )
           if (issues.length === 0) return <Components.Badge status="success">OK</Components.Badge>
-          const missed = issues.filter(issue => issue.kind === 'missing').length
           return (
-            <Components.Badge status="warning">
-              {missed > 0 ? `Missed (${missed})` : `Short (${issues.length})`}
-            </Components.Badge>
+            <span className={styles.badgeGroup}>
+              {breakIssueCounts(issues).map(([kind, count]) => (
+                <Components.Badge key={kind} status="warning">
+                  {BREAK_ISSUE_LABEL[kind]} ({count})
+                </Components.Badge>
+              ))}
+            </span>
           )
         },
       })),
@@ -1748,13 +1781,13 @@ function ShiftsTable({
       {policy && shiftsWithIssues.length > 0 && (
         <Components.Alert
           status="warning"
-          label={`${shiftsWithIssues.length} of these shifts are missing a break or have a short one`}
+          label={`${shiftsWithIssues.length} of these shifts have a missed, delayed or short break`}
         >
           {policy.pay_premium
-            ? `${policy.name} pays a premium for each missed or short break, so these shifts earn extra pay. Fix the breaks if they were actually taken.`
+            ? `${policy.name} pays a premium for each missed, delayed or short break, so these shifts earn extra pay. Fix the breaks if they were actually taken.`
             : `${policy.name} doesn’t pay a premium, so this doesn’t change pay. Fix the breaks if they were actually taken.`}{' '}
           The page checks this against the policy’s rules; the API doesn’t flag it.{' '}
-          <ChangePin id="missed-breaks" />
+          <ChangePin id="missed-breaks" /> <ChangePin id="delayed-breaks" />
         </Components.Alert>
       )}
       <div className={styles.reviewTable}>

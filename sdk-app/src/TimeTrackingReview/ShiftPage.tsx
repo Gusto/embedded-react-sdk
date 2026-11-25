@@ -32,6 +32,8 @@ import { nowIso, simId, type Preview } from './preview'
 import { Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+const LONG_SHIFT_MINUTES = 16 * 60
+
 export type ShiftPageMode =
   { kind: 'add'; personUuid: string | null } | { kind: 'edit'; shift: ApiShift; clockOut: boolean }
 
@@ -148,17 +150,20 @@ export function ShiftPage({
       ? 'Enter a start date and time.'
       : Date.parse(start) > Date.now()
         ? 'Can’t be in the future.'
-        : clash
-          ? `Overlaps their ${formatTime(clash.shift_started_at, clash.time_zone)} – ${clash.shift_ended_at ? formatTime(clash.shift_ended_at, clash.time_zone) : 'now'} shift.`
-          : undefined,
+        : undefined,
     end: !end
       ? 'Enter an end date and time.'
       : start && end <= start
-        ? 'Must be after the start.'
+        ? times.endDate === times.startDate
+          ? 'Must be after the start. If it ended the next day, change the end date.'
+          : 'Must be after the start.'
         : Date.parse(end) > Date.now()
           ? 'Can’t be in the future.'
           : undefined,
   }
+  const shiftMinutes = start && end && end > start ? minutesBetween(start, end) : 0
+  const isLongShift = shiftMinutes > LONG_SHIFT_MINUTES
+  const endsLaterDay = Boolean(start && end && end > start && times.endDate > times.startDate)
   const breakErrors = start && end ? breakProblems(breaks, start, end) : []
   const hasErrors = Boolean(timeErrors.start || timeErrors.end) || breakErrors.length > 0
 
@@ -424,8 +429,26 @@ export function ShiftPage({
           {existing
             ? `Worked ${workedHours(existing).toFixed(2)} hours${hours !== null && changed ? `, ${hours.toFixed(2)} after this edit` : ''}.`
             : `${(hours ?? 0).toFixed(2)} hours worked.`}
+          {endsLaterDay && ' Ends the next day.'}
           {outsidePeriod && ` This date is outside ${formatPeriod(period)}.`}
         </Components.Text>
+        {clash && (
+          <Components.Alert status="warning" label="This overlaps another shift">
+            It overlaps their {formatTime(clash.shift_started_at, clash.time_zone)} –{' '}
+            {clash.shift_ended_at ? formatTime(clash.shift_ended_at, clash.time_zone) : 'now'}{' '}
+            shift. You can still save it, since clock-in apps sometimes send overlapping shifts;
+            check one of them isn’t a duplicate. <ChangePin id="overnight-shifts" />
+          </Components.Alert>
+        )}
+        {isLongShift && (
+          <Components.Alert
+            status="info"
+            label={`This shift is ${(shiftMinutes / 60).toFixed(1)} hours long`}
+          >
+            Long and overnight shifts save as they are. If it looks like a missed clock-out, fix the
+            end time. <ChangePin id="overnight-shifts" />
+          </Components.Alert>
+        )}
       </div>
 
       <div className={styles.formSection}>

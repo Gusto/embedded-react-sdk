@@ -16,10 +16,17 @@ export type ChangeId =
   | 'receipt-totals'
   | 'row-actions-text'
   | 'one-send-page'
+  | 'send-dialog'
+  | 'send-warning'
+  | 'people-policies'
+  | 'eligible-only'
+  | 'delayed-breaks'
+  | 'overnight-shifts'
 
-export type ChangeRound = 'nov-19' | 'nov-20'
+export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
 
 export const ROUND_LABEL: Record<ChangeRound, string> = {
+  'nov-24': 'Since the Nov 24 review',
   'nov-20': 'Since the Nov 20 call',
   'nov-19': 'Since the Nov 19 review',
 }
@@ -180,6 +187,65 @@ export const CHANGES: Change[] = [
       'Send, here’s the thing, send it. And then when you’re done, one more time, a receipt of what has been sent. Maybe this is overkill.',
     what: 'Send to payroll is now a single page. It lists what will be sent by person and type of hours, then after Send the same page waits on the sync and shows the result in place. The separate receipt page is gone; “View what was sent” on Timesheets opens this page in its result state.',
     where: 'Timesheets › Send to payroll, and View what was sent.',
+  },
+  {
+    id: 'send-dialog',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Sending is a confirmation, not a page',
+    feedback:
+      'Simplify the send: we don’t need a “what we’ll send” and a “what we sent” table on top of the timesheet.',
+    what: 'Send to payroll opens a short confirmation (the SDK Dialog, as used for cancelling a payroll) with the hours, shifts and people going to which payroll. After Send it closes; Timesheets shows the progress and then the result inline: sent, partly sent with Try again, or failed. Each shift’s Payroll column shows what went. This replaces the send page and “View what was sent”.',
+    where: 'Timesheets › Send to payroll, and the alerts above the table.',
+  },
+  {
+    id: 'send-warning',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Warn about shifts left out before sending',
+    feedback:
+      'Warn people when pending, rejected or still clocked-in shifts won’t be part of the payroll calculation.',
+    what: 'When any shift won’t be sent, the confirmation shows a warning with the count by reason (pending, rejected, still clocked in) and who they belong to. The buttons become “Review shifts first” and “Send to payroll anyway”. This follows how Payroll review shows blockers inline above Submit.',
+    where: 'Timesheets › Send to payroll.',
+  },
+  {
+    id: 'people-policies',
+    round: 'nov-24',
+    tabs: ['policies'],
+    title: 'Policies by person: move people between policies',
+    feedback:
+      'Flip the assignment view to people first, show each person’s current policies, and use the Time Off bulk selection pattern.',
+    what: 'A People section on Policies lists every eligible person with their current overtime and break policy. Change one person from their row, or select several and move them in one go. Overtime has no “none” option since the API can only move people, not remove them. Built on the same searchable, selectable table as Time Off’s add employees.',
+    where: 'Policies › People.',
+  },
+  {
+    id: 'eligible-only',
+    round: 'nov-24',
+    tabs: ['policies'],
+    title: 'Only eligible people are listed',
+    feedback:
+      'Drop the eligibility column; the employees API can filter by FLSA status so only hourly and salaried non-exempt people show.',
+    what: 'People who can’t be on a policy aren’t listed at all, so the Eligibility column is gone. For now the page filters by FLSA status itself, pending the API filter.',
+    where: 'Policies › People, and Assign people on each policy.',
+  },
+  {
+    id: 'delayed-breaks',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Delayed breaks, and more than one problem per break',
+    feedback: 'Breaks can be missed, delayed or shortened, and more than one at once.',
+    what: 'Break columns can show Delayed when a break starts after the policy’s latest start, alongside Missed and Short. A shift can show several at once.',
+    where: 'A person’s shifts › break columns; Edit shift.',
+  },
+  {
+    id: 'overnight-shifts',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Overnight and long shifts aren’t blocked',
+    feedback:
+      'Partners’ clock-in apps send messy data, so handle overnight shifts gracefully instead of strict rules.',
+    what: 'Add and Edit shift only require the end to be after the start; if the end time is earlier on the same day, the error suggests changing the end date. Overnight shifts say “Ends the next day”. Shifts over 16 hours get a note, and an overlap with another shift is a warning instead of an error, so messy clock-in data can still be fixed and saved.',
+    where: 'Add shift and Edit shift.',
   },
 ]
 

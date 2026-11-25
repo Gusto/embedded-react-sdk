@@ -18,6 +18,7 @@ import {
 } from './model'
 import { ApproveIcon, ChangePin, GapPin, PendingIcon, PlusIcon, SubPage, type Crumb } from './parts'
 import { useSaveErrors } from './useSaveErrors'
+import { PeoplePolicies, type PolicyMove } from './PeoplePolicies'
 import { simId, type Notify, type Preview, type PreviewRequest } from './preview'
 import styles from './TimeTrackingReview.module.scss'
 import TrashIcon from '@/assets/icons/trashcan.svg?react'
@@ -197,6 +198,34 @@ export function PoliciesTab({
         : { ...current, breakPolicies: reassign(breakPolicies) },
     )
     onNotify(`${uuids.length} people are on ${policy.name}.`, preview)
+  }
+
+  const movePeople = (moves: PolicyMove[], preview: Preview) => {
+    const reassign = <T extends ApiOvertimePolicy | ApiBreakPolicy>(
+      list: T[],
+      targetOf: (move: PolicyMove) => string | null | undefined,
+    ) =>
+      list.map(policy => {
+        const leaving = new Set(
+          moves.filter(move => targetOf(move) !== undefined).map(move => move.uuid),
+        )
+        const joining = moves.filter(move => targetOf(move) === policy.uuid).map(move => move.uuid)
+        return {
+          ...policy,
+          assigned_employees: [
+            ...policy.assigned_employees.filter(assigned => !leaving.has(assigned.uuid)),
+            ...joining.map(uuid => ({ uuid })),
+          ],
+        }
+      })
+    onPoliciesChange({
+      overtimePolicies: reassign(overtimePolicies, move => move.overtimePolicy),
+      breakPolicies: reassign(breakPolicies, move => move.breakPolicy),
+    })
+    onNotify(
+      `Policies changed for ${moves.length} ${moves.length === 1 ? 'person' : 'people'}.`,
+      preview,
+    )
   }
 
   const deletePolicy = (kind: PolicyKind, policy: ApiOvertimePolicy | ApiBreakPolicy) => {
@@ -431,6 +460,26 @@ export function PoliciesTab({
           {uncovered.map(p => p.name).join(', ')} <GapPin id="state-reminders" />
         </Components.Alert>
       )}
+
+      <Components.Box
+        header={
+          <Components.BoxHeader
+            title={
+              <>
+                People <ChangePin id="people-policies" />
+              </>
+            }
+          />
+        }
+      >
+        <PeoplePolicies
+          people={people}
+          overtimePolicies={overtimePolicies}
+          breakPolicies={breakPolicies}
+          breakToday={breakToday}
+          onSave={movePeople}
+        />
+      </Components.Box>
 
       <Components.Box
         header={
@@ -883,8 +932,6 @@ function BreakForm({
 
 interface AssignRow {
   person: Person
-  eligible: boolean
-  label: string
   note: string
   locked: boolean
   isFixed: boolean
@@ -911,19 +958,18 @@ function AssignPeople({
   const initial = useMemo(() => new Set(policy.assigned_employees.map(a => a.uuid)), [policy])
   const [selected, setSelected] = useState<Set<string>>(initial)
 
-  const rows: AssignRow[] = [...people]
+  const rows: AssignRow[] = people
+    .filter(person => eligibility(person.employee).eligible)
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(person => {
-      const elig = eligibility(person.employee)
       const uuid = person.employee.uuid
       const locked = kind === 'overtime' && initial.has(uuid)
       const current = kind === 'overtime' ? person.overtimePolicy?.name : person.breakPolicy?.name
       let note = current && current !== policy.name ? `On ${current}` : ''
-      if (!elig.eligible) note = elig.reason ?? ''
-      else if (kind === 'break' && breakToday.has(uuid))
+      if (kind === 'break' && breakToday.has(uuid))
         note = 'Took a break today: can’t change until tomorrow'
-      const isFixed = !elig.eligible || locked || (kind === 'break' && breakToday.has(uuid))
-      return { person, eligible: elig.eligible, label: elig.label, note, locked, isFixed }
+      const isFixed = locked || (kind === 'break' && breakToday.has(uuid))
+      return { person, note, locked, isFixed }
     })
 
   const setMembership = (uuid: string, isIn: boolean) => {
@@ -966,15 +1012,7 @@ function AssignPeople({
           )
         },
       },
-      { title: 'Pay type', render: row => row.label },
-      {
-        title: 'Eligibility',
-        render: row => (
-          <Components.Badge status={row.eligible ? 'success' : 'error'}>
-            {row.eligible ? 'Eligible' : 'Not eligible'}
-          </Components.Badge>
-        ),
-      },
+      { title: 'Job', render: row => row.person.title },
       {
         title: 'Note',
         render: row => {
@@ -1021,15 +1059,15 @@ function AssignPeople({
       }
       description={
         kind === 'overtime'
-          ? 'Everyone eligible is on exactly one overtime policy. Adding someone moves them here, and to take someone off, add them to another overtime policy. People who aren’t eligible can’t be added.'
-          : 'Each person can be on one break policy, so adding someone moves them here. People who aren’t eligible can’t be added.'
+          ? 'Everyone eligible is on exactly one overtime policy. Adding someone moves them here, and to take someone off, add them to another overtime policy. Only people who can be on a policy are listed.'
+          : 'Each person can be on one break policy, so adding someone moves them here. Only people who can be on a policy are listed.'
       }
     >
       <div className={styles.assignBar}>
         <Components.Text size="sm" variant="supporting">
           {selected.size} in policy · {toAssign.length} to add
           {kind === 'break' && ` · ${toRemove.length} to remove`}. Changes apply when you save.{' '}
-          <GapPin id="eligibility" />
+          <GapPin id="eligibility" /> <ChangePin id="eligible-only" />
         </Components.Text>
         <div className={styles.assignControls}>
           <Components.Button
@@ -1043,7 +1081,7 @@ function AssignPeople({
               )
             }}
           >
-            Add all eligible
+            Add everyone
           </Components.Button>
           <Components.Button variant="secondary" onClick={onClose}>
             Cancel

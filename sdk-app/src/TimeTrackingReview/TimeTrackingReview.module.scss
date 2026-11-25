@@ -601,3 +601,41 @@
   display: inline-flex;
   flex-shrink: 0;
 }
+
+.skipList {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+
+.peoplePolicies {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+
+  td:nth-child(2),
+  td:nth-child(3) {
+    white-space: nowrap;
+  }
+}
+
+.bulkMoves {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.bulkMove {
+  width: 16rem;
+}
+
+.policySelect {
+  min-width: 14rem;
+}
+
+.badgeGroup {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+}
