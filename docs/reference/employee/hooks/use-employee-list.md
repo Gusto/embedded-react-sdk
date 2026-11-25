@@ -20,6 +20,9 @@ allowed for its current onboarding state.
 
 ## Remarks
 
+Onboarded employees carry `manage`. Like `edit`, it is omitted when `employeeType` is
+`'terminated'`.
+
 `employeeType` maps to a server-side filter and changes which actions appear on each row:
 `'active'` adds `dismiss` unless the employee already has a termination scheduled for a future
 date, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it to list every employee.
@@ -115,10 +118,16 @@ Ready state of [useEmployeeList](#useemployeelist).
 
 ### EmployeeAction
 
-> **EmployeeAction** = `"edit"` \| `"delete"` \| `"cancel_self_onboarding"` \| `"review"` \| `"dismiss"` \| `"rehire"`
+> **EmployeeAction** = `"edit"` \| `"delete"` \| `"cancel_self_onboarding"` \| `"review"` \| `"dismiss"` \| `"rehire"` \| `"manage"`
 
 Action that may be performed on an employee row, determined by the employee's onboarding state
 and the `employeeType` filter passed to [useEmployeeList](#useemployeelist).
+
+#### Remarks
+
+`manage` marks an employee who has finished onboarding, signaling that the employee is managed
+from their profile rather than through the onboarding steps. Like `edit`, it is omitted when
+`employeeType` is `'terminated'`.
 
 ***
 

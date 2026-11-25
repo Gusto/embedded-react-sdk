@@ -1,4 +1,5 @@
 import { transition, reduce, state } from 'robot3'
+import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import {
   DashboardFlowContextual,
   EmployeeListContextual,
@@ -13,6 +14,10 @@ import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: { employeeId: string }
   [componentEvents.EMPLOYEE_DISMISS]: { employeeId: string }
+  [componentEvents.EMPLOYEE_MANAGEMENT_CONTINUE_ONBOARDING]: {
+    employeeId: string
+    onboardingStatus?: OnboardingStatus
+  }
 }
 
 const backToListHeader: FlowHeaderConfig = {
@@ -30,6 +35,7 @@ const returnToList = reduce(
     component: EmployeeListContextual,
     header: null,
     employeeId: undefined,
+    onboardingStatus: undefined,
   }),
 )
 
@@ -63,6 +69,25 @@ export const employeeListStateMachine = {
           component: TerminationFlowContextual,
           header: backToListHeader,
           employeeId: ev.payload.employeeId,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_CONTINUE_ONBOARDING,
+      'onboard',
+      reduce(
+        (
+          ctx: EmployeeListFlowContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_MANAGEMENT_CONTINUE_ONBOARDING
+          >,
+        ): EmployeeListFlowContextInterface => ({
+          ...ctx,
+          component: OnboardingExecutionFlowContextual,
+          header: backToListHeader,
+          employeeId: ev.payload.employeeId,
+          onboardingStatus: ev.payload.onboardingStatus,
         }),
       ),
     ),

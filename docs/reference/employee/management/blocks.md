@@ -518,8 +518,16 @@ Props for [DocumentsCard](#documentscard).
 ## EmployeeList
 
 Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
-tabs, with per-row actions tailored to each tab (edit, delete, dismiss). Dismissed rows have no
-available actions, so no menu is rendered for them.
+tabs, with per-row actions tailored to each tab. Dismissed rows have no available actions, so
+no menu is rendered for them.
+
+### Remarks
+
+Employees who have finished onboarding offer "Edit employee". Employees still onboarding offer
+the same actions as [the onboarding employee list](../onboarding/blocks.md#employeelist):
+"Continue onboarding" (labeled "Review employee" while the employee is awaiting admin review),
+"Review employee" once the employee has finished self-onboarding, "Cancel self-onboarding", and
+"Delete employee". Cancel self-onboarding and delete each ask for confirmation first.
 
 <br />
 
@@ -545,7 +553,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/create` | Fired when the user clicks "Add employee". | — |
-| `employee/update` | Fired when the user selects "Edit" on a row. | `{ employeeId: string }` |
+| `employee/update` | Fired when the user selects "Edit employee" on an employee who has finished onboarding. | `{ employeeId: string }` |
+| `employee/management/continueOnboarding` | Fired when the user selects "Continue onboarding" or "Review employee" on an employee who hasn't finished onboarding. When a review starts, fired after `employee/onboardingStatus/updated`. | `{ employeeId: string, onboardingStatus?: OnboardingStatus }` |
+| `employee/onboardingStatus/updated` | Fired after "Review employee" moves an employee into admin review, or after "Cancel self-onboarding" is confirmed. | The updated `EmployeeOnboardingStatus` record |
 | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
 | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
 

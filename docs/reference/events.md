@@ -248,6 +248,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED` | `"employee/management/compensation/editForm/cancelled"` |
 | `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED` | `"employee/management/compensation/editForm/submitted"` |
 | `EMPLOYEE_MANAGEMENT_COMPENSATION_HISTORY_CLOSED` | `"employee/management/compensation/history/closed"` |
+| `EMPLOYEE_MANAGEMENT_CONTINUE_ONBOARDING` | `"employee/management/continueOnboarding"` |
 | `EMPLOYEE_MANAGEMENT_DEDUCTIONS_ALERT_DISMISSED` | `"employee/management/deductions/alertDismissed"` |
 | `EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED` | `"employee/management/deductions/card/addRequested"` |
 | `EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED` | `"employee/management/deductions/card/deleted"` |

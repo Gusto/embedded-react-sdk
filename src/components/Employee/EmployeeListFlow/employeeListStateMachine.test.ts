@@ -72,4 +72,28 @@ describe('employeeListStateMachine', () => {
     expect(service.context.isSelfOnboardingEnabled).toBe(false)
     expect(service.context.withEmployeeI9).toBe(true)
   })
+
+  it('opens the onboarding steps for the employee on EMPLOYEE_MANAGEMENT_CONTINUE_ONBOARDING', () => {
+    const service = createService('list')
+    send(service, componentEvents.EMPLOYEE_MANAGEMENT_CONTINUE_ONBOARDING, {
+      employeeId: 'employee-123',
+      onboardingStatus: 'self_onboarding_awaiting_admin_review',
+    })
+    expect(service.machine.current).toBe('onboard')
+    expect(service.context).toMatchObject({
+      employeeId: 'employee-123',
+      onboardingStatus: 'self_onboarding_awaiting_admin_review',
+    })
+  })
+
+  it('clears the selected employee when returning to the list from the onboarding steps', () => {
+    const service = createService('onboard', {
+      employeeId: 'employee-123',
+      onboardingStatus: 'self_onboarding_awaiting_admin_review',
+    })
+    send(service, componentEvents.EMPLOYEE_RETURN_TO_LIST)
+    expect(service.machine.current).toBe('list')
+    expect(service.context.employeeId).toBeUndefined()
+    expect(service.context.onboardingStatus).toBeUndefined()
+  })
 })

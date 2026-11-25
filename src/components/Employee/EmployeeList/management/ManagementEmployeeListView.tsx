@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import type { UseEmployeeListResult, EmployeeWithActions } from '../shared/useEmployeeList'
 import { DataView, EmptyData, useDataView, VisuallyHidden } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -8,8 +9,11 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { EmployeeOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import EyeSvg from '@/assets/icons/eye.svg?react'
+import XCircleSvg from '@/assets/icons/x-circle.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { formatDateLong, formatDateLongWithYear } from '@/helpers/dateFormatting'
+import { EmployeeOnboardingStatus } from '@/shared/constants'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
@@ -24,6 +28,9 @@ export interface ManagementEmployeeListViewProps extends Pick<
   selectedTab: EmployeeTab
   onTabChange: (tab: EmployeeTab) => void
   onEdit: (employeeId: string) => void
+  onContinueOnboarding: (employeeId: string, onboardingStatus?: OnboardingStatus) => void
+  onReview: (employeeId: string) => Promise<void>
+  onCancelSelfOnboarding: (employeeId: string) => Promise<void>
   onDismiss: (employeeId: string) => void
   onDelete: (employeeId: string) => Promise<void>
   onAddEmployee: () => void
@@ -39,6 +46,9 @@ export function ManagementEmployeeListView({
   isFetching,
   status,
   onEdit,
+  onContinueOnboarding,
+  onReview,
+  onCancelSelfOnboarding,
   onDismiss,
   onDelete,
   onAddEmployee,
@@ -48,6 +58,8 @@ export function ManagementEmployeeListView({
   const { t } = useTranslation('Employee.ManagementEmployeeList')
   const Components = useComponentContext()
   const [employeeToDelete, setEmployeeToDelete] = useState<string | null>(null)
+  const [employeeToCancelSelfOnboarding, setEmployeeToCancelSelfOnboarding] =
+    useState<EmployeeWithActions | null>(null)
 
   const {
     handleNextPage,
@@ -163,7 +175,7 @@ export function ManagementEmployeeListView({
     itemMenu: employee => {
       const menuItems = []
 
-      if (employee.allowedActions.includes('edit')) {
+      if (employee.allowedActions.includes('manage')) {
         menuItems.push({
           label: t('editCta'),
           onClick: () => {
@@ -171,6 +183,51 @@ export function ManagementEmployeeListView({
           },
           icon: <PencilSvg aria-hidden />,
         })
+      } else {
+        if (employee.allowedActions.includes('edit')) {
+          const isAwaitingAdminReview =
+            employee.onboardingStatus ===
+            EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
+
+          menuItems.push({
+            label: isAwaitingAdminReview ? t('reviewCta') : t('continueOnboardingCta'),
+            onClick: () => {
+              onContinueOnboarding(employee.uuid, employee.onboardingStatus ?? undefined)
+            },
+            icon: isAwaitingAdminReview ? <EyeSvg aria-hidden /> : <PencilSvg aria-hidden />,
+          })
+        }
+
+        if (employee.allowedActions.includes('review')) {
+          menuItems.push({
+            label: t('reviewCta'),
+            onClick: () => {
+              void onReview(employee.uuid)
+            },
+            isDisabled: status.isPending,
+            icon: <EyeSvg aria-hidden />,
+          })
+        }
+
+        if (employee.allowedActions.includes('cancel_self_onboarding')) {
+          menuItems.push({
+            label: t('cancelSelfOnboardingCta'),
+            onClick: () => {
+              setEmployeeToCancelSelfOnboarding(employee)
+            },
+            icon: <XCircleSvg aria-hidden />,
+          })
+        }
+
+        if (employee.allowedActions.includes('delete')) {
+          menuItems.push({
+            label: t('cancelCta'),
+            onClick: () => {
+              setEmployeeToDelete(employee.uuid)
+            },
+            icon: <TrashCanSvg aria-hidden />,
+          })
+        }
       }
 
       if (employee.allowedActions.includes('dismiss')) {
@@ -180,16 +237,6 @@ export function ManagementEmployeeListView({
             onDismiss(employee.uuid)
           },
           icon: <TrashCanSvg aria-hidden />,
-        })
-      }
-
-      if (employee.allowedActions.includes('delete')) {
-        menuItems.push({
-          label: t('cancelCta'),
-          onClick: () => {
-            setEmployeeToDelete(employee.uuid)
-          },
-          icon: <PencilSvg aria-hidden />,
         })
       }
 
@@ -276,6 +323,31 @@ export function ManagementEmployeeListView({
         closeActionLabel={t('deleteDialog.cancelCta')}
       >
         {t('deleteDialog.description')}
+      </Components.Dialog>
+
+      <Components.Dialog
+        isOpen={!!employeeToCancelSelfOnboarding}
+        onClose={() => {
+          setEmployeeToCancelSelfOnboarding(null)
+        }}
+        onPrimaryActionClick={async () => {
+          if (employeeToCancelSelfOnboarding) {
+            await onCancelSelfOnboarding(employeeToCancelSelfOnboarding.uuid)
+            setEmployeeToCancelSelfOnboarding(null)
+          }
+        }}
+        isPrimaryActionLoading={status.isPending}
+        isDestructive
+        title={t('cancelSelfOnboardingDialog.title')}
+        primaryActionLabel={t('cancelSelfOnboardingDialog.confirmCta')}
+        closeActionLabel={t('cancelSelfOnboardingDialog.cancelCta')}
+      >
+        {t('cancelSelfOnboardingDialog.description', {
+          name: firstLastName({
+            first_name: employeeToCancelSelfOnboarding?.firstName,
+            last_name: employeeToCancelSelfOnboarding?.lastName,
+          }),
+        })}
       </Components.Dialog>
     </>
   )

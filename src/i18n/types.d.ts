@@ -7181,7 +7181,13 @@ export namespace Translations {
     editCta: string
     /** @defaultValue `"Dismiss employee"` */
     dismissCta: string
-    /** @defaultValue `"Cancel onboarding"` */
+    /** @defaultValue `"Continue onboarding"` */
+    continueOnboardingCta: string
+    /** @defaultValue `"Review employee"` */
+    reviewCta: string
+    /** @defaultValue `"Cancel self-onboarding"` */
+    cancelSelfOnboardingCta: string
+    /** @defaultValue `"Delete employee"` */
     cancelCta: string
     /** @defaultValue `"Employee actions menu"` */
     hamburgerTitle: string
@@ -7208,13 +7214,23 @@ export namespace Translations {
       }
     }
     deleteDialog: {
-      /** @defaultValue `"Cancel employee onboarding?"` */
+      /** @defaultValue `"Delete employee?"` */
       title: string
       /** @defaultValue `"This will permanently delete this employee from your account. This action cannot be undone."` */
       description: string
       /** @defaultValue `"Delete employee"` */
       confirmCta: string
       /** @defaultValue `"Cancel"` */
+      cancelCta: string
+    }
+    cancelSelfOnboardingDialog: {
+      /** @defaultValue `"Cancel self-onboarding?"` */
+      title: string
+      /** @defaultValue `"{{name}} won't be able to finish onboarding on their own. You'll need to finish onboarding for them or send a new invite."` */
+      description: string
+      /** @defaultValue `"Cancel self-onboarding"` */
+      confirmCta: string
+      /** @defaultValue `"Go back"` */
       cancelCta: string
     }
   }

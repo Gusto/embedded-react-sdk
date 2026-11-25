@@ -261,6 +261,40 @@ describe('useEmployeeList', () => {
     })
   })
 
+  describe('manage action', () => {
+    it('adds manage to onboarded employees and leaves it off employees still onboarding', async () => {
+      const { result } = renderHook(
+        () => useEmployeeList({ companyId: 'company-123', employeeType: 'active' }),
+        { wrapper: TestWrapper },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      if (!result.current.isLoading) {
+        const [onboardedEmployee, onboardingEmployee] = result.current.data.employees
+        expect(onboardedEmployee?.allowedActions).toEqual(['edit', 'manage', 'dismiss'])
+        expect(onboardingEmployee?.allowedActions).toEqual(['edit', 'delete', 'dismiss'])
+      }
+    })
+
+    it('leaves manage off onboarded employees in the terminated filter', async () => {
+      const { result } = renderHook(
+        () => useEmployeeList({ companyId: 'company-123', employeeType: 'terminated' }),
+        { wrapper: TestWrapper },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      if (!result.current.isLoading) {
+        expect(result.current.data.employees[0]?.allowedActions).toEqual(['rehire'])
+      }
+    })
+  })
+
   describe('Actions', () => {
     describe('onDelete', () => {
       it('should delete an employee successfully', async () => {
