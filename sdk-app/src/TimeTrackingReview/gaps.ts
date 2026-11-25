@@ -27,6 +27,7 @@ export type GapId =
   | 'status-lock'
   | 'sync-limits'
   | 'table-toolbar'
+  | 'select-icon'
 
 export interface Gap {
   id: GapId
@@ -179,6 +180,17 @@ export const GAPS: Gap[] = [
     needed:
       'Possible SDK enhancement: a DataView toolbar (or companion component) with a default slot and a selection slot at a fixed height, so tables don’t shift when selection changes.',
     here: 'The page builds its own control bar from SDK Buttons and Text, and keeps its height fixed.',
+  },
+  {
+    id: 'select-icon',
+    priority: 'P1',
+    tabs: ['review'],
+    kind: 'sdkComponent',
+    title: 'SDK: Select has no leading icon',
+    details:
+      'Buttons take an icon and TextInput takes adornments, but the SDK Select has no icon or adornment prop, so dropdowns can’t match the buttons beside them.',
+    needed: 'Possible SDK enhancement: a leading icon (or start adornment) prop on Select.',
+    here: 'The pay schedule and period dropdowns place an icon over the Select with CSS and pad its trigger.',
   },
 ]
 

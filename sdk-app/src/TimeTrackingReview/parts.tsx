@@ -14,6 +14,7 @@ export function Banner({ onDismiss, ...props }: AlertProps) {
   if (dismissedLabel === props.label) return null
   return (
     <Components.Alert
+      disableScrollIntoView
       {...props}
       onDismiss={() => {
         setDismissedLabel(props.label)
@@ -119,6 +120,58 @@ function XIcon() {
         strokeLinejoin="round"
       />
     </svg>
+  )
+}
+
+export function CalendarIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
+      <rect x="3" y="4.5" width="14" height="12.5" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M3 8.5H17M7 3V6M13 3V6"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+export function RepeatIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
+      <path
+        d="M4 9V8a3 3 0 0 1 3-3h9M13 2l3 3-3 3M16 11v1a3 3 0 0 1-3 3H4M7 18l-3-3 3-3"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function SendIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
+      <path
+        d="M17 3L9 11M17 3L12 17L9 11M17 3L3 8L9 11"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+/** Puts an icon inside an SDK Select, which has no icon slot of its own. */
+export function IconSelect({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+  return (
+    <div className={styles.iconSelect}>
+      <span className={styles.selectIcon}>{icon}</span>
+      {children}
+    </div>
   )
 }
 

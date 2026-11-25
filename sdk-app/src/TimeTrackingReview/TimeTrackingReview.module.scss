@@ -557,6 +557,26 @@
   margin-top: 12px;
 }
 
+.iconSelect {
+  position: relative;
+}
+
+.selectIcon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  z-index: 1;
+  display: inline-flex;
+  color: var(--g-inputContentColor);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+// Tripled class to outrank the SDK Select trigger padding.
+.iconSelect.iconSelect.iconSelect :global(.react-aria-Button) {
+  padding-left: 2.25rem;
+}
+
 .controlFilters {
   display: flex;
   align-items: center;

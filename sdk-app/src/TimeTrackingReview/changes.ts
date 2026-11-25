@@ -34,6 +34,7 @@ export type ChangeId =
   | 'steady-layout'
   | 'control-bar'
   | 'send-inline'
+  | 'control-icons'
   | 'layer-order'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
@@ -385,6 +386,16 @@ export const CHANGES: Change[] = [
     feedback:
       'Keep sending simple: show the in-progress banner and update the table’s badges. Block with a banner if unapproved shifts would be left out.',
     what: 'Send to payroll starts right away. If any shifts aren’t approved or are still clocked in, a blocking banner lists them first, with Cancel and Send anyway. While it runs a banner says it’s sending; when it’s done the Payroll column updates and a banner shows the result, with Try again on failure. The prototype’s send result picker sits next to Show gaps.',
+    where: 'Timesheets › control bar and banners.',
+  },
+  {
+    id: 'control-icons',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Icons on every control, and banners that don’t scroll the page',
+    feedback:
+      'Add icons to each control and dropdown so they’re consistent. On send, don’t scroll the user.',
+    what: 'The pay schedule and period dropdowns, Add shift and Send to payroll all have icons. Banners no longer scroll themselves into view, so sending keeps your place on the page.',
     where: 'Timesheets › control bar and banners.',
   },
 ]

@@ -52,11 +52,15 @@ import {
   ApprovalActions,
   ApproveIcon,
   Banner,
+  CalendarIcon,
   ChangePin,
   GapPin,
+  IconSelect,
   PlusIcon,
   PrototypeModal,
+  RepeatIcon,
   RequestBlock,
+  SendIcon,
   Trail,
   UnapproveIcon,
 } from './parts'
@@ -694,30 +698,34 @@ function TimeTrackingPrototype() {
     <div className={styles.toolbarFilters}>
       <ChangePin id="layer-order" />
       <div className={styles.toolbarSchedule}>
-        <Components.Select
-          label="Pay schedule"
-          shouldVisuallyHideLabel
-          placeholder="Choose a pay schedule"
-          value={scheduleUuid}
-          options={(data?.schedules ?? []).map(s => ({ value: s.uuid, label: scheduleLabel(s) }))}
-          onChange={value => {
-            setScheduleUuid(value)
-            setSelectedPeriodKey('')
-          }}
-        />
+        <IconSelect icon={<RepeatIcon />}>
+          <Components.Select
+            label="Pay schedule"
+            shouldVisuallyHideLabel
+            placeholder="Choose a pay schedule"
+            value={scheduleUuid}
+            options={(data?.schedules ?? []).map(s => ({ value: s.uuid, label: scheduleLabel(s) }))}
+            onChange={value => {
+              setScheduleUuid(value)
+              setSelectedPeriodKey('')
+            }}
+          />
+        </IconSelect>
       </div>
       <div className={styles.toolbarPeriod}>
-        <Components.Select
-          label="Pay period"
-          shouldVisuallyHideLabel
-          placeholder="Choose a pay period"
-          value={selectedPeriodKey}
-          options={schedulePeriods.map(p => ({
-            value: periodKey(p),
-            label: `${formatPeriod(p)}${p.payroll?.processed ? ' · processed' : ''}`,
-          }))}
-          onChange={setSelectedPeriodKey}
-        />
+        <IconSelect icon={<CalendarIcon />}>
+          <Components.Select
+            label="Pay period"
+            shouldVisuallyHideLabel
+            placeholder="Choose a pay period"
+            value={selectedPeriodKey}
+            options={schedulePeriods.map(p => ({
+              value: periodKey(p),
+              label: `${formatPeriod(p)}${p.payroll?.processed ? ' · processed' : ''}`,
+            }))}
+            onChange={setSelectedPeriodKey}
+          />
+        </IconSelect>
       </div>
     </div>
   )
@@ -745,6 +753,7 @@ function TimeTrackingPrototype() {
           confirmingSend ||
           !hasSendable
         }
+        icon={<SendIcon />}
         onClick={requestSend}
       >
         {lastSyncAt ? 'Update payroll' : 'Send to payroll'}
@@ -777,6 +786,7 @@ function TimeTrackingPrototype() {
       {noticeBanner}
       {confirmingSend && (
         <Components.Alert
+          disableScrollIntoView
           status="warning"
           label={`${leftOutCount} ${leftOutCount === 1 ? 'shift won’t' : 'shifts won’t'} be sent`}
           onDismiss={() => {
@@ -1387,7 +1397,8 @@ function ControlBar({
           <>
             <div className={styles.controlFilters}>
               {filters}
-              <GapPin id="table-toolbar" /> <ChangePin id="control-bar" />
+              <GapPin id="table-toolbar" /> <GapPin id="select-icon" />{' '}
+              <ChangePin id="control-bar" />
             </div>
             <div className={styles.controlActions}>{actions}</div>
           </>
