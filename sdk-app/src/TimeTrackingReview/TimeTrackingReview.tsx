@@ -45,7 +45,6 @@ import {
   personAlerts,
 } from './model'
 import { PoliciesTab } from './PoliciesTab'
-import { SendPage, type SendFailure, type SendOutcome, type SendView } from './SendPage'
 import { ShiftPage, type ShiftPageMode } from './ShiftPage'
 import { CHANGES, CHANGE_NUMBER, ROUND_LABEL, type ChangeRound } from './changes'
 import { ChangeContext, GapContext } from './gapContext'
@@ -189,7 +188,9 @@ function TimeTrackingPrototype() {
     status: NoticeStatus
   } | null>(null)
   const [shiftPage, setShiftPage] = useState<ShiftPageMode | null>(null)
-  const [sendView, setSendView] = useState<SendView | null>(null)
+  const [sendOutcome, setSendOutcome] = useState<SendOutcome>('success')
+  const [confirmingSend, setConfirmingSend] = useState(false)
+  const [sendRequests, setSendRequests] = useState<Record<string, Preview>>({})
   const [sending, setSending] = useState<{ key: string; startedAt: string } | null>(null)
   const [sendFailures, setSendFailures] = useState<Record<string, SendFailure>>({})
   const [dismissedDates, setDismissedDates] = useState<Set<string>>(new Set())
@@ -481,18 +482,18 @@ function TimeTrackingPrototype() {
 
   const startSend = (included: ApiShift[], request: Preview, outcome: SendOutcome) => {
     const key = sendKey
-    setSendView('summary')
+    setConfirmingSend(false)
     if (period?.payroll?.processed) {
       setSendFailure(key, { kind: 'processed' })
       return
     }
     setSendFailure(key, null)
+    setSendRequests(prev => ({ ...prev, [key]: request }))
     setSending({ key, startedAt: nowIso() })
     sendTimer.current = window.setTimeout(() => {
       setSending(null)
       if (outcome === 'error') {
         setSendFailure(key, { kind: 'error' })
-        notify('The send to payroll failed. Nothing changed on payroll.', request, 'error')
         return
       }
       const firstPerson = included[0]?.entity_uuid
@@ -510,15 +511,55 @@ function TimeTrackingPrototype() {
       if (failedShifts.length > 0) {
         const name = people.find(p => p.employee.uuid === firstPerson)?.name ?? 'One person'
         setSendFailure(key, { kind: 'partial', names: [name], shifts: failedShifts.length })
-        notify(
-          `Sent ${sentShifts.length} shifts. ${failedShifts.length} for ${name} didn’t reach payroll.`,
-          request,
-          'error',
-        )
         return
       }
-      notify(`Hours for ${included.length} shifts sent to payroll.`, request)
     }, 2500)
+  }
+
+  const leftOut = LEFT_OUT_REASONS.map(({ state, label }) => {
+    const matching = periodShifts.filter(shift => reviewState(shift) === state)
+    return {
+      state,
+      label: label(matching.length),
+      count: matching.length,
+      names: namesList(
+        matching.map(
+          shift =>
+            people.find(p => p.employee.uuid === shift.entity_uuid)?.name ?? shift.entity_uuid,
+        ),
+      ),
+    }
+  }).filter(group => group.count > 0)
+  const leftOutCount = leftOut.reduce((sum, group) => sum + group.count, 0)
+
+  const sendNow = () => {
+    if (!period || !schedule) return
+    startSend(
+      periodShifts.filter(willSync),
+      {
+        title: lastSyncAt ? 'Update payroll' : 'Send to payroll',
+        requests: [
+          {
+            method: 'POST',
+            path: `/v1/companies/${companyId}/time_tracking/payroll_syncs`,
+            body: {
+              pay_schedule_uuid: schedule.uuid,
+              start_date: period.start_date,
+              end_date: period.end_date,
+            },
+            caption: 'Then poll the sync by its UUID until it finishes. The path is a best guess.',
+          },
+        ],
+        gapIds: ['sync-limits', 'which-timesheets'],
+      },
+      sendOutcome,
+    )
+  }
+
+  const requestSend = () => {
+    setSendFailure(sendKey, null)
+    if (leftOutCount > 0) setConfirmingSend(true)
+    else sendNow()
   }
 
   const overlappingProcessed = period
@@ -617,6 +658,38 @@ function TimeTrackingPrototype() {
     ? focused.shifts.filter(shift => breakIssues(shift, focused.person.breakPolicy).length > 0)
         .length
     : 0
+  const sendRequest = sendRequests[sendKey]
+  const viewSendRequest = sendRequest && (
+    <Components.Button
+      variant="secondary"
+      onClick={() => {
+        setPreview(sendRequest)
+      }}
+    >
+      View request
+    </Components.Button>
+  )
+
+  const noticeBanner = notice && (
+    <Banner
+      status={notice.status}
+      label={notice.message}
+      onDismiss={() => {
+        setNotice(null)
+      }}
+      action={
+        <Components.Button
+          variant="secondary"
+          onClick={() => {
+            setPreview(notice.preview)
+          }}
+        >
+          View request
+        </Components.Button>
+      }
+    />
+  )
+
   const filterControls = (
     <div className={styles.toolbarFilters}>
       <ChangePin id="layer-order" />
@@ -665,10 +738,14 @@ function TimeTrackingPrototype() {
         Add shift
       </Components.Button>
       <Components.Button
-        isDisabled={!period || shifts.kind !== 'done' || Boolean(sendingHere) || !hasSendable}
-        onClick={() => {
-          setSendView('review')
-        }}
+        isDisabled={
+          !period ||
+          shifts.kind !== 'done' ||
+          Boolean(sendingHere) ||
+          confirmingSend ||
+          !hasSendable
+        }
+        onClick={requestSend}
       >
         {lastSyncAt ? 'Update payroll' : 'Send to payroll'}
       </Components.Button>
@@ -697,6 +774,37 @@ function TimeTrackingPrototype() {
             ? `${personRows.length} people · ${periodShifts.length} shifts`
             : 'People'}
       </Components.Heading>
+      {noticeBanner}
+      {confirmingSend && (
+        <Components.Alert
+          status="warning"
+          label={`${leftOutCount} ${leftOutCount === 1 ? 'shift won’t' : 'shifts won’t'} be sent`}
+          onDismiss={() => {
+            setConfirmingSend(false)
+          }}
+        >
+          <ul className={styles.skipList}>
+            {leftOut.map(group => (
+              <li key={group.state}>
+                <strong>{group.label}:</strong> {group.names}
+              </li>
+            ))}
+          </ul>
+          Only approved, finished shifts are sent. Hours left out aren’t paid on this payroll unless
+          you approve them and send again. <ChangePin id="send-inline" />
+          <div className={styles.alertActions}>
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                setConfirmingSend(false)
+              }}
+            >
+              Cancel
+            </Components.Button>
+            <Components.Button onClick={sendNow}>Send anyway</Components.Button>
+          </div>
+        </Components.Alert>
+      )}
       {period?.payroll && !dismissedDates.has(sendKey) && (
         <Banner
           status="info"
@@ -710,25 +818,13 @@ function TimeTrackingPrototype() {
         </Banner>
       )}
       {sendingHere && (
-        <Banner
-          status="info"
-          label="Sending hours to payroll…"
-          action={
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                setSendView('summary')
-              }}
-            >
-              View progress
-            </Components.Button>
-          }
-        >
+        <Banner status="info" label="Sending hours to payroll…" action={viewSendRequest}>
           <Flex alignItems="center" gap={8}>
             <Components.LoadingSpinner size="sm" style="inline" />
             <span>
-              Started {formatDateTime(sendingHere.startedAt)}. You can keep working.{' '}
-              <GapPin id="sync-limits" /> <ChangePin id="send-dialog" />
+              Started {formatDateTime(sendingHere.startedAt)}. You can keep working; the Payroll
+              column updates when it’s done. <GapPin id="sync-limits" />{' '}
+              <ChangePin id="send-dialog" />
             </span>
           </Flex>
         </Banner>
@@ -738,20 +834,25 @@ function TimeTrackingPrototype() {
           status="error"
           label={
             failure.kind === 'partial'
-              ? 'Some hours didn’t reach payroll'
-              : 'The last send didn’t go through'
+              ? `${failure.names.join(', ')} wasn’t sent`
+              : failure.kind === 'processed'
+                ? `The ${payrollName} was already processed`
+                : 'The send failed'
           }
           action={
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                setSendView('summary')
-              }}
-            >
-              View send summary
-            </Components.Button>
+            failure.kind === 'processed' ? undefined : (
+              <Components.Button variant="secondary" onClick={requestSend}>
+                Try again
+              </Components.Button>
+            )
           }
         >
+          {failure.kind === 'partial' &&
+            `${failure.shifts} ${failure.shifts === 1 ? 'shift' : 'shifts'} didn’t reach payroll; everyone else was sent. `}
+          {failure.kind === 'processed' &&
+            'There’s no open payroll for these dates, so their hours can’t change. '}
+          {failure.kind === 'error' && 'Payroll didn’t accept any hours, so nothing changed. '}
+          What the API reports for a failed send isn’t defined yet. <GapPin id="which-timesheets" />{' '}
           <ChangePin id="send-outcomes" />
         </Banner>
       )}
@@ -759,16 +860,7 @@ function TimeTrackingPrototype() {
         <Banner
           status="success"
           label={`Sent to the ${payrollName} ${formatDateTime(lastSyncAt)}`}
-          action={
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                setSendView('summary')
-              }}
-            >
-              View send summary
-            </Components.Button>
-          }
+          action={viewSendRequest}
         >
           {sent.sent.length} shifts · {sent.rows.length} people · {formatHours(sent.hours)} hours.{' '}
           <GapPin id="which-timesheets" />
@@ -779,12 +871,7 @@ function TimeTrackingPrototype() {
           status="warning"
           label={`${changedCount} sent ${changedCount === 1 ? 'shift has' : 'shifts have'} changed since`}
           action={
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                setSendView('review')
-              }}
-            >
+            <Components.Button variant="secondary" onClick={requestSend}>
               Update payroll
             </Components.Button>
           }
@@ -909,6 +996,18 @@ function TimeTrackingPrototype() {
                 </Components.Text>
               </Flex>
               <div className={styles.overlayToggle}>
+                <div className={styles.simulate}>
+                  <Components.Select
+                    label="Prototype only: send result"
+                    shouldVisuallyHideLabel
+                    placeholder="Send result"
+                    value={sendOutcome}
+                    options={OUTCOME_OPTIONS}
+                    onChange={value => {
+                      if (isOutcome(value)) setSendOutcome(value)
+                    }}
+                  />
+                </div>
                 <Components.Button
                   variant={gapsOn ? 'secondary' : 'tertiary'}
                   onClick={() => {
@@ -959,26 +1058,6 @@ function TimeTrackingPrototype() {
               </Flex>
             )}
 
-            {notice && (
-              <Banner
-                status={notice.status}
-                label={notice.message}
-                onDismiss={() => {
-                  setNotice(null)
-                }}
-                action={
-                  <Components.Button
-                    variant="secondary"
-                    onClick={() => {
-                      setPreview(notice.preview)
-                    }}
-                  >
-                    View request
-                  </Components.Button>
-                }
-              />
-            )}
-
             {data && (
               <div className={styles.pageTabs}>
                 <Components.Tabs
@@ -991,88 +1070,68 @@ function TimeTrackingPrototype() {
                       label: 'Timesheets',
                       content:
                         shiftPage && period ? (
-                          <ShiftPage
-                            key={shiftPage.kind === 'edit' ? shiftPage.shift.uuid : 'new'}
-                            mode={shiftPage}
-                            companyId={companyId}
-                            people={schedulePeople}
-                            period={period}
-                            shifts={periodShifts}
-                            trail={[
-                              {
-                                label: 'Timesheets',
-                                onClick: () => {
-                                  setShiftPage(null)
-                                  setFocusPerson(null)
+                          <TabContent notice={noticeBanner}>
+                            <ShiftPage
+                              key={shiftPage.kind === 'edit' ? shiftPage.shift.uuid : 'new'}
+                              mode={shiftPage}
+                              companyId={companyId}
+                              people={schedulePeople}
+                              period={period}
+                              shifts={periodShifts}
+                              trail={[
+                                {
+                                  label: 'Timesheets',
+                                  onClick: () => {
+                                    setShiftPage(null)
+                                    setFocusPerson(null)
+                                  },
                                 },
-                              },
-                              ...(focused
-                                ? [
-                                    {
-                                      label: focused.person.name,
-                                      onClick: () => {
-                                        setShiftPage(null)
+                                ...(focused
+                                  ? [
+                                      {
+                                        label: focused.person.name,
+                                        onClick: () => {
+                                          setShiftPage(null)
+                                        },
                                       },
-                                    },
-                                  ]
-                                : []),
-                            ]}
-                            onBack={() => {
-                              setShiftPage(null)
-                            }}
-                            onSave={(saved, request) => {
-                              setShiftPage(null)
-                              if (shiftPage.kind === 'add') {
-                                setSim(prev => ({ ...prev, added: [...prev.added, saved] }))
+                                    ]
+                                  : []),
+                              ]}
+                              onBack={() => {
+                                setShiftPage(null)
+                              }}
+                              onSave={(saved, request) => {
+                                setShiftPage(null)
+                                if (shiftPage.kind === 'add') {
+                                  setSim(prev => ({ ...prev, added: [...prev.added, saved] }))
+                                  notify(
+                                    saved.status === 'approved'
+                                      ? 'Shift added as approved. It goes to payroll the next time you send this period.'
+                                      : 'Shift added, not approved yet.',
+                                    request,
+                                  )
+                                  return
+                                }
+                                putShifts([saved])
                                 notify(
-                                  saved.status === 'approved'
-                                    ? 'Shift added as approved. It goes to payroll the next time you send this period.'
-                                    : 'Shift added, not approved yet.',
+                                  saved.synced_to_payroll_at
+                                    ? 'Saved. Still approved, but not on payroll until you update this period.'
+                                    : 'Shift saved.',
                                   request,
                                 )
-                                return
-                              }
-                              putShifts([saved])
-                              notify(
-                                saved.synced_to_payroll_at
-                                  ? 'Saved. Still approved, but not on payroll until you update this period.'
-                                  : 'Shift saved.',
-                                request,
-                              )
-                            }}
-                            onDelete={(deleted, request) => {
-                              setShiftPage(null)
-                              removeShift(deleted.uuid)
-                              notify(
-                                deleted.synced_to_payroll_at
-                                  ? 'Shift deleted. Its hours stay on payroll until you update this period.'
-                                  : 'Shift deleted.',
-                                request,
-                              )
-                            }}
-                          />
-                        ) : sendView && period && schedule ? (
-                          <SendPage
-                            key={sendKey}
-                            view={sendView}
-                            companyId={companyId}
-                            schedule={schedule}
-                            period={period}
-                            people={schedulePeople}
-                            shifts={periodShifts}
-                            isUpdate={Boolean(lastSyncAt)}
-                            sendingSince={sendingHere?.startedAt ?? null}
-                            failure={failure}
-                            sent={sent}
-                            onClose={() => {
-                              setSendView(null)
-                            }}
-                            onSend={startSend}
-                            onSendAgain={() => {
-                              setSendFailure(sendKey, null)
-                              setSendView('review')
-                            }}
-                          />
+                              }}
+                              onDelete={(deleted, request) => {
+                                setShiftPage(null)
+                                removeShift(deleted.uuid)
+                                notify(
+                                  deleted.synced_to_payroll_at
+                                    ? 'Shift deleted. Its hours stay on payroll until you update this period.'
+                                    : 'Shift deleted.',
+                                  request,
+                                )
+                              }}
+                            />
+                          </TabContent>
                         ) : (
                           review
                         ),
@@ -1081,39 +1140,43 @@ function TimeTrackingPrototype() {
                       id: 'policies',
                       label: 'Policies',
                       content: (
-                        <PoliciesTab
-                          view="policies"
-                          onOpenPeople={() => {
-                            setTab('people')
-                          }}
-                          companyId={companyId}
-                          people={people}
-                          schedules={data.schedules}
-                          overtimePolicies={data.overtimePolicies}
-                          breakPolicies={data.breakPolicies}
-                          onPoliciesChange={(next: PolicyData) => {
-                            updateData(current => ({ ...current, ...next }))
-                          }}
-                          onNotify={notify}
-                        />
+                        <TabContent notice={noticeBanner}>
+                          <PoliciesTab
+                            view="policies"
+                            onOpenPeople={() => {
+                              setTab('people')
+                            }}
+                            companyId={companyId}
+                            people={people}
+                            schedules={data.schedules}
+                            overtimePolicies={data.overtimePolicies}
+                            breakPolicies={data.breakPolicies}
+                            onPoliciesChange={(next: PolicyData) => {
+                              updateData(current => ({ ...current, ...next }))
+                            }}
+                            onNotify={notify}
+                          />
+                        </TabContent>
                       ),
                     },
                     {
                       id: 'people',
                       label: 'People',
                       content: (
-                        <PoliciesTab
-                          view="people"
-                          companyId={companyId}
-                          people={people}
-                          schedules={data.schedules}
-                          overtimePolicies={data.overtimePolicies}
-                          breakPolicies={data.breakPolicies}
-                          onPoliciesChange={(next: PolicyData) => {
-                            updateData(current => ({ ...current, ...next }))
-                          }}
-                          onNotify={notify}
-                        />
+                        <TabContent notice={noticeBanner}>
+                          <PoliciesTab
+                            view="people"
+                            companyId={companyId}
+                            people={people}
+                            schedules={data.schedules}
+                            overtimePolicies={data.overtimePolicies}
+                            breakPolicies={data.breakPolicies}
+                            onPoliciesChange={(next: PolicyData) => {
+                              updateData(current => ({ ...current, ...next }))
+                            }}
+                            onNotify={notify}
+                          />
+                        </TabContent>
                       ),
                     },
                   ]}
@@ -1332,6 +1395,15 @@ function ControlBar({
   )
 }
 
+function TabContent({ notice, children }: { notice: ReactNode; children: ReactNode }) {
+  return (
+    <Flex flexDirection="column" gap={16}>
+      {notice}
+      {children}
+    </Flex>
+  )
+}
+
 function ChevronRightIcon() {
   return (
     <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
@@ -1344,6 +1416,32 @@ function ChevronRightIcon() {
       />
     </svg>
   )
+}
+
+type SendOutcome = 'success' | 'partial' | 'error'
+
+type SendFailure =
+  { kind: 'processed' } | { kind: 'error' } | { kind: 'partial'; names: string[]; shifts: number }
+
+const OUTCOME_OPTIONS: Array<{ value: SendOutcome; label: string }> = [
+  { value: 'success', label: 'Everything sends' },
+  { value: 'partial', label: 'Some people fail' },
+  { value: 'error', label: 'The whole send fails' },
+]
+
+function isOutcome(value: string): value is SendOutcome {
+  return OUTCOME_OPTIONS.some(option => option.value === value)
+}
+
+const LEFT_OUT_REASONS: Array<{ state: ReviewState; label: (count: number) => string }> = [
+  { state: 'unapproved', label: count => `${count} not approved` },
+  { state: 'open', label: count => `${count} still clocked in` },
+]
+
+function namesList(names: string[]) {
+  const unique = [...new Set(names)].sort((a, b) => a.localeCompare(b))
+  if (unique.length <= 3) return unique.join(', ')
+  return `${unique.slice(0, 3).join(', ')} and ${unique.length - 3} more`
 }
 
 const PAYROLL_LINES: Array<{

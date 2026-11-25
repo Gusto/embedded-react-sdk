@@ -317,6 +317,7 @@
 
 .overlayToggle {
   display: flex;
+  align-items: center;
   gap: 0.25rem;
 }
 
@@ -325,10 +326,11 @@
 }
 
 .simulate {
-  min-width: 16rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px dashed #7c3aed;
+  min-width: 13rem;
+  margin-right: 0.5rem;
   border-radius: 0.5rem;
+  outline: 1px dashed #7c3aed;
+  outline-offset: 3px;
 }
 
 .roundHeading {
@@ -516,6 +518,12 @@
   }
 }
 
+.alertActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
 .controlFilters {
   display: flex;
   align-items: center;
@@ -621,23 +629,6 @@
   > [data-variant] + [data-variant] {
     margin-left: 0;
   }
-}
-
-.sendFacts {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin: 0;
-
-  dd {
-    margin: 0;
-  }
-}
-
-.sendFact {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 // Tripled class to outrank the 24px margin from the SDK Tabs `.GSDK .tabsContainer .react-aria-TabList` rule.

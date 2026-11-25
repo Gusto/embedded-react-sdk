@@ -33,6 +33,7 @@ export type ChangeId =
   | 'bulk-placement'
   | 'steady-layout'
   | 'control-bar'
+  | 'send-inline'
   | 'layer-order'
 
 export type ChangeRound = 'nov-19' | 'nov-20' | 'nov-24'
@@ -375,6 +376,16 @@ export const CHANGES: Change[] = [
     feedback: 'Treat the action row as one element; selecting rows replaces what’s there.',
     what: 'One bar right above the table holds the pay schedule and period filters on the left and Add shift and Send to payroll on the right. Selecting rows replaces the whole bar with Clear selection, the count, then Unapprove and Approve buttons, at the same height, so the table doesn’t move. The SDK has no table toolbar like this, so it’s flagged as a possible SDK enhancement.',
     where: 'Timesheets and a person’s shifts › control bar.',
+  },
+  {
+    id: 'send-inline',
+    round: 'nov-24',
+    tabs: ['review'],
+    title: 'Send in place, no send page',
+    feedback:
+      'Keep sending simple: show the in-progress banner and update the table’s badges. Block with a banner if unapproved shifts would be left out.',
+    what: 'Send to payroll starts right away. If any shifts aren’t approved or are still clocked in, a blocking banner lists them first, with Cancel and Send anyway. While it runs a banner says it’s sending; when it’s done the Payroll column updates and a banner shows the result, with Try again on failure. The prototype’s send result picker sits next to Show gaps.',
+    where: 'Timesheets › control bar and banners.',
   },
 ]
 
