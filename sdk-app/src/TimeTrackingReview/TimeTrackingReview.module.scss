@@ -608,6 +608,10 @@
   align-items: flex-start;
   gap: 4px;
   white-space: nowrap;
+
+  > [data-variant] + [data-variant] {
+    margin-left: 0;
+  }
 }
 
 .sendFacts {
