@@ -62,5 +62,10 @@
   },
   "preapprovedHoursColumn": "Preapproved hours",
   "additionalHoursColumn": "Additional hours",
-  "timeOffTypeColumn": "Type"
+  "timeOffTypeColumn": "Type",
+  "alreadySubmitted": {
+    "title": "This payroll has already been submitted",
+    "description": "It can no longer be edited. To make changes, cancel the payroll and run it again.",
+    "backCta": "Back to payroll"
+  }
 }

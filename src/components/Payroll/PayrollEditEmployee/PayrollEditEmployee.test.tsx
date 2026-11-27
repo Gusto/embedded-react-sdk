@@ -7,6 +7,7 @@ import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { PayrollCategory } from '../payrollTypes'
 import { PayrollEditEmployee } from './PayrollEditEmployee'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { componentEvents } from '@/shared/constants'
 
 const mockEmployee: Employee = {
   uuid: 'test-employee-uuid',
@@ -173,6 +174,26 @@ describe('PayrollEditEmployee', () => {
     renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
 
     expect(screen.getByTestId('regular-rate-of-pay-editor')).toBeInTheDocument()
+  })
+
+  test('shows the already-submitted state with a way back when the payroll is submitted', async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+    mockUsePreparedPayrollData.mockReturnValue({
+      preparedPayroll: undefined,
+      paySchedule: undefined,
+      isLoading: false,
+      isPayrollAlreadySubmitted: true,
+    })
+    renderWithProviders(
+      <PayrollEditEmployee {...defaultProps} onEvent={onEvent} />,
+      legacyEditorOptions,
+    )
+
+    expect(await screen.findByText('This payroll has already been submitted')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Back to payroll' }))
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED)
   })
 
   test('applies custom className', async () => {

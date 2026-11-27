@@ -64,6 +64,36 @@ export function handleGetPayroll(resolver: HttpResponseResolver) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, resolver)
 }
 
+const handleGetPayrollFixture = (overrides: Record<string, unknown>) =>
+  handleGetPayroll(async () =>
+    HttpResponse.json({
+      ...(await getFixture('get-v1-companies-company_id-payrolls-payroll_id')),
+      ...overrides,
+    }),
+  )
+
+/**
+ * Payroll GET returning the default fixture as a not-yet-submitted payroll. The default
+ * fixture is already submitted, so screens that prepare or edit a payroll need this.
+ *
+ * Its path also matches `/payrolls/blockers`, so list it after any blockers handler.
+ */
+export function handleGetUnsubmittedPayroll() {
+  return handleGetPayrollFixture({ processed: false, processing_request: null })
+}
+
+/**
+ * Payroll GET returning the default fixture as a submitted payroll.
+ *
+ * Its path also matches `/payrolls/blockers`, so list it after any blockers handler.
+ */
+export function handleGetSubmittedPayroll() {
+  return handleGetPayrollFixture({
+    processed: true,
+    processing_request: { status: 'submit_success', errors: [] },
+  })
+}
+
 const getSinglePayroll = http.get<
   PathParams,
   GetV1CompaniesCompanyIdPayrollsPayrollIdRequest,

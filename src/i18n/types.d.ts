@@ -8738,6 +8738,14 @@ export namespace Translations {
     additionalHoursColumn: string
     /** @defaultValue `"Type"` */
     timeOffTypeColumn: string
+    alreadySubmitted: {
+      /** @defaultValue `"This payroll has already been submitted"` */
+      title: string
+      /** @defaultValue `"It can no longer be edited. To make changes, cancel the payroll and run it again."` */
+      description: string
+      /** @defaultValue `"Back to payroll"` */
+      backCta: string
+    }
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
   export interface PayrollPayrollFlow {
@@ -9605,6 +9613,14 @@ export namespace Translations {
     preapprovedHoursColumn: string
     /** @defaultValue `"Additional hours"` */
     additionalHoursColumn: string
+    alreadySubmitted: {
+      /** @defaultValue `"This payroll has already been submitted"` */
+      title: string
+      /** @defaultValue `"It can no longer be edited. To make changes, cancel the payroll and run it again."` */
+      description: string
+      /** @defaultValue `"Back to payroll"` */
+      backCta: string
+    }
   }
   /** Translation keys for the `Payroll.TransitionConfiguration` i18n namespace. */
   export interface PayrollTransitionConfiguration {
