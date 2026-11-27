@@ -1,0 +1,690 @@
+.root {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 1.5rem 2rem 3rem;
+  align-items: start;
+}
+
+.withGaps {
+  grid-template-columns: minmax(0, 1fr) 22rem;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.simTag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7c3aed;
+  border: 0.0625rem dashed #7c3aed;
+  border-radius: 1rem;
+  padding: 0.125rem 0.625rem;
+}
+
+.estimate {
+  white-space: nowrap;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.iconButton {
+  font: inherit;
+  background: transparent;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  color: var(--color-text);
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gapsPanel {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  border: 0.0625rem dashed #7c3aed;
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+  background: var(--color-bg);
+  font-size: 0.8125rem;
+}
+
+.gapsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 0.9375rem;
+    margin: 0;
+  }
+}
+
+.gapList {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.gap {
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.625rem;
+  line-height: 1.4;
+
+  p {
+    margin: 0.375rem 0 0;
+  }
+}
+
+.needed {
+  background: rgba(124, 58, 237, 0.08);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.375rem;
+}
+
+.gapActive {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 0.125rem rgba(124, 58, 237, 0.35);
+}
+
+.gapTitle {
+  display: flex;
+  gap: 0.5rem;
+  font-weight: 600;
+  align-items: baseline;
+}
+
+.gapNumber,
+.pin {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 0.5625rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: #7c3aed;
+  color: #fff;
+  padding: 0 0.25rem;
+}
+
+.pin {
+  border: none;
+  cursor: pointer;
+  vertical-align: middle;
+  margin: 0 0.125rem;
+  font-family: inherit;
+}
+
+.pinActive {
+  box-shadow: 0 0 0 0.1875rem rgba(124, 58, 237, 0.35);
+}
+
+.gapKind {
+  display: inline-block;
+  margin-top: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  padding: 0.0625rem 0.375rem;
+  background: var(--color-badge-bg);
+}
+
+.kind_planned,
+.kind_plannedWorkaround,
+.kind_plannedPartial {
+  background: var(--color-active-bg);
+  color: var(--color-active);
+}
+
+.kind_none,
+.kind_bug {
+  background: var(--color-danger-error-bg);
+  color: var(--color-danger);
+}
+
+.kind_limited,
+.kind_sdkComponent {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.request {
+  border: 0.0625rem dashed #7c3aed;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+}
+
+.requestLine {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.5rem 0.75rem;
+  background: rgba(124, 58, 237, 0.06);
+
+  code {
+    word-break: break-all;
+  }
+}
+
+.method {
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+.requestCaption {
+  padding: 0.375rem 0.75rem;
+  color: var(--color-text-muted);
+  border-top: 0.0625rem dashed #7c3aed;
+}
+
+.requestBody {
+  margin: 0;
+  padding: 0.625rem 0.75rem;
+  border-top: 0.0625rem dashed #7c3aed;
+  max-height: 28rem;
+  overflow: auto;
+}
+
+.readOnly {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #7c3aed;
+}
+
+@media (max-width: 75rem) {
+  .withGaps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gapsPanel {
+    position: static;
+    max-height: none;
+  }
+}
+
+.subPageBody {
+  width: 100%;
+}
+
+.formPage {
+  max-width: 44rem;
+}
+
+.approveIcon,
+.unapproveIcon {
+  display: inline-flex;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.approveIcon {
+  --row-icon-color: var(--g-colorSuccessAccent);
+}
+
+.unapproveIcon {
+  --row-icon-color: var(--g-colorErrorAccent);
+}
+
+[disabled] .approveIcon,
+[disabled] .unapproveIcon,
+[data-disabled] .approveIcon,
+[data-disabled] .unapproveIcon {
+  opacity: 0.3;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.approveReject {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.statusBadges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: max-content;
+}
+
+.changePin,
+.changeNumber {
+  background: #db2777;
+}
+
+.changePinActive {
+  box-shadow: 0 0 0 0.1875rem rgba(219, 39, 119, 0.35);
+}
+
+.changesPanel {
+  border-color: #db2777;
+}
+
+.changeActive {
+  border-color: #db2777;
+  box-shadow: 0 0 0 0.125rem rgba(219, 39, 119, 0.35);
+}
+
+.changeSource {
+  display: inline-block;
+  margin-top: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  padding: 0.0625rem 0.375rem;
+  background: rgba(219, 39, 119, 0.14);
+  color: #db2777;
+}
+
+.quote {
+  font-style: italic;
+}
+
+.overlayToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.unsure {
+  color: var(--g-colorBodySubContent);
+}
+
+.simulate {
+  min-width: 13rem;
+  margin-right: 0.5rem;
+  border-radius: 0.5rem;
+  outline: 1px dashed #7c3aed;
+  outline-offset: 3px;
+}
+
+.roundHeading {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--g-colorBodySubContent);
+}
+
+.toolbarFilters {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.toolbarSchedule {
+  flex: 0 1 15rem;
+  min-width: 9rem;
+}
+
+.toolbarPeriod {
+  flex: 0 1 13.5rem;
+  min-width: 9rem;
+}
+
+.reviewTable {
+  width: 100%;
+
+  :global(.react-aria-Column),
+  :global(.react-aria-Cell) {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  // Doubled class to outrank the SDK Table's `.root .react-aria-Table .react-aria-Cell` padding.
+  &.reviewTable :global(.react-aria-Table) :global(.react-aria-Column),
+  &.reviewTable :global(.react-aria-Table) :global(.react-aria-Cell) {
+    padding-inline: 0.75rem;
+  }
+
+  &.reviewTable :global(.react-aria-Table) :global(.react-aria-Column):first-child,
+  &.reviewTable :global(.react-aria-Table) :global(.react-aria-Cell):first-child {
+    padding-inline: 0.5rem;
+  }
+}
+
+.drillIn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.peopleTable {
+  :global(.react-aria-Column),
+  :global(.react-aria-Cell) {
+    width: auto;
+  }
+
+  :global(.react-aria-Column):first-child,
+  :global(.react-aria-Cell):first-child,
+  :global(.react-aria-Column):last-child,
+  :global(.react-aria-Cell):last-child {
+    width: 1%;
+  }
+
+  :global(.react-aria-Cell):nth-child(2) > * {
+    display: block;
+    min-width: 13rem;
+    max-width: 17rem;
+
+    * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.ruleList {
+  display: flex;
+  flex-direction: column;
+}
+
+.ruleRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  padding-block: 1rem;
+  border-top: 1px solid var(--g-colorBorderSecondary);
+
+  &:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+.clearIcon {
+  display: inline-flex;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.formSection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--g-colorBorderSecondary);
+
+  &:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+.breakList {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.breakRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--g-colorBorderSecondary);
+
+  &:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+.policyTable {
+  width: 100%;
+
+  :global(.react-aria-Column):first-child,
+  :global(.react-aria-Cell):first-child {
+    width: 20rem;
+    white-space: nowrap;
+  }
+
+  :global(.react-aria-Cell):first-child > * {
+    display: block;
+  }
+}
+
+.detailLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+  width: 100%;
+
+  @media (max-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.controlBarWrap {
+  width: 100%;
+  container-type: inline-size;
+}
+
+.controlBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 2.5rem;
+
+  > :first-child {
+    min-width: 0;
+  }
+
+  > :last-child {
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+}
+
+// 40rem is the SDK's small breakpoint.
+@container (max-width: 40rem) {
+  .controlBar {
+    flex-direction: column;
+    align-items: stretch;
+
+    > :last-child {
+      margin-left: 0;
+    }
+  }
+
+  .controlFilters,
+  .toolbarFilters,
+  .controlActions,
+  .approveReject {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .toolbarFilters,
+  .toolbarSchedule,
+  .toolbarPeriod,
+  .controlActions > :not(.pin),
+  .approveReject > :not(.pin) {
+    flex: 1 1 100%;
+  }
+}
+
+.alertActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.iconSelect {
+  position: relative;
+}
+
+.selectIcon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  z-index: 1;
+  display: inline-flex;
+  color: var(--g-inputContentColor);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+// Tripled class to outrank the SDK Select trigger padding.
+.iconSelect.iconSelect.iconSelect :global(.react-aria-Button) {
+  padding-left: 2.25rem;
+}
+
+.controlFilters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.controlActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bulkSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subPageHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.trashIcon {
+  --g-colorButtonIcon: currentColor;
+
+  display: inline-flex;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.subPageTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.subPageActions {
+  display: flex;
+  gap: 8px;
+}
+
+// Outranks the SDK Button's `[data-variant='secondary']` colours, hover included.
+.outlineDestructive.outlineDestructive.outlineDestructive[data-variant] {
+  &,
+  &:hover {
+    color: var(--g-colorErrorAccent);
+    border-color: var(--g-colorErrorAccent);
+  }
+}
+
+.assignBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.assignControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skipList {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+
+.peoplePolicies {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+
+  td:nth-child(2),
+  td:nth-child(3) {
+    white-space: nowrap;
+  }
+}
+
+.policySelect {
+  min-width: 14rem;
+}
+
+.alertStack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  white-space: nowrap;
+
+  > [data-variant] + [data-variant] {
+    margin-left: 0;
+  }
+}
+
+// Tripled class to outrank the 24px margin from the SDK Tabs `.GSDK .tabsContainer .react-aria-TabList` rule.
+.pageTabs.pageTabs.pageTabs :global(.react-aria-TabList) {
+  margin-bottom: 1rem;
+}

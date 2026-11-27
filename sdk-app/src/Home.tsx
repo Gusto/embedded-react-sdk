@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styles from './Home.module.scss'
 
 export function Home() {
@@ -36,6 +37,18 @@ export function Home() {
           <li>Entity IDs can be changed in the Settings panel (gear icon)</li>
           <li>Events from components are logged in the Events panel below each component</li>
           <li>URLs are shareable -- send a link to a specific component to a teammate</li>
+          <li>
+            Need to hit an endpoint not in the generated SDK? Try the{' '}
+            <Link to="/tools/api-explorer">API Explorer</Link>
+          </li>
+          <li>
+            Fetching shifts for a pay period? See the{' '}
+            <Link to="/tools/pay-period-shifts">Pay Period Shifts</Link> query walkthrough
+          </li>
+          <li>
+            Reviewing timesheets on real data? Open the{' '}
+            <Link to="/tools/time-tracking-review">Time Tracking Review</Link> prototype (read-only)
+          </li>
         </ul>
       </div>
     </div>
